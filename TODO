@@ -1,0 +1,5 @@
+
+ - Fix long / int usage in crc32.c
+ - Check for memory and filehandle leaks (error handling)
+ - Fix batchscan (linux)
+
