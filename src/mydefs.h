@@ -1,3 +1,6 @@
+#ifndef _mydefs_h
+#define _mydefs_h
+
 /*
  * mydefs.h
  *
@@ -40,6 +43,12 @@
 
 #define TRUE	1
 #define FALSE	0
+
+#ifdef WINDOWS
+#define SLASH	'\\'
+#else
+#define SLASH	'/'
+#endif
 
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */
@@ -240,11 +249,11 @@ extern int cyber_f2_eor2;
 extern int batchmode;
 
 extern char exedir[512];
-extern char ftreportname[256];
-extern char tempftreportname[256];
-extern char ftbatchreportname[256];
-extern char tempftbatchreportname[256];
-extern char ftinfoname[256];
+extern char tcreportname[256];
+extern char temptcreportname[256];
+extern char tcbatchreportname[256];
+extern char temptcbatchreportname[256];
+extern char tcinfoname[256];
 extern char tapoutname[256];
 extern char auoutname[256];
 extern char wavoutname[256];
@@ -266,4 +275,6 @@ extern char sortbycrc;
 
 extern char exportcyberloaders;
 extern char preserveloadertable;
+
+#endif
 

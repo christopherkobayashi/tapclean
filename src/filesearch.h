@@ -1,50 +1,56 @@
-/*---------------------------------------------------------------------------
-  filesearch.h
-
-  Part of project "Final TAP". 
-  
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
-   version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-   PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
-   St, Fifth Floor, Boston, MA 02110-1301 USA
-*/   
+/*
+ * filesearch.h
+ *
+ * Part of project "Final TAP". 
+ *
+ * A Commodore 64 tape remastering and data extraction utility.
+ *
+ * (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; either version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ *
+ * 16-apr-2006: Cleaned up by bokvamme@errors.no
+ */   
 
 #include <stdio.h>
-//#include <io.h>
-//#include <dir.h>
+#include "mydefs.h"
 
-#define ROOTONLY 0     
-#define ROOTALL 1
+#ifdef WINDOWS
+#include <io.h>
+#include <dir.h>
+#endif
+
+
+#define ROOTONLY	0
+#define ROOTALL		1
+
 
 struct node
 {
-   char *name;
-   struct node *link;
+	char *name;
+	struct node *link;
 };
         
-struct node* make_node(const char *name);
-struct node* get_dir_list(char *rootdir);
-struct node* get_file_list(char *mask, struct node *dirs, int searchtype);
-int show_list(struct node *r);
-int save_list(struct node *r, char *fname);
-int free_list(struct node *r);
-int sort_list(struct node *r);
-int clip_list(struct node *r);  
+struct node* make_node(const char *);
+struct node *get_dir_list(char *);
+struct node *get_file_list(char *, struct node *, int);
 
-
-
+int show_list(struct node *);
+int save_list(struct node *, char *);
+int free_list(struct node *);
+int sort_list(struct node *);
+int clip_list(struct node *);  
 

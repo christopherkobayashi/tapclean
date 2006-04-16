@@ -394,75 +394,69 @@ int main(int argc, char *argv[])
 										convert_to_v1();   
 										add_trailpause();
 										break;
-							}
+								}
 
-							report();
-							printf("\nSaved: %s", tcreportname);
-							if (opnum > 1 && opnum < 6) {
-								save_tap(tapoutname);
-								printf("\n\nSaved: %s", tapoutname);
+								report();
+								printf("\nSaved: %s", tcreportname);
+								if (opnum > 1 && opnum < 6) {
+									save_tap(tapoutname);
+									printf("\n\nSaved: %s", tapoutname);
+								}
+								time(&t2);
+								time2str(t2 - t1, lin);
+								printf("\nOperation completed in %s.", lin);
 							}
-							time(&t2);
-							time2str(t2 - t1, lin);
-							printf("\nOperation completed in %s.", lin);
 						}
-					}
-				} else
-					printf("\n\nMissing file name.");
-			}
-                   
-			if (opnum == 7) {	/* flag = convert to au */
-				if (argv[i + 1] != NULL) {
-					if (load_tap(argv[i + 1])) {
-						if (analyze()) {
-							printf("\n\nLoaded: %s", tap.name);
-							printf("\n%s...\n", opname);
-							au_write(tap.tmem, tap.len, auoutname,sine);
-							printf("\nSaved: %s", auoutname);
-							msgout("\n");
+					} else
+						printf("\n\nMissing file name.");
+				}
+
+				if (opnum == 7) {	/* flag = convert to au */
+					if (argv[i + 1] != NULL) {
+						if (load_tap(argv[i + 1])) {
+							if (analyze()) {
+								printf("\n\nLoaded: %s", tap.name);
+								printf("\n%s...\n", opname);
+								au_write(tap.tmem, tap.len, auoutname,sine);
+								printf("\nSaved: %s", auoutname);
+								msgout("\n");
+							}
 						}
-					}
-				} else
-					printf("\n\nMissing file name.");
-			}
-            
-			if (opnum == 8) {		/* flag = convert to wav */
-				if (argv[i + 1] != NULL) {
-					if (load_tap(argv[i + 1])) {
-						if (analyze()) {
-							printf("\n\nLoaded: %s", tap.name);
-							printf("\n%s...\n", opname);
-							wav_write(tap.tmem, tap.len, auoutname,sine);
-							printf("\nSaved: %s", wavoutname);
-							msgout("\n");
+					} else
+						printf("\n\nMissing file name.");
+				}
+ 
+				if (opnum == 8) {		/* flag = convert to wav */
+					if (argv[i + 1] != NULL) {
+						if (load_tap(argv[i + 1])) {
+							if (analyze()) {
+								printf("\n\nLoaded: %s", tap.name);
+								printf("\n%s...\n", opname);
+								wav_write(tap.tmem, tap.len, auoutname,sine);
+								printf("\nSaved: %s", wavoutname);
+								msgout("\n");
+							}
 						}
+					} else
+						printf("\n\nMissing file name.");
+				}
+ 
+				if (opnum == 9) {		/* flag = batch scan... */
+					batchmode = TRUE;
+					quiet = TRUE;
+
+					if (argv[i + 1] != NULL) {
+						printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
+						batchscan(argv[i + 1], incsubdirs, 1);
+					} else {
+						printf("\n\nMissing directory name, using current.");
+						printf("\n\nBatch Scanning: %s\n", exedir);
+						batchscan(exedir, incsubdirs, 1);
 					}
-				} else
-					printf("\n\nMissing file name.");
-			}
-                        
-			if (opnum == 9) {		/* flag = batch scan... */
-				printf("Batchscan not supported YET...\n");
-				batchmode = FALSE;
-			}
-//               batchmode= TRUE;
-//               quiet= TRUE;
-//               if(argv[i+1]!=NULL)
-//               {
-//                 
-//                  printf("\n\nBatch Scanning: %s\n",argv[i+1]);
-//                  batchscan(argv[i+1],incsubdirs,1);
-//               }
-//               else
-//               {
-//                  printf("\n\nMissing directory name, using current.");
-//                  printf("\n\nBatch Scanning: %s\n",exedir);
-//                  batchscan(exedir,incsubdirs,1);
-//  
-//               }
-//               batchmode= FALSE;
-//               quiet= FALSE;
-//            }
+				
+					batchmode = FALSE;
+					quiet = FALSE;
+				}
                     
 				/* flag = generate exe info file */
 
@@ -2985,11 +2979,11 @@ void getfilename(char *dest, char *fullpath)
 	int i, j, k;
 
 	i = strlen(fullpath);
-	for (j = i; j > 0 && fullpath[j] != '\\'; j--);
+	for (j = i; j > 0 && fullpath[j] != SLASH; j--);
 
 	/* rewind j to 0 or first slash.. */
 
-	if (fullpath[j] == '\\')
+	if (fullpath[j] == SLASH)
 		j++;		/* skip over the slash */
 	for (k = 0; j < i; j++)
 		dest[k++] = fullpath[j];
