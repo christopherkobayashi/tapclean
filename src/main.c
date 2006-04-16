@@ -268,7 +268,7 @@ char wavoutname[256] =			"out.wav";
 /* note: all generated files are saved to the exedir */
 
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 	int i, j, opnum;
 	time_t t1, t2;
@@ -291,26 +291,7 @@ int main(int argc, char* argv[])
    
 	deleteworkfiles();
          
-	/* get exe path from argv[0]... */   
-
-	strcpy(exedir, argv[0]);    
-	for (i = strlen(exedir); i > 0 && exedir[i] != '\\'; i--);  /* clip to leave path only */
-	
-	if (exedir[i] == '\\')
-		exedir[i + 1] = 0;   
-   
-	/* note: I do this instead of using getcwd() because getcwd does not give
-	 * the exe's directory when dragging and dropping a tap file to the program
-	 * icon using windows explorer.
-	 */ 
-      
-	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
-
-	if (strcmp(exedir, "ftcon") == 0 || strcmp(exedir, "ftcon.exe") == 0) {
-		getcwd(exedir, 512);
-		strcat(exedir, "\\");
-	}
-       
+	get_exedir(argv[0]);
 
 	/* allocate ram to file database and initialize array pointers */
 
@@ -698,6 +679,37 @@ int main(int argc, char* argv[])
 		free(blk[i]);
    
 	return 0;
+}
+
+/*
+ * Get exe path from argv[0]...
+ */
+
+void get_exedir(char *argv0)
+{
+	strcpy(exedir, argv0);
+
+#ifdef WINDOWS
+	for (i = strlen(exedir); i > 0 && exedir[i] != '\\'; i--);  /* clip to leave path only */
+	
+	if (exedir[i] == '\\')
+		exedir[i + 1] = 0;   
+   
+	/* note: I do this instead of using getcwd() because getcwd does not give
+	 * the exe's directory when dragging and dropping a tap file to the program
+	 * icon using windows explorer.
+	 */ 
+
+	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
+
+	if (strcmp(exedir, "tapclean") == 0 || strcmp(exedir, "tapclean.exe") == 0) {
+		getcwd(exedir, 512);
+		strcat(exedir, "\\");
+	}
+#else
+	getcwd(exedir, 512);
+	strcat(exedir, "/");
+#endif
 }
 
 /*
