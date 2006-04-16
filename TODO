@@ -1,5 +1,6 @@
 
  - Fix long / int usage in crc32.c
  - Check for memory and filehandle leaks (error handling)
- - Fix batchscan (linux)
+ - Add a portable strupr function for sort_list in filesearch.c
+ - Code Linux version of get_file_list in filesearch.c 
 

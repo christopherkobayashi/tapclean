@@ -85,14 +85,17 @@ int main(int argc, char* argv[])
  * Returns NULL on error.
  */
 
-#ifdef WINDOWS
 struct node *get_dir_list(char *rootdir)
 {
 	struct node *dirs, *c, *d;
 	char cwd[1024], temp[1024];
 	long handle;
-	int done, complete;
+	int done, complete, n, i;
+#ifdef WINDOWS
 	struct _finddata_t ffblk;
+#else
+	struct dirent **namelist;
+#endif
     
 	/* return NULL if rootdir doesnt exist */
 
@@ -112,7 +115,7 @@ struct node *get_dir_list(char *rootdir)
 		 * Find/record all directories in the current one (ignores "." and "..")
 		 * a new node is created (and made current) for each one found...
 		 */
-
+#ifdef WINDOWS
 		handle = _findfirst("*.*", &ffblk);
 		if (handle != -1) {
 			done = 0;            
@@ -140,7 +143,34 @@ struct node *get_dir_list(char *rootdir)
 			}   
 		}
 		_findclose(handle);
-      
+#else
+		n = scandir(".", &namelist, 0, alphasort);
+
+		for (i = 0; i < n; i++) {
+			if (namelist[n]->d_type == DT_DIR &&
+				strcmp(namelist[n]->d_name, ".") != 0 &&
+				strcmp(namelist[n]->d_name, "..") != 0) {
+
+				/* create the name for the new node (CWD+\+DIR name)... */
+
+				strcpy(temp, cwd);
+				if (temp[strlen(temp) - 1] != SLASH) {
+					temp[strlen(temp)] = SLASH;
+					temp[strlen(temp) + 1] = '\0';
+				}
+				strcat(temp, namelist[n]->d_name);
+                            
+				/* create and switch to latest node... */
+
+				c->link = make_node(temp);
+				if (c->link == NULL)
+					return NULL;	/* error creating node!. */
+				c = c->link;
+			}
+			free(namelist[n]);
+		}
+		free(namelist);
+#endif
 		/* switch to next available directory... */
 
 		if (d->link != NULL) {
@@ -154,11 +184,6 @@ struct node *get_dir_list(char *rootdir)
   
 	return dirs;
 }
-#else
-struct node *get_dir_list(char *rootdir)
-{
-}
-#endif
 
 /*
  * Search all directories in linked list 'dirs' for files and build a new
