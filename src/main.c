@@ -319,201 +319,11 @@ int main(int argc, char *argv[])
 
 	/* Note: options should be processed before actions! */
    
-	if (argc == 1) {
-		printf("\n\nUsage:\n\n");
-		printf("tapclean [option][parameter]\n\n");
-		printf("options...\n\n");
-
-		printf(" -t   [tap]     Test TAP.\n");
-		printf(" -o   [tap]     Optimize TAP.\n");
-		printf(" -b   [dir]     Batch test.\n");
-		printf(" -au  [tap]     Convert TAP to Sun AU audio file (44kHz).\n");
-		printf(" -wav [tap]     Convert TAP to Microsoft WAV audio file (44kHz).\n");
-		printf(" -rs  [tap]     Corrects the 'size' field of a TAPs header.\n");
-		printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
-		printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
+	if (argc == 1)
+		display_usage();
+	else {
+		process_options(argc, argv);
       
-		printf(" -tol [0-15]    Set pulsewidth read tolerance, default=10.\n");
-		printf(" -debug         Allows detected files to overlap.\n");
-		printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
-		printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
-		printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
-		printf(" -boostclean    Raise cleaning threshold.\n");
-		printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
-		printf(" -sine          Make audio converter use sine waves.\n");
-		printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
-		printf(" -extvisipatch  Extract Visiload loader patch files.\n");
-		printf(" -incsubdirs    Make batch scan include subdirectories.\n");
-		printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.");
-	} else {
-
-		/* PROCESS OPTIONS... */
-
-		for (i = 0; i < argc; i++) {
-			if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
-				if (argv[i + 1] != NULL) {
-					tol = atoi(argv[i + 1]) + 1;	/* 1 = zero tolerance (-tol 0) */
-					if (tol < 0 || tol > 15) {
-						tol = DEFTOL;
-						printf("\n\nTolerance parameter out of range, using default.");
-					}
-				} else
-					printf("\n\nTolerance parameter missing, using default.");
-			}
-
-			if (strcmp(argv[i], "-debug") == 0)
-				debug = TRUE;
-			if (strcmp(argv[i], "-noid") == 0)
-				noid = TRUE;
-			if (strcmp(argv[i], "-noc64eof") == 0)
-				noc64eof = TRUE;
-			if (strcmp(argv[i], "-docyberfault") == 0)
-				docyberfault = TRUE;
-			if (strcmp(argv[i], "-boostclean") == 0)
-				boostclean = TRUE;
-			if (strcmp(argv[i], "-noaddpause") == 0)
-				noaddpause = TRUE;
-			if (strcmp(argv[i], "-sine") == 0)
-				sine = TRUE;
-			if (strcmp(argv[i], "-prgunite") == 0)
-				prgunite = TRUE;
-			if (strcmp(argv[i], "-extvisipatch") == 0)
-				extvisipatch = TRUE;
-			if (strcmp(argv[i], "-incsubdirs") == 0)
-				incsubdirs = TRUE;
-			if (strcmp(argv[i], "-sortbycrc") == 0)
-				sortbycrc = TRUE;
-			if (strcmp(argv[i], "-ec") == 0)
-				exportcyberloaders = TRUE;
-         
-			if (strcmp(argv[i], "-noc64") ==  0)
-				noc64 = TRUE;
-			if (strcmp(argv[i], "-noaces") == 0)
-				noaces = TRUE;
-			if (strcmp(argv[i], "-noanirog") == 0)
-				noanirog = TRUE;
-			if (strcmp(argv[i], "-noatlantis") == 0)
-				noatlantis = TRUE;
-			if (strcmp(argv[i], "-noaudiogenic") == 0)
-				noaudiogenic = TRUE;
-			if (strcmp(argv[i], "-nobleep") == 0)
-				nobleep = TRUE;
-			if (strcmp(argv[i], "-noburner") == 0)
-				noburner = TRUE;
-			if (strcmp(argv[i], "-nochr") == 0)
-				nochr = TRUE;
-			if (strcmp(argv[i], "-nocyber") == 0)
-				nocyber = TRUE;
-			if (strcmp(argv[i], "-noenigma") == 0)
-				noenigma = TRUE;
-			if (strcmp(argv[i], "-nofire") == 0)
-				nofire = TRUE;
-			if (strcmp(argv[i], "-noflash") == 0)
-				noflash = TRUE;
-			if (strcmp(argv[i], "-nofree") == 0)
-				nofree = TRUE;
-			if (strcmp(argv[i], "-nohit") == 0)
-				nohit = TRUE;
-			if (strcmp(argv[i], "-nohitec") == 0)
-				nohitec = TRUE;
-			if (strcmp(argv[i], "-nojet") == 0)
-				nojet = TRUE;
-			if (strcmp(argv[i], "-noik") == 0)
-				noik = TRUE;
-			if (strcmp(argv[i], "-nomicro") == 0)
-				nomicro = TRUE;
-			if (strcmp(argv[i], "-nonova") == 0)
-				nonova = TRUE;
-			if (strcmp(argv[i], "-noocean") == 0)
-				noocean = TRUE;
-			if (strcmp(argv[i], "-nooceannew1t1") == 0)
-				nooceannew1t1 = TRUE;
-			if (strcmp(argv[i], "-nooceannew1t2") == 0)
-				nooceannew1t2 = TRUE;
-			if (strcmp(argv[i], "-nooceannew2") == 0)
-				nooceannew2 = TRUE;
-			if (strcmp(argv[i], "-nopalacef1") == 0)
-				nopalacef1 = TRUE;
-			if (strcmp(argv[i], "-nopalacef2") == 0)
-				nopalacef2 = TRUE;
-			if (strcmp(argv[i], "-nopav") == 0)
-				nopav = TRUE;
-			if (strcmp(argv[i], "-norackit") == 0)
-				norackit = TRUE;
-			if (strcmp(argv[i], "-noraster") == 0)
-				noraster = TRUE;
-			if (strcmp(argv[i], "-noseuck") == 0)
-				noseuck = TRUE;
-			if (strcmp(argv[i], "-nosnake50") == 0)
-				nosnake50 = TRUE;
-			if (strcmp(argv[i], "-nosnake51") == 0)
-				nosnake51 = TRUE;
-			if (strcmp(argv[i], "-nospav") == 0)
-				nospav = TRUE;
-			if (strcmp(argv[i], "-nosuper") == 0)
-				nosuper = TRUE;
-			if (strcmp(argv[i], "-notdif1") == 0)
-				notdif1 = TRUE;
-			if (strcmp(argv[i], "-noturbo") == 0)
-				noturbo = TRUE;
-			if (strcmp(argv[i], "-noturr") == 0)
-				noturr = TRUE;
-			if (strcmp(argv[i], "-nousgold") == 0)
-				nousgold = TRUE;
-			if (strcmp(argv[i], "-novirgin") == 0)
-				novirgin = TRUE;
-			if (strcmp(argv[i], "-novisi") == 0)
-				novisi = TRUE;
-			if (strcmp(argv[i], "-nowild") == 0)
-				nowild = TRUE;  
-
-			/* disable all scanners exc 'c64 rom tape' */
-
-			if (strcmp(argv[i], "-noall") == 0) {
-				noaces = TRUE;
-				noanirog = TRUE;
-				noatlantis = TRUE;
-				noaudiogenic = TRUE;
-				nobleep = TRUE;
-				noburner = TRUE;
-				nochr = TRUE;
-				nocyber = TRUE;
-				noenigma = TRUE;
-				nofire = TRUE;
-				noflash = TRUE;
-				nofree = TRUE;
-				nohit = TRUE;
-				nohitec = TRUE;
-				nojet = TRUE;
-				noik = TRUE;
-				nomicro = TRUE;
-				nonova = TRUE;
-				noocean = TRUE;
-				nooceannew1t1 = TRUE;
-				nooceannew1t2 = TRUE;
-				nooceannew2 = TRUE;
-				nopalacef1 = TRUE;
-				nopalacef2 = TRUE;
-				nopav = TRUE;
-				norackit = TRUE;
-				noraster = TRUE;
-				noseuck = TRUE;
-				nosnake50 = TRUE;
-				nosnake51 = TRUE;
-				nospav = TRUE;
-				nosuper = TRUE;
-				notdif1 = TRUE;
-				noturbo = TRUE;
-				noturr = TRUE;
-				nousgold = TRUE;
-				novirgin = TRUE;
-				novisi = TRUE;
-				nowild = TRUE;
-			}
-		}
-      
-		printf("\n\nRead tolerance= %d", tol-1);
-
 		/* PROCESS ACTIONS... */
 
 		/* 
@@ -710,6 +520,213 @@ void get_exedir(char *argv0)
 	getcwd(exedir, 512);
 	strcat(exedir, "/");
 #endif
+}
+
+/*
+ * Display usage
+ */
+
+void display_usage(void)
+{
+	printf("\n\nUsage:\n\n");
+	printf("tapclean [option][parameter]\n\n");
+	printf("options...\n\n");
+
+	printf(" -t   [tap]     Test TAP.\n");
+	printf(" -o   [tap]     Optimize TAP.\n");
+	printf(" -b   [dir]     Batch test.\n");
+	printf(" -au  [tap]     Convert TAP to Sun AU audio file (44kHz).\n");
+	printf(" -wav [tap]     Convert TAP to Microsoft WAV audio file (44kHz).\n");
+	printf(" -rs  [tap]     Corrects the 'size' field of a TAPs header.\n");
+	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
+	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
+      
+	printf(" -tol [0-15]    Set pulsewidth read tolerance, default=10.\n");
+	printf(" -debug         Allows detected files to overlap.\n");
+	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
+	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
+	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
+	printf(" -boostclean    Raise cleaning threshold.\n");
+	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
+	printf(" -sine          Make audio converter use sine waves.\n");
+	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
+	printf(" -extvisipatch  Extract Visiload loader patch files.\n");
+	printf(" -incsubdirs    Make batch scan include subdirectories.\n");
+	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.");
+}
+
+/*
+ * Process options
+ */
+
+void process_options(int argc, char **argv)
+{
+	int i;
+
+	for (i = 0; i < argc; i++) {
+		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
+			if (argv[i + 1] != NULL) {
+				tol = atoi(argv[i + 1]) + 1;	/* 1 = zero tolerance (-tol 0) */
+				if (tol < 0 || tol > 15) {
+					tol = DEFTOL;
+					printf("\n\nTolerance parameter out of range, using default.");
+				}
+			} else
+				printf("\n\nTolerance parameter missing, using default.");
+		}
+
+		if (strcmp(argv[i], "-debug") == 0)
+			debug = TRUE;
+		if (strcmp(argv[i], "-noid") == 0)
+			noid = TRUE;
+		if (strcmp(argv[i], "-noc64eof") == 0)
+			noc64eof = TRUE;
+		if (strcmp(argv[i], "-docyberfault") == 0)
+			docyberfault = TRUE;
+		if (strcmp(argv[i], "-boostclean") == 0)
+			boostclean = TRUE;
+		if (strcmp(argv[i], "-noaddpause") == 0)
+			noaddpause = TRUE;
+		if (strcmp(argv[i], "-sine") == 0)
+			sine = TRUE;
+		if (strcmp(argv[i], "-prgunite") == 0)
+			prgunite = TRUE;
+		if (strcmp(argv[i], "-extvisipatch") == 0)
+			extvisipatch = TRUE;
+		if (strcmp(argv[i], "-incsubdirs") == 0)
+			incsubdirs = TRUE;
+		if (strcmp(argv[i], "-sortbycrc") == 0)
+			sortbycrc = TRUE;
+		if (strcmp(argv[i], "-ec") == 0)
+			exportcyberloaders = TRUE;
+         
+		if (strcmp(argv[i], "-noc64") ==  0)
+			noc64 = TRUE;
+		if (strcmp(argv[i], "-noaces") == 0)
+			noaces = TRUE;
+		if (strcmp(argv[i], "-noanirog") == 0)
+			noanirog = TRUE;
+		if (strcmp(argv[i], "-noatlantis") == 0)
+			noatlantis = TRUE;
+		if (strcmp(argv[i], "-noaudiogenic") == 0)
+			noaudiogenic = TRUE;
+		if (strcmp(argv[i], "-nobleep") == 0)
+			nobleep = TRUE;
+		if (strcmp(argv[i], "-noburner") == 0)
+			noburner = TRUE;
+		if (strcmp(argv[i], "-nochr") == 0)
+			nochr = TRUE;
+		if (strcmp(argv[i], "-nocyber") == 0)
+			nocyber = TRUE;
+		if (strcmp(argv[i], "-noenigma") == 0)
+			noenigma = TRUE;
+		if (strcmp(argv[i], "-nofire") == 0)
+			nofire = TRUE;
+		if (strcmp(argv[i], "-noflash") == 0)
+			noflash = TRUE;
+		if (strcmp(argv[i], "-nofree") == 0)
+			nofree = TRUE;
+		if (strcmp(argv[i], "-nohit") == 0)
+			nohit = TRUE;
+		if (strcmp(argv[i], "-nohitec") == 0)
+			nohitec = TRUE;
+		if (strcmp(argv[i], "-nojet") == 0)
+			nojet = TRUE;
+		if (strcmp(argv[i], "-noik") == 0)
+			noik = TRUE;
+		if (strcmp(argv[i], "-nomicro") == 0)
+			nomicro = TRUE;
+		if (strcmp(argv[i], "-nonova") == 0)
+			nonova = TRUE;
+		if (strcmp(argv[i], "-noocean") == 0)
+			noocean = TRUE;
+		if (strcmp(argv[i], "-nooceannew1t1") == 0)
+			nooceannew1t1 = TRUE;
+		if (strcmp(argv[i], "-nooceannew1t2") == 0)
+			nooceannew1t2 = TRUE;
+		if (strcmp(argv[i], "-nooceannew2") == 0)
+			nooceannew2 = TRUE;
+		if (strcmp(argv[i], "-nopalacef1") == 0)
+			nopalacef1 = TRUE;
+		if (strcmp(argv[i], "-nopalacef2") == 0)
+			nopalacef2 = TRUE;
+		if (strcmp(argv[i], "-nopav") == 0)
+			nopav = TRUE;
+		if (strcmp(argv[i], "-norackit") == 0)
+			norackit = TRUE;
+		if (strcmp(argv[i], "-noraster") == 0)
+			noraster = TRUE;
+		if (strcmp(argv[i], "-noseuck") == 0)
+			noseuck = TRUE;
+		if (strcmp(argv[i], "-nosnake50") == 0)
+			nosnake50 = TRUE;
+		if (strcmp(argv[i], "-nosnake51") == 0)
+			nosnake51 = TRUE;
+		if (strcmp(argv[i], "-nospav") == 0)
+			nospav = TRUE;
+		if (strcmp(argv[i], "-nosuper") == 0)
+			nosuper = TRUE;
+		if (strcmp(argv[i], "-notdif1") == 0)
+			notdif1 = TRUE;
+		if (strcmp(argv[i], "-noturbo") == 0)
+			noturbo = TRUE;
+		if (strcmp(argv[i], "-noturr") == 0)
+			noturr = TRUE;
+		if (strcmp(argv[i], "-nousgold") == 0)
+			nousgold = TRUE;
+		if (strcmp(argv[i], "-novirgin") == 0)
+			novirgin = TRUE;
+		if (strcmp(argv[i], "-novisi") == 0)
+			novisi = TRUE;
+		if (strcmp(argv[i], "-nowild") == 0)
+			nowild = TRUE;  
+
+		/* disable all scanners exc 'c64 rom tape' */
+
+		if (strcmp(argv[i], "-noall") == 0) {
+			noaces = TRUE;
+			noanirog = TRUE;
+			noatlantis = TRUE;
+			noaudiogenic = TRUE;
+			nobleep = TRUE;
+			noburner = TRUE;
+			nochr = TRUE;
+			nocyber = TRUE;
+			noenigma = TRUE;
+			nofire = TRUE;
+			noflash = TRUE;
+			nofree = TRUE;
+			nohit = TRUE;
+			nohitec = TRUE;
+			nojet = TRUE;
+			noik = TRUE;
+			nomicro = TRUE;
+			nonova = TRUE;
+			noocean = TRUE;
+			nooceannew1t1 = TRUE;
+			nooceannew1t2 = TRUE;
+			nooceannew2 = TRUE;
+			nopalacef1 = TRUE;
+			nopalacef2 = TRUE;
+			nopav = TRUE;
+			norackit = TRUE;
+			noraster = TRUE;
+			noseuck = TRUE;
+			nosnake50 = TRUE;
+			nosnake51 = TRUE;
+			nospav = TRUE;
+			nosuper = TRUE;
+			notdif1 = TRUE;
+			noturbo = TRUE;
+			noturr = TRUE;
+			nousgold = TRUE;
+			novirgin = TRUE;
+			novisi = TRUE;
+			nowild = TRUE;
+		}
+	}
+
+	printf("\n\nRead tolerance= %d", tol - 1);
 }
 
 /*

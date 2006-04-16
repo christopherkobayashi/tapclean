@@ -28,6 +28,8 @@
 /* in main.c... */
 
 void get_exedir(char *);
+void display_usage(void);
+void process_options(int, char **);
 void search_tap(void);
 void describe_file(int);
    
