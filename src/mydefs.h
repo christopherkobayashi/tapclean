@@ -44,7 +44,7 @@
 #define TRUE	1
 #define FALSE	0
 
-#ifdef WINDOWS
+#ifdef WIN32
 #define SLASH	'\\'
 #else
 #define SLASH	'/'

@@ -91,7 +91,7 @@ struct node *get_dir_list(char *rootdir)
 	char cwd[1024], temp[1024];
 	long handle;
 	int done, complete, n, i;
-#ifdef WINDOWS
+#ifdef WIN32
 	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
@@ -115,7 +115,7 @@ struct node *get_dir_list(char *rootdir)
 		 * Find/record all directories in the current one (ignores "." and "..")
 		 * a new node is created (and made current) for each one found...
 		 */
-#ifdef WINDOWS
+#ifdef WIN32
 		handle = _findfirst("*.*", &ffblk);
 		if (handle != -1) {
 			done = 0;            
@@ -200,7 +200,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 	char temp[1024];
 	long handle;
 	int done, n, i;
-#ifdef WINDOWS
+#ifdef WIN32
 	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
@@ -219,7 +219,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 
 	while(d!=NULL) {
 		chdir(d->name);
-#ifdef WINDOWS
+#ifdef WIN32
 		handle = _findfirst(mask, &ffblk);
       
 		if (handle != -1) {

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include "mydefs.h"
 
-#ifdef WINDOWS
+#ifdef WIN32
 #include <io.h>
 #include <dir.h>
 #else

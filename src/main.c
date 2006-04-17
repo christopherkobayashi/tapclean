@@ -493,7 +493,7 @@ void get_exedir(char *argv0)
 {
 	strcpy(exedir, argv0);
 
-#ifdef WINDOWS
+#ifdef WIN32
 	for (i = strlen(exedir); i > 0 && exedir[i] != '\\'; i--);  /* clip to leave path only */
 	
 	if (exedir[i] == '\\')
