@@ -7,6 +7,6 @@
 #define CRC32_POLYNOMIAL	0xEDB88320L
 
 int build_crc_table(void);
-unsigned long compute_crc32(unsigned char *buffer, int count);
+unsigned long compute_crc32(unsigned char *, int);
 void free_crc_table(void);
 

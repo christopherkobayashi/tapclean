@@ -33,9 +33,9 @@
 #define AUHDSZ	24	/* Size of .AU file header. */
 #define WAVHDSZ	44	/* Size of .WAV file header. */
 
-int au_write(unsigned char *tap, int taplen, const char *filename, char sine);
-int wav_write(unsigned char *tap, int taplen, const char *filename, char sine);
-int drawwavesquare(int len, int amp, char signd);
-int drawwavesine(int len, int amp, char signd);
-int s_out(unsigned char amp, int finished);
+int au_write(unsigned char *, int, const char *, char);
+int wav_write(unsigned char *, int, const char *, char);
+int drawwavesquare(int, int, char);
+int drawwavesine(int, int, char);
+int s_out(unsigned char, int);
 
