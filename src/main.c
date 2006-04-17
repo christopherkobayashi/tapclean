@@ -262,7 +262,7 @@ char temptcreportname[256] =		"tcreport.tmp";
 char tcbatchreportname[256] =		"tcbatch.txt";
 char temptcbatchreportname[256] =	"tcbatch.tmp";
 char tcinfoname[256] =			"tcinfo.txt";
-char tapoutname[256] =			"out.tap";
+char cleanedtapname[256] =		"cleaned.tap";
 char auoutname[256] =			"out.au";
 char wavoutname[256] =			"out.wav";
 
@@ -400,8 +400,10 @@ int main(int argc, char *argv[])
 								report();
 								printf("\nSaved: %s", tcreportname);
 								if (opnum > 1 && opnum < 6) {
-									save_tap(tapoutname);
-									printf("\n\nSaved: %s", tapoutname);
+									strcpy(cleanedtapname, CLEANED_PREFIX);
+									strcat(cleanedtapname, tap.name); 
+									save_tap(cleanedtapname);
+									printf("\n\nSaved: %s", cleanedtapname);
 								}
 								time(&t2);
 								time2str(t2 - t1, lin);

@@ -48,6 +48,8 @@
 #define SLASH	'/'
 #endif
 
+#define CLEANED_PREFIX	"clean."
+
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */
 
@@ -252,7 +254,7 @@ extern char temptcreportname[256];
 extern char tcbatchreportname[256];
 extern char temptcbatchreportname[256];
 extern char tcinfoname[256];
-extern char tapoutname[256];
+extern char cleanedtapname[256];
 extern char auoutname[256];
 extern char wavoutname[256];
 
