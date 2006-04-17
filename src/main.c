@@ -1813,7 +1813,11 @@ void report(void)
 		}
 		fclose(fp);
 
+#ifdef WIN32
 		sprintf(lin, "ren %s %s", temptcreportname, tcreportname);
+#else
+		sprintf(lin, "mv %s %s", temptcreportname, tcreportname);
+#endif
 		system(lin);
 	} else
 		msgout("\nError: failed to create report file.");     
