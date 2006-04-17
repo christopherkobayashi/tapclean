@@ -128,8 +128,10 @@ struct node *get_dir_list(char *rootdir)
 					/* create the name for the new node (CWD+\+DIR name)... */
 
 					strcpy(temp, cwd);
-					if (temp[strlen(temp) - 1] != SLASH)
-						strcat(temp, SLASH);
+					if (temp[strlen(temp) - 1] != SLASH) {
+						temp[strlen(temp)] = SLASH;
+						temp[strlen(temp) + 1] = '\0';
+					}
 					strcat(temp, ffblk.name);
                             
 					/* create and switch to latest node... */
@@ -192,14 +194,17 @@ struct node *get_dir_list(char *rootdir)
  * returns a pointer to the linked-list of path names (root node).
  */
 
-#ifdef WINDOWS
 struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 {
 	struct node *files, *d, *f;
 	char temp[1024];
 	long handle;
-	int done;
+	int done, n, i;
+#ifdef WINDOWS
 	struct _finddata_t ffblk;
+#else
+	struct dirent **namelist;
+#endif
 
 	if (dirs == NULL)
 		return NULL;
@@ -214,6 +219,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 
 	while(d!=NULL) {
 		chdir(d->name);
+#ifdef WINDOWS
 		handle = _findfirst(mask, &ffblk);
       
 		if (handle != -1) {
@@ -224,9 +230,11 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 				/* valid file = NOT a directory! */ 
 
 				if ((ffblk.attrib & _A_SUBDIR) == 0) {  
-					strcpy(temp,d->name);
-					if (temp[strlen(temp) - 1] != SLASH)
-						strcat(temp, SLASH);
+					strcpy(temp, d->name);
+					if (temp[strlen(temp) - 1] != SLASH) {
+						temp[strlen(temp)] = SLASH;
+						temp[strlen(temp) + 1] = '\0';
+					}
 					strcat(temp, ffblk.name);
                         
 					f->link = make_node(temp);
@@ -236,7 +244,25 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 			}
 		}
 		_findclose(handle);
-		
+#else
+		n = scandir(".", &namelist, 0, alphasort);
+
+		for (i = 0; i < n; i++) {
+			if (namelist[n]->d_type == DT_REG) {
+				strcpy(temp, d->name);
+				if (temp[strlen(temp) - 1] != SLASH) {
+					temp[strlen(temp)] = SLASH;
+					temp[strlen(temp) + 1] = '\0';
+				}
+				strcat(temp, namelist[n]->d_name);
+
+				f->link = make_node(temp);
+				f = f->link;
+			}
+			free(namelist[n]);
+		}
+		free(namelist);
+#endif
 		d = d->link;	/* move to next dir in list. */
 		if (searchtype == ROOTONLY)
 			break;
@@ -244,11 +270,6 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 
 	return files;
 }
-#else
-struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
-{
-}
-#endif
 
 /*
  * creates a new node pointer, allocates its memory and initializes it.
