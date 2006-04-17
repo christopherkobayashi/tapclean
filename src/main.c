@@ -491,6 +491,8 @@ int main(int argc, char *argv[])
 
 void get_exedir(char *argv0)
 {
+	int i;
+
 	strcpy(exedir, argv0);
 
 #ifdef WIN32
