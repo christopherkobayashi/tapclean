@@ -28,8 +28,6 @@
  *  unsigned long crc = -1L
  *  crc = crc32(buffer, length, crc)
  *
- *  
- * 12-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 

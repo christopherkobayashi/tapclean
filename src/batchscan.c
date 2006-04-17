@@ -26,8 +26,6 @@
  * Implements the file & directory searching/storage system for scanning
  * multiple TAP files.
  *
- *
- * 16-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 #include "filesearch.h"

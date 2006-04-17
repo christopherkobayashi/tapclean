@@ -26,9 +26,6 @@
  *
  * Most cleaning functions automatically cause analyze().
  *
- *
- * 14-apr-2006: Cleaned up by bokvamme@errors.no
- * 15-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 

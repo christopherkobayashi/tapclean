@@ -21,9 +21,6 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  * 
- *
- * 13-apr-2006: Cleaned up by bokvamme@errors.no
- * 14-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 
@@ -63,6 +60,7 @@ char noenigma			= FALSE;
 char nofire			= FALSE;
 char noflash			= FALSE;
 char nofree			= FALSE;
+char noode			= FALSE;
 char nohit			= FALSE;
 char nohitec			= FALSE;
 char noik			= FALSE;
@@ -142,6 +140,8 @@ struct fmt_t ft[100] = {
 	{"TURBOTAPE-250 HEADER"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
 	{"TURBOTAPE-250 DATA"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSYES},
 	{"FREELOAD"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
+/* Need to fix values for ODELOAD */
+	{"ODELOAD"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
 	{"US-GOLD TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x20, 0xFF, 50,  NA,    CSYES},
 	{"ACE OF ACES TAPE"	,MSbF, 0x2C, 0x22, NA,  0x47, 0x80, 0xFF, 50,  NA,    CSYES},
 	{"WILDLOAD"		,LSbF, 0x3B, 0x30, NA,  0x47, 0xA0, 0x0A, 50,  NA,    CSYES},
@@ -622,6 +622,8 @@ void process_options(int argc, char **argv)
 			noflash = TRUE;
 		if (strcmp(argv[i], "-nofree") == 0)
 			nofree = TRUE;
+		if (strcmp(argv[i], "-noode") == 0)
+			noode = TRUE;
 		if (strcmp(argv[i], "-nohit") == 0)
 			nohit = TRUE;
 		if (strcmp(argv[i], "-nohitec") == 0)
@@ -692,6 +694,7 @@ void process_options(int argc, char **argv)
 			nofire = TRUE;
 			noflash = TRUE;
 			nofree = TRUE;
+			noode = TRUE;
 			nohit = TRUE;
 			nohitec = TRUE;
 			nojet = TRUE;
@@ -947,6 +950,9 @@ void search_tap(void)
 			if (nofree == FALSE && !dbase_is_full && !aborted)
 				freeload_search();
 
+			if (noode == FALSE && !dbase_is_full && !aborted)
+				odeload_search();
+
 			/* comes here to avoid ocean misdetections
 			 * snakeload is a 'safer' scanner than ocean.
 			 */
@@ -1115,6 +1121,8 @@ void describe_file(int row)
 		case TT_DATA:		turbotape_describe(row);
 					break;
 		case FREE:		freeload_describe(row);
+					break;
+		case ODELOAD:		odeload_describe(row);
 					break;
 		case CHR_T1:		chr_describe(row);
 					break;

@@ -37,8 +37,6 @@
  * Note: When opening files in a file list please remember to ignore
  *        the 1st entry, its name (path) is always the root directory name.
  *
- *
- * 16-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 #include "filesearch.h"

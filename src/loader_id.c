@@ -27,8 +27,6 @@
  * An effort to speed up the scanning process for TAPs, if I can ID the loader type after
  * the C64 ROM scan is done then I needn't search for ALL formats.
  *
- *
- * 13-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 
