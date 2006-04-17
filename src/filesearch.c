@@ -96,7 +96,7 @@ struct node *get_dir_list(char *rootdir)
 #else
 	struct dirent **namelist;
 #endif
-    
+
 	/* return NULL if rootdir doesnt exist */
 
 	if (chdir(rootdir) == -1) {
@@ -147,12 +147,13 @@ struct node *get_dir_list(char *rootdir)
 		}
 		_findclose(handle);
 #else
-		n = scandir(".", &namelist, 0, alphasort);
+		n = scandir(".", &namelist, NULL, NULL);
 
 		for (i = 0; i < n; i++) {
-			if (namelist[n]->d_type == DT_DIR &&
-				strcmp(namelist[n]->d_name, ".") != 0 &&
-				strcmp(namelist[n]->d_name, "..") != 0) {
+printf("\nstring: %s  type: %d\n", namelist[i]->d_name, namelist[i]->d_type);
+			if (namelist[i]->d_type == DT_DIR &&
+				strcmp(namelist[i]->d_name, ".") != 0 &&
+				strcmp(namelist[i]->d_name, "..") != 0) {
 
 				/* create the name for the new node (CWD+\+DIR name)... */
 
@@ -162,7 +163,7 @@ struct node *get_dir_list(char *rootdir)
 					temp[t] = SLASH;
 					temp[t + 1] = '\0';
 				}
-				strcat(temp, namelist[n]->d_name);
+				strcat(temp, namelist[i]->d_name);
                             
 				/* create and switch to latest node... */
 
@@ -171,7 +172,7 @@ struct node *get_dir_list(char *rootdir)
 					return NULL;	/* error creating node!. */
 				c = c->link;
 			}
-			free(namelist[n]);
+			free(namelist[i]);
 		}
 		free(namelist);
 #endif
@@ -248,22 +249,22 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 		}
 		_findclose(handle);
 #else
-		n = scandir(".", &namelist, 0, alphasort);
+		n = scandir(".", &namelist, NULL, NULL);
 
 		for (i = 0; i < n; i++) {
-			if (namelist[n]->d_type == DT_REG) {
+			if (namelist[i]->d_type == DT_REG) {
 				strcpy(temp, d->name);
 				t = strlen(temp);
 				if (temp[t - 1] != SLASH) {
 					temp[t] = SLASH;
 					temp[t + 1] = '\0';
 				}
-				strcat(temp, namelist[n]->d_name);
+				strcat(temp, namelist[i]->d_name);
 
 				f->link = make_node(temp);
 				f = f->link;
 			}
-			free(namelist[n]);
+			free(namelist[i]);
 		}
 		free(namelist);
 #endif

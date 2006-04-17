@@ -1743,14 +1743,22 @@ void report(void)
 	fp = fopen(temptcreportname, "r");	/* delete any existing temp file... */
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", temptcreportname);
+#else
+		sprintf(lin, "rm %s", temptcreportname);
+#endif
 		system(lin);
 	}
 
 	fp = fopen(tcreportname, "r");		/* delete any existing report file... */
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin,"del %s",tcreportname);
+#else
+		sprintf(lin,"rm %s",tcreportname);
+#endif
 		system(lin);
 	}     
 
@@ -2907,7 +2915,11 @@ int save_prgs(void)
 	chdir(exedir);
 
 	if (chdir("prg") == 0)		/* delete old prg's and prg folder if exists... */
+#ifdef WIN32
 		system("del *.prg");
+#else
+		system("rm *.prg");
+#endif
 	else {
 		system("mkdir prg");
 		chdir("prg");
@@ -3103,35 +3115,55 @@ void deleteworkfiles(void)
 	fp = fopen(temptcreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", temptcreportname);
+#else
+		sprintf(lin, "rm %s", temptcreportname);
+#endif
 		system(lin);
 	}
 
 	fp = fopen(tcreportname, "r");     
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", tcreportname);
+#else
+		sprintf(lin, "rm %s", tcreportname);
+#endif
 		system(lin);
 	}
 
 	fp = fopen(temptcbatchreportname, "r");      
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", temptcbatchreportname);
+#else
+		sprintf(lin, "rm %s", temptcbatchreportname);
+#endif
 		system(lin);
 	}
 
 	fp = fopen(tcbatchreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", tcbatchreportname);
+#else
+		sprintf(lin, "rm %s", tcbatchreportname);
+#endif
 		system(lin);
 	}
 
 	fp = fopen(tcinfoname, "r");   
 	if (fp != NULL) {
 		fclose(fp);
+#ifdef WIN32
 		sprintf(lin, "del %s", tcinfoname);
+#else
+		sprintf(lin, "rm %s", tcinfoname);
+#endif
 		system(lin);
 	}  
 }  
