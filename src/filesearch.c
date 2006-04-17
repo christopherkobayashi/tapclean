@@ -90,7 +90,7 @@ struct node *get_dir_list(char *rootdir)
 	struct node *dirs, *c, *d;
 	char cwd[1024], temp[1024];
 	long handle;
-	int done, complete, n, i;
+	int done, complete, n, i, t;
 #ifdef WIN32
 	struct _finddata_t ffblk;
 #else
@@ -128,9 +128,10 @@ struct node *get_dir_list(char *rootdir)
 					/* create the name for the new node (CWD+\+DIR name)... */
 
 					strcpy(temp, cwd);
-					if (temp[strlen(temp) - 1] != SLASH) {
-						temp[strlen(temp)] = SLASH;
-						temp[strlen(temp) + 1] = '\0';
+					t = strlen(temp);
+					if (temp[t - 1] != SLASH) {
+						temp[t] = SLASH;
+						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.name);
                             
@@ -156,9 +157,10 @@ struct node *get_dir_list(char *rootdir)
 				/* create the name for the new node (CWD+\+DIR name)... */
 
 				strcpy(temp, cwd);
-				if (temp[strlen(temp) - 1] != SLASH) {
-					temp[strlen(temp)] = SLASH;
-					temp[strlen(temp) + 1] = '\0';
+				t = strlen(temp);
+				if (temp[t - 1] != SLASH) {
+					temp[t] = SLASH;
+					temp[t + 1] = '\0';
 				}
 				strcat(temp, namelist[n]->d_name);
                             
@@ -199,7 +201,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 	struct node *files, *d, *f;
 	char temp[1024];
 	long handle;
-	int done, n, i;
+	int done, n, i, t;
 #ifdef WIN32
 	struct _finddata_t ffblk;
 #else
@@ -231,9 +233,10 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 
 				if ((ffblk.attrib & _A_SUBDIR) == 0) {  
 					strcpy(temp, d->name);
-					if (temp[strlen(temp) - 1] != SLASH) {
-						temp[strlen(temp)] = SLASH;
-						temp[strlen(temp) + 1] = '\0';
+					t = strlen(temp);
+					if (temp[t - 1] != SLASH) {
+						temp[t] = SLASH;
+						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.name);
                         
@@ -250,9 +253,10 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 		for (i = 0; i < n; i++) {
 			if (namelist[n]->d_type == DT_REG) {
 				strcpy(temp, d->name);
-				if (temp[strlen(temp) - 1] != SLASH) {
-					temp[strlen(temp)] = SLASH;
-					temp[strlen(temp) + 1] = '\0';
+				t = strlen(temp);
+				if (temp[t - 1] != SLASH) {
+					temp[t] = SLASH;
+					temp[t + 1] = '\0';
 				}
 				strcat(temp, namelist[n]->d_name);
 
