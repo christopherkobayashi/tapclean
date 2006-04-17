@@ -65,6 +65,8 @@ int idloader(unsigned long crc)
 		{0x2CC1E59C, LID_FREE},
 		{0x89D45404, LID_FREE},
 
+		{0xD5961DB0, LID_ODE},
+
 		{0xAD318CC4, LID_BLEEP},
 		{0x230936D6, LID_BLEEP},
 		{0x39B7A588, LID_BLEEP},

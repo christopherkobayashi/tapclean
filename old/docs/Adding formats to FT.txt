@@ -36,7 +36,7 @@ Adding new formats to Final TAP.
 
 Adding Loader ID for quick scanning...
 
- Add the loader recognition CRC(s) to the 'file_id.c' file, 
+ Add the loader recognition CRC(s) to the 'loader_id.c' file, 
  +an entry in the mydefs.h enum of the form LID_XXX,
  +a format ID name in knam in the main file.
 

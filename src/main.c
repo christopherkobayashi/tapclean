@@ -140,8 +140,8 @@ struct fmt_t ft[100] = {
 	{"TURBOTAPE-250 HEADER"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
 	{"TURBOTAPE-250 DATA"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSYES},
 	{"FREELOAD"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
-/* Need to fix values for ODELOAD */
-	{"ODELOAD"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
+/* Need to check if pmin and pmax is ok for ODELOAD tce says: 64 x pilot bytes */
+	{"ODELOAD"		,MSbF, 0x36, 0x25, NA,  0x50, 0x20, 0xDB, 45,  400,   CSYES},
 	{"US-GOLD TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x20, 0xFF, 50,  NA,    CSYES},
 	{"ACE OF ACES TAPE"	,MSbF, 0x2C, 0x22, NA,  0x47, 0x80, 0xFF, 50,  NA,    CSYES},
 	{"WILDLOAD"		,LSbF, 0x3B, 0x30, NA,  0x47, 0xA0, 0x0A, 50,  NA,    CSYES},
@@ -220,6 +220,7 @@ struct fmt_t ft[100] = {
 const char knam[100][32] = {
 	{"n/a"},
 	{"Freeload (or clone)"},
+	{"Odeload"},
 	{"Bleepload"},
 	{"CHR loader"},
 	{"Burner"},
@@ -817,6 +818,9 @@ void search_tap(void)
 
 			if (tap.cbmid == LID_FREE && nofree == FALSE && !dbase_is_full && !aborted)
 				freeload_search();
+
+			if (tap.cbmid == LID_ODE && nofree == FALSE && !dbase_is_full && !aborted)
+				odeload_search();
 
 			if (tap.cbmid == LID_NOVA && nonova == FALSE && !dbase_is_full && !aborted) {
 				nova_spc_search();
