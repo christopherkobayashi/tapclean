@@ -55,6 +55,7 @@ char noaudiogenic		= FALSE;
 char nobleep			= FALSE;
 char noburner			= FALSE;
 char nochr			= FALSE;
+char nocult			= FALSE;
 char nocyber			= FALSE;
 char noenigma			= FALSE;
 char nofire			= FALSE;
@@ -141,6 +142,8 @@ struct fmt_t ft[100] = {
 	{"TURBOTAPE-250 DATA"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSYES},
 	{"FREELOAD"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
 	{"ODELOAD"		,MSbF, 0x36, 0x25, NA,  0x50, 0x20, 0xDB, 40,  NA,    CSYES},
+/*	{"CULT"			,LSbF, 0x34, 0x27, NA,  0x3D, 0,    0x80, 2000,NA,    CSYES}, */
+	{"CULT"			,LSbF, 0x34, 0x27, NA,  0x3D, 0x80, 0xAA, 1,   NA,    CSYES},
 	{"US-GOLD TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x20, 0xFF, 50,  NA,    CSYES},
 	{"ACE OF ACES TAPE"	,MSbF, 0x2C, 0x22, NA,  0x47, 0x80, 0xFF, 50,  NA,    CSYES},
 	{"WILDLOAD"		,LSbF, 0x3B, 0x30, NA,  0x47, 0xA0, 0x0A, 50,  NA,    CSYES},
@@ -206,9 +209,25 @@ struct fmt_t ft[100] = {
 	{"ENIGMA TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 700, NA,    CSNO},
 	{"AUDIOGENIC"		,MSbF, 0x28, 0x1A, NA,  0x36, 0xF0, 0xAA, 4,   NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
+	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
-/*	where a field is marked 'VV', loader/file interrogation is required to
-	discover the missing value. */
+/* where a field is marked 'VV', loader/file interrogation is required to
+ * discover the missing value.
+ * NOTE: some of the values (like number of pilot bytes) may not agree with
+ * the loader docs, this is done to let partly damaged games be detected
+ * and fixed.
+ *
+ * en = byte endianess, 0=LSbF, 1=MSbF
+ * tp = threshold pulsewidth (if applicable)
+ * sp = ideal short pulsewidth
+ * mp = ideal medium pulsewidth (if applicable)
+ * lp = ideal long pulsewidth
+ * pv = pilot value
+ * sv = sync value
+ * pmin = minimum pilots that should be present.
+ * pmax = maximum pilots that should be present.
+ * has_cs = flag, provides checksums, 1=yes, 0=no.
+ */
 
 
 
@@ -539,7 +558,7 @@ void display_usage(void)
 	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
       
-	printf(" -tol [0-15]    Set pulsewidth read tolerance, default=10.\n");
+	printf(" -tol [0-14]    Set pulsewidth read tolerance, default=10.\n");
 	printf(" -debug         Allows detected files to overlap.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
@@ -614,6 +633,8 @@ void process_options(int argc, char **argv)
 			noburner = TRUE;
 		if (strcmp(argv[i], "-nochr") == 0)
 			nochr = TRUE;
+		if (strcmp(argv[i], "-nocult") == 0)
+			nocult = TRUE;
 		if (strcmp(argv[i], "-nocyber") == 0)
 			nocyber = TRUE;
 		if (strcmp(argv[i], "-noenigma") == 0)
@@ -691,6 +712,7 @@ void process_options(int argc, char **argv)
 			nobleep = TRUE;
 			noburner = TRUE;
 			nochr = TRUE;
+			nocult = TRUE;
 			nocyber = TRUE;
 			noenigma = TRUE;
 			nofire = TRUE;
@@ -727,7 +749,7 @@ void process_options(int argc, char **argv)
 		}
 	}
 
-	printf("\n\nRead tolerance= %d", tol - 1);
+	printf("\n\nRead tolerance = %d", tol - 1);
 }
 
 /*
@@ -958,6 +980,9 @@ void search_tap(void)
 			if (noode == FALSE && !dbase_is_full && !aborted)
 				odeload_search();
 
+			if (nocult == FALSE && !dbase_is_full && !aborted)
+				cult_search();
+
 			/* comes here to avoid ocean misdetections
 			 * snakeload is a 'safer' scanner than ocean.
 			 */
@@ -1128,6 +1153,8 @@ void describe_file(int row)
 		case FREE:		freeload_describe(row);
 					break;
 		case ODELOAD:		odeload_describe(row);
+					break;
+		case CULT:		cult_describe(row);
 					break;
 		case CHR_T1:		chr_describe(row);
 					break;
