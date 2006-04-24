@@ -1,6 +1,6 @@
 
  - Fix long / int usage in crc32.c.
-   Or replace it for SHA512 as crc32 is not safe
+   Or replace it with SHA512 as crc32 is not safe
  - Check for memory and filehandle leaks (error handling).
  - Add a portable strupr function for sort_list in filesearch.c.
  - Add a switch -prg to make prog dir and files (default = don't).

@@ -6,7 +6,7 @@
 void cult_search(void)
 {
 	int i, sof, sod, eod, eof;
-	int z, h, hd[HDSZ];
+	int z, h, hd[HDSZ], ib;
 	int en, tp, sp, lp, sv;
 	unsigned int s, e, x;
 
@@ -18,6 +18,17 @@ void cult_search(void)
 
 	if (!quiet)
 		msgout(" Cult");
+
+
+	ib = find_decode_block(CBM_HEAD, 1);
+	if(ib == -1)
+		return;		/* failed to locate cbm header. */
+
+	s = 0x0801;
+	e = blk[ib]->dd[27] + (blk[ib]->dd[31] << 8);
+
+	/* sprintf(lin,"Cult end address found: $%x\n", e); */
+	/* msgout(lin); */
 
 	for (i = 20; i < tap.len - 8; i++) {
 		if ((z = find_pilot(i, CULT)) > 0) {
@@ -32,16 +43,14 @@ void cult_search(void)
 				for (h = 0; h < HDSZ; h++)
 					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
 				
-				s = hd[0] + (hd[1] << 8);	/* get start address */
-				s = 0x0801;
-				e = hd[2] + (hd[3] << 8);	/* get end address */
-				e = 0xddaf;
-				/* filename hd[5] - hd[11] */
+				/* hd[0] + (hd[1] << 8);	start of code */
+				/* hd[2] + (hd[3] << 8) = line number in basic */
+				/* hd[4] = Basic token for SYS */
+				/* hd[5] - hd[11] = ascii for 2061 + 3 x zero */
 
 				if (e > s) {
 					x = e - s;		/* compute length */
-					printf("\nlength: %d", x);
-					eod = sod + ((x + HDSZ) * 8);
+					eod = sod + (x * 8);
 					eof = eod + 7;
 					addblockdef(CULT, sof, sod, eod, eof, 0);
 					i = eof;		/* optimize search */
@@ -68,23 +77,15 @@ int cult_describe(int row)
 	blk[row]->ce = 0xddaf;
 	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
-/* Need to fix below this point */
-
 	/* get pilot & trailer lengths */
 
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 8) >> 3;
 	blk[row]->trail_len = 0;
 
-	/* show trailing byte */
-
-	b = readttbyte(blk[row]->p2 + (258 * 8), lp, sp, tp, en);
-	sprintf(lin, "\n - Final byte: $%02X", b);
-	strcat(info, lin);
-
 	/* extract data and test checksum... */
 
 	cb = 0;
-	s = blk[row]->p2 + (HDSZ * 8);
+	s = blk[row]->p2;
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
