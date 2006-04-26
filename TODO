@@ -3,7 +3,6 @@
    Or replace it with SHA512 as crc32 is not safe
  - Check for memory and filehandle leaks (error handling).
  - Add a portable strupr function for sort_list in filesearch.c.
- - Add a switch -prg to make prog dir and files (default = don't).
  - Add warning about Gremlin Fastload (if we add that loader)
    Only clean those if you know what you are doing.
    Certain pulses can be misdetected/converted.

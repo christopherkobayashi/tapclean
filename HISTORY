@@ -1,0 +1,9 @@
+
+v0.02
+	Added ODEload
+	Added Cult loader
+	Added -doprg parameter
+	Some more cleanup. Most of the scanner/* files remain for now.
+
+v0.01
+	Cleanup of original FinalTAP console source (v2.76)
