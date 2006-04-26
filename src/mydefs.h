@@ -37,7 +37,7 @@
 
 #include "scanners/_scanners.h"
 
-#define VERSION_STR "TAPClean v0.01 Console - (C) 2006 XXX"
+#define VERSION_STR "TAPClean v0.02 Console - (C) 2006 XXX"
 
 #define TRUE	1
 #define FALSE	0
@@ -269,6 +269,7 @@ extern char boostclean;
 extern char noaddpause;
 extern char sine;
 extern char prgunite;
+extern char doprg;
 extern char extvisipatch;
 extern char incsubdirs;
 extern char sortbycrc;

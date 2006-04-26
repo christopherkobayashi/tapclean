@@ -40,6 +40,7 @@ char boostclean			= FALSE;
 char noaddpause			= FALSE;
 char sine			= FALSE;
 char prgunite			= FALSE;
+char doprg			= FALSE;
 char extvisipatch		= FALSE;
 char incsubdirs			= FALSE;
 char sortbycrc			= FALSE;
@@ -558,18 +559,19 @@ void display_usage(void)
 	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
       
-	printf(" -tol [0-14]    Set pulsewidth read tolerance, default=10.\n");
-	printf(" -debug         Allows detected files to overlap.\n");
-	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
-	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
-	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
 	printf(" -boostclean    Raise cleaning threshold.\n");
-	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
-	printf(" -sine          Make audio converter use sine waves.\n");
-	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
+	printf(" -debug         Allows detected files to overlap.\n");
+	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
+	printf(" -doprg         Create PRG files.\n");
 	printf(" -extvisipatch  Extract Visiload loader patch files.\n");
 	printf(" -incsubdirs    Make batch scan include subdirectories.\n");
+	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
+	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
+	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
+	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
+	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.");
+	printf(" -tol [0-14]    Set pulsewidth read tolerance, default=10.\n");
 }
 
 /*
@@ -606,8 +608,12 @@ void process_options(int argc, char **argv)
 			noaddpause = TRUE;
 		if (strcmp(argv[i], "-sine") == 0)
 			sine = TRUE;
-		if (strcmp(argv[i], "-prgunite") == 0)
+		if (strcmp(argv[i], "-prgunite") == 0) {
 			prgunite = TRUE;
+			doprg = TRUE;
+		}
+		if (strcmp(argv[i], "-doprg") == 0)
+			doprg = TRUE;
 		if (strcmp(argv[i], "-extvisipatch") == 0)
 			extvisipatch = TRUE;
 		if (strcmp(argv[i], "-incsubdirs") == 0)
@@ -1755,8 +1761,10 @@ int analyze(void)
 
 	tap.crc = compute_overall_crc();
 
-	make_prgs();
-	save_prgs();
+	if (doprg == TRUE) {
+		make_prgs();
+		save_prgs();
+	}
 
 	return 1;
 }
