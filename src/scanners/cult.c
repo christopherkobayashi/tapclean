@@ -2,6 +2,7 @@
 #include "../main.h"
 
 #define HDSZ 12
+#define SYNC 0xAA
 
 void cult_search(void)
 {
@@ -35,25 +36,30 @@ void cult_search(void)
 			sof = i;
 			i = z;
 
-			if (readttbyte(i, lp, sp, tp, en) == sv) {
-				sod = i + 8;
+			if (readttbit(i, lp, sp, tp) == sv) {	/* got sync bit? */
+				i++;
+				if (readttbyte(i, lp, sp, tp, en) == SYNC) {	/* got sync byte?. */
+					sod = i + 8;
 
-				/* decode the header, so we can validate the addresses */
+					/* decode the header, so we can validate the addresses */
 
-				for (h = 0; h < HDSZ; h++)
-					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
+					/* for (h = 0; h < HDSZ; h++) */
+					/* 	hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en); */
 				
-				/* hd[0] + (hd[1] << 8);	start of code */
-				/* hd[2] + (hd[3] << 8) = line number in basic */
-				/* hd[4] = Basic token for SYS */
-				/* hd[5] - hd[11] = ascii for 2061 + 3 x zero */
+					/* hd[0] + (hd[1] << 8);	start of code */
+					/* hd[2] + (hd[3] << 8) = line number in basic */
+					/* hd[4] = Basic token for SYS */
+					/* hd[5] - hd[11] = ascii for 2061 + 3 x zero */
 
-				if (e > s) {
-					x = e - s;		/* compute length */
-					eod = sod + (x * 8);
-					eof = eod + 7;
-					addblockdef(CULT, sof, sod, eod, eof, 0);
-					i = eof;		/* optimize search */
+					if (e > s) {
+						x = e - s;		/* compute length */
+						eod = sod + (x * 8);
+						eof = eod + 7;
+//						eof += 7 * 256 + 218;
+						eof += 7 * 256 + 218 - 0x68;
+						addblockdef(CULT, sof, sod, eod, eof, 0);
+						i = eof;		/* optimize search */
+					}
 				}
 			}
 		} else {
@@ -65,7 +71,7 @@ void cult_search(void)
 
 int cult_describe(int row)
 {
-	int i, s, b, cb;
+	int i, s, b, cb, ib;
 	int en, tp, sp, lp;
 
 	en = ft[CULT].en;
@@ -74,7 +80,8 @@ int cult_describe(int row)
 	lp = ft[CULT].lp;
  
 	blk[row]->cs = 0x0801;
-	blk[row]->ce = 0xddaf;
+	ib = find_decode_block(CBM_HEAD, 1);
+	blk[row]->ce = blk[ib]->dd[27] + (blk[ib]->dd[31] << 8);
 	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
 	/* get pilot & trailer lengths */
@@ -94,17 +101,11 @@ int cult_describe(int row)
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * 8), lp, sp, tp, en);
-		cb ^= b;
 		if (b == -1)
 		blk[row]->rd_err++;
 		blk[row]->dd[i] = b;
 	}
 	
-	b = readttbyte(s + (i * 8), lp, sp, tp, en);	/* read actual checkbyte. */
-
-	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = b;
-
 	return 0;
 }
 

@@ -166,11 +166,15 @@ void cbm_search(void)
    if(!quiet)
       msgout("  C64 ROM tape");
    
-   /* clear global header and data buffers... */
-   for(i=0; i<192; i++)
-      cbm_header[i]=0;
-   for(i=0; i<65536; i++)
-      cbm_program[i]=0;
+/* clear global header and data buffers... */
+
+	if (cbm_decoded == 0) {
+		for (i = 0; i < 192; i++)
+			cbm_header[i] = 0;
+
+		for (i = 0; i < 65536; i++)
+			cbm_program[i] = 0;
+	}
    
    for(i=20; i<tap.len-20; i++)
    {
