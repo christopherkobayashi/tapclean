@@ -55,8 +55,9 @@ void cult_search(void)
 						x = e - s;		/* compute length */
 						eod = sod + (x * 8);
 						eof = eod + 7;
-//						eof += 7 * 256 + 218;
-						eof += 7 * 256 + 218 - 0x68;
+						while (readttbit(eof, lp, sp, tp) == 0) /* bit 0 */
+							eof++;
+//						eof += 7 * 256 + 218 - 0x68 + 118;
 						addblockdef(CULT, sof, sod, eod, eof, 0);
 						i = eof;		/* optimize search */
 					}
