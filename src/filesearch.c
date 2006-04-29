@@ -148,7 +148,6 @@ struct node *get_dir_list(char *rootdir)
 		n = scandir(".", &namelist, NULL, NULL);
 
 		for (i = 0; i < n; i++) {
-printf("\nstring: %s  type: %d\n", namelist[i]->d_name, namelist[i]->d_type);
 			if (namelist[i]->d_type == DT_DIR &&
 				strcmp(namelist[i]->d_name, ".") != 0 &&
 				strcmp(namelist[i]->d_name, "..") != 0) {

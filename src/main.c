@@ -2967,13 +2967,13 @@ int save_prgs(void)
 
 	chdir(exedir);
 
-	if (chdir("prg") == 0)		/* delete old prg's and prg folder if exists... */
+	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
 #ifdef WIN32
 		system("del *.prg");
 #else
 		system("rm *.prg");
 #endif
-	else {
+	} else {
 		system("mkdir prg");
 		chdir("prg");
 	}
