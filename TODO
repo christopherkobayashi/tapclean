@@ -1,9 +1,10 @@
 
  - Fix long / int usage in crc32.c.
-   Or replace it with SHA512 as crc32 is not safe
+   Or replace it with SHA256 as crc32 is not safe
  - Check for memory and filehandle leaks (error handling).
  - Add a portable strupr function for sort_list in filesearch.c.
  - Add warning about Gremlin Fastload (if we add that loader)
    Only clean those if you know what you are doing.
    Certain pulses can be misdetected/converted.
+ - Fix -doprg error: rm: cannot remove `*.prg': No such file or directory
 

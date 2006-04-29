@@ -1,9 +1,10 @@
 
 v0.02
-	Added ODEload
-	Added Cult loader
-	Added -doprg parameter
-	Some more cleanup. Most of the scanner/* files remain for now.
+	Added ODEload.
+	Added Cult loader.
+	Added -doprg parameter.
+	Some more cleanups. Most of the scanner/* files remain for now.
+	Fixed bug in cbm_search.
 
 v0.01
-	Cleanup of original FinalTAP console source (v2.76)
+	Cleanup of original FinalTAP console source (v2.76).
