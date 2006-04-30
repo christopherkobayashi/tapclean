@@ -1,13 +1,12 @@
 #include "../mydefs.h"
 #include "../main.h"
 
-#define HDSZ 12
 #define SYNC 0xAA
 
 void cult_search(void)
 {
 	int i, sof, sod, eod, eof;
-	int z, h, hd[HDSZ], ib;
+	int z, ib;
 	int en, tp, sp, lp, sv;
 	unsigned int s, e, x;
 
@@ -21,11 +20,16 @@ void cult_search(void)
 		msgout(" Cult");
 
 
+	ib = find_decode_block(CBM_DATA, 1);
+	if (ib == -1)
+		return;		/* failed to locate cbm data. */
+
+	s = blk[ib]->dd[10] + (blk[ib]->dd[14] << 8); /* 0x0801 */
+
 	ib = find_decode_block(CBM_HEAD, 1);
-	if(ib == -1)
+	if (ib == -1)
 		return;		/* failed to locate cbm header. */
 
-	s = 0x0801;
 	e = blk[ib]->dd[27] + (blk[ib]->dd[31] << 8);
 
 	/* sprintf(lin,"Cult end address found: $%x\n", e); */
@@ -41,23 +45,25 @@ void cult_search(void)
 				if (readttbyte(i, lp, sp, tp, en) == SYNC) {	/* got sync byte?. */
 					sod = i + 8;
 
-					/* decode the header, so we can validate the addresses */
-
-					/* for (h = 0; h < HDSZ; h++) */
-					/* 	hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en); */
-				
-					/* hd[0] + (hd[1] << 8);	start of code */
-					/* hd[2] + (hd[3] << 8) = line number in basic */
-					/* hd[4] = Basic token for SYS */
-					/* hd[5] - hd[11] = ascii for 2061 + 3 x zero */
+					/* byte 0 + 1: start of code */
+					/* byte 2 + 3: line number in basic */
+					/* byte 4: Basic token for SYS */
+					/* byte 5 - 11: ascii for 2061 + 3 x zero */
 
 					if (e > s) {
 						x = e - s;		/* compute length */
 						eod = sod + (x * 8);
-						eof = eod + 7;
-						while (readttbit(eof, lp, sp, tp) == 0) /* bit 0 */
-							eof++;
-//						eof += 7 * 256 + 218 - 0x68 + 118;
+						eof = eod - 1;
+
+						if (readttbit(eof + 1, lp, sp, tp) == 0)
+							while (tap.tmem[eof + 1] > sp - tol &&
+									tap.tmem[eof + 1] < sp + tol &&
+									eof < tap.len - 1)
+								eof++;
+
+/*						while (readttbit(eof, lp, sp, tp) == 0) */
+/*							eof++; */
+
 						addblockdef(CULT, sof, sod, eod, eof, 0);
 						i = eof;		/* optimize search */
 					}
@@ -72,27 +78,27 @@ void cult_search(void)
 
 int cult_describe(int row)
 {
-	int i, s, b, cb, ib;
+	int i, s, b, ib;
 	int en, tp, sp, lp;
 
 	en = ft[CULT].en;
 	tp = ft[CULT].tp;
 	sp = ft[CULT].sp;
 	lp = ft[CULT].lp;
- 
-	blk[row]->cs = 0x0801;
+
+	ib = find_decode_block(CBM_DATA, 1);
+	blk[row]->cs = blk[ib]->dd[10] + (blk[ib]->dd[14] << 8); /* 0x0801 */
 	ib = find_decode_block(CBM_HEAD, 1);
-	blk[row]->ce = blk[ib]->dd[27] + (blk[ib]->dd[31] << 8);
+	blk[row]->ce = blk[ib]->dd[27] + (blk[ib]->dd[31] << 8) - 1;
 	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
 	/* get pilot & trailer lengths */
 
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 8) >> 3;
-	blk[row]->trail_len = 0;
+	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 8);
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3;
 
-	/* extract data and test checksum... */
+	/* extract data */
 
-	cb = 0;
 	s = blk[row]->p2;
 
 	if (blk[row]->dd != NULL)

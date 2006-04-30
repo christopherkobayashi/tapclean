@@ -2,6 +2,7 @@
 v0.02
 	Added ODEload.
 	Added Cult loader.
+	Added 'clean.' to start of cleaned tap filename.
 	Added -doprg parameter.
 	Some more cleanups. Most of the scanner/* files remain for now.
 	Fixed bug in cbm_search.
