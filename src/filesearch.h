@@ -28,7 +28,6 @@
 
 #ifdef WIN32
 #include <io.h>
-#include <dir.h>
 #else
 #include <dirent.h>
 #endif
