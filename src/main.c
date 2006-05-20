@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
 	debug = FALSE;		/* clear "debugging" mode. (allow block overlap). */
    
 	printf("\n------------------------------------------------------------------\n");
-	printf("%s\n", VERSION_STR);
+	printf(VERSION_STR" [Build date: "__DATE__"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
 	printf("------------------------------------------------------------------\n");
 
@@ -351,7 +351,8 @@ int main(int argc, char *argv[])
 		 */
 
 		if (argc == 2 && load_tap(argv[1])) {
-			printf("\n\nTesting %s: %s\n", argv[1]);
+			printf("\n\nLoaded: %s", tap.name);
+			printf("\nTesting...\n");
 			time(&t1);
 			if (analyze()) {
 				report();
@@ -389,7 +390,7 @@ int main(int argc, char *argv[])
             
 				/* This handles testing + any op that takes a tap, affects it and saves it... */
 
-				if (opnum > 0 && opnum < 8) {
+				if (opnum > 0 && opnum < 7) {
 					if (argv[i + 1] != NULL) {
 						if (load_tap(argv[i + 1])) {
 							time(&t1);
@@ -417,7 +418,7 @@ int main(int argc, char *argv[])
 
 								report();
 								printf("\nSaved: %s", tcreportname);
-								if (opnum > 1 && opnum < 6) {
+								if (opnum > 1) {
 									strcpy(cleanedtapname, CLEANED_PREFIX);
 									strcat(cleanedtapname, tap.name); 
 									save_tap(cleanedtapname);

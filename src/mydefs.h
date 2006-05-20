@@ -37,7 +37,7 @@
 
 #include "scanners/_scanners.h"
 
-#define VERSION_STR "TAPClean v0.02 Console - (C) 2006 XXX"
+#define VERSION_STR "TAPClean v0.03 Console - (C) 2006 XXX"
 
 #define TRUE	1
 #define FALSE	0
