@@ -111,4 +111,3 @@ int idloader(unsigned long);
 /* in batchscan.c... really an extension of main.c so no seperate header */
 
 int batchscan(char *, int, int);
-

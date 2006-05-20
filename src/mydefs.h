@@ -35,6 +35,7 @@
 #include <malloc.h>
 #include <time.h>
 
+#include "database.h"
 #include "scanners/_scanners.h"
 
 #define VERSION_STR "TAPClean v0.03 Console - (C) 2006 XXX"
@@ -184,35 +185,6 @@ struct fmt_t
 extern struct fmt_t ft[100];
 
 
-/* struct 'blk_t' is the basic unit of the tap database, each entity found in
- * a tap file will have one of these, see array 'blk[]'...  
- */
-
-struct blk_t
-{
-	int lt;			/* loader type (see loadername enum of constants above) */
-	int p1;			/* first pulse */
-	int p2;			/* first data pulse */
-	int p3;			/* last data pulse */
-	int p4;			/* last pulse */
-	int xi;			/* extra info */
-
-	int cs;			/* c64 ram start pos */
-	int ce;			/* c64 ram end pos */
-	int cx;			/* c64 ram len */
-	unsigned char *dd;	/* pointer to decoded data block */
-	int crc;		/* crc32 of the decoded data file */
-	int rd_err;		/* number of read errors in block */
-	int cs_exp;		/* expected checksum value (if applicable) */
-	int cs_act;		/* actual checksum value (if applicable) */
-	int pilot_len;		/* length of pilot tone (in bytes or pulses) */
-	int trail_len;		/* length of trail tone (in bytes or pulses) */
-	char *fn;		/* pointer to file name (if applicable) */
-	int ok;			/* file ok indicator, 1=ok. */ 
-};
-extern struct blk_t *blk[BLKMAX];
-
-
 /* struct 'prg_t' contains an extracted data file and infos for it,
  * used as array 'prg[]'
  */
@@ -277,6 +249,8 @@ extern char sortbycrc;
 
 extern char exportcyberloaders;
 extern char preserveloadertable;
+
+extern int dbase_is_full;
 
 #endif
 

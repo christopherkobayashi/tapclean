@@ -95,7 +95,6 @@ char loaded			= FALSE;
 
 
 struct tap_t tap;		/* container for the loaded tap (note: only ONE tap). */
-struct blk_t *blk[BLKMAX];	/* database of all found entities. */
 struct prg_t prg[BLKMAX];	/* database of all extracted files (prg's). */
 
 int tol = DEFTOL;		/* bit reading tolerance. (1 = zero tolerance) */
@@ -313,17 +312,7 @@ int main(int argc, char *argv[])
 	get_exedir(argv[0]);
 
 	/* allocate ram to file database and initialize array pointers */
-
-	for (i = 0; i < BLKMAX; i++) {
-		blk[i] = (struct blk_t*)malloc(sizeof(struct blk_t));
-		if (blk[i] == NULL) {
-			printf("\nError: malloc failure whilst creating file database.");
-			return 1;
-		}
-
-		blk[i]->dd = NULL;
-		blk[i]->fn = NULL;
-	}
+	create_database();
 
 	copy_loader_table();
 	build_crc_table();
@@ -500,10 +489,8 @@ int main(int argc, char *argv[])
 	free_crc_table();
 
 	/* deallocate ram from file database */
+	destroy_database();
 
-	for (i = 0; i < BLKMAX; i++)
-		free(blk[i]);
-   
 	return 0;
 }
 
@@ -788,33 +775,7 @@ void search_tap(void)
 	msgout("\nScanning...");
 
 	if (tap.changed) {
-		for (i = 0 ; i < BLKMAX; i++) {		/* clear database... */
-			blk[i]->lt = 0;
-			blk[i]->p1 = 0;
-			blk[i]->p2 = 0;
-			blk[i]->p3 = 0;
-			blk[i]->p4 = 0;
-			blk[i]->xi = 0;
-			blk[i]->cs = 0;
-			blk[i]->ce = 0;
-			blk[i]->cx = 0;
-			blk[i]->crc = 0;
-			blk[i]->rd_err = 0;
-			blk[i]->cs_exp = -1;
-			blk[i]->cs_act = -1;
-			blk[i]->pilot_len = 0;
-			blk[i]->trail_len = 0;
-			blk[i]->ok = 0;
-
-			if (blk[i]->dd != NULL) {
-				free(blk[i]->dd);
-				blk[i]->dd = NULL;
-			}
-			if(blk[i]->fn != NULL) {
-				free(blk[i]->fn);
-				blk[i]->fn = NULL;
-			}
-		}
+		reset_database();
 
 		/* initialize the read error table */
 
@@ -1636,34 +1597,7 @@ void unload_tap(void)
 	tap.tst_cs = 0;
 	tap.tst_rd = 0;
 
-	for (i = 0 ;i < BLKMAX; i++) {		/* empty the file datbase... */
-		blk[i]->lt = 0;
-		blk[i]->p1 = 0;
-		blk[i]->p2 = 0;
-		blk[i]->p3 = 0;
-		blk[i]->p4 = 0;
-		blk[i]->xi = 0;
-		blk[i]->cs = 0;
-		blk[i]->ce = 0;
-		blk[i]->cx = 0;
-		blk[i]->crc = 0;
-		blk[i]->rd_err = 0;
-		blk[i]->cs_exp = 0;
-		blk[i]->cs_act = 0;
-		blk[i]->pilot_len = 0;
-		blk[i]->trail_len = 0;
-		blk[i]->ok = 0;
-
-		if (blk[i]->dd != NULL) {	/* (note: search_tap() also frees these before search.) */
-			free(blk[i]->dd);
-			blk[i]->dd = NULL;
-		}
-
-		if (blk[i]->fn != NULL) {	/* (note: search_tap() also frees these before search.) */
-			free(blk[i]->fn);
-			blk[i]->fn = NULL;
-		}
-	}
+	reset_database();
 
 	for (i = 0; i < BLKMAX; i++) {		/* empty the prg datbase...  */
 		prg[i].lt = 0;
@@ -2057,110 +1991,6 @@ void get_file_stats(void)
 		if (i == GAP)
 			tap.total_gaps += tap.fst[i];			/* count gaps */
 	}
-}
-
-/*
- * Adds a block definition (file details) to the database (blk)...
- *
- * Only sof & eof must be assigned (legal) values for the block, the others can be 0.
- * On success, returns the slot number that the block went to,
- * On failure, (invalid block definition) returns DBERR (-1).
- * On failure, (database full) returns DBFULL (-2).
- */
-
-int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
-{
-	int i, slot, e1, e2;
-
-	if (debug == FALSE) {
-
-		/* check that the block does not conflict with any existing blocks... */
-
-		for (i = 0; blk[i]->lt != 0; i++) {
-			e1 = blk[i]->p1;	/* get existing block start pos  */
-			e2 = blk[i]->p4;	/* get existing block end pos   */
-
-			if (!((sof < e1 && eof < e1) || (sof > e2 && eof > e2)))
-				return DBERR;
-		}
-	}
-
-	if ((sof > 19 && eof < tap.len) && (eof >= sof)) {
-
-		/* find the first free slot (containing 0 in 'lt' field)... */
-
-		/* note: slot blk[BLKMAX-1] is reserved for the list terminator. */
-		/* the last usable slot is therefore BLKMAX-2. */
-
-		for (i = 0; blk[i]->lt != 0; i++);
-			slot = i;
-
-		if (slot == BLKMAX-1) {	/* only clear slot is the last one? (the terminator) */
-			if (dbase_is_full == FALSE) {	/* we only need give the error once */
-				if (!batchmode)		/* dont bother with the warning in batch mode.. */
-					msgout("\n\nWarning: FT's database is full...\nthe report will not be complete.\nTry optimizing.\n\n");
-				dbase_is_full= TRUE;
-			}
-			return DBFULL;
-		} else {
-
-			/* put the block in the last available slot... */
-
-			blk[slot]->lt = lt;
-			blk[slot]->p1 = sof;
-			blk[slot]->p2 = sod;
-			blk[slot]->p3 = eod;
-			blk[slot]->p4 = eof;
-			blk[slot]->xi = xi;
-
-			/* just clear out the remaining fields... */
-
-			blk[slot]->cs = 0;
-			blk[slot]->ce = 0;
-			blk[slot]->cx = 0;
-			blk[slot]->dd = NULL;
-			blk[slot]->crc = 0;
-			blk[slot]->rd_err = 0;
-			blk[slot]->cs_exp = -2;
-			blk[slot]->cs_act = -2;
-			blk[slot]->pilot_len = 0;
-			blk[slot]->trail_len = 0;
-			blk[slot]->fn = NULL;
-			blk[slot]->ok = 0;
-		}
-	} else
-		return DBERR;
-
-	return slot;	/* ok, entry added successfully.   */
-}
-
-/*
- * Sort the database by p1 (file start position, sof) values.
- */
-
-void sort_blocks(void)
-{
-	int i, swaps,size;
-	struct blk_t *tmp;
-
-	for (i = 0; blk[i]->lt != 0 && i < BLKMAX; i++);
-
-	size = i;	/* store current size of database */
-   
-	do {
-		swaps = 0;
-		for (i = 0; i < size - 1; i++) {
-
-			/* examine file sof's (p1's), swap if necessary... */
-
-			if ((blk[i]->p1) > (blk[i + 1]->p1)) {
-				tmp = blk[i];
-				blk[i] = blk[i + 1];
-				blk[i + 1] = tmp;
-				swaps++;  
-			}
-		}
-	} while(swaps != 0);	/* repeat til no swaps occur.  */
 }
 
 /*
