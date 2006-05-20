@@ -1,11 +1,17 @@
 
+v0.03
+	Split database operations into database.[c|h] (luigi+bgk).
+	Fixed some off by one errors in main.c (luigi).
+	Added build info + builder (luigi+bgk).
+	Some more cleanup (bgk).
+
 v0.02
-	Added ODEload.
-	Added Cult loader.
-	Added 'clean.' to start of cleaned tap filename.
-	Added -doprg parameter.
-	Some more cleanups. Most of the scanner/* files remain for now.
-	Fixed bug in cbm_search.
+	Added ODEload (slc+bgk).
+	Added Cult loader (slc+bgk).
+	Added 'clean.' to start of cleaned tap filename (bgk).
+	Added -doprg parameter (bgk+peepo).
+	Some more cleanups. Most of the scanner/* files remain for now (bgk).
+	Fixed bug in cbm_search (slc).
 
 v0.01
-	Cleanup of original FinalTAP console source (v2.76).
+	Cleanup of original FinalTAP console source (v2.76) (bgk).
