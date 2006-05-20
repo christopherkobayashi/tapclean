@@ -43,7 +43,7 @@ struct node
 	struct node *link;
 };
         
-struct node* make_node(const char *);
+struct node *make_node(const char *);
 struct node *get_dir_list(char *);
 struct node *get_file_list(char *, struct node *, int);
 
