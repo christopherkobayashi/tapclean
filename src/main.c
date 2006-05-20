@@ -2813,7 +2813,7 @@ int save_prgs(void)
 			strcat(lin, " BAD");
 		strcat(lin, ".prg");
 
-      fp = fopen(lin, "w+b");
+		fp = fopen(lin, "w+b");
 		if (fp != NULL) {
 			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
 			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */

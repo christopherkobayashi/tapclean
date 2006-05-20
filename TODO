@@ -6,5 +6,4 @@
  - Add warning about Gremlin Fastload (if we add that loader)
    Only clean those if you know what you are doing.
    Certain pulses can be misdetected/converted.
- - Fix -doprg error: rm: cannot remove `*.prg': No such file or directory
 
