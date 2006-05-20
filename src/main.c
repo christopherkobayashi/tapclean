@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
 	debug = FALSE;		/* clear "debugging" mode. (allow block overlap). */
    
 	printf("\n------------------------------------------------------------------\n");
-	printf(VERSION_STR" [Build date: "__DATE__"]\n");
+	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
 	printf("------------------------------------------------------------------\n");
 
