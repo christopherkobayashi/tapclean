@@ -3,7 +3,11 @@
    Or replace it with SHA256 as crc32 is not safe
  - Check for memory and filehandle leaks (error handling).
  - Add a portable strupr function for sort_list in filesearch.c.
+   Use strcasecmp instead?
  - Add warning about Gremlin Fastload (if we add that loader)
    Only clean those if you know what you are doing.
    Certain pulses can be misdetected/converted.
+ - Split the code into more manageable parts
+ - Make the code more generic
+ - Add support for vic20 and Plus4 tapes
 
