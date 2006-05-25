@@ -10,4 +10,17 @@
  - Split the code into more manageable parts
  - Make the code more generic
  - Add support for vic20 and Plus4 tapes
+ - Check start/end pilot/data/trailer:
+   SLC says:
+   Example from tcreport.txt: Location: $A726 -> $AF33 -> $75C9B -> $76491
+   The first points to the first pulse in the file (usually pilot).
+   The second as you know points to the first datapulse.
+   The third one points to the first pulse of the last byte..
+   this is usually a checkbyte, but in the case it's NOT,
+   it's pointing to the first pulse of the last databyte
+   This you also needs to compensate for when calculating the crc32 and
+   extracts data and also when counting trailers.
+   And the last value points to the very last pulse in a file, that being
+   last pulse of a databyte, checkbyte or just a trailer.
+
 
