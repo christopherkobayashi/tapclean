@@ -4,6 +4,14 @@
  - Check for memory and filehandle leaks (error handling).
  - Add a portable strupr function for sort_list in filesearch.c.
    Use strcasecmp instead?
+   strupr from Peter Karlsson
+     #include <ctype.h>		/* toupper() */                 
+     void strupr(char *s)
+     {
+             do {
+                     *s = toupper(*s);
+                } while(*s++);
+     }
  - Add warning about Gremlin Fastload (if we add that loader)
    Only clean those if you know what you are doing.
    Certain pulses can be misdetected/converted.
@@ -31,4 +39,6 @@
    whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
    free the first one.
  - Check the return value for getcwd() to be sure it's not NULL.
+ - Get rid of most #ifdef WIN32 stuff. Use #ifdef only in mydefs.h
+
 
