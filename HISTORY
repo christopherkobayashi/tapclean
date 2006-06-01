@@ -1,3 +1,30 @@
+v0.04
+	Files changed: batchscan.c, database.c, main.c, mydefs.h.
+
+	Converted "opname" in main.c/main() to a char *. No memory usage and no strcpy anymore (luigi).
+	Fixed "opnames[12][32]" that contains just 11 entries by converting it to "opnames[][32]" (luigi).
+	Removed duplicated initialization of "tol" and "debug" inside main.c/main(). They are akready
+	 initialized outside main() (luigi).
+	Fixed "create_database()" call in main.c/main() which was not checking for the return value (luigi).
+	Added a freeing of allocated resources in database.c/create_database() in case of malloc() failure (luigi).
+	Fixed wav_write() call in main.c/main() which was called using the au filename (luigi).
+	Removed usage of "temptcreportname". Probably just useful in the GUI version of Final Tap (luigi).
+	Converted "tcreportname", "tcbatchreportname", "temptcbatchreportname", "tcinfoname", "auoutname", 
+	 and "wavoutname" in main.c to static const char (luigi).
+	Converted "cleanedtapname" in main.c to static char (luigi).
+	Removed "tcreportname", "tcbatchreportname", "temptcbatchreportname", "tcinfoname", "auoutname", 
+	 "wavoutname", and "cleanedtapname" from mydefs.h. Just "exedir" (non-static) was kept (luigi).
+	Removed duplicated BLKMAX, DBERR, and DBFULL #definitions from mydefs.h (luigi).
+	Added MAXPATH #definition in mydefs.h for strings holding path and some filenames ("exedir",
+	 and "tap_t"/"tap_tr" subfields). Uniform to this definition elsewhere too or use dynamic strings? (luigi).
+	Changed strcmp to stricmp in main.c/get_exedir() to avoid issues under Windows when using 
+	 TAB from command line with the -b option (ie. "Tapclean -b" did not work) (luigi).
+	Changed the '\\', "\\", '/', "/" in main.c/get_exedir() to use the SLASH #definition (luigi).
+	Fixed drag&drop feature in main.c/main(). If you use "tapclean -b", load_tap() doesn't
+	 complain anymore (luigi).
+	Partly Fixed the getcwd() call in batchscan.c/batchscan() to make room for appending the SLASH 
+	 and '\0'. See the TODO document (luigi).
+	Fixed the remaining-taps-counter in batchscan.c/batchscan() for batch scanning (luigi).
 
 v0.03
 	Split database operations into database.[c|h] (luigi+bgk).

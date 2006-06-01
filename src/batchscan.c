@@ -51,6 +51,8 @@
  * On failure, returns -1.
  */
 
+static const char tcbatchreportname[] =	"tcbatch.txt";
+
 int batchscan(char *rootdir, int includesubdirs, int doscan)
 {
 	FILE *fp;
@@ -85,7 +87,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 	/* get FULL path. initially it may have been relative to users current dir */
 
-	getcwd(fullpath, 256);
+	getcwd(fullpath, 256 - 2);
 	fullpath[strlen(fullpath)] = SLASH;
 	fullpath[strlen(fullpath) + 1] = '\0';
  
@@ -147,7 +149,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 			/* create a new report file... */
 
-			fp = fopen(temptcbatchreportname, "w+t");
+			fp = fopen(tcbatchreportname, "w+t");
 			if (fp == NULL)
 				return -1;
 
@@ -164,7 +166,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
           
 				sprintf(lin, "\n\nTesting : %s",taps[i]->path);	/* display current tap name */
 				msgout(lin);
-				sprintf(lin, "\n%d remaining.", j--);	/* and amount remaining */
+				sprintf(lin, "\n%d remaining.", --j);	/* and amount remaining */
 				msgout(lin);
  
 				/* note : tap.name is updated to be filename only. */
@@ -332,12 +334,6 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			fclose(fp);
 
 			chdir(exedir);
-#ifdef WIN32
-			sprintf(lin, "ren %s %s", temptcbatchreportname, tcbatchreportname);
-#else
-			sprintf(lin, "mv %s %s", temptcbatchreportname, tcbatchreportname);
-#endif
-			system(lin);
            
 			/*  print path/name of batch report to screen.. */
 

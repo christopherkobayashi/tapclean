@@ -27,6 +27,7 @@ int create_database(void)
 		blk[i] = (struct blk_t*)malloc(sizeof(struct blk_t));
 		if (blk[i] == NULL) {
 			printf("\nError: malloc failure whilst creating file database.");
+			destroy_database(); /* Free any already allocated resource */
 			return 1;
 		}
 
@@ -198,7 +199,10 @@ void sort_blocks(void)
 
 /**
  *	Deallocate file database from RAM
- *	
+ *
+ *	A check for non-NULL is done, in case we are freeing resources
+ *	after a malloc failure in create_database() (clean job).
+ *
  *	@param void
  *
  *	@return none
@@ -208,6 +212,6 @@ void destroy_database(void)
 {
 	int i;
 
-	for (i = 0; i < BLKMAX; i++)
+	for (i = 0; i < BLKMAX && blk[i] != NULL; i++)
 		free(blk[i]);
 }

@@ -38,11 +38,13 @@
 #include "database.h"
 #include "scanners/_scanners.h"
 
-#define VERSION_STR "TAPClean v0.03 Console - (C) 2006 XXX"
-#define BUILDER     "bgk"
+#define VERSION_STR "TAPClean v0.04 Console - (C) 2006 XXX"
+#define BUILDER     "ldf"
 
 #define TRUE	1
 #define FALSE	0
+
+#define MAXPATH	512
 
 #ifdef WIN32
 #define SLASH	'\\'
@@ -57,9 +59,6 @@
 
 #define LAME	0x0F	/* cutoff value for 'noise' pulses when rebuilding pauses.*/
 
-#define BLKMAX	2000	/* Maximum number of blocks allowed in database */
-#define DBERR	-1	/* return value from "addblockdef" when database entry failed. */
-#define DBFULL	-2	/* return value from "addblockdef" when database is full. */
 #define CPS	985248	/* 6510 cycles per second (PAL) */
 
 #define NA	-1	/* indicator: Not Applicable. */
@@ -105,8 +104,8 @@ enum {	LID_FREE=1, LID_ODE, LID_BLEEP, LID_CHR, LID_BURN, LID_WILD, LID_USG,
 
 struct tap_t
 {
-	char path[512];		/* file path + name. */
-	char name[512];		/* file name. */
+	char path[MAXPATH];	/* file path + name. */
+	char name[MAXPATH];	/* file name. */
 	unsigned char *tmem;	/* storage for the loaded tap. */
 	int len;		/* length of the loaded tap. */
 	int pst[256];		/* pulse stats table. */
@@ -145,8 +144,8 @@ extern struct tap_t tap;
 
 struct tap_tr
 {
-	char path[512];		/* full file path + name. */
-	char name[512];		/* file name. */
+	char path[MAXPATH];	/* full file path + name. */
+	char name[MAXPATH];	/* file name. */
 	int len;		/* length of the loaded tap. */
 	int detected_percent;	/* ..and as a percentage. */
 	int purity;		/* number of pulse types in the tap. */
@@ -221,15 +220,7 @@ extern int cyber_f2_eor2;
 
 extern int batchmode;
 
-extern char exedir[512];
-extern char tcreportname[256];
-extern char temptcreportname[256];
-extern char tcbatchreportname[256];
-extern char temptcbatchreportname[256];
-extern char tcinfoname[256];
-extern char cleanedtapname[256];
-extern char auoutname[256];
-extern char wavoutname[256];
+extern char exedir[MAXPATH];	/* assigned in main.c, includes trailing slash. */
 
 
 /* program options... */

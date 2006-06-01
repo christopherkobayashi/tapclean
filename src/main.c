@@ -273,17 +273,19 @@ const char knam[100][32] = {
 	{"Audiogenic"}
 };
 
-char exedir[512];			/* assigned in main, includes trailing slash. */
-char tcreportname[256] =		"tcreport.txt";
-char temptcreportname[256] =		"tcreport.tmp";
-char tcbatchreportname[256] =		"tcbatch.txt";
-char temptcbatchreportname[256] =	"tcbatch.tmp";
-char tcinfoname[256] =			"tcinfo.txt";
-char cleanedtapname[256] =		"cleaned.tap";
-char auoutname[256] =			"out.au";
-char wavoutname[256] =			"out.wav";
 
 /* note: all generated files are saved to the exedir */
+
+static const char tcreportname[] =	"tcreport.txt";
+static const char temptcreportname[] =	"tcreport.tmp";
+static const char tcbatchreportname[] =	"tcbatch.txt";
+static const char tcinfoname[] =	"tcinfo.txt";
+static const char auoutname[] =		"out.au";
+static const char wavoutname[] =	"out.wav";
+
+static char cleanedtapname[256];	/* assigned in main(). */
+
+char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
 
 
 int main(int argc, char *argv[])
@@ -291,9 +293,9 @@ int main(int argc, char *argv[])
 	int i, j, opnum;
 	time_t t1, t2;
 	FILE *fp;
-	char opname[32];
-
-	char opnames[12][32]= {
+	
+	char *opname;		/*!< a pointer to one of the following opnames */
+	char opnames[][32] = {
 		"No operation",
 		"Testing", 
 		"Optimizing",
@@ -306,20 +308,18 @@ int main(int argc, char *argv[])
 		"Batch scanning",
 		"Creating info file"
 	};
-   
+	
 	deleteworkfiles();
          
 	get_exedir(argv[0]);
 
 	/* allocate ram to file database and initialize array pointers */
-	create_database();
+	if (create_database())
+		return 1;
 
 	copy_loader_table();
 	build_crc_table();
 
-	tol = DEFTOL;		/* set default read tolerance */
-	debug = FALSE;		/* clear "debugging" mode. (allow block overlap). */
-   
 	printf("\n------------------------------------------------------------------\n");
 	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
@@ -334,12 +334,14 @@ int main(int argc, char *argv[])
       
 		/* PROCESS ACTIONS... */
 
-		/* 
-		 * just test a tap if no option is present, just a filename. 
-		 * this allows for drag and drop in explorer...
+		/** 
+		 *	Just test a tap if no option is present, just a filename. 
+		 *
+		 * 	This allows for drag and drop in explorer. First make
+		 *	sure the argument is not the -b option without arguments.
 		 */
 
-		if (argc == 2 && load_tap(argv[1])) {
+		if (argc == 2 && strcmp(argv[1], "-b") && load_tap(argv[1])) {
 			printf("\n\nLoaded: %s", tap.name);
 			printf("\nTesting...\n");
 			time(&t1);
@@ -375,7 +377,7 @@ int main(int argc, char *argv[])
 				if (strcmp(argv[i], "-info") == 0)
 					opnum = 10;	/* create info file */
                   
-				strcpy(opname, opnames[opnum]);      
+				opname = opnames[opnum];
             
 				/* This handles testing + any op that takes a tap, affects it and saves it... */
 
@@ -419,7 +421,7 @@ int main(int argc, char *argv[])
 							}
 						}
 					} else
-						printf("\n\nMissing file name.");
+						printf("\n\nMissing file name."); 
 				}
 
 				if (opnum == 7) {	/* flag = convert to au */
@@ -443,7 +445,7 @@ int main(int argc, char *argv[])
 							if (analyze()) {
 								printf("\n\nLoaded: %s", tap.name);
 								printf("\n%s...\n", opname);
-								wav_write(tap.tmem, tap.len, auoutname,sine);
+								wav_write(tap.tmem, tap.len, wavoutname,sine);
 								printf("\nSaved: %s", wavoutname);
 								msgout("\n");
 							}
@@ -505,10 +507,10 @@ void get_exedir(char *argv0)
 	strcpy(exedir, argv0);
 
 #ifdef WIN32
-	for (i = strlen(exedir); i > 0 && exedir[i] != '\\'; i--);  /* clip to leave path only */
+	for (i = strlen(exedir); i > 0 && exedir[i] != SLASH; i--);  /* clip to leave path only */
 	
-	if (exedir[i] == '\\')
-		exedir[i + 1] = 0;   
+	if (exedir[i] == SLASH)
+		exedir[i + 1] = '\0';   
    
 	/* note: I do this instead of using getcwd() because getcwd does not give
 	 * the exe's directory when dragging and dropping a tap file to the program
@@ -517,13 +519,15 @@ void get_exedir(char *argv0)
 
 	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
 
-	if (strcmp(exedir, "tapclean") == 0 || strcmp(exedir, "tapclean.exe") == 0) {
-		getcwd(exedir, 512);
-		strcat(exedir, "\\");
+	if (stricmp(exedir, "tapclean") == 0 || stricmp(exedir, "tapclean.exe") == 0) {
+		getcwd(exedir, MAXPATH - 2);
+		exedir[strlen(exedir)] = SLASH;
+		exedir[strlen(exedir) + 1] = '\0';
 	}
 #else
-	getcwd(exedir, 512);
-	strcat(exedir, "/");
+	getcwd(exedir, MAXPATH - 2);
+	exedir[strlen(exedir)] = SLASH;
+	exedir[strlen(exedir) + 1] = '\0';
 #endif
 }
 
@@ -3012,17 +3016,6 @@ void deleteworkfiles(void)
 		sprintf(lin, "del %s", tcreportname);
 #else
 		sprintf(lin, "rm %s", tcreportname);
-#endif
-		system(lin);
-	}
-
-	fp = fopen(temptcbatchreportname, "r");      
-	if (fp != NULL) {
-		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", temptcbatchreportname);
-#else
-		sprintf(lin, "rm %s", temptcbatchreportname);
 #endif
 		system(lin);
 	}

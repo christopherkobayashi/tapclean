@@ -23,4 +23,12 @@
    And the last value points to the very last pulse in a file, that being
    last pulse of a databyte, checkbyte or just a trailer.
 
+ - Use dynamic memory allocation for file/dir names where possible.
+ - Avoid hardcoded values as much as possible, use #define.
+ - Use "static" and "const" keyword usage where possible.
+ - Use the getcwd(buffer, size) call with buffer initialized to NULL and 
+   size to -1, which should be memory safe. Then allocate a new string 
+   whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
+   free the first one.
+ - Check the return value for getcwd() to be sure it's not NULL.
 
