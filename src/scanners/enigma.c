@@ -1,4 +1,4 @@
-/*---------------------------------------------------------------------------
+/*
  * enigma.c (Enigma Variations)
  *
  * Part of project "Final TAP". 
@@ -21,8 +21,6 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
- *
- * 13-apr-2006: Cleaned up by bokvamme@errors.no
  */
 
 
