@@ -1,7 +1,8 @@
 v0.05
 	Replace hardcoded values with #defines for read_errors[] (bgk)
 	Added check for getcwd() returning NULL (bgk)
-	Converted scanners/chr.c to new coding style
+	Converted scanners/chr.c to new coding style (bgk)
+	Converted scanners/pause.c to new coding style (bgk)
 	
 v0.04
 	Files changed: batchscan.c, database.c, main.c, mydefs.h.
