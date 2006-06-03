@@ -30,6 +30,7 @@
    extracts data and also when counting trailers.
    And the last value points to the very last pulse in a file, that being
    last pulse of a databyte, checkbyte or just a trailer.
+   CHECK: ODEload + Cult
 
  - Use dynamic memory allocation for file/dir names where possible.
  - Avoid hardcoded values as much as possible, use #define.
