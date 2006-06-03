@@ -104,7 +104,7 @@ char info[1048576];		/* buffer area for storing each blocks description text. */
 char lin[64000];		/* general purpose string building buffer. */
 char tmp[64000];		/* general purpose string building buffer. */
 
-int read_errors[100];		/* storage for 1st 100 read error addresses */
+int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
 char note_errors;		/* set true only when decoding identified files, */
 				/* it just tells 'add_read_error()' to ignore. */
 
@@ -783,8 +783,8 @@ void search_tap(void)
 
 		/* initialize the read error table */
 
-		for (i = 0; i < 100; i++)
-			read_errors[i]=0;
+		for (i = 0; i < NUM_READ_ERRORS; i++)
+			read_errors[i] = 0;
 
 
 		/* CALL THE SCANNERS!... */
@@ -1779,7 +1779,7 @@ void report(void)
 		/* include 'read errors' report in the file... */
 
 		if (tap.total_read_errors != 0) {
-			fprintf(fp, "\n * Read error locations (Max 100)");
+			fprintf(fp, "\n * Read error locations (Max %d)", NUM_READ_ERRORS);
 			fprintf(fp, "\n");
 			for (i = 0; read_errors[i] != 0; i++)
 				fprintf(fp, "\n0x%04X", read_errors[i]);
@@ -2499,7 +2499,7 @@ int count_pauses(void)
 }
 
 /*
- * Add an entry to the 'read_errors[100]' array...
+ * Add an entry to the 'read_errors[NUM_READ_ERRORS]' array...
  */
 
 int add_read_error(int addr)
@@ -2509,14 +2509,14 @@ int add_read_error(int addr)
 	if (!note_errors)
 		return -1;
 
-	for (i = 0; i < 100; i++) {				/* reject duplicates.. */
+	for (i = 0; i < NUM_READ_ERRORS; i++) {				/* reject duplicates.. */
 		if (read_errors[i] == addr)
 			return -1;
 	}
 
-	for (i = 0; read_errors[i] != 0 && i < 100; i++);	/* find 1st free slot.. */
+	for (i = 0; read_errors[i] != 0 && i < NUM_READ_ERRORS; i++);	/* find 1st free slot.. */
 
-	if (i < 100) {
+	if (i < NUM_READ_ERRORS) {
 		read_errors[i] = addr;
 		return 0;
 	}

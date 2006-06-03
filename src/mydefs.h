@@ -45,6 +45,7 @@
 #define FALSE	0
 
 #define MAXPATH	512
+#define NUM_READ_ERRORS 100
 
 #ifdef WIN32
 #define SLASH	'\\'
