@@ -311,11 +311,12 @@ int main(int argc, char *argv[])
 	
 	deleteworkfiles();
          
-	get_exedir(argv[0]);
+	if (!get_exedir(argv[0]))
+		return -1;
 
 	/* allocate ram to file database and initialize array pointers */
-	if (create_database())
-		return 1;
+	if (!create_database())
+		return -1;
 
 	copy_loader_table();
 	build_crc_table();
@@ -500,9 +501,10 @@ int main(int argc, char *argv[])
  * Get exe path from argv[0]...
  */
 
-void get_exedir(char *argv0)
+int get_exedir(char *argv0)
 {
 	int i;
+	char *ret;
 
 	strcpy(exedir, argv0);
 
@@ -520,15 +522,20 @@ void get_exedir(char *argv0)
 	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
 
 	if (stricmp(exedir, "tapclean") == 0 || stricmp(exedir, "tapclean.exe") == 0) {
-		getcwd(exedir, MAXPATH - 2);
+		ret = getcwd(exedir, MAXPATH - 2);
+		if (ret == NULL)
+			return FALSE;
 		exedir[strlen(exedir)] = SLASH;
 		exedir[strlen(exedir) + 1] = '\0';
 	}
 #else
-	getcwd(exedir, MAXPATH - 2);
+	ret = getcwd(exedir, MAXPATH - 2);
+	if (ret == NULL)
+		return FALSE;
 	exedir[strlen(exedir)] = SLASH;
 	exedir[strlen(exedir) + 1] = '\0';
 #endif
+	return TRUE;
 }
 
 /*

@@ -89,6 +89,7 @@ struct node *get_dir_list(char *rootdir)
 	char cwd[1024], temp[1024];
 	long handle;
 	int done, complete, n, i, t;
+	char *ret;
 #ifdef WIN32
 	struct _finddata_t ffblk;
 #else
@@ -107,7 +108,9 @@ struct node *get_dir_list(char *rootdir)
 	d = dirs;			/* current directory node is initally the root node. */
 
 	do {
-		getcwd(cwd, 256);	/* record current directory path name.  */
+		ret = getcwd(cwd, 256);	/* record current directory path name.  */
+		if (ret == NULL)
+			return NULL;
 
 		/*
 		 * Find/record all directories in the current one (ignores "." and "..")

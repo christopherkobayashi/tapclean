@@ -64,6 +64,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	char temp[256] = "";
 	char cstr[2][256] = {"PASS" ,"FAIL"};
 	time_t t1, t2;
+	char *ret;
 
 	char fields[FIELDS][128] = {"Name", "Detected", "Rec", "Hdr", "Opt",
 					"Chks", "Read", "Files", "Gaps",
@@ -87,7 +88,9 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 	/* get FULL path. initially it may have been relative to users current dir */
 
-	getcwd(fullpath, 256 - 2);
+	ret = getcwd(fullpath, 256 - 2);
+	if (ret == NULL)
+		return -1;
 	fullpath[strlen(fullpath)] = SLASH;
 	fullpath[strlen(fullpath) + 1] = '\0';
  

@@ -15,8 +15,8 @@ struct blk_t *blk[BLKMAX];	/*!< Database of all found entities. */
  *
  *	@param void
  *
- *	@return 0 on success
- *	@return 1 on memory allocation failure
+ *	@return TRUE on success
+ *	@return FALSE on memory allocation failure
  */
  
 int create_database(void)
@@ -28,14 +28,14 @@ int create_database(void)
 		if (blk[i] == NULL) {
 			printf("\nError: malloc failure whilst creating file database.");
 			destroy_database(); /* Free any already allocated resource */
-			return 1;
+			return FALSE;
 		}
 
 		blk[i]->dd = NULL;
 		blk[i]->fn = NULL;
 	}
 	
-	return 0;
+	return TRUE;
 }
 
 /**

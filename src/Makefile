@@ -3,7 +3,7 @@
 
 CPP  = g++
 CC   = gcc
-INCS =  
+INCS = 
 CXXINCS = 
 CFLAGS = $(INCS)  
 CXXFLAGS = $(CXXINCS)  
