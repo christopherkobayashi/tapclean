@@ -18,6 +18,7 @@
  - Split the code into more manageable parts
  - Make the code more generic
  - Add support for vic20 and Plus4 tapes
+ - Add support for NTSC?
  - Check start/end pilot/data/trailer:
    SLC says:
    Example from tcreport.txt: Location: $A726 -> $AF33 -> $75C9B -> $76491
@@ -39,7 +40,7 @@
    size to -1, which should be memory safe. Then allocate a new string 
    whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
    free the first one.
- - Get rid of most #ifdef WIN32 stuff. Use #ifdef only in mydefs.h
+ - Get rid of most #ifdef WIN32 stuff.
  - Do some major rewrite of scanners/*.
    There are WAY TOO MUCH duplication of code.
 
