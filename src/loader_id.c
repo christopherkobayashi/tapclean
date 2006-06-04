@@ -44,7 +44,7 @@ int idloader(unsigned long crc)
 {
 	int i, id, len;
 
-	unsigned long kcrc[1000][2] = {
+	unsigned long kcrc[NUM_CRC][2] = {
 		{0x261DBA0E, LID_FREE},
 		{0x8AAE883E, LID_FREE},
 		{0x2EF78649, LID_FREE},
