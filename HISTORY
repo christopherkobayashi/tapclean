@@ -11,6 +11,7 @@ v0.05
 	Some small cleanups in batchscan.c. Also removed 1 level of indentation. (bgk)
 	Some small cleanups in filesearch.c (bgk)
 	Removed global (FILE *fp) from tap2audio.c (bgk)
+	Removed global (unsigned long bpos) from tap2audio.c (bgk)
 	
 v0.04
 	Files changed: batchscan.c, database.c, main.c, mydefs.h.

@@ -38,7 +38,6 @@
 
 
 char *outbuf;			/* do away with these sometime! */
-unsigned long bpos;
 
 
 /*
@@ -53,6 +52,7 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	double fratio = FREQ/985248.0;
 	unsigned int dsize, totalsamples = 0;
 	FILE *fp;
+	unsigned long bpos = 0;
  
 	/* ".snd", DataOff, DataSize, Format, SampleRate(44khz), Channels */
 
@@ -69,8 +69,6 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	if (outbuf == NULL)
 		return -1;
  
-	bpos = 0;
- 
 	/* write out a dummy header, proper one needs to go in after. */
 
 	for (i = 0; i < AUHDSZ; i++)
@@ -78,7 +76,6 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
  
 	/* write out the waveform data... */
 
-	bpos = 0;
 	for (i = 20; i < taplen; i++) {
 		b = tap[i];
  
@@ -87,9 +84,9 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 		if (b == 0 && tapversion == 0) {
 			lv = floor(20000 * fratio);
 			if (sine)
-				totalsamples += drawwavesine(lv, 0, 1, fp);
+				totalsamples += drawwavesine(lv, 0, 1, fp, &bpos);
 			else
-				totalsamples += drawwavesquare(lv, 0, 1, fp);
+				totalsamples += drawwavesquare(lv, 0, 1, fp, &bpos);
 		}
  
 		/* write TAP v1 pause... */
@@ -99,9 +96,9 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 			i += 3;
 			lv = floor(ccnt * fratio);
 			if (sine)
-				totalsamples += drawwavesine(lv, 0, 1, fp);
+				totalsamples += drawwavesine(lv, 0, 1, fp, &bpos);
 			else
-				totalsamples += drawwavesquare(lv, 0, 1, fp);
+				totalsamples += drawwavesquare(lv, 0, 1, fp, &bpos);
 		}
  
 		/* write out non-pause... */
@@ -109,13 +106,13 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 		if (b != 0) {
 			lv = floor((b * 8) * fratio);
 			if (sine)
-				totalsamples += drawwavesine(lv, 127, 1, fp);
+				totalsamples += drawwavesine(lv, 127, 1, fp, &bpos);
 			else
-				totalsamples += drawwavesquare(lv, 127, 1, fp);
+				totalsamples += drawwavesquare(lv, 127, 1, fp, &bpos);
 		}
 	}
 
-	totalsamples += s_out(0, 1, fp);	/* add all valid remaining buffer bytes. */
+	totalsamples += s_out(0, 1, fp, &bpos);	/* add all valid remaining buffer bytes. */
  
 	dsize = totalsamples;
 	
@@ -148,6 +145,7 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	long i, lv, len, ccnt;
 	int b, tapversion;
 	FILE *fp;
+	unsigned long bpos = 0;
 	double fratio = FREQ / 985248.0;
 	unsigned int dsize, totalsamples = 0;
 	char wavhd[WAVHDSZ] = { 82, 73, 70, 70, 0, 0, 0, 0, 87, 65, 86, 69,
@@ -165,8 +163,6 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	if (outbuf == NULL)
 		return - 1;
  
-	bpos = 0;
- 
 	/* write out a dummy header, proper one needs to go in after. */
 
 	for (i = 0; i < WAVHDSZ; i++)
@@ -174,7 +170,6 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
  
 	/* write out the waveform data... */
 
-	bpos = 0;
 	for(i = 20; i < taplen; i++) {
 		b = tap[i];
  
@@ -183,9 +178,9 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 		if (b == 0 && tapversion == 0) {
 			lv = floor(20000 * fratio);
 			if (sine)
-				totalsamples += drawwavesine(lv, 0, 0, fp);
+				totalsamples += drawwavesine(lv, 0, 0, fp, &bpos);
 			else
-				totalsamples += drawwavesquare(lv, 0, 0, fp);
+				totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos);
 		}
  
 	/* write TAP v1 pause... */
@@ -195,9 +190,9 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 		i += 3;
 		lv = floor(ccnt * fratio);
 		if (sine)
-			totalsamples += drawwavesine(lv, 0, 0, fp);
+			totalsamples += drawwavesine(lv, 0, 0, fp, &bpos);
 		else
-			totalsamples += drawwavesquare(lv, 0, 0, fp);
+			totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos);
 	}
  
 	/* write out non-pause... */
@@ -205,13 +200,13 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	if (b != 0) {
 		lv = floor((b * 8) * fratio);
 		if (sine)
-			totalsamples += drawwavesine(lv, 127, 0, fp);
+			totalsamples += drawwavesine(lv, 127, 0, fp, &bpos);
 		else
-			totalsamples += drawwavesquare(lv, 127, 0, fp);
+			totalsamples += drawwavesquare(lv, 127, 0, fp, &bpos);
 		}
 	}
 
-	totalsamples += s_out(0, 1, fp);	/* add all valid remaining buffer bytes. */
+	totalsamples += s_out(0, 1, fp, &bpos);	/* add all valid remaining buffer bytes. */
  
 	/* write FileLen-8 to wav header... */
 
@@ -247,7 +242,7 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
  * else unsigned.
  */
 
-int drawwavesquare(int len, int amp, char signd, FILE *filep)
+int drawwavesquare(int len, int amp, char signd, FILE *filep, unsigned long *bp)
 {
 	int x, y, off;
 	int samples = 0;
@@ -262,7 +257,7 @@ int drawwavesquare(int len, int amp, char signd, FILE *filep)
 			y = amp;
 		else
 			y =- amp;
-			samples += s_out(y + off, 0, filep);
+			samples += s_out(y + off, 0, filep, bp);
 	}
 
 	return samples;
@@ -274,7 +269,7 @@ int drawwavesquare(int len, int amp, char signd, FILE *filep)
  * else unsigned.
  */
 
-int drawwavesine(int len, int amp, char signd, FILE *filep)
+int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long *bp)
 {
 	int x, y, off;
 	float deg, inc;
@@ -290,7 +285,7 @@ int drawwavesine(int len, int amp, char signd, FILE *filep)
 		inc = (float)360 / len;
 		deg = (x * inc);	/* +180 makes the wave peak first */
 		y = amp * sin(deg / rads);
-		samples += s_out(y + off, 0, filep);
+		samples += s_out(y + off, 0, filep, bp);
 	}
 
 	return samples;
@@ -299,28 +294,28 @@ int drawwavesine(int len, int amp, char signd, FILE *filep)
 /*
  * rather than using the very slow method of using fputc() for every sample in the file,
  * I write to a memory buffer, When it's full it (quickly) dumps its contents to
- * the disk file and resets its position pointer (bpos) to the beginning again.
+ * the disk file and resets its position pointer (bp) to the beginning again.
  * the function below implements all this, "amp" is the amplitude of the sample being written,
- * 'finished' is just a flag to tell it to dump only up to the current position of bpos, ie.
+ * 'finished' is just a flag to tell it to dump only up to the current position of bp, ie.
  * the tail-end of the file, which will be BUFSZ bytes or less.
  *
  * Returns the number of samples successfully written, 0 or 1.
  */
 
-int s_out(unsigned char amp, int finished, FILE *filep)
+int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp)
 {
 	if (!finished) {
-		outbuf[bpos++] = amp;
-		if (bpos == BUFSZ) {				/* buffer full? */
+		outbuf[*bp++] = amp;
+		if (*bp == BUFSZ) {				/* buffer full? */
 			fwrite(outbuf, 1, BUFSZ, filep);	/* add full buffer to the file */
-			bpos = 0;
+			*bp = 0;
 		}
 		return 1;
 
 	/* push all remaining valid bytes to the file if 'finished' is true.. */
 
 	} else {
-		fwrite(outbuf, 1, bpos, filep);
+		fwrite(outbuf, 1, *bp, filep);
 		return 0;
 	}
 }

@@ -33,7 +33,7 @@
 
 int au_write(unsigned char *, int, const char *, char);
 int wav_write(unsigned char *, int, const char *, char);
-int drawwavesquare(int, int, char, FILE *);
-int drawwavesine(int, int, char, FILE *);
-int s_out(unsigned char, int, FILE *);
+int drawwavesquare(int, int, char, FILE *, unsigned long *);
+int drawwavesine(int, int, char, FILE *, unsigned long *);
+int s_out(unsigned char, int, FILE *, unsigned long *);
 
