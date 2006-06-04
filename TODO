@@ -40,5 +40,7 @@
    whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
    free the first one.
  - Get rid of most #ifdef WIN32 stuff. Use #ifdef only in mydefs.h
+ - Do some major rewrite of scanners/*.
+   There are WAY TOO MUCH duplication of code.
 
 
