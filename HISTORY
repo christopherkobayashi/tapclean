@@ -7,6 +7,7 @@ v0.05
 	Converted scanners/freeload.c to new coding style (bgk)
 	Converted scanners/audiogenic.c to new coding style (bgk)
 	Some small cleanups in main.c (bgk)
+	Some small cleanups in clean.c (bgk)
 	
 v0.04
 	Files changed: batchscan.c, database.c, main.c, mydefs.h.

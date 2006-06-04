@@ -34,7 +34,7 @@
 
 
 /*
- * Make the current TAP header size == tap.len-20
+ * Make the current TAP header size == tap.len - 20
  */
 
 void fix_header_size(void)
@@ -339,7 +339,7 @@ void clean_files(void)
 
 		/* clean... */
 		
-		limit= tol+2;
+		limit = tol + 2;
 		if (boostclean)
 			limit += 10;
 
@@ -526,7 +526,7 @@ void convert_to_v1(void)
 			/* we found a zero... */
 			/* now count the zeroes... */
 
-			z= 0;
+			z = 0;
 			while (tap.tmem[i++] == 0 && i < tap.len+1)
 				z++;
 
@@ -720,7 +720,7 @@ void fix_pilots(void)
 	/* the fixable pattern is ... (PAUSE or Start of TAP), GAP, DATAFILE. */
 
 	do {
-		mi=0;
+		mi = 0;
 		
 		/* clear previous entries... */
 		
@@ -1062,8 +1062,8 @@ void cut_postdata_gaps(void)
 	msgout("\nCutting post-data garbage...");
 
 	/*
-	 * for(i=0; i<ci; i++) {
-	 *	sprintf(lin,"$%04X -> $%04X", cuts[i][0], cuts[i][1]);
+	 * for (i = 0; i < ci; i++) {
+	 *	sprintf(lin, "$%04X -> $%04X", cuts[i][0], cuts[i][1]);
 	 *	msgout(lin);
 	 * }
 	 */
