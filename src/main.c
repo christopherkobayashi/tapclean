@@ -311,10 +311,13 @@ int main(int argc, char *argv[])
 	
 	deleteworkfiles();
          
+	/* Get exe path from argv[0] */
+
 	if (!get_exedir(argv[0]))
 		return -1;
 
 	/* allocate ram to file database and initialize array pointers */
+
 	if (!create_database())
 		return -1;
 
@@ -338,8 +341,9 @@ int main(int argc, char *argv[])
 		/** 
 		 *	Just test a tap if no option is present, just a filename. 
 		 *
-		 * 	This allows for drag and drop in explorer. First make
-		 *	sure the argument is not the -b option without arguments.
+		 * 	This allows for drag and drop in (Microsoft) explorer.
+		 * 	First make sure the argument is not the -b option without
+		 * 	arguments.
 		 */
 
 		if (argc == 2 && strcmp(argv[1], "-b") && load_tap(argv[1])) {
@@ -525,6 +529,7 @@ int get_exedir(char *argv0)
 		ret = getcwd(exedir, MAXPATH - 2);
 		if (ret == NULL)
 			return FALSE;
+
 		exedir[strlen(exedir)] = SLASH;
 		exedir[strlen(exedir) + 1] = '\0';
 	}
@@ -532,6 +537,7 @@ int get_exedir(char *argv0)
 	ret = getcwd(exedir, MAXPATH - 2);
 	if (ret == NULL)
 		return FALSE;
+
 	exedir[strlen(exedir)] = SLASH;
 	exedir[strlen(exedir) + 1] = '\0';
 #endif
@@ -1497,49 +1503,49 @@ int load_tap(char *name)
 	int flen;
 
 	fp = fopen(name, "rb");
-	if (fp != NULL) {
-		unload_tap();
-
-		fseek(fp, 0, SEEK_END);
-		flen = ftell(fp);
-		rewind(fp);
-		tap.tmem = (unsigned char*)malloc(flen);
-
-		if(tap.tmem == NULL) {
-			msgout("\nError: malloc failed in load_tap().");
-			fclose(fp);
-			return -1;
-		}
-
-		fread(tap.tmem, flen, 1, fp);
-		fclose(fp);
-
-		tap.len = flen;
-
-		/* the following were uncommented in GUI app..
-		 * these now appear in main()...
-		 * tol=DEFTOL;        reset tolerance..
-		 * debugmode=FALSE;      reset "debugging" mode.
-		 */
-
-		/* if desired, preserve loader table between TAPs... */
-
-		if (preserveloadertable == FALSE)
-			reset_loader_table();
-      
-		tap.changed = 1;	/* makes sure the tap is fully scanned afterwards. */
-
-		cbm_decoded = 0;	/* reset this so cbm parts decode for a new tap... /*
-					/* (but NOT during same tap) */
-
-		strcpy(tap.path, name);                 
-		getfilename(tap.name, name);
-       
-		return 1;		/* 1 = loaded ok */
-	} else {
+	if (fp == NULL) {
 		msgout("\nError: Couldn't open file in load_tap().");
 		return 0;
 	}
+
+	unload_tap();
+
+	fseek(fp, 0, SEEK_END);
+	flen = ftell(fp);
+	rewind(fp);
+	tap.tmem = (unsigned char*)malloc(flen);
+
+	if(tap.tmem == NULL) {
+		msgout("\nError: malloc failed in load_tap().");
+		fclose(fp);
+		return -1;
+	}
+
+	fread(tap.tmem, flen, 1, fp);
+	fclose(fp);
+
+	tap.len = flen;
+
+	/* the following were uncommented in GUI app..
+	 * these now appear in main()...
+	 * tol=DEFTOL;        reset tolerance..
+	 * debugmode=FALSE;      reset "debugging" mode.
+	 */
+
+	/* if desired, preserve loader table between TAPs... */
+
+	if (preserveloadertable == FALSE)
+		reset_loader_table();
+      
+	tap.changed = 1;	/* makes sure the tap is fully scanned afterwards. */
+
+	cbm_decoded = 0;	/* reset this so cbm parts decode for a new tap... /*
+				/* (but NOT during same tap) */
+
+	strcpy(tap.path, name);                 
+	getfilename(tap.name, name);
+       
+	return 1;		/* 1 = loaded ok */
 }
 
 /*
