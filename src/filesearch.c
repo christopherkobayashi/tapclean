@@ -41,42 +41,6 @@
 
 #include "filesearch.h"
 
-
-/* Note: main is left here for usage information... */
-
-/*
-int main(int argc, char* argv[])
-{
-	struct node *dl, *fl;    
-	char path[1024] = "D:\\Public\\MP3\\";	always include a trailing \\
-	char mask[5] = "*.*";
-	char exepath[1024];
-
-	getcwd(exepath, 1024);
-
-	printf("\npath = %s\n\nPlease wait...", path);
-
-	dl = get_dir_list(path);
-	if (dl != NULL)
-		fl = get_file_list(mask,dl, ROOTALL);
-	else
-		return 1; 
-      
-	clip_list(fl);
-   
-	sort_list(dl);
-	sort_list(fl);
-     
-	chdir(exepath);  
-	save_list(dl, "_dirs.txt");    
-	save_list(fl, "_files.txt");
-
-	free_list(dl);
-	free_list(fl);
-	return 0;
-} 
-*/
-
 /*
  * builds a linked-list of all directory names available under 'rootdir'...
  * returns a pointer to the linked-list of path names (root node).
@@ -155,7 +119,7 @@ struct node *get_dir_list(char *rootdir)
 				strcmp(namelist[i]->d_name, ".") != 0 &&
 				strcmp(namelist[i]->d_name, "..") != 0) {
 
-				/* create the name for the new node (CWD+\+DIR name)... */
+				/* create the name for the new node (CWD+/+DIR name)... */
 
 				strcpy(temp, cwd);
 				t = strlen(temp);
@@ -421,10 +385,10 @@ int sort_list(struct node *r)
 
 /*
  * Clip the root path (1st nodes name from all other nodes in the list and
- * replace with ".\" to make the paths relative.
+ * replace with ".\" or "./" to make the paths relative.
  * This is really for the benefit of the sort routine as it causes all
  * directories to be placed at the top.
- * Note: the .\ prefixes could be removed after sorting.
+ * Note: the ".\" or "./" prefixes could be removed after sorting.
  */
 
 int clip_list(struct node *r)
