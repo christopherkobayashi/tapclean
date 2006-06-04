@@ -288,6 +288,19 @@ static char cleanedtapname[256];	/* assigned in main(). */
 char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
 
 
+/*
+ * Unallocate tap, crc_table and database
+ */
+
+void cleanup_main(void)
+{
+	unload_tap();
+	free_crc_table();
+
+	/* deallocate ram from file database */
+	destroy_database();
+}
+
 int main(int argc, char *argv[])
 {
 	int i, j, opnum;
@@ -331,172 +344,170 @@ int main(int argc, char *argv[])
 
 	/* Note: options should be processed before actions! */
    
-	if (argc == 1)
+	if (argc == 1) {
 		display_usage();
-	else {
-		process_options(argc, argv);
+		printf("\n\n");
+		cleanup_main();
+		return 0;
+	}
+
+	process_options(argc, argv);
       
-		/* PROCESS ACTIONS... */
+	/* PROCESS ACTIONS... */
 
-		/** 
-		 *	Just test a tap if no option is present, just a filename. 
-		 *
-		 * 	This allows for drag and drop in (Microsoft) explorer.
-		 * 	First make sure the argument is not the -b option without
-		 * 	arguments.
-		 */
+	/** 
+	 *	Just test a tap if no option is present, just a filename. 
+	 *
+	 * 	This allows for drag and drop in (Microsoft) explorer.
+	 * 	First make sure the argument is not the -b option without
+	 * 	arguments.
+	 */
 
-		if (argc == 2 && strcmp(argv[1], "-b") && load_tap(argv[1])) {
-			printf("\n\nLoaded: %s", tap.name);
-			printf("\nTesting...\n");
-			time(&t1);
-			if (analyze()) {
-				report();
-				printf("\n\nSaved: %s", tcreportname);
-				time(&t2);
-				time2str(t2 - t1, lin);
-				printf("\nOperation completed in %s.", lin);
-			}
-		} else {
-			for (i = 0; i < argc; i++) {
-				opnum = 0;
-				if (strcmp(argv[i], "-t") == 0)
-					opnum = 1;	/* test */ 
-				if (strcmp(argv[i], "-o") == 0)
-					opnum = 2;	/* optimize */
-				if (strcmp(argv[i], "-ct0") == 0)
-					opnum = 3;	/* convert to v0 */
-				if (strcmp(argv[i], "-ct1") == 0)
-					opnum = 4;	/* convert to v1 */         
-				if (strcmp(argv[i], "-rs") == 0)
-					opnum = 5;	/* fix header size */
-				if (strcmp(argv[i], "-po") == 0)
-					opnum = 6;	/* pause optimize */
+	if (argc == 2 && strcmp(argv[1], "-b") && load_tap(argv[1])) {
+		printf("\n\nLoaded: %s", tap.name);
+		printf("\nTesting...\n");
+		time(&t1);
+		if (analyze()) {
+			report();
+			printf("\n\nSaved: %s", tcreportname);
+			time(&t2);
+			time2str(t2 - t1, lin);
+			printf("\nOperation completed in %s.", lin);
+		}
+	} else {
+		for (i = 0; i < argc; i++) {
+			opnum = 0;
+			if (strcmp(argv[i], "-t") == 0)
+				opnum = 1;	/* test */ 
+			if (strcmp(argv[i], "-o") == 0)
+				opnum = 2;	/* optimize */
+			if (strcmp(argv[i], "-ct0") == 0)
+				opnum = 3;	/* convert to v0 */
+			if (strcmp(argv[i], "-ct1") == 0)
+				opnum = 4;	/* convert to v1 */         
+			if (strcmp(argv[i], "-rs") == 0)
+				opnum = 5;	/* fix header size */
+			if (strcmp(argv[i], "-po") == 0)
+				opnum = 6;	/* pause optimize */
             
-				if (strcmp(argv[i], "-au") == 0)
-					opnum = 7;	/* convert to au */
-				if (strcmp(argv[i], "-wav") == 0)
-					opnum = 8;	/* convert to wav */
-				if (strcmp(argv[i], "-b") == 0)
-					opnum = 9;	/* batch scan */  
-				if (strcmp(argv[i], "-info") == 0)
-					opnum = 10;	/* create info file */
+			if (strcmp(argv[i], "-au") == 0)
+				opnum = 7;	/* convert to au */
+			if (strcmp(argv[i], "-wav") == 0)
+				opnum = 8;	/* convert to wav */
+			if (strcmp(argv[i], "-b") == 0)
+				opnum = 9;	/* batch scan */  
+			if (strcmp(argv[i], "-info") == 0)
+				opnum = 10;	/* create info file */
                   
-				opname = opnames[opnum];
+			opname = opnames[opnum];
             
-				/* This handles testing + any op that takes a tap, affects it and saves it... */
+			/* This handles testing + any op that takes a tap, affects it and saves it... */
 
-				if (opnum > 0 && opnum < 7) {
-					if (argv[i + 1] != NULL) {
-						if (load_tap(argv[i + 1])) {
-							time(&t1);
+			if (opnum > 0 && opnum < 7) {
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						time(&t1);
+						printf("\n\nLoaded: %s", tap.name);
+						printf("\n%s...\n", opname);
+                    
+						if (analyze()) {
+							switch(opnum) {
+								case 2:	clean();
+									break;
+								case 3:	convert_to_v0();
+									break;
+								case 4:	convert_to_v1();
+									break; 
+								case 5:	fix_header_size(); 
+									analyze();
+									break; 
+								case 6:	convert_to_v0(); 
+									clip_ends(); 
+									unify_pauses();
+									convert_to_v1();   
+									add_trailpause();
+									break;
+							}
+
+							report();
+							printf("\nSaved: %s", tcreportname);
+							if (opnum > 1) {
+								strcpy(cleanedtapname, CLEANED_PREFIX);
+								strcat(cleanedtapname, tap.name); 
+								save_tap(cleanedtapname);
+								printf("\n\nSaved: %s", cleanedtapname);
+							}
+							time(&t2);
+							time2str(t2 - t1, lin);
+							printf("\nOperation completed in %s.", lin);
+						}
+					}
+				} else
+					printf("\n\nMissing file name."); 
+			}
+
+			if (opnum == 7) {	/* flag = convert to au */
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						if (analyze()) {
 							printf("\n\nLoaded: %s", tap.name);
 							printf("\n%s...\n", opname);
-                    
-							if (analyze()) {
-								switch(opnum) {
-									case 2:	clean();
-										break;
-									case 3:	convert_to_v0();
-										break;
-									case 4:	convert_to_v1();
-										break; 
-									case 5:	fix_header_size(); 
-										analyze();
-										break; 
-									case 6:	convert_to_v0(); 
-										clip_ends(); 
-										unify_pauses();
-										convert_to_v1();   
-										add_trailpause();
-										break;
-								}
-
-								report();
-								printf("\nSaved: %s", tcreportname);
-								if (opnum > 1) {
-									strcpy(cleanedtapname, CLEANED_PREFIX);
-									strcat(cleanedtapname, tap.name); 
-									save_tap(cleanedtapname);
-									printf("\n\nSaved: %s", cleanedtapname);
-								}
-								time(&t2);
-								time2str(t2 - t1, lin);
-								printf("\nOperation completed in %s.", lin);
-							}
+							au_write(tap.tmem, tap.len, auoutname,sine);
+							printf("\nSaved: %s", auoutname);
+							msgout("\n");
 						}
-					} else
-						printf("\n\nMissing file name."); 
-				}
-
-				if (opnum == 7) {	/* flag = convert to au */
-					if (argv[i + 1] != NULL) {
-						if (load_tap(argv[i + 1])) {
-							if (analyze()) {
-								printf("\n\nLoaded: %s", tap.name);
-								printf("\n%s...\n", opname);
-								au_write(tap.tmem, tap.len, auoutname,sine);
-								printf("\nSaved: %s", auoutname);
-								msgout("\n");
-							}
-						}
-					} else
-						printf("\n\nMissing file name.");
-				}
- 
-				if (opnum == 8) {		/* flag = convert to wav */
-					if (argv[i + 1] != NULL) {
-						if (load_tap(argv[i + 1])) {
-							if (analyze()) {
-								printf("\n\nLoaded: %s", tap.name);
-								printf("\n%s...\n", opname);
-								wav_write(tap.tmem, tap.len, wavoutname,sine);
-								printf("\nSaved: %s", wavoutname);
-								msgout("\n");
-							}
-						}
-					} else
-						printf("\n\nMissing file name.");
-				}
- 
-				if (opnum == 9) {		/* flag = batch scan... */
-					batchmode = TRUE;
-					quiet = TRUE;
-
-					if (argv[i + 1] != NULL) {
-						printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
-						batchscan(argv[i + 1], incsubdirs, 1);
-					} else {
-						printf("\n\nMissing directory name, using current.");
-						printf("\n\nBatch Scanning: %s\n", exedir);
-						batchscan(exedir, incsubdirs, 1);
 					}
-				
-					batchmode = FALSE;
-					quiet = FALSE;
-				}
-                    
-				/* flag = generate exe info file */
-
-				if (opnum == 10) {
-					fp = fopen(tcinfoname, "w+t");
-					if (fp != NULL) {
-						printf("\n%s...\n", opname); 
-						fprintf(fp, "%s", VERSION_STR);
-						fclose(fp);
+				} else
+					printf("\n\nMissing file name.");
+			}
+ 
+			if (opnum == 8) {		/* flag = convert to wav */
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						if (analyze()) {
+							printf("\n\nLoaded: %s", tap.name);
+							printf("\n%s...\n", opname);
+							wav_write(tap.tmem, tap.len, wavoutname,sine);
+							printf("\nSaved: %s", wavoutname);
+							msgout("\n");
+						}
 					}
+				} else
+					printf("\n\nMissing file name.");
+			}
+
+			if (opnum == 9) {		/* flag = batch scan... */
+				batchmode = TRUE;
+				quiet = TRUE;
+
+				if (argv[i + 1] != NULL) {
+					printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
+					batchscan(argv[i + 1], incsubdirs, 1);
+				} else {
+					printf("\n\nMissing directory name, using current.");
+					printf("\n\nBatch Scanning: %s\n", exedir);
+					batchscan(exedir, incsubdirs, 1);
+				}
+			
+				batchmode = FALSE;
+				quiet = FALSE;
+			}
+                    
+			/* flag = generate exe info file */
+
+			if (opnum == 10) {
+				fp = fopen(tcinfoname, "w+t");
+				if (fp != NULL) {
+					printf("\n%s...\n", opname); 
+					fprintf(fp, "%s", VERSION_STR);
+					fclose(fp);
 				}
 			}
 		}
 	}
 
 	printf("\n\n");
-
-	unload_tap();
-	free_crc_table();
-
-	/* deallocate ram from file database */
-	destroy_database();
+	cleanup_main();
 
 	return 0;
 }
