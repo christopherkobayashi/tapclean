@@ -35,7 +35,14 @@
 void micro_search(void)
 {
 	int i, sof, sod, eod, eof;
+	int en, tp, sp, lp, sv;
 	int x, z, hd[HDSZ];
+
+	en = ft[MICROLOAD].en;	/* set endian according to table in main.c */
+	tp = ft[MICROLOAD].tp;	/* set threshold */
+	sp = ft[MICROLOAD].sp;	/* set short pulse */
+	lp = ft[MICROLOAD].lp;	/* set long pulse */
+	sv = ft[MICROLOAD].sv;	/* set sync value */
 
 	if (!quiet)
 		msgout("  Microload");
@@ -44,17 +51,17 @@ void micro_search(void)
 		if ((z = find_pilot(i, MICROLOAD)) > 0) {
 			sof = i;
 			i = z;
-			if (readttbyte(i, ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en) == ft[MICROLOAD].sv) {
+			if (readttbyte(i, lp, sp, tp, en) == sv) {
 
 				/* i should really check whole sequence */
 
-				if (readttbyte(i+8, ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en) == 0x09) {
+				if (readttbyte(i + 8, lp, sp, tp, en) == 0x09) {
 					sod = i + (10 * 8);
 
 					/* decode the header... */
 
 					for (i = 0; i < HDSZ; i++)
-						hd[i] = readttbyte(sod+(i*8), ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en);
+						hd[i] = readttbyte(sod + (i * 8), lp, sp, tp, en);
 
 					x = ((hd[2] + (hd[3] << 8)) ^ 0xFFFF) + 1;	/* get length */
                
@@ -72,12 +79,19 @@ void micro_search(void)
 int micro_describe(int row)
 {
 	int i, s, b, rd_err, hd[HDSZ], cb;
+	int en, tp, sp, lp, sv;
+
+	en = ft[MICROLOAD].en;	/* set endian according to table in main.c */
+	tp = ft[MICROLOAD].tp;	/* set threshold */
+	sp = ft[MICROLOAD].sp;	/* set short pulse */
+	lp = ft[MICROLOAD].lp;	/* set long pulse */
+	sv = ft[MICROLOAD].sv;	/* set sync value */
 
 	/* decode the header... */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++)
-	hd[i] = readttbyte(s + (i * 8), ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en);
+	hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	/* compute C64 start address, end address and size... */
 
@@ -101,13 +115,13 @@ int micro_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
       
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		cb ^= b;
 		if (b == -1)
 		rd_err++;
 		blk[row]->dd[i] = b;
 	}
-	b = readttbyte(s + (i * 8), ft[MICROLOAD].lp, ft[MICROLOAD].sp, ft[MICROLOAD].tp, ft[MICROLOAD].en);
+	b = readttbyte(s + (i * 8), lp, sp, tp, en);
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;
 	blk[row]->rd_err = rd_err;
