@@ -34,8 +34,15 @@
 void hitec_search(void)
 {
 	int i, sof, sod, eod, eof;
+	int en, tp, sp, lp, sv;
 	int z, tcnt, hd[HDSZ];
 	int s, e, x;
+
+	en = ft[HITEC].en;	/* set endian according to table in main.c */
+	tp = ft[HITEC].tp;	/* set threshold */
+	sp = ft[HITEC].sp;	/* set short pulse */
+	lp = ft[HITEC].lp;	/* set long pulse */
+	sv = ft[HITEC].sv;	/* set sync value */
 
 	if (!quiet)
 		msgout("  Hi-Tec tape");
@@ -44,13 +51,13 @@ void hitec_search(void)
 		if ((z = find_pilot(i, HITEC)) > 0) {
 			sof = i;
 			i = z;
-			if(readttbyte(i, ft[HITEC].lp, ft[HITEC].sp, ft[HITEC].tp, ft[HITEC].en) == ft[HITEC].sv) {
+			if(readttbyte(i, lp, sp, tp, en) == sv) {
 				sod = i + 8;
 
 				/* decode the header, so we can validate the addresses */
 
 				for (tcnt = 0; tcnt < HDSZ; tcnt++)
-					hd[tcnt] = readttbyte(sod + (tcnt * 8), ft[HITEC].lp, ft[HITEC].sp, ft[HITEC].tp, ft[HITEC].en);
+					hd[tcnt] = readttbyte(sod + (tcnt * 8), lp, sp, tp, en);
 
 				s = hd[2] + (hd[3] << 8);
 				e = hd[4] + (hd[5] << 8);
@@ -70,10 +77,17 @@ void hitec_search(void)
 int hitec_describe(int row)
 {
 	int i, s, b, hd[HDSZ], rd_err, cb;
+	int en, tp, sp, lp, sv;
+
+	en = ft[HITEC].en;	/* set endian according to table in main.c */
+	tp = ft[HITEC].tp;	/* set threshold */
+	sp = ft[HITEC].sp;	/* set short pulse */
+	lp = ft[HITEC].lp;	/* set long pulse */
+	sv = ft[HITEC].sv;	/* set sync value */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++) {
-		b = readttbyte(s + (i * 8), ft[HITEC].lp, ft[HITEC].sp, ft[HITEC].tp, ft[HITEC].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		hd[i] = b;
 	}
 
@@ -102,13 +116,13 @@ int hitec_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
    
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[HITEC].lp, ft[HITEC].sp, ft[HITEC].tp, ft[HITEC].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		cb ^= b;
 		if (b == -1)
 			rd_err++;
 		blk[row]->dd[i] = b;
 	}
-	b = readttbyte(s + (i * 8), ft[HITEC].lp, ft[HITEC].sp, ft[HITEC].tp, ft[HITEC].en);
+	b = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

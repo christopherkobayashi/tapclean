@@ -31,7 +31,14 @@
 void enigma_search(void)
 {
 	int i, sof, sod, eod, eof;
+	int en, tp, sp, lp, sv;
 	int z, b;
+
+	en = ft[ENIGMA].en;	/* set endian according to table in main.c */
+	tp = ft[ENIGMA].tp;	/* set threshold */
+	sp = ft[ENIGMA].sp;	/* set short pulse */
+	lp = ft[ENIGMA].lp;	/* set long pulse */
+	sv = ft[ENIGMA].sv;	/* set sync value */
 
 	if (!quiet)
 		msgout("  Enigma Variations Tape");
@@ -40,20 +47,20 @@ void enigma_search(void)
 		if ((z = find_pilot(i, ENIGMA)) > 0) {
 			sof = i;
 			i = z;
-			if (readttbyte(i, ft[ENIGMA].lp, ft[ENIGMA].sp, ft[ENIGMA].tp, ft[ENIGMA].en) == ft[ENIGMA].sv) {
+			if (readttbyte(i, lp, sp, tp, en) == sv) {
 				sod = i + 8;
 
 				/* scan through all readable bytes... */
 
 				do {
-					b = readttbyte(i, ft[ENIGMA].lp, ft[ENIGMA].sp, ft[ENIGMA].tp, ft[ENIGMA].en);
+					b = readttbyte(i, lp, sp, tp, en);
 					if (b != -1)
 						i += 8;
 				} while (b != -1);
 
 				i -= 8;
 				eod = i;
-				eof =i + 7;
+				eof = i + 7;
 
 				addblockdef(ENIGMA, sof, sod, eod, eof, 0);
 				i = eof;	/* optimize search */
@@ -66,6 +73,13 @@ void enigma_search(void)
 int enigma_describe(int row)
 {
 	int i, s, b;
+	int en, tp, sp, lp, sv;
+
+	en = ft[ENIGMA].en;	/* set endian according to table in main.c */
+	tp = ft[ENIGMA].tp;	/* set threshold */
+	sp = ft[ENIGMA].sp;	/* set short pulse */
+	lp = ft[ENIGMA].lp;	/* set long pulse */
+	sv = ft[ENIGMA].sv;	/* set sync value */
 
 	/* get pilot & trailer length */
 
@@ -87,7 +101,7 @@ int enigma_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[ENIGMA].lp, ft[ENIGMA].sp, ft[ENIGMA].tp, ft[ENIGMA].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		if (b == -1)
 			blk[row]->rd_err++;
 

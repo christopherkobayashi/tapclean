@@ -17,6 +17,8 @@ v0.05
 	Converted scanners/hitec.c to new coding style (bgk)
 	Converted scanners/microload.c to new coding style (bgk)
 	Some small cleanups in scanners/microload.c (bgk)
+	Some small cleanups in scanners/hitec.c, freeload.c, jet.c (bgk)
+	Some small cleanups in scanners/enigma.c, oceannew1t1.c (bgk)
 	
 v0.04
 	Files changed: batchscan.c, database.c, main.c, mydefs.h.

@@ -34,8 +34,15 @@
 void jetload_search(void)
 {
 	int i, sof, sod, eod, eof;
+	int en, tp, sp, lp, sv;
 	int z, tcnt, hd[HDSZ];
 	int s, e, x;
+
+	en = ft[JET].en;	/* set endian according to table in main.c */
+	tp = ft[JET].tp;	/* set threshold */
+	sp = ft[JET].sp;	/* set short pulse */
+	lp = ft[JET].lp;	/* set long pulse */
+	sv = ft[JET].sv;	/* set sync value */
 
 	if (!quiet)
 		msgout("  Jetload");
@@ -45,13 +52,13 @@ void jetload_search(void)
 		if ((z = find_pilot(i, JET)) > 0) {
 			sof = i;
 			i = z;
-			if (readttbyte(i, ft[JET].lp, ft[JET].sp, ft[JET].tp, ft[JET].en) == ft[JET].sv) {
+			if (readttbyte(i, lp, sp, tp, en) == sv) {
 				sod = i + 8;
 
 				/* decode the header, so we can validate the addresses... */
 
 				for (tcnt = 0; tcnt < HDSZ; tcnt++)
-					hd[tcnt] = readttbyte(sod +(tcnt * 8), ft[JET].lp, ft[JET].sp, ft[JET].tp, ft[JET].en);
+					hd[tcnt] = readttbyte(sod + (tcnt * 8), lp, sp, tp, en);
 
 				s = hd[0] + (hd[1] << 8);	/* get start address */
 				e = hd[2] + (hd[3] << 8);	/* get end address */
@@ -62,7 +69,7 @@ void jetload_search(void)
 
 					/* just step sof back through any S pulses... */
 
-					while(tap.tmem[sof - 1]>ft[JET].sp - tol && tap.tmem[sof - 1] < ft[JET].sp + tol && !is_pause_param(sof - 1))
+					while(tap.tmem[sof - 1] > sp - tol && tap.tmem[sof - 1] < sp + tol && !is_pause_param(sof - 1))
 						sof--;
 					addblockdef(JET, sof, sod, eod, eof, 0);
 					i = eof;	/* optimize search */
@@ -75,15 +82,22 @@ void jetload_search(void)
 int jetload_describe(int row)
 {
 	int i, s, b, hd[HDSZ], rd_err;
+	int en, tp, sp, lp, sv;
+
+	en = ft[JET].en;	/* set endian according to table in main.c */
+	tp = ft[JET].tp;	/* set threshold */
+	sp = ft[JET].sp;	/* set short pulse */
+	lp = ft[JET].lp;	/* set long pulse */
+	sv = ft[JET].sv;	/* set sync value */
 
 	/* decode the header to get load address etc... */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++)
-		hd[i] = readttbyte(s + (i * 8), ft[JET].lp, ft[JET].sp, ft[JET].tp, ft[JET].en);
+		hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs = hd[0] + (hd[1] << 8);			/* record start address */
-	blk[row]->ce = hd[2] + (hd[3] << 8)-1;			/* record end address */
+	blk[row]->ce = hd[2] + (hd[3] << 8) - 1;		/* record end address */
 	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;	/* record length in bytes */
 
 	/* get pilot & trailer lengths */
@@ -101,7 +115,7 @@ int jetload_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
    
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[JET].lp, ft[JET].sp, ft[JET].tp, ft[JET].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		if (b == -1)
 			rd_err++;
 		blk[row]->dd[i] = b;

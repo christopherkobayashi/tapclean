@@ -79,12 +79,19 @@ void freeload_search(void)
 int freeload_describe(int row)
 {
 	int i, s, b, cb, hd[HDSZ];
+	int en, tp, sp, lp, sv;
+
+	en = ft[FREE].en;
+	tp = ft[FREE].tp;
+	sp = ft[FREE].sp;
+	lp = ft[FREE].lp;
+	sv = ft[FREE].sv;
       
 	/* decode header... */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++)
-		hd[i] = readttbyte(s + (i * 8), ft[FREE].lp, ft[FREE].sp, ft[FREE].tp, ft[FREE].en);
+		hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs = hd[0] + (hd[1] << 8);
 	blk[row]->ce = hd[2] + (hd[3] << 8) - 1;
@@ -106,7 +113,7 @@ int freeload_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[FREE].lp, ft[FREE].sp, ft[FREE].tp, ft[FREE].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		cb ^= b;
 		if (b == -1)
 			blk[row]->rd_err++;
@@ -115,7 +122,7 @@ int freeload_describe(int row)
 
 	/* read actual checkbyte. */
 
-	b = readttbyte(s + (i * 8), ft[FREE].lp, ft[FREE].sp, ft[FREE].tp, ft[FREE].en);
+	b = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

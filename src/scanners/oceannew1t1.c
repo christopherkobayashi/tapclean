@@ -34,8 +34,15 @@
 void oceannew1t1_search(void)
 {
 	int i, sof, sod, eod, eof;
+	int en, tp, sp, lp, sv;
 	int z, h, hd[HDSZ];
 	unsigned int s, e, x;
+
+	en = ft[OCNEW1T1].en;	/* set endian according to table in main.c */
+	tp = ft[OCNEW1T1].tp;	/* set threshold */
+	sp = ft[OCNEW1T1].sp;	/* set short pulse */
+	lp = ft[OCNEW1T1].lp;	/* set long pulse */
+	sv = ft[OCNEW1T1].sv;	/* set sync value */
 
 	if(!quiet)
 		msgout("  New Ocean Tape 1 T1");
@@ -45,13 +52,13 @@ void oceannew1t1_search(void)
 		if ((z = find_pilot(i, OCNEW1T1)) > 0) {
 			sof = i;
 			i = z;
-			if (readttbyte(i, ft[OCNEW1T1].lp, ft[OCNEW1T1].sp, ft[OCNEW1T1].tp, ft[OCNEW1T1].en) == ft[OCNEW1T1].sv) {
-				sod =i + 8;
+			if (readttbyte(i, lp, sp, tp, en) == sv) {
+				sod = i + 8;
 
 				/* decode the header so we can validate the addresses... */
 
 				for (h = 0; h < HDSZ; h++)
-					hd[h] = readttbyte(sod + (h * 8), ft[OCNEW1T1].lp, ft[OCNEW1T1].sp, ft[OCNEW1T1].tp, ft[OCNEW1T1].en);
+					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
 				s = hd[1] + (hd[2] << 8);	/* get start address */
 				e = hd[3] + (hd[4] << 8);	/* get end address */
 
@@ -73,12 +80,19 @@ void oceannew1t1_search(void)
 int oceannew1t1_describe(int row)
 {
 	int i, s, b, hd[HDSZ], cb;
+	int en, tp, sp, lp, sv;
+
+	en = ft[OCNEW1T1].en;	/* set endian according to table in main.c */
+	tp = ft[OCNEW1T1].tp;	/* set threshold */
+	sp = ft[OCNEW1T1].sp;	/* set short pulse */
+	lp = ft[OCNEW1T1].lp;	/* set long pulse */
+	sv = ft[OCNEW1T1].sv;	/* set sync value */
    
 	/* decode the header to get load address etc... */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++)
-		hd[i] = readttbyte(s + (i * 8), ft[OCNEW1T1].lp, ft[OCNEW1T1].sp, ft[OCNEW1T1].tp, ft[OCNEW1T1].en);
+		hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs = hd[1] + (hd[2] << 8);
 	blk[row]->ce = hd[3] + (hd[4] << 8) - 1;
@@ -103,7 +117,7 @@ int oceannew1t1_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), ft[OCNEW1T1].lp, ft[OCNEW1T1].sp, ft[OCNEW1T1].tp, ft[OCNEW1T1].en);
+		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		cb ^= b;
 		if (b == -1)
 			blk[row]->rd_err++;
@@ -112,7 +126,7 @@ int oceannew1t1_describe(int row)
 
 	/* read actual checkbyte. */
 
-	b= readttbyte(s + (i * 8), ft[OCNEW1T1].lp, ft[OCNEW1T1].sp, ft[OCNEW1T1].tp, ft[OCNEW1T1].en);
+	b= readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;
