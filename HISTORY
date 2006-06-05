@@ -15,6 +15,7 @@ v0.05
 	Removed last global (char *outbuf) from tap2audio.c (bgk)
 	Removed 1 level of indentation in main.c::main() (bgk)
 	Converted scanners/hitec.c to new coding style (bgk)
+	Converted scanners/microload.c to new coding style (bgk)
 	
 v0.04
 	Files changed: batchscan.c, database.c, main.c, mydefs.h.
