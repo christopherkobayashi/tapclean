@@ -38,8 +38,8 @@
 #include "database.h"
 #include "scanners/_scanners.h"
 
-#define VERSION_STR "TAPClean v0.05 Console - (C) 2006 XXX"
-#define BUILDER     "bgk"
+#define VERSION_STR "TAPClean v0.06 Console - (C) 2006 XXX"
+#define BUILDER     "ldf"
 
 #define TRUE	1
 #define FALSE	0
@@ -222,6 +222,8 @@ extern int cyber_f2_eor2;
 
 extern int batchmode;
 
+/* These are defined in main.c (move to main.h and include main.h here) */
+extern const char tcbatchreportname[], temptcbatchreportname[];
 extern char exedir[MAXPATH];	/* assigned in main.c, includes trailing slash. */
 
 

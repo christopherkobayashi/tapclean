@@ -161,7 +161,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 		/* create a new report file... */
 
-		fp = fopen(tcbatchreportname, "w+t");
+		fp = fopen(temptcbatchreportname, "w+t");
 		if (fp == NULL)
 			return -1;
 
@@ -346,6 +346,12 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		fclose(fp);
 
 		chdir(exedir);
+#ifdef WIN32
+		sprintf(lin, "ren %s %s", temptcbatchreportname, tcbatchreportname);
+#else
+		sprintf(lin, "mv %s %s", temptcbatchreportname, tcbatchreportname);
+#endif
+		system(lin);
            
 		/*  print path/name of batch report to screen.. */
 

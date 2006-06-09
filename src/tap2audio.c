@@ -36,6 +36,102 @@
 
 #include "tap2audio.h"
 
+const char auoutname[] =	"out.au";
+const char wavoutname[] =	"out.wav";
+
+/**
+ *	Internal usage functions
+ */
+
+/*
+ * rather than using the very slow method of using fputc() for every sample in the file,
+ * I write to a memory buffer, When it's full it (quickly) dumps its contents to
+ * the disk file and resets its position pointer (bp) to the beginning again.
+ * the function below implements all this, "amp" is the amplitude of the sample being written,
+ * 'finished' is just a flag to tell it to dump only up to the current position of bp, ie.
+ * the tail-end of the file, which will be BUFSZ bytes or less.
+ *
+ * Returns the number of samples successfully written, 0 or 1.
+ */
+
+static int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp, char *outbuf)
+{
+	if (!finished) {
+		outbuf[*bp++] = amp;
+		if (*bp == BUFSZ) {				/* buffer full? */
+			fwrite(outbuf, 1, BUFSZ, filep);	/* add full buffer to the file */
+			*bp = 0;
+		}
+		return 1;
+
+	/* push all remaining valid bytes to the file if 'finished' is true.. */
+
+	} else {
+		fwrite(outbuf, 1, *bp, filep);
+		return 0;
+	}
+}
+
+/*
+ * write out square wave data of amplitude 'amp' and length 'len'.
+ * if parameter 'signd' is set (1) the wave data will be in a signed format
+ * else unsigned.
+ */
+
+static int drawwavesquare(int len, int amp, char signd, FILE *filep, unsigned long *bp, char *outbuf)
+{
+	int x, y, off;
+	int samples = 0;
+
+	if (signd)
+		off = 0;
+	else
+		off = 128;
+
+	for (x = 0; x < len; x++) {
+		if (x < (len >> 1))	/* peak first */
+			y = amp;
+		else
+			y =- amp;
+			samples += s_out(y + off, 0, filep, bp, outbuf);
+	}
+
+	return samples;
+}
+
+/*
+ * write out sine wave data of amplitude 'amp' and length 'len'.
+ * if parameter 'signd' is set (1) the wave data will be in a signed format
+ * else unsigned.
+ */
+
+static int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long *bp, char *outbuf)
+{
+	int x, y, off;
+	float deg, inc;
+	float rads = 180 / 3.141592654;
+	int samples = 0;
+
+	if (signd)
+		off = 0;
+	else
+		off = 128;
+
+	for (x = 0; x < len; x++) {
+		inc = (float)360 / len;
+		deg = (x * inc);	/* +180 makes the wave peak first */
+		y = amp * sin(deg / rads);
+		samples += s_out(y + off, 0, filep, bp, outbuf);
+	}
+
+	return samples;
+}
+
+
+/**
+ *	Public functions
+ */
+
 
 /*
  * Write out the TAP as a Sun AU file...
@@ -233,88 +329,4 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	free(outbuf);
  
 	return 0;
-}
-
-/*
- * write out square wave data of amplitude 'amp' and length 'len'.
- * if parameter 'signd' is set (1) the wave data will be in a signed format
- * else unsigned.
- */
-
-int drawwavesquare(int len, int amp, char signd, FILE *filep, unsigned long *bp, char *outbuf)
-{
-	int x, y, off;
-	int samples = 0;
-
-	if (signd)
-		off = 0;
-	else
-		off = 128;
-
-	for (x = 0; x < len; x++) {
-		if (x < (len >> 1))	/* peak first */
-			y = amp;
-		else
-			y =- amp;
-			samples += s_out(y + off, 0, filep, bp, outbuf);
-	}
-
-	return samples;
-}
-
-/*
- * write out sine wave data of amplitude 'amp' and length 'len'.
- * if parameter 'signd' is set (1) the wave data will be in a signed format
- * else unsigned.
- */
-
-int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long *bp, char *outbuf)
-{
-	int x, y, off;
-	float deg, inc;
-	float rads = 180 / 3.141592654;
-	int samples = 0;
-
-	if (signd)
-		off = 0;
-	else
-		off = 128;
-
-	for (x = 0; x < len; x++) {
-		inc = (float)360 / len;
-		deg = (x * inc);	/* +180 makes the wave peak first */
-		y = amp * sin(deg / rads);
-		samples += s_out(y + off, 0, filep, bp, outbuf);
-	}
-
-	return samples;
-}
-
-/*
- * rather than using the very slow method of using fputc() for every sample in the file,
- * I write to a memory buffer, When it's full it (quickly) dumps its contents to
- * the disk file and resets its position pointer (bp) to the beginning again.
- * the function below implements all this, "amp" is the amplitude of the sample being written,
- * 'finished' is just a flag to tell it to dump only up to the current position of bp, ie.
- * the tail-end of the file, which will be BUFSZ bytes or less.
- *
- * Returns the number of samples successfully written, 0 or 1.
- */
-
-int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp, char *outbuf)
-{
-	if (!finished) {
-		outbuf[*bp++] = amp;
-		if (*bp == BUFSZ) {				/* buffer full? */
-			fwrite(outbuf, 1, BUFSZ, filep);	/* add full buffer to the file */
-			*bp = 0;
-		}
-		return 1;
-
-	/* push all remaining valid bytes to the file if 'finished' is true.. */
-
-	} else {
-		fwrite(outbuf, 1, *bp, filep);
-		return 0;
-	}
 }

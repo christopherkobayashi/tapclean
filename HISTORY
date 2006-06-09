@@ -1,3 +1,20 @@
+v0.06
+	Files changed: batchscan.c, database.c, database.h, main.c, mydefs.h, tap2audio.h, tap2audio.c
+
+	Reinserted "temptcbatchreportname" definition in main.c. It proves to be an useful indicator while the
+	 bach scan is in progress. Declaration is _still_ in mydefs.h, it will be moved at a later time (luigi).
+	Moved au and wav filename definitions to the tap2audio.c file. Declaration is in tap2audio.h (luigi).
+	Removed drawwavesquare(), drawwavesine(), and s_out() prototypes from tap2audio.h, since those (PRIVATE)
+	 functions are not used outside the tap2audio.c file, and therefore they were made static there (luigi).
+	Added 1 level of indentation in main.c/main() for the TAP test (luigi).
+	Removed duplication of forward declarations of addblockdef(); and sort_blocks(); in main.h (luigi).
+	Changed many (PRIVATE) functions in main.c to static and commented out the declarations from main.h (luigi).
+	Added #define HASNOTCHECKSUM -2 to database.h, thus eliminating the hardcoded value (luigi).
+	Moved function scan_gaps() to the database module (luigi).
+	Moved function count_rpulses() to the database module (luigi).
+	Moved function count_good_checksums() to the database module (luigi).
+	Moved function compute_overall_crc() to the database module (luigi).
+
 v0.05
 	Replace hardcoded values with #defines for read_errors[] (bgk)
 	Added check for getcwd() returning NULL (bgk)

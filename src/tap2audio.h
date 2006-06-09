@@ -23,17 +23,23 @@
  *
  */   
    
+#ifndef __TAP2AUDIO_H__
+#define __TAP2AUDIO_H__
 
 #include <stdio.h>
 
 #define BUFSZ	1048576	/* buffer size = 1 MB */
 #define FREQ	44100
-#define AUHDSZ	24	/* Size of .AU file header. */
-#define WAVHDSZ	44	/* Size of .WAV file header. */
+#define AUHDSZ	24	/*!< Size of .AU file header. */
+#define WAVHDSZ	44	/*!< Size of .WAV file header. */
+
+/* 
+ * These vars are defined in tap2audio.c. They shouldn't be accessible directly,
+ * but by means of a function, in future.
+ */
+extern const char auoutname[], wavoutname[];
 
 int au_write(unsigned char *, int, const char *, char);
 int wav_write(unsigned char *, int, const char *, char);
-int drawwavesquare(int, int, char, FILE *, unsigned long *, char *);
-int drawwavesine(int, int, char, FILE *, unsigned long *, char *);
-int s_out(unsigned char, int, FILE *, unsigned long *, char *);
 
+#endif

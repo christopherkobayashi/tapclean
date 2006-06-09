@@ -13,6 +13,7 @@
 			     entry failed. */
 #define DBFULL	-2	/*!< return value from "addblockdef" when database 
 			     is full. */
+#define HASNOTCHECKSUM	-2
 
 /**
  *	Struct 'blk_t'
@@ -55,6 +56,10 @@ int create_database(void);
 void reset_database(void);
 int addblockdef(int, int, int, int, int, int);
 void sort_blocks(void);
+void scan_gaps(void);
+int count_rpulses(void);
+int count_good_checksums(void);
+int compute_overall_crc(void);
 void destroy_database(void);
 
 #endif

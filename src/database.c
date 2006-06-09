@@ -62,8 +62,8 @@ void reset_database(void)
 		blk[i]->cx = 0;
 		blk[i]->crc = 0;
 		blk[i]->rd_err = 0;
-		blk[i]->cs_exp = -2;
-		blk[i]->cs_act = -2;
+		blk[i]->cs_exp = HASNOTCHECKSUM;
+		blk[i]->cs_act = HASNOTCHECKSUM;
 		blk[i]->pilot_len = 0;
 		blk[i]->trail_len = 0;
 		blk[i]->ok = 0;
@@ -151,8 +151,8 @@ int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
 			blk[slot]->dd = NULL;
 			blk[slot]->crc = 0;
 			blk[slot]->rd_err = 0;
-			blk[slot]->cs_exp = -2;
-			blk[slot]->cs_act = -2;
+			blk[slot]->cs_exp = HASNOTCHECKSUM;
+			blk[slot]->cs_act = HASNOTCHECKSUM;
 			blk[slot]->pilot_len = 0;
 			blk[slot]->trail_len = 0;
 			blk[slot]->fn = NULL;
@@ -195,6 +195,105 @@ void sort_blocks(void)
 			}
 		}
 	} while(swaps != 0);	/* repeat til no swaps occur.  */
+}
+
+/*
+ * Searches the file database for gaps. adds a definition for any found.
+ * Note: Must be called ONLY after sorting the database!.
+ * Note : The database MUST be re-sorted after a GAP is added!.
+ */
+
+void scan_gaps(void)
+{
+	int i, p1, p2, sz;
+
+	p1 = 20;			/* choose start of TAP and 1st blocks first pulse  */
+	p2 = blk[0]->p1;
+
+	if (p1 < p2) {
+		sz = p2 - p1;
+		addblockdef(GAP, p1, 0, 0, p2 - 1, sz);
+		sort_blocks();
+	}
+
+	/* double dragon sticks in this loop */
+
+	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+		p1 = blk[i]->p4;		/* get end of this block */
+		p2 = blk[i + 1]->p1;		/* and start of next  */
+		if (p1 < (p2 - 1)) {
+			sz = (p2 - 1) - p1;
+			if (sz > 0) {
+				addblockdef(GAP, p1 + 1, 0, 0, p2 - 1, sz);
+				sort_blocks();
+			}
+		}
+	}
+   
+	p1 = blk[i]->p4;		/* choose last blocks last pulse and End of TAP */
+	p2 = tap.len - 1;
+	if (p1 < p2) {
+		sz = p2 - p1;
+		addblockdef(GAP, p1 + 1, 0, 0, p2, sz);
+		sort_blocks();
+	}
+}
+
+/*
+ * Return the number of pulses accounted for in total across all known files.
+ */
+
+int count_rpulses(void)
+{
+	int i, tot;
+
+	/* add up number of pulses accounted for... */
+
+	/* for each block entry in blk */
+
+	for (i = 0, tot = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt != GAP) {
+
+			/* start and end addresses both present?  */
+
+			if (blk[i]->p1 != 0 && blk[i]->p4 != 0)
+				tot += (blk[i]->p4 - blk[i]->p1) + 1;
+		}
+	}
+
+	return tot;
+}
+
+/*
+ * Returns the quantity of 'has checksum and its OK' files in the database.
+ */
+
+int count_good_checksums(void)
+{
+	int i, c;
+
+	for (i = 0,c = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->cs_exp != HASNOTCHECKSUM) {
+			if (blk[i]->cs_exp == blk[i]->cs_act)
+				c++;
+		}
+	}
+
+	return c;
+}
+
+/*
+ * Add together all data file CRC32's
+ */
+
+int compute_overall_crc(void)
+{
+	int i, tot = 0;
+
+	for (i = 0; blk[i]->lt != 0; i++)
+		tot += blk[i]->crc;
+
+	return tot;
 }
 
 /**

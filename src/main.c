@@ -278,21 +278,88 @@ const char knam[100][32] = {
 
 static const char tcreportname[] =	"tcreport.txt";
 static const char temptcreportname[] =	"tcreport.tmp";
-static const char tcbatchreportname[] =	"tcbatch.txt";
 static const char tcinfoname[] =	"tcinfo.txt";
-static const char auoutname[] =		"out.au";
-static const char wavoutname[] =	"out.wav";
 
 static char cleanedtapname[256];	/* assigned in main(). */
 
 char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
+const char tcbatchreportname[] =	"tcbatch.txt";
+const char temptcbatchreportname[] =	"tcbatch.tmp";
 
+
+/**
+ *	Internal usage functions
+ */
+
+/*
+ * Erase all stored data for the loaded tap, free buffers.
+ */
+
+static void unload_tap(void)
+{
+	int i;
+
+	strcpy(tap.path, "");
+	strcpy(tap.name, "");
+	strcpy(tap.cbmname, "");
+	if(tap.tmem != NULL) {
+		free(tap.tmem);
+		tap.tmem = NULL;
+	}
+
+	tap.len = 0;
+	for(i = 0; i < 256; i++) {
+		tap.pst[i] = 0;
+		tap.fst[i] = 0;
+	}
+	
+	tap.fsigcheck = 0;
+	tap.fvercheck = 0;
+	tap.fsizcheck = 0;
+	tap.detected = 0;
+	tap.detected_percent = 0;
+	tap.purity = 0;
+	tap.total_gaps = 0;
+	tap.total_data_files = 0;
+	tap.total_checksums = 0;
+	tap.total_checksums_good = 0;
+	tap.optimized_files = 0;
+	tap.total_read_errors = 0;
+	tap.fdate = 0;
+	tap.taptime = 0;
+	tap.version = 0;
+	tap.bootable = 0;
+	tap.changed = 0;
+	tap.crc = 0;
+	tap.cbmcrc = 0;
+	tap.cbmid = 0;
+	tap.tst_hd = 0;
+	tap.tst_rc = 0;
+	tap.tst_op = 0;
+	tap.tst_cs = 0;
+	tap.tst_rd = 0;
+
+	reset_database();
+
+	for (i = 0; i < BLKMAX; i++) {		/* empty the prg datbase...  */
+		prg[i].lt = 0;
+		prg[i].cs = 0;
+		prg[i].ce = 0;
+		prg[i].cx = 0;
+		if (prg[i].dd != NULL) {
+			free(prg[i].dd);
+			prg[i].dd = NULL;
+		}
+
+		prg[i].errors = 0;
+	}
+}
 
 /*
  * Unallocate tap, crc_table and database
  */
 
-void cleanup_main(void)
+static void cleanup_main(void)
 {
 	unload_tap();
 	free_crc_table();
@@ -301,222 +368,11 @@ void cleanup_main(void)
 	destroy_database();
 }
 
-int main(int argc, char *argv[])
-{
-	int i, j, opnum;
-	time_t t1, t2;
-	FILE *fp;
-	
-	char *opname;		/*!< a pointer to one of the following opnames */
-	char opnames[][32] = {
-		"No operation",
-		"Testing", 
-		"Optimizing",
-		"Converting to v0",
-		"Converting to v1", 
-		"Fixing header size", 
-		"Optimizing pauses",
-		"Converting to au file",
-		"Converting to wav file",
-		"Batch scanning",
-		"Creating info file"
-	};
-	
-	deleteworkfiles();
-         
-	/* Get exe path from argv[0] */
-
-	if (!get_exedir(argv[0]))
-		return -1;
-
-	/* allocate ram to file database and initialize array pointers */
-
-	if (!create_database())
-		return -1;
-
-	copy_loader_table();
-	build_crc_table();
-
-	printf("\n------------------------------------------------------------------\n");
-	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
-	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
-	printf("------------------------------------------------------------------\n");
-
-	/* Note: options should be processed before actions! */
-   
-	if (argc == 1) {
-		display_usage();
-		printf("\n\n");
-		cleanup_main();
-		return 0;
-	}
-
-	process_options(argc, argv);
-      
-	/* PROCESS ACTIONS... */
-
-	/** 
-	 *	Just test a tap if no option is present, just a filename. 
-	 *
-	 * 	This allows for drag and drop in (Microsoft) explorer.
-	 * 	First make sure the argument is not the -b option without
-	 * 	arguments.
-	 */
-
-	if (argc == 2 && strcmp(argv[1], "-b") && load_tap(argv[1])) {
-		printf("\n\nLoaded: %s", tap.name);
-		printf("\nTesting...\n");
-		time(&t1);
-		if (analyze()) {
-			report();
-			printf("\n\nSaved: %s", tcreportname);
-			time(&t2);
-			time2str(t2 - t1, lin);
-			printf("\nOperation completed in %s.", lin);
-		}
-	} else {
-		for (i = 0; i < argc; i++) {
-			opnum = 0;
-			if (strcmp(argv[i], "-t") == 0)
-				opnum = 1;	/* test */ 
-			if (strcmp(argv[i], "-o") == 0)
-				opnum = 2;	/* optimize */
-			if (strcmp(argv[i], "-ct0") == 0)
-				opnum = 3;	/* convert to v0 */
-			if (strcmp(argv[i], "-ct1") == 0)
-				opnum = 4;	/* convert to v1 */         
-			if (strcmp(argv[i], "-rs") == 0)
-				opnum = 5;	/* fix header size */
-			if (strcmp(argv[i], "-po") == 0)
-				opnum = 6;	/* pause optimize */
-            
-			if (strcmp(argv[i], "-au") == 0)
-				opnum = 7;	/* convert to au */
-			if (strcmp(argv[i], "-wav") == 0)
-				opnum = 8;	/* convert to wav */
-			if (strcmp(argv[i], "-b") == 0)
-				opnum = 9;	/* batch scan */  
-			if (strcmp(argv[i], "-info") == 0)
-				opnum = 10;	/* create info file */
-                  
-			opname = opnames[opnum];
-            
-			/* This handles testing + any op that takes a tap, affects it and saves it... */
-
-			if (opnum > 0 && opnum < 7) {
-				if (argv[i + 1] != NULL) {
-					if (load_tap(argv[i + 1])) {
-						time(&t1);
-						printf("\n\nLoaded: %s", tap.name);
-						printf("\n%s...\n", opname);
-                    
-						if (analyze()) {
-							switch(opnum) {
-								case 2:	clean();
-									break;
-								case 3:	convert_to_v0();
-									break;
-								case 4:	convert_to_v1();
-									break; 
-								case 5:	fix_header_size(); 
-									analyze();
-									break; 
-								case 6:	convert_to_v0(); 
-									clip_ends(); 
-									unify_pauses();
-									convert_to_v1();   
-									add_trailpause();
-									break;
-							}
-
-							report();
-							printf("\nSaved: %s", tcreportname);
-							if (opnum > 1) {
-								strcpy(cleanedtapname, CLEANED_PREFIX);
-								strcat(cleanedtapname, tap.name); 
-								save_tap(cleanedtapname);
-								printf("\n\nSaved: %s", cleanedtapname);
-							}
-							time(&t2);
-							time2str(t2 - t1, lin);
-							printf("\nOperation completed in %s.", lin);
-						}
-					}
-				} else
-					printf("\n\nMissing file name."); 
-			}
-
-			if (opnum == 7) {	/* flag = convert to au */
-				if (argv[i + 1] != NULL) {
-					if (load_tap(argv[i + 1])) {
-						if (analyze()) {
-							printf("\n\nLoaded: %s", tap.name);
-							printf("\n%s...\n", opname);
-							au_write(tap.tmem, tap.len, auoutname,sine);
-							printf("\nSaved: %s", auoutname);
-							msgout("\n");
-						}
-					}
-				} else
-					printf("\n\nMissing file name.");
-			}
- 
-			if (opnum == 8) {		/* flag = convert to wav */
-				if (argv[i + 1] != NULL) {
-					if (load_tap(argv[i + 1])) {
-						if (analyze()) {
-							printf("\n\nLoaded: %s", tap.name);
-							printf("\n%s...\n", opname);
-							wav_write(tap.tmem, tap.len, wavoutname,sine);
-							printf("\nSaved: %s", wavoutname);
-							msgout("\n");
-						}
-					}
-				} else
-					printf("\n\nMissing file name.");
-			}
-
-			if (opnum == 9) {		/* flag = batch scan... */
-				batchmode = TRUE;
-				quiet = TRUE;
-
-				if (argv[i + 1] != NULL) {
-					printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
-					batchscan(argv[i + 1], incsubdirs, 1);
-				} else {
-					printf("\n\nMissing directory name, using current.");
-					printf("\n\nBatch Scanning: %s\n", exedir);
-					batchscan(exedir, incsubdirs, 1);
-				}
-			
-				batchmode = FALSE;
-				quiet = FALSE;
-			}
-                    
-			/* flag = generate exe info file */
-
-			if (opnum == 10) {
-				fp = fopen(tcinfoname, "w+t");
-				if (fp != NULL) {
-					printf("\n%s...\n", opname); 
-					fprintf(fp, "%s", VERSION_STR);
-					fclose(fp);
-				}
-			}
-		}
-	}
-
-	printf("\n\n");
-	cleanup_main();
-
-	return 0;
-}
-
 /*
  * Get exe path from argv[0]...
  */
 
-int get_exedir(char *argv0)
+static int get_exedir(char *argv0)
 {
 	int i;
 	char *ret;
@@ -537,7 +393,7 @@ int get_exedir(char *argv0)
 	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
 
 	if (stricmp(exedir, "tapclean") == 0 || stricmp(exedir, "tapclean.exe") == 0) {
-		ret = getcwd(exedir, MAXPATH - 2);
+		ret = (char *) getcwd(exedir, MAXPATH - 2);
 		if (ret == NULL)
 			return FALSE;
 
@@ -556,10 +412,58 @@ int get_exedir(char *argv0)
 }
 
 /*
+ * make a copy of the loader table ft[] so we can revert back to it after any changes.
+ * the copy is globally available in ft_org[]
+ */
+
+static void copy_loader_table(void)
+{
+	int i;
+
+	for (i = 0; ft[i].tp != 666; i++) {
+		strcpy(ft_org[i].name, ft[i].name);
+		ft_org[i].en = ft[i].en;
+		ft_org[i].tp = ft[i].tp;
+		ft_org[i].sp = ft[i].sp;
+		ft_org[i].mp = ft[i].mp;
+		ft_org[i].lp = ft[i].lp;
+		ft_org[i].pv = ft[i].pv;
+		ft_org[i].sv = ft[i].sv;
+		ft_org[i].pmin = ft[i].pmin;
+		ft_org[i].pmax = ft[i].pmax;
+		ft_org[i].has_cs = ft[i].has_cs;
+	}
+}
+
+/*
+ * reset loader table to all original values, ONLY call this if a call to
+ * copy_loader_table() has been made.
+ */
+
+static void reset_loader_table(void)
+{
+	int i;
+
+	for (i = 0; ft[i].tp != 666; i++) {
+		strcpy(ft[i].name, ft_org[i].name);
+		ft[i].en = ft_org[i].en;
+		ft[i].tp = ft_org[i].tp;
+		ft[i].sp = ft_org[i].sp;
+		ft[i].mp = ft_org[i].mp;
+		ft[i].lp = ft_org[i].lp;
+		ft[i].pv = ft_org[i].pv;
+		ft[i].sv = ft_org[i].sv;
+		ft[i].pmin = ft_org[i].pmin;
+		ft[i].pmax = ft_org[i].pmax;
+		ft[i].has_cs = ft_org[i].has_cs;
+	}
+}
+
+/*
  * Display usage
  */
 
-void display_usage(void)
+static void display_usage(void)
 {
 	printf("\n\nUsage:\n\n");
 	printf("tapclean [option][parameter]\n\n");
@@ -593,7 +497,7 @@ void display_usage(void)
  * Process options
  */
 
-void process_options(int argc, char **argv)
+static void process_options(int argc, char **argv)
 {
 	int i;
 
@@ -793,7 +697,7 @@ void process_options(int argc, char **argv)
  *       cs, ce, cx, rd_err, crc, cs_exp, cs_act, pilot_len, trail_len, ok.
  */
 
-void search_tap(void)
+static void search_tap(void)
 {
 	long i;
 
@@ -1117,6 +1021,23 @@ void search_tap(void)
 }
 
 /*
+ * Write a description of a GAP file to global buffer 'info' for inclusion in
+ * the report.
+ */
+
+static void gap_describe(int row)
+{
+	strcpy(lin,"");
+
+	if (blk[row]->xi > 1)
+		sprintf(lin, "\n - Length = %d pulses", blk[row]->xi);
+	else
+		sprintf(lin, "\n - Length = %d pulse", blk[row]->xi);
+
+	strcpy(info, lin);
+}
+
+/*
  * Pass this function a valid row number (i) from the file database (blk) and
  * it calls the describe function for that file format which will decode
  * any data in the block and fill in all missing information for that file.
@@ -1125,7 +1046,7 @@ void search_tap(void)
  * in the global buffer 'info'. (this could be improved).
  */
 
-void describe_file(int row)
+static void describe_file(int row)
 {
 	int t;
 	t = blk[row]->lt;
@@ -1286,7 +1207,7 @@ void describe_file(int row)
  * decodes each file.
  */
 
-void describe_blocks(void)
+static void describe_blocks(void)
 {
 	int i, t, re;
 
@@ -1310,6 +1231,900 @@ void describe_blocks(void)
 			tap.total_read_errors += re;
 		}
 	}
+}
+
+/*
+ * Save buffer tap.tmem[] to a named file.
+ * Return 1 on success, 0 on error.
+ */
+
+static int save_tap(char *name)
+{
+	FILE *fp;
+
+	fp = fopen(name, "w+b");
+	if (fp == NULL || tap.tmem == NULL)
+		return 0;
+
+	fwrite(tap.tmem, tap.len, 1, fp);
+	fclose(fp);
+	return 1;
+}
+
+/*
+ * Look at the TAP header and verify signature as C64 TAP.
+ * Return 0 if ok else 1.
+ */
+
+static int check_signature(void)
+{
+	int i;
+
+	/* copy 1st 12 chars, strncpy fucks it up somehow. */
+
+	for (i = 0; i < 12; i++)
+		lin[i] = tap.tmem[i];
+
+	lin[i] = 0;
+
+	if (strcmp(lin, "C64-TAPE-RAW") == 0)
+		return 0;
+	else
+		return 1;
+}
+
+/*
+ * Look at the TAP header and verify version, currently 0 and 1 are valid versions.
+ * Sets 'version' variable and returns 0 on success, else returns 1.
+ */
+
+static int check_version(void)
+{
+	int b;
+
+	b = tap.tmem[12];
+	if (b == 0 || b == 1) {
+		tap.version = b;
+		return 0;
+	} else
+		return 1;
+}
+
+/*
+ * Verifies the TAP header 'size' field.
+ * Returns 0 if ok, else 1.
+ */
+
+static int check_size(void)
+{
+	int sz;
+
+	sz = tap.tmem[16] + (tap.tmem[17] << 8) + (tap.tmem[18] << 16) + (tap.tmem[19] << 24);
+	if (sz == tap.len - 20)
+		return 0;
+	else
+		return 1;
+}
+
+/*
+ * Return the duration in seconds between p1 and p2.
+ * p1 and p2 should be valid offsets within the scope of the TAP file.
+ */
+
+static float get_duration(int p1, int p2)
+{
+	long i;
+	long zsum;
+	double tot = 0;
+	double p = (double)20000 / CPS;
+	float apr;
+
+	for (i = p1; i < p2; i++) {
+
+		/* handle normal pulses (non-zeroes) */
+
+		if (tap.tmem[i] != 0)
+			tot += ((double)(tap.tmem[i] * 8) / CPS);
+
+		/* handle v0 zeroes.. */
+
+		if (tap.tmem[i] == 0 && tap.version == 0)
+			tot += p;
+
+		/* handle v1 zeroes.. */
+
+		if (tap.tmem[i] == 0 && tap.version == 1) {
+			zsum = tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
+			tot += (double)zsum / CPS;
+			i += 3;
+		}
+	}
+
+	apr = (float)tot;	/* approximate and return number of seconds. */
+	return apr;
+}
+
+/*
+ * Return the number of unique pulse widths in the TAP.
+ * Note: Also fills tap.pst[256] array with distribution stats.
+ */
+
+static int get_pulse_stats(void)
+{
+	int i,tot,b;
+
+	for(i = 0; i < 256; i++)	/* clear pulse table...  */
+		tap.pst[i] = 0;
+
+	/* create pulse table... */
+
+	for (i = 20; i < tap.len; i++) {
+		b = tap.tmem[i];
+		if (b == 0 && tap.version == 1)
+			i += 3;
+		else
+			tap.pst[b]++;
+	}
+
+	/* add up pulse types... */
+
+	tot = 0;
+
+	/* Note the start at 1 (pauses dont count) */
+
+	for (i = 1; i < 256; i++) {
+		if (tap.pst[i] != 0)
+			tot++;
+	}
+
+	return tot;
+}
+
+/*
+ * Count all file types found in the TAP and their quantities.
+ * Also records the number of data files, checksummed data files and gaps in the TAP.
+ */
+
+static void get_file_stats(void)
+{
+	int i;
+
+	for (i = 0; i < 256; i++)	/* init table */
+		tap.fst[i] = 0;
+
+	/* count all contained filetype occurences... */
+
+	for (i = 0; blk[i]->lt != 0; i++)
+		tap.fst[blk[i]->lt]++;
+
+	tap.total_data_files = 0;
+	tap.total_checksums = 0;
+	tap.total_gaps = 0;
+
+	/* for each file format in ft[]...  */
+
+	for (i = 0; ft[i].sp != 666; i++) {
+		if (tap.fst[i] != 0) {
+			if (ft[i].has_cs == CSYES)
+				tap.total_checksums += tap.fst[i];	/* count all available checksums. */
+		}
+
+		if (i > PAUSE)
+			tap.total_data_files += tap.fst[i];		/* count data files */
+
+		if (i == GAP)
+			tap.total_gaps += tap.fst[i];			/* count gaps */
+	}
+}
+
+/*
+ * Counts the number of standard CBM boot sequence(s) (HEAD,HEAD,DATA,DATA) in
+ * the current file database.
+ * Returns the number found.
+ */
+
+static int count_bootparts(void)
+{
+	int tblk[BLKMAX];
+	int i, j, bootparts;
+  
+	/* make a block list (types only) without gaps/pauses included.. */
+
+	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt > 2)
+			tblk[j++] = blk[i]->lt;
+	}
+
+	tblk[j] = 0;
+
+	/* count bootable sections... */
+
+	bootparts =0;
+
+	for (i = 0; i + 3 < j; i++) {
+		if (tblk[i + 0] == CBM_HEAD && tblk[i + 1] == CBM_HEAD && tblk[i + 2] == CBM_DATA && tblk[i + 3] == CBM_DATA)
+			bootparts++;
+	}
+
+	return bootparts;
+}
+
+/*
+ * Returns the number of imperfect pulsewidths found in the file at database
+ * entry 'slot'.
+ */
+
+static int count_unopt_pulses(int slot)
+{
+	int i, t, b, imperfect;
+
+	t = blk[slot]->lt;
+
+	for(imperfect = 0, i = blk[slot]->p1; i < blk[slot]->p4 + 1; i++) {
+		b = tap.tmem[i];
+		if (b != ft[t].sp && b != ft[t].mp && b != ft[t].lp)
+			imperfect++;
+	}
+
+	return imperfect;
+}
+
+/*
+ * Return a count of files in the database that are 100% optimized...
+ */
+
+static int count_opt_files(void)
+{
+	int i, n;
+
+	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt > PAUSE) {
+			if (count_unopt_pulses(i) == 0)
+				n++;
+		}
+	}
+
+	return n;
+}
+
+/*
+ * Counts pauses within the tap file, note: v1 pauses are still held
+ * as separate entities in the database even when they run consecutively.
+ * This function counts consecutive v1's as a single pause.
+ */
+
+static int count_pauses(void)
+{
+	int i, n;
+
+	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt == PAUSE) {
+			n++;
+			if (tap.version == 1) {		/* consecutive v1 pauses count as 1 pause.. */
+				while (blk[i++]->lt == PAUSE && i < BLKMAX - 1);
+				i--;
+			}
+		}
+	}
+   
+	return n;
+}
+
+/*
+ * Create a table of exportable PRGs in the prg[] array based on the current
+ * data extractions available in the blk[] array.
+ * Note: if 'joinprgneighbours' is not 0, then any neigbouring files will be
+ * connected as a single PRG. (neighbour = data addresses run consecutively).
+ */
+
+static void make_prgs(void)
+{
+	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
+	unsigned char *tmp, done;
+
+	/* create table of all exported files by index (of blk)... */
+
+	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->dd != NULL)
+			pt[j++] = i;
+	}
+	pt[j] = -1;			/* terminator */
+      
+
+	for (i = 0; i < BLKMAX; i++) {	/* clear the prg table... */
+		prg[i].lt = 0;
+		prg[i].cs = 0;
+		prg[i].ce = 0;
+		prg[i].cx = 0;
+
+		if (prg[i].dd != NULL) {
+			free(prg[i].dd);
+			prg[i].dd = NULL;
+		}
+		prg[i].errors = 0;
+	}
+      
+   
+	tmp = (unsigned char*)malloc(65536 * 2);	/* create buffer for unifications */
+	j = 0;						/* j steps through the finished prg's */
+
+	/* scan through the 'data holding' blk[] indexes held in pt[]... */
+
+	for (i = 0; pt[i] != -1 ;i++) {
+		if (blk[pt[i]]->dd != NULL) {	/* should always be true. */
+			ti = 0;
+			done = 0;
+
+			s = blk[pt[i]]->cs;	/* keep 1st start address. */
+			errors = 0;		/* this will count the errors found in each blk */
+						/* entry used to create the final data prg in tmp. */
+			do {
+				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
+							/* note: where files are united, the type will */
+							/* be set to the type of only the last file */
+				x = blk[pt[i]]->cx;
+				e = blk[pt[i]]->ce;
+				errors += blk[pt[i]]->rd_err;
+            
+				/* bad checksum also counts as an error */
+
+				if (ft[blk[pt[i]]->lt].has_cs == TRUE && blk[pt[i]]->cs_exp != blk[pt[i]]->cs_act)
+					errors++;
+ 
+				for (c = 0; c < x; c++)
+					tmp[ti++] = blk[pt[i]]->dd[c];	/* copy the data to tmp buffer */
+
+				/* block unification wanted?... */
+
+				if (prgunite) {
+
+					/* scan following blocks and override default details. */
+
+					if (pt[i + 1] != -1) {		/* another file available? */
+						if (blk[pt[i + 1]]->cs == (e + 1))	/* is next file a neighbour? */
+							i++;
+						else
+							done = 1;
+					} else
+						done =1;
+				} else
+					done =1;
+			} while(!done);
+
+			/* create the finished prg entry using data in tmp...  */
+         
+			x = ti;					/* set final data length */
+			prg[j].dd = (unsigned char*)malloc(x);	/* allocate the ram */
+			for (c = 0; c < x; c++)			/* copy the data.. */
+				prg[j].dd[c] = tmp[c];
+			prg[j].lt = t;				/* set file type */ 
+			prg[j].cs = s;				/* set file start address */ 
+			prg[j].ce = e;				/* set file end address */ 
+			prg[j].cx = x;				/* set file length */ 
+			prg[j].errors = errors;			/* set file errors */ 
+			j++;					/* onto the next prg... */
+		}
+	}
+
+	prg[j].lt = 0;		/* terminator */
+
+	free(tmp);
+}
+
+/*
+ * Save all available prg's to a folder (console app only).
+ * Returns the number of files saved.
+ */
+
+static int save_prgs(void)
+{
+	int i;
+	FILE *fp;    
+
+	chdir(exedir);
+
+	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
+#ifdef WIN32
+		system("del *.prg");
+#else
+		system("rm *.prg");
+#endif
+	} else {
+		system("mkdir prg");
+		chdir("prg");
+	}
+
+	for (i = 0; prg[i].lt != 0; i++) {
+		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
+		if (prg[i].errors != 0)		/* append error indicator if necessary) */
+			strcat(lin, " BAD");
+		strcat(lin, ".prg");
+
+		fp = fopen(lin, "w+b");
+		if (fp != NULL) {
+			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
+			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */
+			fwrite(prg[i].dd, prg[i].cx, 1, fp);	/* write data */
+			fclose(fp);
+		}
+	}
+
+	chdir(exedir);
+	return 0;
+}
+
+/*
+ * show loader table values... (unused in console version)
+ */
+
+static void show_loader_table(void)
+{
+	int i;
+	char inf[100];
+   
+	msgout("\nThe following table is generated from internal data that FT uses for");
+	msgout("\nscanning and cleaning, some values may change with program use.");
+	msgout("\n");
+	msgout("\n");
+
+	sprintf(lin, "\nFORMAT NAME            EN   TP  SP  MP  LP  PV  SV  CS");
+	msgout(lin);
+	msgout("\n");
+
+	for (i = 3; ft[i].en != 666; i++) {
+		strcpy(lin, "");
+		strcpy(inf, "");
+		sprintf(inf, "%-22s ", ft[i].name);
+		strcat(lin, inf);
+      
+		if (ft[i].en == LSbF)
+			sprintf(inf, "LSbF ");
+		if (ft[i].en == MSbF)
+			sprintf(inf, "MSbF ");
+		if (ft[i].en == XX)
+			sprintf(inf, "XX   ");
+		strcat(lin,inf);
+
+		if (ft[i].tp != XX)
+			sprintf(inf, "0x%02X ", ft[i].tp);
+		else
+			sprintf(inf, "XX  ");
+		strcat(lin, inf);
+		
+		if (ft[i].sp != XX)
+			sprintf(inf, "0x%02X ", ft[i].sp);
+		else
+			sprintf(inf,"XX  ");
+		strcat(lin, inf);
+
+		if (ft[i].mp != XX)
+			sprintf(inf, "0x%02X ", ft[i].mp);
+		else                sprintf(inf, "XX  ");
+		strcat(lin, inf);
+
+		if (ft[i].lp != XX)
+			sprintf(inf, "0x%02X ", ft[i].lp);
+		else
+			sprintf(inf, "XX  ");
+		strcat(lin, inf);
+		
+		if (ft[i].pv != XX)
+			sprintf(inf, "0x%02X ", ft[i].pv);
+		else
+			sprintf(inf, "XX  ");
+		strcat(lin, inf);
+		
+		if (ft[i].sv != XX)
+			sprintf(inf, "0x%02X ", ft[i].sv);
+		else
+			sprintf(inf, "XX  ");
+		strcat(lin, inf);
+
+		if (ft[i].has_cs == CSYES)
+			sprintf(inf, "Y   ");
+		else
+			sprintf(inf, "N   ");
+		strcat(lin, inf);
+		msgout(lin);
+	}
+
+	msgout("\n");
+	msgout("\nEN = Byte Endianess");
+	msgout("\nTP = Threshold Pulse");
+	msgout("\nSP = Short Pulse");
+	msgout("\nMP = Medium Pulse");
+	msgout("\nLP = Long Pulse");
+	msgout("\nPV = File Pilot Value");
+	msgout("\nSV = File Sync Value");
+	msgout("\nCS = File Checksum Available (Y/N)");
+	msgout("\n");
+	msgout("\nNote: XX = Variable/Not Applicable/Don't Care.");
+	msgout("\nNote: MSbF = Most Significant bit First, LSbF = Least Significant bit First.");
+	msgout("\nNote: Y = Yes, N = No.");
+	msgout("\nNote: If PV and SV are both 0 or 1 the pilot/sync is a bitstream.");
+	msgout("\n");
+	msgout("\n");
+}
+
+/*
+ * Print the human readble TAP report to a buffer.
+ * Note: this is done so I can send the info to both the screen and the report
+ * without repeating the code.
+ * Note: Call 'analyze()' before calling this!.
+ */
+
+static void print_results(char *buf)
+{
+	char tstr[2][256] = {"PASS", "FAIL"};
+	char tstr2[2][256] = {"OK", "FAIL"};
+
+	sprintf(buf, "\n\n\nGENERAL INFO AND TEST RESULTS\n");
+   
+	sprintf(lin, "\nTAP Name    : %s", tap.path);
+	strcat(buf, lin);
+
+	sprintf(lin, "\nTAP Size    : %d bytes (%d kB)", tap.len, tap.len >> 10);
+	strcat(buf, lin);
+	sprintf(lin, "\nTAP Version : %d", tap.version);
+	strcat(buf, lin);
+	sprintf(lin, "\nRecognized  : %d%s", tap.detected_percent, "%%");
+	strcat(buf, lin);
+	sprintf(lin, "\nData Files  : %d", tap.total_data_files);
+	strcat(buf, lin);
+	sprintf(lin, "\nPauses      : %d", count_pauses());
+	strcat(buf, lin);
+	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
+	strcat(buf, lin);
+	sprintf(lin, "\nMagic CRC32 : %08X", tap.crc);
+	strcat(buf, lin);
+
+	if (tap.bootable) {
+		if (tap.bootable == 1)
+			sprintf(lin, "\nBootable    : YES (1 part, name: %s)", pet2text(tmp, tap.cbmname));
+		else
+			sprintf(lin, "\nBootable    : YES (%d parts, 1st name: %s)", tap.bootable, pet2text(tmp, tap.cbmname));
+		strcat(buf, lin);
+	} else {
+		sprintf(lin, "\nBootable    : NO");
+		strcat(buf, lin);
+	}
+
+	sprintf(lin, "\nLoader ID   : %s", knam[tap.cbmid]);
+	strcat(buf, lin);
+
+	/* TEST RESULTS... */
+
+	sprintf(lin, "\n");
+	strcat(buf, lin);
+
+	if (tap.tst_hd == 0 && tap.tst_rc == 0 && tap.tst_cs == 0 && tap.tst_rd == 0 && tap.tst_op == 0)
+		sprintf(lin, "\nOverall Result    : PASS");
+	else
+		sprintf(lin, "\nOverall Result    : FAIL");
+
+	strcat(buf, lin);
+
+	sprintf(lin, "\n");
+	strcat(buf, lin);
+	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", tstr[tap.tst_hd], tstr2[tap.fsigcheck], tstr2[tap.fvercheck], tstr2[tap.fsizcheck]);
+	strcat(buf, lin);
+	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", tstr[tap.tst_rc], tap.detected, tap.len-20, tap.detected_percent,"%%");
+	strcat(buf, lin); 
+	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", tstr[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
+	strcat(buf, lin);
+	sprintf(lin, "\nRead test         : %s [%d Errors]", tstr[tap.tst_rd], tap.total_read_errors);
+	strcat(buf, lin);
+	sprintf(lin, "\nOptimization test : %s [%d of %d files OK]", tstr[tap.tst_op], tap.optimized_files, tap.total_data_files);
+	strcat(buf, lin);
+	sprintf(lin, "\n");
+	strcat(buf, lin);
+}
+
+/*
+ * Note: This one prints out a fully interprets all file info and includes extra
+ * text infos generated by xxxxx_describe functions.
+ */
+
+static void print_database(char *buf)
+{
+	int i, t;
+
+	sprintf(buf, "\nFILE DATABASE\n");
+
+	for (i = 0; blk[i]->lt != 0; i++) {
+		sprintf(lin, "\n---------------------------------");
+		strcat(buf, lin);
+		sprintf(lin, "\nFile Type: %s", ft[blk[i]->lt].name);
+		strcat(buf, lin);
+		sprintf(lin, "\nLocation: $%04X -> $%04X -> $%04X -> $%04X", blk[i]->p1, blk[i]->p2, blk[i]->p3, blk[i]->p4);
+		strcat(buf, lin);
+
+		if (blk[i]->lt > PAUSE) {		/* info for data files only... */
+			sprintf(lin, "\nLA: $%04X  EA: $%04X  SZ: %d", blk[i]->cs, blk[i]->ce, blk[i]->cx);
+			strcat(buf, lin);
+
+			if (blk[i]->fn != NULL) {	/* filename, if applicable */
+				sprintf(lin, "\nFile Name: %s", blk[i]->fn);
+				strcat(buf, lin);
+			}
+
+			sprintf(lin, "\nPilot/Trailer Size: %d/%d", blk[i]->pilot_len, blk[i]->trail_len);
+			strcat(buf, lin);
+
+			if (ft[blk[i]->lt].has_cs == TRUE) {	/* checkbytes, if applicable */
+				sprintf(lin, "\nCheckbyte Actual/Expected: $%02X/$%02X", blk[i]->cs_act, blk[i]->cs_exp);
+				strcat(buf, lin);
+			}
+
+			sprintf(lin, "\nRead Errors: %d", blk[i]->rd_err);
+			strcat(buf, lin);
+			sprintf(lin, "\nUnoptimized Pulses: %d", count_unopt_pulses(i));
+			strcat(buf, lin);
+			sprintf(lin, "\nCRC32: %08X", blk[i]->crc);
+			strcat(buf, lin);
+		}
+
+		sprintf(info, "");	/* clear 'info' ready to receive additional text */
+		describe_file(i);
+		strcat(buf, info);	/* add additional text */
+		strcat(buf, "\n");
+	}
+}
+
+/*
+ * Print pulse stats to buffer 'buf'.
+ * Note: Call 'analyze()' before calling this!.
+ */
+
+static void print_pulse_stats(char *buf)
+{
+	int i;
+
+	sprintf(buf, "\nPULSE FREQUENCY TABLE\n");
+
+	for (i = 1; i < 256; i++) {
+		if (tap.pst[i] != 0) {
+			sprintf(lin, "\n0x%02X (%d)", i, tap.pst[i]);
+			strcat(buf, lin);
+		}
+	}
+}
+
+/*
+ * Print file stats to buffer 'buf'.
+ * Note: Call 'analyze()' before calling this!.
+ */
+
+static void print_file_stats(char *buf)
+{
+	int i;
+
+	sprintf(buf, "\nFILE FREQUENCY TABLE\n");
+ 
+	for (i = 0; ft[i].sp != 666; i++) {	/* for each file format in ft[]...  */
+		if (tap.fst[i] != 0) {		/* list all found files and their frequency...  */
+			sprintf(lin, "\n%s (%d)", ft[i].name, tap.fst[i]);
+			strcat(buf, lin);
+		}
+	}
+}
+
+
+/**
+ *	Public functions
+ */
+
+int main(int argc, char *argv[])
+{
+	int i, j, opnum;
+	time_t t1, t2;
+	FILE *fp;
+	
+	char *opname;		/*!< a pointer to one of the following opnames */
+	char opnames[][32] = {
+		"No operation",
+		"Testing", 
+		"Optimizing",
+		"Converting to v0",
+		"Converting to v1", 
+		"Fixing header size", 
+		"Optimizing pauses",
+		"Converting to au file",
+		"Converting to wav file",
+		"Batch scanning",
+		"Creating info file"
+	};
+	
+	deleteworkfiles();
+         
+	/* Get exe path from argv[0] */
+
+	if (!get_exedir(argv[0]))
+		return -1;
+
+	/* allocate ram to file database and initialize array pointers */
+
+	if (!create_database())
+		return -1;
+
+	copy_loader_table();
+	build_crc_table();
+
+	printf("\n------------------------------------------------------------------\n");
+	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
+	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
+	printf("------------------------------------------------------------------\n");
+
+	/* Note: options should be processed before actions! */
+   
+	if (argc == 1) {
+		display_usage();
+		printf("\n\n");
+		cleanup_main();
+		return 0;
+	}
+
+	process_options(argc, argv);
+      
+	/* PROCESS ACTIONS... */
+
+	/** 
+	 *	Just test a tap if no option is present, just a filename. 
+	 *
+	 * 	This allows for drag and drop in (Microsoft) explorer.
+	 * 	First make sure the argument is not the -b option without
+	 * 	arguments.
+	 */
+
+	if (argc == 2 && strcmp(argv[1], "-b")) {
+		if (load_tap(argv[1])) {
+			printf("\n\nLoaded: %s", tap.name);
+			printf("\nTesting...\n");
+			time(&t1);
+			if (analyze()) {
+				report();
+				printf("\n\nSaved: %s", tcreportname);
+				time(&t2);
+				time2str(t2 - t1, lin);
+				printf("\nOperation completed in %s.", lin);
+			}
+		}
+	} else {
+		for (i = 0; i < argc; i++) {
+			opnum = 0;
+			if (strcmp(argv[i], "-t") == 0)
+				opnum = 1;	/* test */ 
+			if (strcmp(argv[i], "-o") == 0)
+				opnum = 2;	/* optimize */
+			if (strcmp(argv[i], "-ct0") == 0)
+				opnum = 3;	/* convert to v0 */
+			if (strcmp(argv[i], "-ct1") == 0)
+				opnum = 4;	/* convert to v1 */         
+			if (strcmp(argv[i], "-rs") == 0)
+				opnum = 5;	/* fix header size */
+			if (strcmp(argv[i], "-po") == 0)
+				opnum = 6;	/* pause optimize */
+            
+			if (strcmp(argv[i], "-au") == 0)
+				opnum = 7;	/* convert to au */
+			if (strcmp(argv[i], "-wav") == 0)
+				opnum = 8;	/* convert to wav */
+			if (strcmp(argv[i], "-b") == 0)
+				opnum = 9;	/* batch scan */  
+			if (strcmp(argv[i], "-info") == 0)
+				opnum = 10;	/* create info file */
+                  
+			opname = opnames[opnum];
+            
+			/* This handles testing + any op that takes a tap, affects it and saves it... */
+
+			if (opnum > 0 && opnum < 7) {
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						time(&t1);
+						printf("\n\nLoaded: %s", tap.name);
+						printf("\n%s...\n", opname);
+                    
+						if (analyze()) {
+							switch(opnum) {
+								case 2:	clean();
+									break;
+								case 3:	convert_to_v0();
+									break;
+								case 4:	convert_to_v1();
+									break; 
+								case 5:	fix_header_size(); 
+									analyze();
+									break; 
+								case 6:	convert_to_v0(); 
+									clip_ends(); 
+									unify_pauses();
+									convert_to_v1();   
+									add_trailpause();
+									break;
+							}
+
+							report();
+							printf("\nSaved: %s", tcreportname);
+							if (opnum > 1) {
+								strcpy(cleanedtapname, CLEANED_PREFIX);
+								strcat(cleanedtapname, tap.name); 
+								save_tap(cleanedtapname);
+								printf("\n\nSaved: %s", cleanedtapname);
+							}
+							time(&t2);
+							time2str(t2 - t1, lin);
+							printf("\nOperation completed in %s.", lin);
+						}
+					}
+				} else
+					printf("\n\nMissing file name."); 
+			}
+
+			if (opnum == 7) {	/* flag = convert to au */
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						if (analyze()) {
+							printf("\n\nLoaded: %s", tap.name);
+							printf("\n%s...\n", opname);
+							au_write(tap.tmem, tap.len, auoutname,sine);
+							printf("\nSaved: %s", auoutname);
+							msgout("\n");
+						}
+					}
+				} else
+					printf("\n\nMissing file name.");
+			}
+ 
+			if (opnum == 8) {		/* flag = convert to wav */
+				if (argv[i + 1] != NULL) {
+					if (load_tap(argv[i + 1])) {
+						if (analyze()) {
+							printf("\n\nLoaded: %s", tap.name);
+							printf("\n%s...\n", opname);
+							wav_write(tap.tmem, tap.len, wavoutname,sine);
+							printf("\nSaved: %s", wavoutname);
+							msgout("\n");
+						}
+					}
+				} else
+					printf("\n\nMissing file name.");
+			}
+
+			if (opnum == 9) {		/* flag = batch scan... */
+				batchmode = TRUE;
+				quiet = TRUE;
+
+				if (argv[i + 1] != NULL) {
+					printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
+					batchscan(argv[i + 1], incsubdirs, 1);
+				} else {
+					printf("\n\nMissing directory name, using current.");
+					printf("\n\nBatch Scanning: %s\n", exedir);
+					batchscan(exedir, incsubdirs, 1);
+				}
+			
+				batchmode = FALSE;
+				quiet = FALSE;
+			}
+                    
+			/* flag = generate exe info file */
+
+			if (opnum == 10) {
+				fp = fopen(tcinfoname, "w+t");
+				if (fp != NULL) {
+					printf("\n%s...\n", opname); 
+					fprintf(fp, "%s", VERSION_STR);
+					fclose(fp);
+				}
+			}
+		}
+	}
+
+	printf("\n\n");
+	cleanup_main();
+
+	return 0;
 }
 
 /*
@@ -1560,88 +2375,6 @@ int load_tap(char *name)
 }
 
 /*
- * Save buffer tap.tmem[] to a named file.
- * Return 1 on success, 0 on error.
- */
-
-int save_tap(char *name)
-{
-	FILE *fp;
-
-	fp = fopen(name, "w+b");
-	if (fp == NULL || tap.tmem == NULL)
-		return 0;
-
-	fwrite(tap.tmem, tap.len, 1, fp);
-	fclose(fp);
-	return 1;
-}
-
-/*
- * Erase all stored data for the loaded tap, free buffers.
- */
-
-void unload_tap(void)
-{
-	int i;
-
-	strcpy(tap.path, "");
-	strcpy(tap.name, "");
-	strcpy(tap.cbmname, "");
-	if(tap.tmem != NULL) {
-		free(tap.tmem);
-		tap.tmem = NULL;
-	}
-
-	tap.len = 0;
-	for(i = 0; i < 256; i++) {
-		tap.pst[i] = 0;
-		tap.fst[i] = 0;
-	}
-	
-	tap.fsigcheck = 0;
-	tap.fvercheck = 0;
-	tap.fsizcheck = 0;
-	tap.detected = 0;
-	tap.detected_percent = 0;
-	tap.purity = 0;
-	tap.total_gaps = 0;
-	tap.total_data_files = 0;
-	tap.total_checksums = 0;
-	tap.total_checksums_good = 0;
-	tap.optimized_files = 0;
-	tap.total_read_errors = 0;
-	tap.fdate = 0;
-	tap.taptime = 0;
-	tap.version = 0;
-	tap.bootable = 0;
-	tap.changed = 0;
-	tap.crc = 0;
-	tap.cbmcrc = 0;
-	tap.cbmid = 0;
-	tap.tst_hd = 0;
-	tap.tst_rc = 0;
-	tap.tst_op = 0;
-	tap.tst_cs = 0;
-	tap.tst_rd = 0;
-
-	reset_database();
-
-	for (i = 0; i < BLKMAX; i++) {		/* empty the prg datbase...  */
-		prg[i].lt = 0;
-		prg[i].cs = 0;
-		prg[i].ce = 0;
-		prg[i].cx = 0;
-		if (prg[i].dd != NULL) {
-			free(prg[i].dd);
-			prg[i].dd = NULL;
-		}
-
-		prg[i].errors = 0;
-	}
-}
-
-/*
  * Perform a full analysis of the tap file...
  *
  * Gather all available info from the tap. most data is stored in the 'tap' struct.
@@ -1831,229 +2564,6 @@ void report(void)
 }
 
 /*
- * Return the number of pulses accounted for in total across all known files.
- */
-
-int count_rpulses(void)
-{
-	int i, tot;
-
-	/* add up number of pulses accounted for... */
-
-	/* for each block entry in blk */
-
-	for (i = 0, tot = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt != GAP) {
-
-			/* start and end addresses both present?  */
-
-			if (blk[i]->p1 != 0 && blk[i]->p4 != 0)
-				tot += (blk[i]->p4 - blk[i]->p1) + 1;
-		}
-	}
-
-	return tot;
-}
-
-/*
- * Look at the TAP header and verify signature as C64 TAP.
- * Return 0 if ok else 1.
- */
-
-int check_signature(void)
-{
-	int i;
-
-	/* copy 1st 12 chars, strncpy fucks it up somehow. */
-
-	for (i = 0; i < 12; i++)
-		lin[i] = tap.tmem[i];
-
-	lin[i] = 0;
-
-	if (strcmp(lin, "C64-TAPE-RAW") == 0)
-		return 0;
-	else
-		return 1;
-}
-
-/*
- * Look at the TAP header and verify version, currently 0 and 1 are valid versions.
- * Sets 'version' variable and returns 0 on success, else returns 1.
- */
-
-int check_version(void)
-{
-	int b;
-
-	b = tap.tmem[12];
-	if (b == 0 || b == 1) {
-		tap.version = b;
-		return 0;
-	} else
-		return 1;
-}
-
-/*
- * Verifies the TAP header 'size' field.
- * Returns 0 if ok, else 1.
- */
-
-int check_size(void)
-{
-	int sz;
-
-	sz = tap.tmem[16] + (tap.tmem[17] << 8) + (tap.tmem[18] << 16) + (tap.tmem[19] << 24);
-	if (sz == tap.len - 20)
-		return 0;
-	else
-		return 1;
-}
-
-/*
- * Return the duration in seconds between p1 and p2.
- * p1 and p2 should be valid offsets within the scope of the TAP file.
- */
-
-float get_duration(int p1, int p2)
-{
-	long i;
-	long zsum;
-	double tot = 0;
-	double p = (double)20000 / CPS;
-	float apr;
-
-	for (i = p1; i < p2; i++) {
-
-		/* handle normal pulses (non-zeroes) */
-
-		if (tap.tmem[i] != 0)
-			tot += ((double)(tap.tmem[i] * 8) / CPS);
-
-		/* handle v0 zeroes.. */
-
-		if (tap.tmem[i] == 0 && tap.version == 0)
-			tot += p;
-
-		/* handle v1 zeroes.. */
-
-		if (tap.tmem[i] == 0 && tap.version == 1) {
-			zsum = tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
-			tot += (double)zsum / CPS;
-			i += 3;
-		}
-	}
-
-	apr = (float)tot;	/* approximate and return number of seconds. */
-	return apr;
-}
-
-/*
- * Return the number of unique pulse widths in the TAP.
- * Note: Also fills tap.pst[256] array with distribution stats.
- */
-
-int get_pulse_stats(void)
-{
-	int i,tot,b;
-
-	for(i = 0; i < 256; i++)	/* clear pulse table...  */
-		tap.pst[i] = 0;
-
-	/* create pulse table... */
-
-	for (i = 20; i < tap.len; i++) {
-		b = tap.tmem[i];
-		if (b == 0 && tap.version == 1)
-			i += 3;
-		else
-			tap.pst[b]++;
-	}
-
-	/* add up pulse types... */
-
-	tot = 0;
-
-	/* Note the start at 1 (pauses dont count) */
-
-	for (i = 1; i < 256; i++) {
-		if (tap.pst[i] != 0)
-			tot++;
-	}
-
-	return tot;
-}
-
-/*
- * Count all file types found in the TAP and their quantities.
- * Also records the number of data files, checksummed data files and gaps in the TAP.
- */
-
-void get_file_stats(void)
-{
-	int i;
-
-	for (i = 0; i < 256; i++)	/* init table */
-		tap.fst[i] = 0;
-
-	/* count all contained filetype occurences... */
-
-	for (i = 0; blk[i]->lt != 0; i++)
-		tap.fst[blk[i]->lt]++;
-
-	tap.total_data_files = 0;
-	tap.total_checksums = 0;
-	tap.total_gaps = 0;
-
-	/* for each file format in ft[]...  */
-
-	for (i = 0; ft[i].sp != 666; i++) {
-		if (tap.fst[i] != 0) {
-			if (ft[i].has_cs == CSYES)
-				tap.total_checksums += tap.fst[i];	/* count all available checksums. */
-		}
-
-		if (i > PAUSE)
-			tap.total_data_files += tap.fst[i];		/* count data files */
-
-		if (i == GAP)
-			tap.total_gaps += tap.fst[i];			/* count gaps */
-	}
-}
-
-/*
- * Counts the number of standard CBM boot sequence(s) (HEAD,HEAD,DATA,DATA) in
- * the current file database.
- * Returns the number found.
- */
-
-int count_bootparts(void)
-{
-	int tblk[BLKMAX];
-	int i, j, bootparts;
-  
-	/* make a block list (types only) without gaps/pauses included.. */
-
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt > 2)
-			tblk[j++] = blk[i]->lt;
-	}
-
-	tblk[j] = 0;
-
-	/* count bootable sections... */
-
-	bootparts =0;
-
-	for (i = 0; i + 3 < j; i++) {
-		if (tblk[i + 0] == CBM_HEAD && tblk[i + 1] == CBM_HEAD && tblk[i + 2] == CBM_DATA && tblk[i + 3] == CBM_DATA)
-			bootparts++;
-	}
-
-	return bootparts;
-}
-
-/*
  * Calls upon functions found in clean.c to optimize and
  * correct the TAP.
  */
@@ -2110,65 +2620,6 @@ void clean(void)
 }
 
 /*
- * Searches the file database for gaps. adds a definition for any found.
- * Note: Must be called ONLY after sorting the database!.
- * Note : The database MUST be re-sorted after a GAP is added!.
- */
-
-void scan_gaps(void)
-{
-	int i, p1, p2, sz;
-
-	p1 = 20;			/* choose start of TAP and 1st blocks first pulse  */
-	p2 = blk[0]->p1;
-
-	if (p1 < p2) {
-		sz = p2 - p1;
-		addblockdef(GAP, p1, 0, 0, p2 - 1, sz);
-		sort_blocks();
-	}
-
-	/* double dragon sticks in this loop */
-
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
-		p1 = blk[i]->p4;		/* get end of this block */
-		p2 = blk[i + 1]->p1;		/* and start of next  */
-		if (p1 < (p2 - 1)) {
-			sz = (p2 - 1) - p1;
-			if (sz > 0) {
-				addblockdef(GAP, p1 + 1, 0, 0, p2 - 1, sz);
-				sort_blocks();
-			}
-		}
-	}
-   
-	p1 = blk[i]->p4;		/* choose last blocks last pulse and End of TAP */
-	p2 = tap.len - 1;
-	if (p1 < p2) {
-		sz = p2 - p1;
-		addblockdef(GAP, p1 + 1, 0, 0, p2, sz);
-		sort_blocks();
-	}
-}
-
-/*
- * Write a description of a GAP file to global buffer 'info' for inclusion in
- * the report.
- */
-
-void gap_describe(int row)
-{
-	strcpy(lin,"");
-
-	if (blk[row]->xi > 1)
-		sprintf(lin, "\n - Length = %d pulses", blk[row]->xi);
-	else
-		sprintf(lin, "\n - Length = %d pulse", blk[row]->xi);
-
-	strcpy(info, lin);
-}
-
-/*
  * Check whether the offset 'x' is accounted for in the database (by a data file
  * or a pause, not a gap), return 1 if it is, else 0.
  */
@@ -2185,58 +2636,6 @@ int is_accounted(int x)
 	}
 
 	return 0;
-}
-
-/*
- * Add together all data file CRC32's
- */
-
-int compute_overall_crc(void)
-{
-	int i, tot = 0;
-
-	for (i = 0; blk[i]->lt != 0; i++)
-		tot += blk[i]->crc;
-
-	return tot;
-}
-
-/*
- * Returns the number of imperfect pulsewidths found in the file at database
- * entry 'slot'.
- */
-
-int count_unopt_pulses(int slot)
-{
-	int i, t, b, imperfect;
-
-	t = blk[slot]->lt;
-
-	for(imperfect = 0, i = blk[slot]->p1; i < blk[slot]->p4 + 1; i++) {
-		b = tap.tmem[i];
-		if (b != ft[t].sp && b != ft[t].mp && b != ft[t].lp)
-			imperfect++;
-	}
-
-	return imperfect;
-}
-
-/*
- * Return a count of files in the database that are 100% optimized...
- */
-
-int count_opt_files(void)
-{
-	int i, n;
-
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt > PAUSE) {
-			if (count_unopt_pulses(i) == 0)
-				n++;
-		}
-	}
-
-	return n;
 }
 
 /*
@@ -2301,72 +2700,6 @@ int is_pause_param(int p)
 }
 
 /*
- * Returns the quantity of 'has checksum and its OK' files in the database.
- */
-
-int count_good_checksums(void)
-{
-	int i, c;
-
-	for (i = 0,c = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->cs_exp != -2) {
-			if (blk[i]->cs_exp == blk[i]->cs_act)
-				c++;
-		}
-	}
-
-	return c;
-}
-
-/*
- * make a copy of the loader table ft[] so we can revert back to it after any changes.
- * the copy is globally available in ft_org[]
- */
-
-void copy_loader_table(void)
-{
-	int i;
-
-	for (i = 0; ft[i].tp != 666; i++) {
-		strcpy(ft_org[i].name, ft[i].name);
-		ft_org[i].en = ft[i].en;
-		ft_org[i].tp = ft[i].tp;
-		ft_org[i].sp = ft[i].sp;
-		ft_org[i].mp = ft[i].mp;
-		ft_org[i].lp = ft[i].lp;
-		ft_org[i].pv = ft[i].pv;
-		ft_org[i].sv = ft[i].sv;
-		ft_org[i].pmin = ft[i].pmin;
-		ft_org[i].pmax = ft[i].pmax;
-		ft_org[i].has_cs = ft[i].has_cs;
-	}
-}
-
-/*
- * reset loader table to all original values, ONLY call this if a call to
- * copy_loader_table() has been made.
- */
-
-void reset_loader_table(void)
-{
-	int i;
-
-	for (i = 0; ft[i].tp != 666; i++) {
-		strcpy(ft[i].name, ft_org[i].name);
-		ft[i].en = ft_org[i].en;
-		ft[i].tp = ft_org[i].tp;
-		ft[i].sp = ft_org[i].sp;
-		ft[i].mp = ft_org[i].mp;
-		ft[i].lp = ft_org[i].lp;
-		ft[i].pv = ft_org[i].pv;
-		ft[i].sv = ft_org[i].sv;
-		ft[i].pmin = ft_org[i].pmin;
-		ft[i].pmax = ft_org[i].pmax;
-		ft[i].has_cs = ft_org[i].has_cs;
-	}
-}
-
-/*
  * search blk[] array for instance number 'num' of block type 'lt' and calls
  * 'xxx_describe_block' for that file (which decodes it).
  * this is for use by scanners which need to get access to data held in other files
@@ -2407,122 +2740,6 @@ int find_decode_block(int lt, int num)
 }
 
 /*
- * show loader table values... (unused in console version)
- */
-
-void show_loader_table(void)
-{
-	int i;
-	char inf[100];
-   
-	msgout("\nThe following table is generated from internal data that FT uses for");
-	msgout("\nscanning and cleaning, some values may change with program use.");
-	msgout("\n");
-	msgout("\n");
-
-	sprintf(lin, "\nFORMAT NAME            EN   TP  SP  MP  LP  PV  SV  CS");
-	msgout(lin);
-	msgout("\n");
-
-	for (i = 3; ft[i].en != 666; i++) {
-		strcpy(lin, "");
-		strcpy(inf, "");
-		sprintf(inf, "%-22s ", ft[i].name);
-		strcat(lin, inf);
-      
-		if (ft[i].en == LSbF)
-			sprintf(inf, "LSbF ");
-		if (ft[i].en == MSbF)
-			sprintf(inf, "MSbF ");
-		if (ft[i].en == XX)
-			sprintf(inf, "XX   ");
-		strcat(lin,inf);
-
-		if (ft[i].tp != XX)
-			sprintf(inf, "0x%02X ", ft[i].tp);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].sp != XX)
-			sprintf(inf, "0x%02X ", ft[i].sp);
-		else
-			sprintf(inf,"XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].mp != XX)
-			sprintf(inf, "0x%02X ", ft[i].mp);
-		else                sprintf(inf, "XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].lp != XX)
-			sprintf(inf, "0x%02X ", ft[i].lp);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].pv != XX)
-			sprintf(inf, "0x%02X ", ft[i].pv);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].sv != XX)
-			sprintf(inf, "0x%02X ", ft[i].sv);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].has_cs == CSYES)
-			sprintf(inf, "Y   ");
-		else
-			sprintf(inf, "N   ");
-		strcat(lin, inf);
-		msgout(lin);
-	}
-
-	msgout("\n");
-	msgout("\nEN = Byte Endianess");
-	msgout("\nTP = Threshold Pulse");
-	msgout("\nSP = Short Pulse");
-	msgout("\nMP = Medium Pulse");
-	msgout("\nLP = Long Pulse");
-	msgout("\nPV = File Pilot Value");
-	msgout("\nSV = File Sync Value");
-	msgout("\nCS = File Checksum Available (Y/N)");
-	msgout("\n");
-	msgout("\nNote: XX = Variable/Not Applicable/Don't Care.");
-	msgout("\nNote: MSbF = Most Significant bit First, LSbF = Least Significant bit First.");
-	msgout("\nNote: Y = Yes, N = No.");
-	msgout("\nNote: If PV and SV are both 0 or 1 the pilot/sync is a bitstream.");
-	msgout("\n");
-	msgout("\n");
-}
-
-/*
- * Counts pauses within the tap file, note: v1 pauses are still held
- * as separate entities in the database even when they run consecutively.
- * This function counts consecutive v1's as a single pause.
- */
-
-int count_pauses(void)
-{
-	int i, n;
-
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt == PAUSE) {
-			n++;
-			if (tap.version == 1) {		/* consecutive v1 pauses count as 1 pause.. */
-				while (blk[i++]->lt == PAUSE && i < BLKMAX - 1);
-				i--;
-			}
-		}
-	}
-   
-	return n;
-}
-
-/*
  * Add an entry to the 'read_errors[NUM_READ_ERRORS]' array...
  */
 
@@ -2546,312 +2763,6 @@ int add_read_error(int addr)
 	}
 
 	return -1;		/* -1 = error table is full */
-}
-
-/*
- * Print the human readble TAP report to a buffer.
- * Note: this is done so I can send the info to both the screen and the report
- * without repeating the code.
- * Note: Call 'analyze()' before calling this!.
- */
-
-void print_results(char *buf)
-{
-	char tstr[2][256] = {"PASS", "FAIL"};
-	char tstr2[2][256] = {"OK", "FAIL"};
-
-	sprintf(buf, "\n\n\nGENERAL INFO AND TEST RESULTS\n");
-   
-	sprintf(lin, "\nTAP Name    : %s", tap.path);
-	strcat(buf, lin);
-
-	sprintf(lin, "\nTAP Size    : %d bytes (%d kB)", tap.len, tap.len >> 10);
-	strcat(buf, lin);
-	sprintf(lin, "\nTAP Version : %d", tap.version);
-	strcat(buf, lin);
-	sprintf(lin, "\nRecognized  : %d%s", tap.detected_percent, "%%");
-	strcat(buf, lin);
-	sprintf(lin, "\nData Files  : %d", tap.total_data_files);
-	strcat(buf, lin);
-	sprintf(lin, "\nPauses      : %d", count_pauses());
-	strcat(buf, lin);
-	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
-	strcat(buf, lin);
-	sprintf(lin, "\nMagic CRC32 : %08X", tap.crc);
-	strcat(buf, lin);
-
-	if (tap.bootable) {
-		if (tap.bootable == 1)
-			sprintf(lin, "\nBootable    : YES (1 part, name: %s)", pet2text(tmp, tap.cbmname));
-		else
-			sprintf(lin, "\nBootable    : YES (%d parts, 1st name: %s)", tap.bootable, pet2text(tmp, tap.cbmname));
-		strcat(buf, lin);
-	} else {
-		sprintf(lin, "\nBootable    : NO");
-		strcat(buf, lin);
-	}
-
-	sprintf(lin, "\nLoader ID   : %s", knam[tap.cbmid]);
-	strcat(buf, lin);
-
-	/* TEST RESULTS... */
-
-	sprintf(lin, "\n");
-	strcat(buf, lin);
-
-	if (tap.tst_hd == 0 && tap.tst_rc == 0 && tap.tst_cs == 0 && tap.tst_rd == 0 && tap.tst_op == 0)
-		sprintf(lin, "\nOverall Result    : PASS");
-	else
-		sprintf(lin, "\nOverall Result    : FAIL");
-
-	strcat(buf, lin);
-
-	sprintf(lin, "\n");
-	strcat(buf, lin);
-	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", tstr[tap.tst_hd], tstr2[tap.fsigcheck], tstr2[tap.fvercheck], tstr2[tap.fsizcheck]);
-	strcat(buf, lin);
-	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", tstr[tap.tst_rc], tap.detected, tap.len-20, tap.detected_percent,"%%");
-	strcat(buf, lin); 
-	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", tstr[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
-	strcat(buf, lin);
-	sprintf(lin, "\nRead test         : %s [%d Errors]", tstr[tap.tst_rd], tap.total_read_errors);
-	strcat(buf, lin);
-	sprintf(lin, "\nOptimization test : %s [%d of %d files OK]", tstr[tap.tst_op], tap.optimized_files, tap.total_data_files);
-	strcat(buf, lin);
-	sprintf(lin, "\n");
-	strcat(buf, lin);
-}
-
-/*
- * Note: This one prints out a fully interprets all file info and includes extra
- * text infos generated by xxxxx_describe functions.
- */
-
-void print_database(char *buf)
-{
-	int i, t;
-
-	sprintf(buf, "\nFILE DATABASE\n");
-
-	for (i = 0; blk[i]->lt != 0; i++) {
-		sprintf(lin, "\n---------------------------------");
-		strcat(buf, lin);
-		sprintf(lin, "\nFile Type: %s", ft[blk[i]->lt].name);
-		strcat(buf, lin);
-		sprintf(lin, "\nLocation: $%04X -> $%04X -> $%04X -> $%04X", blk[i]->p1, blk[i]->p2, blk[i]->p3, blk[i]->p4);
-		strcat(buf, lin);
-
-		if (blk[i]->lt > PAUSE) {		/* info for data files only... */
-			sprintf(lin, "\nLA: $%04X  EA: $%04X  SZ: %d", blk[i]->cs, blk[i]->ce, blk[i]->cx);
-			strcat(buf, lin);
-
-			if (blk[i]->fn != NULL) {	/* filename, if applicable */
-				sprintf(lin, "\nFile Name: %s", blk[i]->fn);
-				strcat(buf, lin);
-			}
-
-			sprintf(lin, "\nPilot/Trailer Size: %d/%d", blk[i]->pilot_len, blk[i]->trail_len);
-			strcat(buf, lin);
-
-			if (ft[blk[i]->lt].has_cs == TRUE) {	/* checkbytes, if applicable */
-				sprintf(lin, "\nCheckbyte Actual/Expected: $%02X/$%02X", blk[i]->cs_act, blk[i]->cs_exp);
-				strcat(buf, lin);
-			}
-
-			sprintf(lin, "\nRead Errors: %d", blk[i]->rd_err);
-			strcat(buf, lin);
-			sprintf(lin, "\nUnoptimized Pulses: %d", count_unopt_pulses(i));
-			strcat(buf, lin);
-			sprintf(lin, "\nCRC32: %08X", blk[i]->crc);
-			strcat(buf, lin);
-		}
-
-		sprintf(info, "");	/* clear 'info' ready to receive additional text */
-		describe_file(i);
-		strcat(buf, info);	/* add additional text */
-		strcat(buf, "\n");
-	}
-}
-
-/*
- * Print pulse stats to buffer 'buf'.
- * Note: Call 'analyze()' before calling this!.
- */
-
-void print_pulse_stats(char *buf)
-{
-	int i;
-
-	sprintf(buf, "\nPULSE FREQUENCY TABLE\n");
-
-	for (i = 1; i < 256; i++) {
-		if (tap.pst[i] != 0) {
-			sprintf(lin, "\n0x%02X (%d)", i, tap.pst[i]);
-			strcat(buf, lin);
-		}
-	}
-}
-
-/*
- * Print file stats to buffer 'buf'.
- * Note: Call 'analyze()' before calling this!.
- */
-
-void print_file_stats(char *buf)
-{
-	int i;
-
-	sprintf(buf, "\nFILE FREQUENCY TABLE\n");
- 
-	for (i = 0; ft[i].sp != 666; i++) {	/* for each file format in ft[]...  */
-		if (tap.fst[i] != 0) {		/* list all found files and their frequency...  */
-			sprintf(lin, "\n%s (%d)", ft[i].name, tap.fst[i]);
-			strcat(buf, lin);
-		}
-	}
-}
-
-/*
- * Create a table of exportable PRGs in the prg[] array based on the current
- * data extractions available in the blk[] array.
- * Note: if 'joinprgneighbours' is not 0, then any neigbouring files will be
- * connected as a single PRG. (neighbour = data addresses run consecutively).
- */
-
-void make_prgs(void)
-{
-	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
-	unsigned char *tmp, done;
-
-	/* create table of all exported files by index (of blk)... */
-
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->dd != NULL)
-			pt[j++] = i;
-	}
-	pt[j] = -1;			/* terminator */
-      
-
-	for (i = 0; i < BLKMAX; i++) {	/* clear the prg table... */
-		prg[i].lt = 0;
-		prg[i].cs = 0;
-		prg[i].ce = 0;
-		prg[i].cx = 0;
-
-		if (prg[i].dd != NULL) {
-			free(prg[i].dd);
-			prg[i].dd = NULL;
-		}
-		prg[i].errors = 0;
-	}
-      
-   
-	tmp = (unsigned char*)malloc(65536 * 2);	/* create buffer for unifications */
-	j = 0;						/* j steps through the finished prg's */
-
-	/* scan through the 'data holding' blk[] indexes held in pt[]... */
-
-	for (i = 0; pt[i] != -1 ;i++) {
-		if (blk[pt[i]]->dd != NULL) {	/* should always be true. */
-			ti = 0;
-			done = 0;
-
-			s = blk[pt[i]]->cs;	/* keep 1st start address. */
-			errors = 0;		/* this will count the errors found in each blk */
-						/* entry used to create the final data prg in tmp. */
-			do {
-				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
-							/* note: where files are united, the type will */
-							/* be set to the type of only the last file */
-				x = blk[pt[i]]->cx;
-				e = blk[pt[i]]->ce;
-				errors += blk[pt[i]]->rd_err;
-            
-				/* bad checksum also counts as an error */
-
-				if (ft[blk[pt[i]]->lt].has_cs == TRUE && blk[pt[i]]->cs_exp != blk[pt[i]]->cs_act)
-					errors++;
- 
-				for (c = 0; c < x; c++)
-					tmp[ti++] = blk[pt[i]]->dd[c];	/* copy the data to tmp buffer */
-
-				/* block unification wanted?... */
-
-				if (prgunite) {
-
-					/* scan following blocks and override default details. */
-
-					if (pt[i + 1] != -1) {		/* another file available? */
-						if (blk[pt[i + 1]]->cs == (e + 1))	/* is next file a neighbour? */
-							i++;
-						else
-							done = 1;
-					} else
-						done =1;
-				} else
-					done =1;
-			} while(!done);
-
-			/* create the finished prg entry using data in tmp...  */
-         
-			x = ti;					/* set final data length */
-			prg[j].dd = (unsigned char*)malloc(x);	/* allocate the ram */
-			for (c = 0; c < x; c++)			/* copy the data.. */
-				prg[j].dd[c] = tmp[c];
-			prg[j].lt = t;				/* set file type */ 
-			prg[j].cs = s;				/* set file start address */ 
-			prg[j].ce = e;				/* set file end address */ 
-			prg[j].cx = x;				/* set file length */ 
-			prg[j].errors = errors;			/* set file errors */ 
-			j++;					/* onto the next prg... */
-		}
-	}
-
-	prg[j].lt = 0;		/* terminator */
-
-	free(tmp);
-}
-
-/*
- * Save all available prg's to a folder (console app only).
- * Returns the number of files saved.
- */
-
-int save_prgs(void)
-{
-	int i;
-	FILE *fp;    
-
-	chdir(exedir);
-
-	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
-#ifdef WIN32
-		system("del *.prg");
-#else
-		system("rm *.prg");
-#endif
-	} else {
-		system("mkdir prg");
-		chdir("prg");
-	}
-
-	for (i = 0; prg[i].lt != 0; i++) {
-		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
-		if (prg[i].errors != 0)		/* append error indicator if necessary) */
-			strcat(lin, " BAD");
-		strcat(lin, ".prg");
-
-		fp = fopen(lin, "w+b");
-		if (fp != NULL) {
-			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
-			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */
-			fwrite(prg[i].dd, prg[i].cx, 1, fp);	/* write data */
-			fclose(fp);
-		}
-	}
-
-	chdir(exedir);
-	return 0;
 }
 
 /*
@@ -3040,6 +2951,17 @@ void deleteworkfiles(void)
 		sprintf(lin, "del %s", tcreportname);
 #else
 		sprintf(lin, "rm %s", tcreportname);
+#endif
+		system(lin);
+	}
+
+	fp = fopen(temptcbatchreportname, "r");      
+	if (fp != NULL) {
+		fclose(fp);
+#ifdef WIN32
+		sprintf(lin, "del %s", temptcbatchreportname);
+#else
+		sprintf(lin, "rm %s", temptcbatchreportname);
 #endif
 		system(lin);
 	}
