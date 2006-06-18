@@ -29,7 +29,6 @@
 #include "crc32.h"
 #include "tap2audio.h"
 
-
 /* program options... */
 
 char debug			= FALSE;
@@ -1827,7 +1826,7 @@ static void print_results(char *buf)
 
 static void print_database(char *buf)
 {
-	int i, t;
+	int i;
 
 	sprintf(buf, "\nFILE DATABASE\n");
 
@@ -1916,7 +1915,7 @@ static void print_file_stats(char *buf)
 
 int main(int argc, char *argv[])
 {
-	int i, j, opnum;
+	int i, opnum;
 	time_t t1, t2;
 	FILE *fp;
 	
@@ -2365,7 +2364,7 @@ int load_tap(char *name)
       
 	tap.changed = 1;	/* makes sure the tap is fully scanned afterwards. */
 
-	cbm_decoded = 0;	/* reset this so cbm parts decode for a new tap... /*
+	cbm_decoded = 0;	/* reset this so cbm parts decode for a new tap... */
 				/* (but NOT during same tap) */
 
 	strcpy(tap.path, name);                 

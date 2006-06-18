@@ -25,52 +25,23 @@
 
 /* in main.c... */
 
-int get_exedir(char *);
-void display_usage(void);
-void process_options(int, char **);
-void search_tap(void);
-void describe_file(int);
-   
-void describe_blocks(void);
 int readttbit(int, int, int, int);
 int readttbyte(int, int, int, int, int);
 int find_pilot(int, int);
 int load_tap(char *);
-int save_tap(char *);
-void unload_tap(void);
 int analyze(void);
 void report(void);
 void clean(void);
-int check_signature(void);
-int check_version(void);
-int check_size(void);
-float get_duration(int, int);
-int get_pulse_stats(void);
-void get_file_stats(void);
 int addblockdef(int, int, int, int, int, int);
 void sort_blocks(void);
-int count_bootparts(void);
 void scan_gaps(void);
-void gap_describe(int row);
 int is_accounted(int);
 int compute_overall_crc(void);
 int count_rpulses(void);
-int count_unopt_pulses(int slot);
-int count_opt_files(void);
 int count_good_checksums(void);
-int count_pauses(void);
 int is_pause_param(int);
-void make_prgs(void);
-int save_prgs(void);
-void copy_loader_table(void);
-void reset_loader_table(void);
-void show_loader_table(void);
 int find_decode_block(int, int);
 int add_read_error(int);
-void print_results(char *);
-void print_database(char *);
-void print_pulse_stats(char *);
-void print_file_stats(char *);
    
 /* general utilities... (could be put into their own file really) */
    
