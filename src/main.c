@@ -49,6 +49,7 @@ char preserveloadertable	= TRUE;
 
 char noc64			= FALSE;
 char noaces			= FALSE;
+char noaliensy			= FALSE;
 char noanirog			= FALSE;
 char noatlantis			= FALSE;
 char noaudiogenic		= FALSE;
@@ -206,6 +207,7 @@ struct fmt_t ft[100] = {
 	{"PALACE TAPE F2"	,MSbF, NA,   0x30, NA,  0x57, 0x01, 0x4A, 50,  NA,    CSYES},
 	{"ENIGMA TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 700, NA,    CSNO},
 	{"AUDIOGENIC"		,MSbF, 0x28, 0x1A, NA,  0x36, 0xF0, 0xAA, 4,   NA,    CSYES},
+	{"ALIEN SYNDROME"	,MSbF, 0x2C, 0x20, NA,  0x43, 0xE3, 0xED, 4,   NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -269,7 +271,8 @@ const char knam[100][32] = {
 	{"Atlantis Loader"},
 	{"Snakeload"},
 	{"Ocean New 2"},
-	{"Audiogenic"}
+	{"Audiogenic"},
+	{"Alien Syndrome"}
 };
 
 
@@ -545,6 +548,8 @@ static void process_options(int argc, char **argv)
 			noc64 = TRUE;
 		if (strcmp(argv[i], "-noaces") == 0)
 			noaces = TRUE;
+		if (strcmp(argv[i], "-noaliensy") == 0)
+			noaliensy = TRUE;
 		if (strcmp(argv[i], "-noanirog") == 0)
 			noanirog = TRUE;
 		if (strcmp(argv[i], "-noatlantis") == 0)
@@ -630,6 +635,7 @@ static void process_options(int argc, char **argv)
 
 		if (strcmp(argv[i], "-noall") == 0) {
 			noaces = TRUE;
+			noaliensy = TRUE;
 			noanirog = TRUE;
 			noatlantis = TRUE;
 			noaudiogenic = TRUE;
@@ -1005,6 +1011,9 @@ static void search_tap(void)
 
 			if (noaudiogenic == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
+
+			if (noaliensy == FALSE && !dbase_is_full && !aborted)
+				aliensyndrome_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1196,6 +1205,8 @@ static void describe_file(int row)
 		case ENIGMA:		enigma_describe(row);
 					break;
 		case AUDIOGENIC:	audiogenic_describe(row);
+					break;
+		case ALIENSY:	aliensyndrome_describe(row);
 					break;
 	}
 }
