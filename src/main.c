@@ -29,7 +29,9 @@
 #include "crc32.h"
 #include "tap2audio.h"
 
-#ifndef WIN32
+#ifdef WIN32
+#include <direct.h>
+#else
 #include <unistd.h>
 #endif
 

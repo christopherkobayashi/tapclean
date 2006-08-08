@@ -52,7 +52,7 @@ struct node *get_dir_list(char *rootdir)
 {
 	struct node *dirs, *c, *d;
 	char cwd[1024], temp[1024];
-	int complete, n, i, t;
+	int complete, t;
 	char *ret;
 #ifdef WIN32
 	long handle;
@@ -60,6 +60,7 @@ struct node *get_dir_list(char *rootdir)
 	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
+	int n, i;
 #endif
 
 	/* return NULL if rootdir doesnt exist */
@@ -167,13 +168,14 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 {
 	struct node *files, *d, *f;
 	char temp[1024];
-	int n, i, t;
+	int t;
 #ifdef WIN32
 	long handle;
 	int done;
 	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
+	int n, i;
 #endif
 
 	if (dirs == NULL)
