@@ -223,7 +223,7 @@ extern int cyber_f2_eor2;
 extern int batchmode;
 
 /* These are defined in main.c (move to main.h and include main.h here) */
-extern const char tcbatchreportname[], temptcbatchreportname[];
+extern const char temptcbatchreportname[];
 extern char exedir[MAXPATH];	/* assigned in main.c, includes trailing slash. */
 
 
