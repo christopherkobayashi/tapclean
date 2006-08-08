@@ -40,6 +40,7 @@
  */
 
 #include "filesearch.h"
+#include "main.h"
 
 /*
  * builds a linked-list of all directory names available under 'rootdir'...
@@ -51,14 +52,14 @@ struct node *get_dir_list(char *rootdir)
 {
 	struct node *dirs, *c, *d;
 	char cwd[1024], temp[1024];
-	long handle;
-	int done, complete, n, i, t;
-#ifdef WIN32
-	struct _finddata_t ffblk;
+	int complete, n, i, t;
 	char *ret;
+#ifdef WIN32
+	long handle;
+	int done;
+	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
-	long ret;
 #endif
 
 	/* return NULL if rootdir doesnt exist */
@@ -74,11 +75,7 @@ struct node *get_dir_list(char *rootdir)
 
 	do {
 		ret = getcwd(cwd, 256);	/* record current directory path name.  */
-#ifdef WIN32
 		if (ret == NULL)
-#else
-		if (ret == -1)
-#endif
 			return NULL;
 
 		/*
@@ -170,9 +167,10 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 {
 	struct node *files, *d, *f;
 	char temp[1024];
-	long handle;
-	int done, n, i, t;
+	int n, i, t;
 #ifdef WIN32
+	long handle;
+	int done;
 	struct _finddata_t ffblk;
 #else
 	struct dirent **namelist;
@@ -351,7 +349,7 @@ int sort_list(struct node *r)
 {
 	int swaps;
 	struct node *n, *l1, *l2, *l3;
-	char s1[1024], s2[1024], tmp[1024];
+	char s1[1024], s2[1024];
      
 #define ND1 n		/* virtual nodes. be sure to affect 'n' (N1) LAST!  */
 #define ND2 n->link
@@ -396,7 +394,7 @@ int sort_list(struct node *r)
  * Note: the ".\" or "./" prefixes could be removed after sorting.
  */
 
-int clip_list(struct node *r)
+void clip_list(struct node *r)
 {
    
 	int i, k;

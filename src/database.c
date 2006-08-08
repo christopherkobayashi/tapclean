@@ -7,6 +7,7 @@
 
 #include "mydefs.h"
 #include "database.h"
+#include "main.h"
 
 struct blk_t *blk[BLKMAX];	/*!< Database of all found entities. */
 

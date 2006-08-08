@@ -175,3 +175,6 @@ int audiogenic_describe(int);
 void cult_search(void);
 int cult_describe(int);
    
+void aliensyndrome_search(void);
+int aliensyndrome_describe(int);
+   

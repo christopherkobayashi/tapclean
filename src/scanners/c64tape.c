@@ -26,6 +26,7 @@
 
 #include "../main.h"
 #include "../mydefs.h"
+#include "../crc32.h"
 
 #define FIRST 0
 #define REPEAT 1
@@ -242,7 +243,7 @@ void cbm_search(void)
             {
                do
                   b= cbm_readbit(i+=2);
-               while(b==0 || b==1 || b==2 && i<tap.len);
+               while((b==0 || b==1 || b==2) && i<tap.len);
 
                eod= i-20;
                eof= eod+21;   /* overwrite below... */
@@ -364,21 +365,21 @@ int cbm_describe(int row)
       _dfe= hd[3]+ (hd[4]<<8);          /* remember end address of DATA block.  */
       _dfx= _dfe-_dfs;                  /* remember size of DATA block.         */
 
-      sprintf(lin,"\n - DATA FILE Load address : $%04X", _dfs);
+      sprintf(lin,"\n - DATA FILE Load address : $%04lX", _dfs);
       strcat(info,lin);
       if(hd[0]==1 && _dfs!=0x0801)
       {
          sprintf(lin," (fake address, actual=$0801)");
          strcat(info, lin);
       }
-      sprintf(lin,"\n - DATA FILE End address : $%04X", _dfe);
+      sprintf(lin,"\n - DATA FILE End address : $%04lX", _dfe);
       strcat(info,lin);
       if(hd[0]==1 && _dfs!=0x0801)
       {
-         sprintf(lin," (fake address, actual=$%04X)",0x0801+ _dfx);
+         sprintf(lin," (fake address, actual=$%04lX)",0x0801+ _dfx);
          strcat(info, lin);
       }
-      sprintf(lin,"\n - DATA FILE Size (calculated) : %d bytes", _dfx);
+      sprintf(lin,"\n - DATA FILE Size (calculated) : %ld bytes", _dfx);
       strcat(info,lin);
 
       if(hd[0]==1 && s!=0x0801)  /* BASIC filetypes always load to $0801 */
@@ -428,7 +429,7 @@ int cbm_describe(int row)
       /* report inconsistancy between size in header and actual size... */
       if(blk[row]->cx!= (_dfe - _dfs))
       {
-         sprintf(lin," (Warning, Data size differs from header info!.)", blk[row]->cx);
+         sprintf(lin," (Warning, Data size differs from header info!.)");
          strcat(info,lin);
       }
    }

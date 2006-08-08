@@ -75,7 +75,7 @@ void clip_ends(void)
 	}
 
 	/* convert $FF pulses to $00 in v0 TAP files first. */
-	/* such pulses were found on some old TAP files probably
+	/* such pulses were found on some old TAP files probably */
 	/* not made with MTAP. */
 
 	for (i = 20; i < tap.len; i++) {
@@ -1132,7 +1132,7 @@ void fill_cbm_tone(void)
 		t2 = blk[i+1]->lt;
 		t3 = blk[i+2]->lt;
 
-		if (t1 == CBM_DATA || t1 == CBM_HEAD  && t2 == GAP && t3 == PAUSE) {
+		if ((t1 == CBM_DATA || t1 == CBM_HEAD) && t2 == GAP && t3 == PAUSE) {
 
 			 /* gap is about 80 pulses? */
 

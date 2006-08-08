@@ -112,7 +112,7 @@ void cyberload_f3_search(void)
          ft[CYBER_F4_2].pv= pv;
          ft[CYBER_F4_3].pv= pv;
 
-         sprintf(lin,"\nCyberload F3 variables have been found and set...",lin);
+         sprintf(lin,"\nCyberload F3 variables have been found and set...");
          strcat(info,lin);
          sprintf(lin,"\ntp:$%02X sp:$%02X lp:$%02X pv:$%02X sv:$%02X", tp,sp,lp,pv,sv);
          strcat(info,lin);

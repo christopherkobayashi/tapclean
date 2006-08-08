@@ -29,6 +29,10 @@
 #include "crc32.h"
 #include "tap2audio.h"
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 /* program options... */
 
 char debug			= FALSE;
@@ -376,12 +380,10 @@ static void cleanup_main(void)
 
 static int get_exedir(char *argv0)
 {
-	int i;
 #ifdef WIN32
-	char *ret;
-#else
-	long ret;
+	int i;
 #endif
+	char *ret;
 
 	strcpy(exedir, argv0);
 
@@ -408,7 +410,7 @@ static int get_exedir(char *argv0)
 	}
 #else
 	ret = getcwd(exedir, MAXPATH - 2);
-	if (ret == -1)
+	if (ret == NULL)
 		return FALSE;
 
 	exedir[strlen(exedir)] = SLASH;
@@ -1789,7 +1791,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
 	strcat(buf, lin);
-	sprintf(lin, "\nMagic CRC32 : %08X", tap.crc);
+	sprintf(lin, "\nMagic CRC32 : %08lX", tap.crc);
 	strcat(buf, lin);
 
 	if (tap.bootable) {
@@ -1878,7 +1880,7 @@ static void print_database(char *buf)
 			strcat(buf, lin);
 		}
 
-		sprintf(info, "");	/* clear 'info' ready to receive additional text */
+		strcpy(info, "");	/* clear 'info' ready to receive additional text */
 		describe_file(i);
 		strcat(buf, info);	/* add additional text */
 		strcat(buf, "\n");

@@ -130,7 +130,7 @@ void cyberload_f4_search(void)
          ft[CYBER_F4_3].pv= pv;
          ft[CYBER_F4_3].sv= sv;  */
 
-         sprintf(lin,"\nCyberload F4 variables have been found and set...",lin);
+         sprintf(lin,"\nCyberload F4 variables have been found and set...");
          strcat(info,lin);
          sprintf(lin,"\ntp:$%02X sp:$%02X lp:$%02X pv:$%02X sv:$%02X", tp,sp,lp,pv,sv);
          strcat(info,lin);
@@ -286,7 +286,6 @@ int cyberload_f4_describe(int row)
    unsigned char hd[32];
    char fname[17];
    unsigned char cb;
-   char str[1024];
 
    if(blk[row]->lt==CYBER_F4_1)
    {

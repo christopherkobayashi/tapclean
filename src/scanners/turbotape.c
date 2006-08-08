@@ -205,9 +205,9 @@ int turbotape_describe(int row)
       _db_start = hd[1]+ (hd[2]<<8);  /* static save start address of DATA block */
       _db_end = hd[3]+ (hd[4]<<8);    /* static save end address of DATA block */
 
-      sprintf(lin,"\n - DATA FILE load address: $%04X", _db_start);
+      sprintf(lin,"\n - DATA FILE load address: $%04lX", _db_start);
       strcat(info,lin);
-      sprintf(lin,"\n - DATA FILE end address: $%04X", _db_end);
+      sprintf(lin,"\n - DATA FILE end address: $%04lX", _db_end);
       strcat(info,lin);
 
       /* extract file name... */

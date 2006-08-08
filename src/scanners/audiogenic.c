@@ -33,10 +33,9 @@
 
 void audiogenic_search(void)
 {
-	int i, sof, sod, eod, eof, t, b;
-	int z, h, hd[HDSZ];
+	int i, sof, sod, eod, eof;
+	int z;
 	int en, tp, sp, lp, sv;
-	unsigned int s, e, x;
 
 	en = ft[AUDIOGENIC].en;
 	tp = ft[AUDIOGENIC].tp;

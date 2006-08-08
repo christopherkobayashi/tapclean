@@ -80,7 +80,7 @@ void pause_describe(int row)
 		/* show results... */
 
 		sec = (float)val / 985248;
-		sprintf(lin, "\n - Length: %lu cycles (%0.4f secs)", val, sec);
+		sprintf(lin, "\n - Length: %u cycles (%0.4f secs)", val, sec);
 		strcat(info, lin);
 	}
 }

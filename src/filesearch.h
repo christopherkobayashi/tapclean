@@ -30,6 +30,7 @@
 #include <io.h>
 #else
 #include <dirent.h>
+#include <unistd.h>
 #endif
 
 
@@ -51,5 +52,5 @@ int show_list(struct node *);
 int save_list(struct node *, char *);
 int free_list(struct node *);
 int sort_list(struct node *);
-int clip_list(struct node *);  
+void clip_list(struct node *);  
 

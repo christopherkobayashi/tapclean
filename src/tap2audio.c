@@ -239,7 +239,7 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 
 int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 {
-	long i, lv, len, ccnt;
+	long i, lv, ccnt;
 	int b, tapversion;
 	FILE *fp;
 	unsigned long bpos = 0;

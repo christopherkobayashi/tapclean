@@ -30,6 +30,7 @@
 
 #include "filesearch.h"
 #include "mydefs.h"
+#include "main.h"
 
 #define MAXTAPS	8000
 #define FIELDS	15
@@ -56,7 +57,7 @@ static const char tcbatchreportname[] =	"tcbatch.txt";
 int batchscan(char *rootdir, int includesubdirs, int doscan)
 {
 	FILE *fp;
-	int i, j, x, total_taps, failed_taps, total_scanned, swaps;
+	int i, j, total_taps, failed_taps, total_scanned, swaps;
 	struct node *dl, *fl, *t;
 	struct tap_tr *taps[MAXTAPS];
 	struct tap_tr *tmp;
@@ -64,11 +65,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	char temp[256] = "";
 	char cstr[2][256] = {"PASS" ,"FAIL"};
 	time_t t1, t2;
-#ifdef WIN32
 	char *ret;
-#else
-	long ret;
-#endif
 
 	char fields[FIELDS][128] = {"Name", "Detected", "Rec", "Hdr", "Opt",
 					"Chks", "Read", "Files", "Gaps",
@@ -93,11 +90,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	/* get FULL path. initially it may have been relative to users current dir */
 
 	ret = getcwd(fullpath, 256 - 2);
-#ifdef WIN32
 	if (ret == NULL)
-#else
-	if (ret == -1)
-#endif
 		return -1;
 
 	fullpath[strlen(fullpath)] = SLASH;
@@ -273,11 +266,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			sprintf(tfields[6], "%s", cstr[taps[i]->tst_rd]);
 			sprintf(tfields[7], "%d", taps[i]->total_data_files);
 			sprintf(tfields[8], "%d", taps[i]->total_gaps);
-			sprintf(tfields[9], "%08X", taps[i]->crc);
+			sprintf(tfields[9], "%08lX", taps[i]->crc);
 			sprintf(tfields[10], "%d", taps[i]->version);
 			sprintf(tfields[11], "%d", taps[i]->purity);
 			sprintf(tfields[12], "%d", taps[i]->len);
-			sprintf(tfields[13], "%08X", taps[i]->cbmcrc);
+			sprintf(tfields[13], "%08lX", taps[i]->cbmcrc);
 			sprintf(tfields[14], "%s", knam[taps[i]->cbmid]);
 
 			for (j =0 ; j < FIELDS; j++) {	/* add padding if necessary... */
@@ -305,11 +298,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			sprintf(tfields[6], "%s", cstr[taps[i]->tst_rd]);
 			sprintf(tfields[7], "%d", taps[i]->total_data_files);
 			sprintf(tfields[8], "%d", taps[i]->total_gaps);
-			sprintf(tfields[9], "%08X", taps[i]->crc);
+			sprintf(tfields[9], "%08lX", taps[i]->crc);
 			sprintf(tfields[10], "%d", taps[i]->version);
 			sprintf(tfields[11], "%d", taps[i]->purity);
 			sprintf(tfields[12], "%d", taps[i]->len);
-			sprintf(tfields[13], "%08X", taps[i]->cbmcrc);
+			sprintf(tfields[13], "%08lX", taps[i]->cbmcrc);
 			sprintf(tfields[14], "%s", knam[taps[i]->cbmid]);
 
 			/* pad each data field to match its field header if necessary... */

@@ -32,7 +32,7 @@
 
 
 #include "crc32.h"
-
+#include "main.h"
 
 static unsigned int *crc_table;	 
 
