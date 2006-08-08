@@ -53,11 +53,12 @@ struct node *get_dir_list(char *rootdir)
 	char cwd[1024], temp[1024];
 	long handle;
 	int done, complete, n, i, t;
-	char *ret;
 #ifdef WIN32
 	struct _finddata_t ffblk;
+	char *ret;
 #else
 	struct dirent **namelist;
+	long ret;
 #endif
 
 	/* return NULL if rootdir doesnt exist */
@@ -73,7 +74,11 @@ struct node *get_dir_list(char *rootdir)
 
 	do {
 		ret = getcwd(cwd, 256);	/* record current directory path name.  */
+#ifdef WIN32
 		if (ret == NULL)
+#else
+		if (ret == -1)
+#endif
 			return NULL;
 
 		/*

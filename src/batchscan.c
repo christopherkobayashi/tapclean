@@ -64,7 +64,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	char temp[256] = "";
 	char cstr[2][256] = {"PASS" ,"FAIL"};
 	time_t t1, t2;
+#ifdef WIN32
 	char *ret;
+#else
+	long ret;
+#endif
 
 	char fields[FIELDS][128] = {"Name", "Detected", "Rec", "Hdr", "Opt",
 					"Chks", "Read", "Files", "Gaps",
@@ -89,7 +93,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	/* get FULL path. initially it may have been relative to users current dir */
 
 	ret = getcwd(fullpath, 256 - 2);
+#ifdef WIN32
 	if (ret == NULL)
+#else
+	if (ret == -1)
+#endif
 		return -1;
 
 	fullpath[strlen(fullpath)] = SLASH;

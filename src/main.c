@@ -377,7 +377,11 @@ static void cleanup_main(void)
 static int get_exedir(char *argv0)
 {
 	int i;
+#ifdef WIN32
 	char *ret;
+#else
+	long ret;
+#endif
 
 	strcpy(exedir, argv0);
 
@@ -404,7 +408,7 @@ static int get_exedir(char *argv0)
 	}
 #else
 	ret = getcwd(exedir, MAXPATH - 2);
-	if (ret == NULL)
+	if (ret == -1)
 		return FALSE;
 
 	exedir[strlen(exedir)] = SLASH;
