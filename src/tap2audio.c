@@ -54,6 +54,9 @@ const char wavoutname[] =	"out.wav";
  * Returns the number of samples successfully written, 0 or 1.
  */
 
+#include <math.h>
+#include <stdlib.h>
+
 static int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp, char *outbuf)
 {
 	if (!finished) {
