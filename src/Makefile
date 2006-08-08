@@ -19,3 +19,5 @@ all: tapclean
 $(BIN): $(OBJ)
 	$(CC) $(LINKOBJ) -o tapclean $(LIBS)
 
+clean:
+	rm *~ *.o scanners/*.o
