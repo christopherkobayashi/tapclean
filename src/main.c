@@ -382,33 +382,40 @@ static void cleanup_main(void)
 
 static int get_exedir(char *argv0)
 {
-#ifdef WIN32
-	int i;
-#endif
+
 	char *ret;
 
-	strcpy(exedir, argv0);
-
 #ifdef WIN32
-	for (i = strlen(exedir); i > 0 && exedir[i] != SLASH; i--);  /* clip to leave path only */
-	
-	if (exedir[i] == SLASH)
-		exedir[i + 1] = '\0';   
-   
-	/* note: I do this instead of using getcwd() because getcwd does not give
-	 * the exe's directory when dragging and dropping a tap file to the program
-	 * icon using windows explorer.
-	 */ 
+	int i;
 
-	/* when run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
+	/* First check if argv0 fits inside our buffer */
+	if (strlen(argv0) > MAXPATH - 1)
+		return FALSE;
 
+	/* It's now safe to copy inside the buffer (padding with nulls!) */
+	strncpy(exedir, argv0, MAXPATH);
+
+	/* When run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
 	if (stricmp(exedir, "tapclean") == 0 || stricmp(exedir, "tapclean.exe") == 0) {
 		ret = (char *) getcwd(exedir, MAXPATH - 2);
 		if (ret == NULL)
 			return FALSE;
 
 		exedir[strlen(exedir)] = SLASH;
-		exedir[strlen(exedir) + 1] = '\0';
+		exedir[strlen(exedir)] = '\0';
+	}
+	else
+	{
+		for (i = strlen(exedir); i > 0 && exedir[i] != SLASH; i--)
+			;  /* clip to leave path only */
+	
+		if (exedir[i] == SLASH)
+			exedir[i + 1] = '\0';   
+   
+		/* Note: we do this instead of using getcwd() because getcwd does not give
+		 * the exe's directory when dragging and dropping a tap file to the program
+		 * icon using windows explorer.
+		 */
 	}
 #else
 	ret = getcwd(exedir, MAXPATH - 2);
@@ -416,8 +423,9 @@ static int get_exedir(char *argv0)
 		return FALSE;
 
 	exedir[strlen(exedir)] = SLASH;
-	exedir[strlen(exedir) + 1] = '\0';
+	exedir[strlen(exedir)] = '\0';
 #endif
+
 	return TRUE;
 }
 
