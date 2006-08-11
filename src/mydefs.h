@@ -38,6 +38,18 @@
 #include "database.h"
 #include "scanners/_scanners.h"
 
+/* OS dependent APIs and slash */
+#ifdef WIN32
+#define OSAPI_DELETE_FILE "del"
+#define OSAPI_RENAME_FILE "ren"
+#define SLASH   '\\'
+#else
+#define OSAPI_DELETE_FILE "rm"
+#define OSAPI_RENAME_FILE "mv"
+#define SLASH   '/'
+#endif
+#define OSAPI_CREATE_FOLDER "mkdir"
+
 #define VERSION_STR "TAPClean v0.07 Console - (C) 2006 XXX"
 #define BUILDER     "bgk"
 
@@ -47,12 +59,6 @@
 #define MAXPATH	512
 #define NUM_READ_ERRORS 100
 #define NUM_CRC 1000
-
-#ifdef WIN32
-#define SLASH	'\\'
-#else
-#define SLASH	'/'
-#endif
 
 #define CLEANED_PREFIX	"clean."
 

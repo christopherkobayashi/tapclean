@@ -1642,13 +1642,9 @@ static int save_prgs(void)
 	chdir(exedir);
 
 	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
-#ifdef WIN32
-		system("del *.prg");
-#else
-		system("rm *.prg");
-#endif
+		system(OSAPI_DELETE_FILE" *.prg");
 	} else {
-		system("mkdir prg");
+		system(OSAPI_CREATE_FOLDER" prg");
 		chdir("prg");
 	}
 
@@ -2504,22 +2500,14 @@ void report(void)
 	fp = fopen(temptcreportname, "r");	/* delete any existing temp file... */
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", temptcreportname);
-#else
-		sprintf(lin, "rm %s", temptcreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcreportname);
 		system(lin);
 	}
 
 	fp = fopen(tcreportname, "r");		/* delete any existing report file... */
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin,"del %s",tcreportname);
-#else
-		sprintf(lin,"rm %s",tcreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", tcreportname);
 		system(lin);
 	}     
 
@@ -2562,14 +2550,10 @@ void report(void)
 		}
 		fclose(fp);
 
-#ifdef WIN32
-		sprintf(lin, "ren %s %s", temptcreportname, tcreportname);
-#else
-		sprintf(lin, "mv %s %s", temptcreportname, tcreportname);
-#endif
+		sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcreportname, tcreportname);
 		system(lin);
 	} else
-		msgout("\nError: failed to create report file.");     
+		msgout("\nError: failed to create report file.");
        
 	/* show results and general info onscreen... */
 
@@ -2954,55 +2938,35 @@ void deleteworkfiles(void)
 	fp = fopen(temptcreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", temptcreportname);
-#else
-		sprintf(lin, "rm %s", temptcreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcreportname);
 		system(lin);
 	}
 
 	fp = fopen(tcreportname, "r");     
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", tcreportname);
-#else
-		sprintf(lin, "rm %s", tcreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", tcreportname);
 		system(lin);
 	}
 
 	fp = fopen(temptcbatchreportname, "r");      
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", temptcbatchreportname);
-#else
-		sprintf(lin, "rm %s", temptcbatchreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcbatchreportname);
 		system(lin);
 	}
 
 	fp = fopen(tcbatchreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", tcbatchreportname);
-#else
-		sprintf(lin, "rm %s", tcbatchreportname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", tcbatchreportname);
 		system(lin);
 	}
 
 	fp = fopen(tcinfoname, "r");   
 	if (fp != NULL) {
 		fclose(fp);
-#ifdef WIN32
-		sprintf(lin, "del %s", tcinfoname);
-#else
-		sprintf(lin, "rm %s", tcinfoname);
-#endif
+		sprintf(lin, OSAPI_DELETE_FILE" %s", tcinfoname);
 		system(lin);
 	}  
 }  
