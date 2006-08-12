@@ -1,6 +1,6 @@
 /**
  *	@file 	database.h
- *	@brief	A tap database for recognized files.
+ *	@brief	A tap database for recognized files and PRGs.
  *
  *	Details here.
  */
@@ -24,42 +24,89 @@
 
 struct blk_t
 {
-	int lt;			/*!< loader type (see loadername enum of 
-	    			     constants above) */
-	int p1;			/*!< first pulse */
-	int p2;			/*!< first data pulse */
-	int p3;			/*!< last data pulse */
-	int p4;			/*!< last pulse */
-	int xi;			/*!< extra info */
+	int lt;			/*!< loader type (see enum of 
+	    			     constants GAP, PAUSE, CBM_HEAD, etc.) */
+	int p1;			/*!< first pulse offset (should be long) */
+	int p2;			/*!< first data pulse offset (should be long) */
+	int p3;			/*!< last data pulse offset (should be long) */
+	int p4;			/*!< last pulse offset (should be long) */
+	int xi;			/*!< extra info offset (should be long) */
 
-	int cs;			/* c64 ram start pos */
-	int ce;			/* c64 ram end pos */
-	int cx;			/* c64 ram len */
-	unsigned char *dd;	/* pointer to decoded data block */
-	int crc;		/* crc32 of the decoded data file */
-	int rd_err;		/* number of read errors in block */
-	int cs_exp;		/* expected checksum value (if applicable) */
-	int cs_act;		/* actual checksum value (if applicable) */
-	int pilot_len;		/* length of pilot tone (in bytes or pulses) */
-	int trail_len;		/* length of trail tone (in bytes or pulses) */
-	char *fn;		/* pointer to file name (if applicable) */
-	int ok;			/* file ok indicator, 1=ok. */ 
+	int cs;			/*!< c64 RAM start pos (16 bit value) */
+	int ce;			/*!< c64 RAM end pos (16 bit value) */
+	int cx;			/*!< c64 RAM len (16 bit value) */
+
+	unsigned char *dd;	/*!< pointer to decoded data block */
+
+	int crc;		/*!< crc32 of the decoded data file (should be 
+				     ulong) */
+	int rd_err;		/*!< number of read errors in block (should be 
+				     long) */
+
+	int cs_exp;		/*!< expected checksum value (if applicable) */
+	int cs_act;		/*!< actual checksum value (if applicable) */
+
+	int pilot_len;		/*!< length of pilot tone (in bytes or pulses) 
+				     (should be long) */
+	int trail_len;		/*!< length of trail tone (in bytes or pulses) 
+				     (should be long) */
+
+	char *fn;		/*!< pointer to file name (if applicable) */
+	int ok;			/*!< file ok indicator, 1=ok. */ 
 };
 
+/**
+ *	Struct 'prg_t' 
+ *
+ *	It contains an extracted data file and infos for it,
+ *	used as array 'prg[]'
+ */
+
+struct prg_t
+{
+	int lt;			/*!< loader type (required for block 
+				     unification) */
+
+	int cs;			/*!< c64 RAM start pos (16 bit value) */
+	int ce;			/*!< c64 RAM end pos (16 bit value) */
+	int cx;			/*!< c64 RAM len (16 bit value) */
+
+	unsigned char *dd;	/*!< pointer to decoded data block */
+
+	int errors;		/*!< number of read errors in the file (should 
+				     be long) */
+};
+
+/* Database of all found entities. */
 extern struct blk_t *blk[BLKMAX];
+/* Database of all extracted files (prg's). */
+extern struct prg_t prg[BLKMAX];
+/* Flag used by addblockdef() to indicate database capacity reached */
+extern int dbase_is_full;
+
 
 /**
  *	Prototypes
  */
 
+/* File Database */
 int create_database(void);
 void reset_database(void);
 int addblockdef(int, int, int, int, int, int);
 void sort_blocks(void);
 void scan_gaps(void);
+int count_bootparts(void);
+int count_unopt_pulses(int slot);
+int count_opt_files(void);
+int count_pauses(void);
 int count_rpulses(void);
 int count_good_checksums(void);
 int compute_overall_crc(void);
 void destroy_database(void);
+
+/* Prg Database */
+void make_prgs(void);
+int save_prgs(void);
+void reset_prg_database(void);
 
 #endif

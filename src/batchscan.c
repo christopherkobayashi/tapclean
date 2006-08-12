@@ -35,8 +35,6 @@
 #define MAXTAPS	8000
 #define FIELDS	15
 
-static const char tcbatchreportname[] =	"tcbatch.txt";
-
 /*
  * search for all tap files in directory 'rootdir', create a html report of all taps
  * found there (and optionally in any subdirectories).

@@ -37,71 +37,76 @@
 
 /* program options... */
 
+static char noaddpause		= FALSE;
+static char sine		= FALSE;
+static char doprg		= FALSE;
+
 char debug			= FALSE;
 char noid			= FALSE;
 char noc64eof			= FALSE;
 char docyberfault		= FALSE;
 char boostclean			= FALSE;
-char noaddpause			= FALSE;
-char sine			= FALSE;
 char prgunite			= FALSE;
-char doprg			= FALSE;
 char extvisipatch		= FALSE;
 char incsubdirs			= FALSE;
 char sortbycrc			= FALSE;
 
 char exportcyberloaders		= FALSE;
-char preserveloadertable	= TRUE;
 
-char noc64			= FALSE;
-char noaces			= FALSE;
-char noaliensy			= FALSE;
-char noanirog			= FALSE;
-char noatlantis			= FALSE;
-char noaudiogenic		= FALSE;
-char nobleep			= FALSE;
-char noburner			= FALSE;
-char nochr			= FALSE;
-char nocult			= FALSE;
-char nocyber			= FALSE;
-char noenigma			= FALSE;
-char nofire			= FALSE;
-char noflash			= FALSE;
-char nofree			= FALSE;
-char noode			= FALSE;
-char nohit			= FALSE;
-char nohitec			= FALSE;
-char noik			= FALSE;
-char nojet			= FALSE;
-char nomicro			= FALSE;
-char nonova			= FALSE;
-char noocean			= FALSE;
-char nooceannew1t1		= FALSE;
-char nooceannew1t2		= FALSE;
-char nooceannew2		= FALSE;
-char nopalacef1			= FALSE;
-char nopalacef2			= FALSE;
-char nopav			= FALSE;
-char norackit			= FALSE;
-char noraster			= FALSE;
-char noseuck			= FALSE;
-char nosnake50			= FALSE;
-char nosnake51			= FALSE;
-char nospav			= FALSE;
-char nosuper			= FALSE;
-char notdif1			= FALSE;
-char noturbo			= FALSE;
-char noturr			= FALSE;
-char nousgold			= FALSE;
-char novirgin			= FALSE;
-char novisi			= FALSE;
-char nowild			= FALSE;
+static char preserveloadertable	= TRUE;
 
-char loaded			= FALSE;
+static char noc64		= FALSE;
+static char noaces		= FALSE;
+static char noaliensy		= FALSE;
+static char noanirog		= FALSE;
+static char noatlantis		= FALSE;
+static char noaudiogenic	= FALSE;
+static char nobleep		= FALSE;
+static char noburner		= FALSE;
+static char nochr		= FALSE;
+static char nocult		= FALSE;
+static char nocyber		= FALSE;
+static char noenigma		= FALSE;
+static char nofire		= FALSE;
+static char noflash		= FALSE;
+static char nofree		= FALSE;
+static char noode		= FALSE;
+static char nohit		= FALSE;
+static char nohitec		= FALSE;
+static char noik		= FALSE;
+static char nojet		= FALSE;
+static char nomicro		= FALSE;
+static char nonova		= FALSE;
+static char noocean		= FALSE;
+static char nooceannew1t1	= FALSE;
+static char nooceannew1t2	= FALSE;
+static char nooceannew2		= FALSE;
+static char nopalacef1		= FALSE;
+static char nopalacef2		= FALSE;
+static char nopav		= FALSE;
+static char norackit		= FALSE;
+static char noraster		= FALSE;
+static char noseuck		= FALSE;
+static char nosnake50		= FALSE;
+static char nosnake51		= FALSE;
+static char nospav		= FALSE;
+static char nosuper		= FALSE;
+static char notdif1		= FALSE;
+static char noturbo		= FALSE;
+static char noturr		= FALSE;
+static char nousgold		= FALSE;
+static char novirgin		= FALSE;
+static char novisi		= FALSE;
+static char nowild		= FALSE;
 
+static char loaded		= FALSE;
+
+
+static int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
+static char note_errors;	/* set true only when decoding identified files, */
+				/* it just tells 'add_read_error()' to ignore. */
 
 struct tap_t tap;		/* container for the loaded tap (note: only ONE tap). */
-struct prg_t prg[BLKMAX];	/* database of all extracted files (prg's). */
 
 int tol = DEFTOL;		/* bit reading tolerance. (1 = zero tolerance) */
 
@@ -110,29 +115,25 @@ char info[1048576];		/* buffer area for storing each blocks description text. */
 char lin[64000];		/* general purpose string building buffer. */
 char tmp[64000];		/* general purpose string building buffer. */
 
-int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
-char note_errors;		/* set true only when decoding identified files, */
-				/* it just tells 'add_read_error()' to ignore. */
-
-int aborted = 0;		/* general 'operation aborted by user' flag. */
+int aborted = FALSE;		/* general 'operation aborted by user' flag. */
 
 int visi_type = VISI_T2;	/* default visiload type, overidden when loader ID'd. */
 
 int cyber_f2_eor1 = 0xAE;	/* default XOR codes for cyberload f2.. */
 int cyber_f2_eor2 = 0xD2;
 
-int batchmode = 0;		/* set to 1 when "batch analysis" is performed. */
+int batchmode = FALSE;		/* set to 1 when "batch analysis" is performed. */
 				/* set to 0 when the user Opens an individual tap. */
 
 unsigned char cbm_header[192];	/* these will allow some interrogation of the CBM parts */
 unsigned char cbm_program[65536];	/* that some customized loaders may rely on. (ie. burner). */
-int cbm_decoded = 0;		/* this ensures only *1st* cbm parts are decoded. */
+int cbm_decoded = FALSE;	/* this ensures only *1st* cbm parts are decoded. */
 
-int quiet = 0;			/* set 1 to stop the loader search routines from producing output, */
+int quiet = FALSE;		/* set 1 to stop the loader search routines from producing output, */
 				/* ie. "Scanning: Freeload". */
 				/* i set it (1) when (re)searching during optimization. */
 
-int dbase_is_full = 0;		/* used by 'addblockdef' to indicate database capacity reached. */
+//int dbase_is_full = 0;		/* used by 'addblockdef' to indicate database capacity reached. */
 
 
 struct fmt_t ft_org[100];	/* a backup copy of the following... */
@@ -287,12 +288,11 @@ const char knam[100][32] = {
 static const char tcreportname[] =	"tcreport.txt";
 static const char temptcreportname[] =	"tcreport.tmp";
 static const char tcinfoname[] =	"tcinfo.txt";
+static char cleanedtapname[MAXPATH];	/* assigned in main(). */
 
-static char cleanedtapname[256];	/* assigned in main(). */
-
-char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
 const char tcbatchreportname[] =	"tcbatch.txt";
 const char temptcbatchreportname[] =	"tcbatch.tmp";
+char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
 
 
 /**
@@ -300,7 +300,8 @@ const char temptcbatchreportname[] =	"tcbatch.tmp";
  */
 
 /*
- * Erase all stored data for the loaded tap, free buffers.
+ * Erase all stored data for the loaded 'tap', free buffers,
+ * and reset database entries.
  */
 
 static void unload_tap(void)
@@ -348,19 +349,7 @@ static void unload_tap(void)
 	tap.tst_rd = 0;
 
 	reset_database();
-
-	for (i = 0; i < BLKMAX; i++) {		/* empty the prg datbase...  */
-		prg[i].lt = 0;
-		prg[i].cs = 0;
-		prg[i].ce = 0;
-		prg[i].cx = 0;
-		if (prg[i].dd != NULL) {
-			free(prg[i].dd);
-			prg[i].dd = NULL;
-		}
-
-		prg[i].errors = 0;
-	}
+	reset_prg_database();
 }
 
 /*
@@ -516,7 +505,7 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
 			if (argv[i + 1] != NULL) {
 				tol = atoi(argv[i + 1]) + 1;	/* 1 = zero tolerance (-tol 0) */
-				if (tol < 0 || tol > 15) {
+				if (tol < 0 || tol > MAXTOL) {
 					tol = DEFTOL;
 					printf("\n\nTolerance parameter out of range, using default.");
 				}
@@ -715,7 +704,7 @@ static void search_tap(void)
 {
 	long i;
 
-	dbase_is_full = 0;	/* enable the "database full" warning. */
+	dbase_is_full = FALSE;	/* enable the "database full" warning. */
 				/* note: addblockdef sets it 1 when full. */
  
 	msgout("\nScanning...");
@@ -1215,7 +1204,7 @@ static void describe_file(int row)
 					break;
 		case AUDIOGENIC:	audiogenic_describe(row);
 					break;
-		case ALIENSY:	aliensyndrome_describe(row);
+		case ALIENSY:		aliensyndrome_describe(row);
 					break;
 	}
 }
@@ -1434,238 +1423,6 @@ static void get_file_stats(void)
 		if (i == GAP)
 			tap.total_gaps += tap.fst[i];			/* count gaps */
 	}
-}
-
-/*
- * Counts the number of standard CBM boot sequence(s) (HEAD,HEAD,DATA,DATA) in
- * the current file database.
- * Returns the number found.
- */
-
-static int count_bootparts(void)
-{
-	int tblk[BLKMAX];
-	int i, j, bootparts;
-  
-	/* make a block list (types only) without gaps/pauses included.. */
-
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt > 2)
-			tblk[j++] = blk[i]->lt;
-	}
-
-	tblk[j] = 0;
-
-	/* count bootable sections... */
-
-	bootparts =0;
-
-	for (i = 0; i + 3 < j; i++) {
-		if (tblk[i + 0] == CBM_HEAD && tblk[i + 1] == CBM_HEAD && tblk[i + 2] == CBM_DATA && tblk[i + 3] == CBM_DATA)
-			bootparts++;
-	}
-
-	return bootparts;
-}
-
-/*
- * Returns the number of imperfect pulsewidths found in the file at database
- * entry 'slot'.
- */
-
-static int count_unopt_pulses(int slot)
-{
-	int i, t, b, imperfect;
-
-	t = blk[slot]->lt;
-
-	for(imperfect = 0, i = blk[slot]->p1; i < blk[slot]->p4 + 1; i++) {
-		b = tap.tmem[i];
-		if (b != ft[t].sp && b != ft[t].mp && b != ft[t].lp)
-			imperfect++;
-	}
-
-	return imperfect;
-}
-
-/*
- * Return a count of files in the database that are 100% optimized...
- */
-
-static int count_opt_files(void)
-{
-	int i, n;
-
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt > PAUSE) {
-			if (count_unopt_pulses(i) == 0)
-				n++;
-		}
-	}
-
-	return n;
-}
-
-/*
- * Counts pauses within the tap file, note: v1 pauses are still held
- * as separate entities in the database even when they run consecutively.
- * This function counts consecutive v1's as a single pause.
- */
-
-static int count_pauses(void)
-{
-	int i, n;
-
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt == PAUSE) {
-			n++;
-			if (tap.version == 1) {		/* consecutive v1 pauses count as 1 pause.. */
-				while (blk[i++]->lt == PAUSE && i < BLKMAX - 1);
-				i--;
-			}
-		}
-	}
-   
-	return n;
-}
-
-/*
- * Create a table of exportable PRGs in the prg[] array based on the current
- * data extractions available in the blk[] array.
- * Note: if 'joinprgneighbours' is not 0, then any neigbouring files will be
- * connected as a single PRG. (neighbour = data addresses run consecutively).
- */
-
-static void make_prgs(void)
-{
-	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
-	unsigned char *tmp, done;
-
-	/* create table of all exported files by index (of blk)... */
-
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->dd != NULL)
-			pt[j++] = i;
-	}
-	pt[j] = -1;			/* terminator */
-      
-
-	for (i = 0; i < BLKMAX; i++) {	/* clear the prg table... */
-		prg[i].lt = 0;
-		prg[i].cs = 0;
-		prg[i].ce = 0;
-		prg[i].cx = 0;
-
-		if (prg[i].dd != NULL) {
-			free(prg[i].dd);
-			prg[i].dd = NULL;
-		}
-		prg[i].errors = 0;
-	}
-      
-   
-	tmp = (unsigned char*)malloc(65536 * 2);	/* create buffer for unifications */
-	j = 0;						/* j steps through the finished prg's */
-
-	/* scan through the 'data holding' blk[] indexes held in pt[]... */
-
-	for (i = 0; pt[i] != -1 ;i++) {
-		if (blk[pt[i]]->dd != NULL) {	/* should always be true. */
-			ti = 0;
-			done = 0;
-
-			s = blk[pt[i]]->cs;	/* keep 1st start address. */
-			errors = 0;		/* this will count the errors found in each blk */
-						/* entry used to create the final data prg in tmp. */
-			do {
-				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
-							/* note: where files are united, the type will */
-							/* be set to the type of only the last file */
-				x = blk[pt[i]]->cx;
-				e = blk[pt[i]]->ce;
-				errors += blk[pt[i]]->rd_err;
-            
-				/* bad checksum also counts as an error */
-
-				if (ft[blk[pt[i]]->lt].has_cs == TRUE && blk[pt[i]]->cs_exp != blk[pt[i]]->cs_act)
-					errors++;
- 
-				for (c = 0; c < x; c++)
-					tmp[ti++] = blk[pt[i]]->dd[c];	/* copy the data to tmp buffer */
-
-				/* block unification wanted?... */
-
-				if (prgunite) {
-
-					/* scan following blocks and override default details. */
-
-					if (pt[i + 1] != -1) {		/* another file available? */
-						if (blk[pt[i + 1]]->cs == (e + 1))	/* is next file a neighbour? */
-							i++;
-						else
-							done = 1;
-					} else
-						done =1;
-				} else
-					done =1;
-			} while(!done);
-
-			/* create the finished prg entry using data in tmp...  */
-         
-			x = ti;					/* set final data length */
-			prg[j].dd = (unsigned char*)malloc(x);	/* allocate the ram */
-			for (c = 0; c < x; c++)			/* copy the data.. */
-				prg[j].dd[c] = tmp[c];
-			prg[j].lt = t;				/* set file type */ 
-			prg[j].cs = s;				/* set file start address */ 
-			prg[j].ce = e;				/* set file end address */ 
-			prg[j].cx = x;				/* set file length */ 
-			prg[j].errors = errors;			/* set file errors */ 
-			j++;					/* onto the next prg... */
-		}
-	}
-
-	prg[j].lt = 0;		/* terminator */
-
-	free(tmp);
-}
-
-/*
- * Save all available prg's to a folder (console app only).
- * Returns the number of files saved.
- */
-
-static int save_prgs(void)
-{
-	int i;
-	FILE *fp;    
-
-	chdir(exedir);
-
-	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
-		system(OSAPI_DELETE_FILE" *.prg");
-	} else {
-		system(OSAPI_CREATE_FOLDER" prg");
-		chdir("prg");
-	}
-
-	for (i = 0; prg[i].lt != 0; i++) {
-		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
-		if (prg[i].errors != 0)		/* append error indicator if necessary) */
-			strcat(lin, " BAD");
-		strcat(lin, ".prg");
-
-		fp = fopen(lin, "w+b");
-		if (fp != NULL) {
-			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
-			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */
-			fwrite(prg[i].dd, prg[i].cx, 1, fp);	/* write data */
-			fclose(fp);
-		}
-	}
-
-	chdir(exedir);
-	return 0;
 }
 
 /*
@@ -1957,7 +1714,6 @@ int main(int argc, char *argv[])
 		return -1;
 
 	/* Allocate database for files (not always needed, but still here) */
-
 	if (!create_database())
 		return -1;
 
@@ -2339,9 +2095,13 @@ int find_pilot(int pos, int fmt)
 	return 0;		/* never reached. */
 }
 
-/*
- * Load the named tap file into buffer tap.tmem[]
- * return 1 on success, 0 on error.
+/**
+ * Load the named tap file into buffer (tap.tmem[])
+ *
+ * @param name	Name of the tap file to load
+ *
+ * @return 1 on success
+ * @return 0 on error.
  */
 
 int load_tap(char *name)
@@ -2355,23 +2115,30 @@ int load_tap(char *name)
 		return 0;
 	}
 
+	/* First erase all stored data for the loaded 'tap', free buffers,
+	   and reset database entries */
 	unload_tap();
 
+	/* Read file size */
 	fseek(fp, 0, SEEK_END);
 	flen = ftell(fp);
 	rewind(fp);
-	tap.tmem = (unsigned char*)malloc(flen);
 
+	/* Allocate enough space to load the file into */
+	tap.tmem = (unsigned char*)malloc(flen);
 	if(tap.tmem == NULL) {
 		msgout("\nError: malloc failed in load_tap().");
 		fclose(fp);
-		return -1;
+		return 0;
 	}
 
+	/* Load data into buffer */
 	fread(tap.tmem, flen, 1, fp);
 	fclose(fp);
 
+	/* Set the 'tap' structure file length subfield */
 	tap.len = flen;
+
 
 	/* the following were uncommented in GUI app..
 	 * these now appear in main()...
@@ -2379,24 +2146,27 @@ int load_tap(char *name)
 	 * debugmode=FALSE;      reset "debugging" mode.
 	 */
 
-	/* if desired, preserve loader table between TAPs... */
 
+	/* If desired, preserve loader table between TAPs... */
 	if (preserveloadertable == FALSE)
 		reset_loader_table();
-      
-	tap.changed = 1;	/* makes sure the tap is fully scanned afterwards. */
 
-	cbm_decoded = 0;	/* reset this so cbm parts decode for a new tap... */
-				/* (but NOT during same tap) */
+	/* Makes sure the tap is fully scanned afterwards. */
+	tap.changed = TRUE;
 
-	strcpy(tap.path, name);                 
+	/* Reset this so cbm parts decode for a new tap
+	   (but NOT during same tap) */
+	cbm_decoded = FALSE;
+
+	/* Set the 'tap' structure file path and name subfields */
+	strcpy(tap.path, name);
 	getfilename(tap.name, name);
        
 	return 1;		/* 1 = loaded ok */
 }
 
-/*
- * Perform a full analysis of the tap file...
+/**
+ * Perform a full analysis of the tap file
  *
  * Gather all available info from the tap. most data is stored in the 'tap' struct.
  *

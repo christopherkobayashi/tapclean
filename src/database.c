@@ -1,6 +1,6 @@
 /**
  *	@file 	database.c
- *	@brief	A tap database for recognized files.
+ *	@brief	A tap database for recognized files and prg data.
  *
  *	Details here.
  */
@@ -10,7 +10,9 @@
 #include "main.h"
 
 struct blk_t *blk[BLKMAX];	/*!< Database of all found entities. */
-
+struct prg_t prg[BLKMAX];	/*!< Database of all extracted files (prg's) */
+int dbase_is_full = FALSE;	/*!< Flag that indicates database capacity 
+				     reached */
 /**
  *	Allocate ram to file database and initialize array pointers.
  *
@@ -241,6 +243,99 @@ void scan_gaps(void)
 }
 
 /*
+ * Counts the number of standard CBM boot sequence(s) (HEAD,HEAD,DATA,DATA) in
+ * the current file database.
+ * Returns the number found.
+ */
+
+int count_bootparts(void)
+{
+	int tblk[BLKMAX];
+	int i, j, bootparts;
+  
+	/* make a block list (types only) without gaps/pauses included.. */
+
+	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt > 2)
+			tblk[j++] = blk[i]->lt;
+	}
+
+	tblk[j] = 0;
+
+	/* count bootable sections... */
+
+	bootparts =0;
+
+	for (i = 0; i + 3 < j; i++) {
+		if (tblk[i + 0] == CBM_HEAD && tblk[i + 1] == CBM_HEAD && tblk[i + 2] == CBM_DATA && tblk[i + 3] == CBM_DATA)
+			bootparts++;
+	}
+
+	return bootparts;
+}
+
+/*
+ * Returns the number of imperfect pulsewidths found in the file at database
+ * entry 'slot'.
+ */
+
+int count_unopt_pulses(int slot)
+{
+	int i, t, b, imperfect;
+
+	t = blk[slot]->lt;
+
+	for(imperfect = 0, i = blk[slot]->p1; i < blk[slot]->p4 + 1; i++) {
+		b = tap.tmem[i];
+		if (b != ft[t].sp && b != ft[t].mp && b != ft[t].lp)
+			imperfect++;
+	}
+
+	return imperfect;
+}
+
+/*
+ * Return a count of files in the database that are 100% optimized...
+ */
+
+int count_opt_files(void)
+{
+	int i, n;
+
+	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt > PAUSE) {
+			if (count_unopt_pulses(i) == 0)
+				n++;
+		}
+	}
+
+	return n;
+}
+
+/*
+ * Counts pauses within the tap file, note: v1 pauses are still held
+ * as separate entities in the database even when they run consecutively.
+ * This function counts consecutive v1's as a single pause.
+ */
+
+int count_pauses(void)
+{
+	int i, n;
+
+	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->lt == PAUSE) {
+			n++;
+			if (tap.version == 1) {		/* consecutive v1 pauses count as 1 pause.. */
+				while (blk[i++]->lt == PAUSE && i < BLKMAX - 1);
+				i--;
+			}
+		}
+	}
+   
+	return n;
+}
+
+/*
  * Return the number of pulses accounted for in total across all known files.
  */
 
@@ -314,4 +409,154 @@ void destroy_database(void)
 
 	for (i = 0; i < BLKMAX && blk[i] != NULL; i++)
 		free(blk[i]);
+}
+
+
+
+/* Still unverified PRG functions*/
+
+/*
+ * Create a table of exportable PRGs in the prg[] array based on the current
+ * data extractions available in the blk[] array.
+ * Note: if 'joinprgneighbours' is not 0, then any neigbouring files will be
+ * connected as a single PRG. (neighbour = data addresses run consecutively).
+ */
+
+void make_prgs(void)
+{
+	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
+	unsigned char *tmp, done;
+
+	/* create table of all exported files by index (of blk)... */
+
+	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
+		if (blk[i]->dd != NULL)
+			pt[j++] = i;
+	}
+	pt[j] = -1;			/* terminator */
+      
+	/* Clear the prg table... */
+	reset_prg_database();
+
+	tmp = (unsigned char*)malloc(65536 * 2);	/* create buffer for unifications */
+	j = 0;						/* j steps through the finished prg's */
+
+	/* scan through the 'data holding' blk[] indexes held in pt[]... */
+
+	for (i = 0; pt[i] != -1 ;i++) {
+		if (blk[pt[i]]->dd != NULL) {	/* should always be true. */
+			ti = 0;
+			done = 0;
+
+			s = blk[pt[i]]->cs;	/* keep 1st start address. */
+			errors = 0;		/* this will count the errors found in each blk */
+						/* entry used to create the final data prg in tmp. */
+			do {
+				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
+							/* note: where files are united, the type will */
+							/* be set to the type of only the last file */
+				x = blk[pt[i]]->cx;
+				e = blk[pt[i]]->ce;
+				errors += blk[pt[i]]->rd_err;
+            
+				/* bad checksum also counts as an error */
+
+				if (ft[blk[pt[i]]->lt].has_cs == TRUE && blk[pt[i]]->cs_exp != blk[pt[i]]->cs_act)
+					errors++;
+ 
+				for (c = 0; c < x; c++)
+					tmp[ti++] = blk[pt[i]]->dd[c];	/* copy the data to tmp buffer */
+
+				/* block unification wanted?... */
+
+				if (prgunite) {
+
+					/* scan following blocks and override default details. */
+
+					if (pt[i + 1] != -1) {		/* another file available? */
+						if (blk[pt[i + 1]]->cs == (e + 1))	/* is next file a neighbour? */
+							i++;
+						else
+							done = 1;
+					} else
+						done =1;
+				} else
+					done =1;
+			} while(!done);
+
+			/* create the finished prg entry using data in tmp...  */
+         
+			x = ti;					/* set final data length */
+			prg[j].dd = (unsigned char*)malloc(x);	/* allocate the ram */
+			for (c = 0; c < x; c++)			/* copy the data.. */
+				prg[j].dd[c] = tmp[c];
+			prg[j].lt = t;				/* set file type */ 
+			prg[j].cs = s;				/* set file start address */ 
+			prg[j].ce = e;				/* set file end address */ 
+			prg[j].cx = x;				/* set file length */ 
+			prg[j].errors = errors;			/* set file errors */ 
+			j++;					/* onto the next prg... */
+		}
+	}
+
+	prg[j].lt = 0;		/* terminator */
+
+	free(tmp);
+}
+
+/*
+ * Save all available prg's to a folder (console app only).
+ * Returns the number of files saved.
+ */
+
+int save_prgs(void)
+{
+	int i;
+	FILE *fp;    
+
+	chdir(exedir);
+
+	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
+		system(OSAPI_DELETE_FILE" *.prg");
+	} else {
+		system(OSAPI_CREATE_FOLDER" prg");
+		chdir("prg");
+	}
+
+	for (i = 0; prg[i].lt != 0; i++) {
+		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
+		if (prg[i].errors != 0)		/* append error indicator if necessary) */
+			strcat(lin, " BAD");
+		strcat(lin, ".prg");
+
+		fp = fopen(lin, "w+b");
+		if (fp != NULL) {
+			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
+			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */
+			fwrite(prg[i].dd, prg[i].cx, 1, fp);	/* write data */
+			fclose(fp);
+		}
+	}
+
+	chdir(exedir);
+	return 0;
+}
+
+/* empty the prg datbase...  */
+void reset_prg_database(void)
+{
+	int i;
+
+	for (i = 0; i < BLKMAX; i++) {		/* empty the prg datbase...  */
+		prg[i].lt = 0;
+		prg[i].cs = 0;
+		prg[i].ce = 0;
+		prg[i].cx = 0;
+		if (prg[i].dd != NULL) {
+			free(prg[i].dd);
+			prg[i].dd = NULL;
+		}
+
+		prg[i].errors = 0;
+	}
 }

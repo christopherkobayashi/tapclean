@@ -64,6 +64,7 @@
 
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */
+#define MAXTOL  15      /* max bit reading tolerance (as above, its bias is 1) */
 
 #define LAME	0x0F	/* cutoff value for 'noise' pulses when rebuilding pauses.*/
 
@@ -192,22 +193,6 @@ struct fmt_t
 extern struct fmt_t ft[100];
 
 
-/* struct 'prg_t' contains an extracted data file and infos for it,
- * used as array 'prg[]'
- */
-
-struct prg_t
-{
-	int lt;			/* loader type. (required for block unification) */
-	int cs;			/* c64 ram start pos */
-	int ce;			/* c64 ram end pos */
-	int cx;			/* c64 ram len */
-	unsigned char *dd;	/* pointer to decoded data block */
-	int errors;		/* number of read errors in the file */
-};
-extern struct prg_t prg[BLKMAX];
-
-
 extern unsigned char cbm_header[192];		/* some formats must have their loader... */
 extern unsigned char cbm_program[65536];	/* interrogated. */
 extern int cbm_decoded;				/* 1= yes, 0= no */
@@ -230,6 +215,7 @@ extern int batchmode;
 
 /* These are defined in main.c (move to main.h and include main.h here) */
 extern const char temptcbatchreportname[];
+extern const char tcbatchreportname[];
 extern char exedir[MAXPATH];	/* assigned in main.c, includes trailing slash. */
 
 
@@ -240,16 +226,16 @@ extern char noid;
 extern char noc64eof;
 extern char docyberfault;
 extern char boostclean;
-extern char noaddpause;
-extern char sine;
+//extern char noaddpause;
+//extern char sine;
 extern char prgunite;
-extern char doprg;
+//extern char doprg;
 extern char extvisipatch;
 extern char incsubdirs;
 extern char sortbycrc;
 
 extern char exportcyberloaders;
-extern char preserveloadertable;
+//extern char preserveloadertable;
 
 extern int dbase_is_full;
 
