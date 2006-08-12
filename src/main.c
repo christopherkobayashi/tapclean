@@ -382,12 +382,9 @@ static void cleanup_main(void)
 
 static int get_exedir(char *argv0)
 {
-
 	char *ret;
 
 #ifdef WIN32
-	int i;
-
 	/* First check if argv0 fits inside our buffer */
 	if (strlen(argv0) > MAXPATH - 1)
 		return FALSE;
@@ -396,35 +393,32 @@ static int get_exedir(char *argv0)
 	strncpy(exedir, argv0, MAXPATH);
 
 	/* When run at the console argv[0] is simply "tapclean" or "tapclean.exe" */
-	if (stricmp(exedir, "tapclean") == 0 || stricmp(exedir, "tapclean.exe") == 0) {
-		ret = (char *) getcwd(exedir, MAXPATH - 2);
-		if (ret == NULL)
-			return FALSE;
 
-		exedir[strlen(exedir)] = SLASH;
-		exedir[strlen(exedir)] = '\0';
-	}
-	else
+	/* Note: we do this instead of using getcwd() because getcwd does not give
+	 * the exe's directory when dragging and dropping a tap file to the program
+	 * icon using windows explorer.
+	 */
+	if (stricmp(exedir, "tapclean") != 0 && stricmp(exedir, "tapclean.exe") != 0) {
 	{
-		for (i = strlen(exedir); i > 0 && exedir[i] != SLASH; i--)
-			;  /* clip to leave path only */
+		int i;
+
+		/* Clip to leave path only */
+		for (i = strlen(exedir) - 1; i > 0 && exedir[i] != SLASH; i--)
+			;
 	
 		if (exedir[i] == SLASH)
 			exedir[i + 1] = '\0';   
-   
-		/* Note: we do this instead of using getcwd() because getcwd does not give
-		 * the exe's directory when dragging and dropping a tap file to the program
-		 * icon using windows explorer.
-		 */
+
+		return TRUE;
 	}
-#else
-	ret = getcwd(exedir, MAXPATH - 2);
+#endif
+
+	ret = (char *)getcwd(exedir, MAXPATH - 2);
 	if (ret == NULL)
 		return FALSE;
 
 	exedir[strlen(exedir)] = SLASH;
 	exedir[strlen(exedir)] = '\0';
-#endif
 
 	return TRUE;
 }
@@ -1933,14 +1927,13 @@ static void print_file_stats(char *buf)
 
 
 /**
- *	Public functions
+ *	TAPClean entry point
  */
 
 int main(int argc, char *argv[])
 {
-	int i, opnum;
+	int opnum;
 	time_t t1, t2;
-	FILE *fp;
 	
 	char *opname;		/*!< a pointer to one of the following opnames */
 	char opnames[][32] = {
@@ -1956,20 +1949,23 @@ int main(int argc, char *argv[])
 		"Batch scanning",
 		"Creating info file"
 	};
-	
+
+	/* Delete report and info files */
 	deleteworkfiles();
          
 	/* Get exe path from argv[0] */
-
 	if (!get_exedir(argv[0]))
 		return -1;
 
-	/* allocate ram to file database and initialize array pointers */
+	/* Allocate database for files (not always needed, but still here) */
 
 	if (!create_database())
 		return -1;
 
+	/* TBA */
 	copy_loader_table();
+
+	/* TBA */
 	build_crc_table();
 
 	printf("\n------------------------------------------------------------------\n");
@@ -1995,10 +1991,10 @@ int main(int argc, char *argv[])
 	 *
 	 * 	This allows for drag and drop in (Microsoft) explorer.
 	 * 	First make sure the argument is not the -b option without
-	 * 	arguments.
+	 * 	arguments, or the -info option.
 	 */
 
-	if (argc == 2 && strcmp(argv[1], "-b")) {
+	if (argc == 2 && strcmp(argv[1], "-b") && strcmp(argv[1], "-info")) {
 		if (load_tap(argv[1])) {
 			printf("\n\nLoaded: %s", tap.name);
 			printf("\nTesting...\n");
@@ -2012,6 +2008,8 @@ int main(int argc, char *argv[])
 			}
 		}
 	} else {
+		int i;
+
 		for (i = 0; i < argc; i++) {
 			opnum = 0;
 			if (strcmp(argv[i], "-t") == 0)
@@ -2133,6 +2131,8 @@ int main(int argc, char *argv[])
 			/* flag = generate exe info file */
 
 			if (opnum == 10) {
+				FILE *fp;
+
 				fp = fopen(tcinfoname, "w+t");
 				if (fp != NULL) {
 					printf("\n%s...\n", opname); 
