@@ -399,7 +399,6 @@ static int get_exedir(char *argv0)
 	 * icon using windows explorer.
 	 */
 	if (stricmp(exedir, "tapclean") != 0 && stricmp(exedir, "tapclean.exe") != 0) {
-	{
 		int i;
 
 		/* Clip to leave path only */
