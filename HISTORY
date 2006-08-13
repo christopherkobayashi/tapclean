@@ -1,3 +1,13 @@
+v0.08
+	batchscan.c: Removed the "static const char tcbatchreportname[] = "tcbatch.txt";"
+	 for it's already defined in main.c (luigi).
+	database.c/.h: I moved here the prg-related functions (make_prgs() and save_prgs())
+	 from main.c and added reset_prg_database() to remove code duplication in main() and save_prgs() (luigi).
+	main.c: I changed many variables to static, improved the code within get_exedir() function.
+	 Improved code in main() too: the variables now have the minimum required scope (luigi).
+	mydefs.h: this file reflects the above changes and contains the new OSAPI_xxx definitions which avoid
+	 the use of #ifdef WIN32 inside the whole code where system() is called (luigi).
+
 v0.07
 	Converted scanners/usgold.c to new coding style (bgk)
 	Updated Makefiles
