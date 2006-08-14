@@ -12,6 +12,7 @@ v0.07
 	Converted scanners/usgold.c to new coding style (bgk)
 	Updated Makefiles (bgk)
 	Added support for Alien Syndrome loader. (fabbo)
+	Updated Makefile (fabbo)
 
 v0.06
 	Files changed: batchscan.c, database.c, database.h, main.c, mydefs.h, tap2audio.h, tap2audio.c
