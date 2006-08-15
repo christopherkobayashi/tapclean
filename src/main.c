@@ -491,7 +491,7 @@ static void display_usage(void)
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
-	printf(" -tol [0-14]    Set pulsewidth read tolerance, default=10.\n");
+	printf(" -tol [0-14]    Set pulsewidth read tolerance, default = 10.\n");
 	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
 }
 
@@ -509,10 +509,10 @@ static void process_options(int argc, char **argv)
 				tol = atoi(argv[i + 1]) + 1;	/* 1 = zero tolerance (-tol 0) */
 				if (tol < 0 || tol > MAXTOL) {
 					tol = DEFTOL;
-					printf("\n\nTolerance parameter out of range, using default.");
+					printf("\n\nTolerance parameter out of range, using default (= 10).");
 				}
 			} else
-				printf("\n\nTolerance parameter missing, using default.");
+				printf("\n\nTolerance parameter missing, using default (= 10).");
 		}
 
 		if (strcmp(argv[i], "-debug") == 0)
