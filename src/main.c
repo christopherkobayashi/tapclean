@@ -466,7 +466,8 @@ static void reset_loader_table(void)
 static void display_usage(void)
 {
 	printf("\n\nUsage:\n\n");
-	printf("tapclean [option][parameter]\n\n");
+	printf("tapclean [[option][parameter]]...\n");
+	printf("example: tapclean -o giana_sisters.tap -tol 12\n\n");
 	printf("options...\n\n");
 
 	printf(" -t   [tap]     Test TAP.\n");
@@ -491,6 +492,7 @@ static void display_usage(void)
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -tol [0-14]    Set pulsewidth read tolerance, default=10.\n");
+	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
 }
 
 /*
