@@ -8,6 +8,7 @@ v0.08
 	mydefs.h: this file reflects the above changes and contains the new OSAPI_xxx definitions which avoid
 	 the use of #ifdef WIN32 inside the whole code where system() is called (luigi).
 	Expanded main.c:display_usage() (bgk)
+	Added loader_id for Cult and removed for Alien Syndrome (bgk+luigi)
 
 v0.07
 	Converted scanners/usgold.c to new coding style (bgk)

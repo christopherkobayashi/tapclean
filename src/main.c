@@ -279,7 +279,7 @@ const char knam[100][32] = {
 	{"Snakeload"},
 	{"Ocean New 2"},
 	{"Audiogenic"},
-	{"Alien Syndrome"}
+	{"Cult tape"}
 };
 
 
@@ -864,6 +864,8 @@ static void search_tap(void)
 				atlantis_search();
 			if (tap.cbmid == LID_AUDIOGENIC && noaudiogenic == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
+			if (tap.cbmid == LID_CULT && nocult == FALSE && !dbase_is_full && !aborted)
+				cult_search();
 
 			/* todo : TURRICAN
 			 * todo : SEUCK

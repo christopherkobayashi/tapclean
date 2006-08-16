@@ -235,6 +235,8 @@ int idloader(unsigned long crc)
 		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (klax) */
 		{0x5622E174, LID_ATLAN},	/* Atlantis loader. */
 		{0x206A8B68, LID_AUDIOGENIC},	/* Audiogenic loader */
+
+		{0xF1D441D8, LID_CULT},		/* Cult loader */
 		{0, 0}
 	};
 
