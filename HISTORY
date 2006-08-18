@@ -9,6 +9,8 @@ v0.08
 	 the use of #ifdef WIN32 inside the whole code where system() is called (luigi).
 	Expanded main.c:display_usage() (bgk)
 	Added loader_id for Cult and removed for Alien Syndrome (bgk+luigi)
+	Added options for selecting c16, vic20 and c64 tapes.
+	 No actual code support for c16 and vic20 YET. (bgk)
 
 v0.07
 	Converted scanners/usgold.c to new coding style (bgk)
