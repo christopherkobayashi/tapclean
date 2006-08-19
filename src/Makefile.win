@@ -50,6 +50,9 @@ loader_id.o: loader_id.c
 scanners/wildload.o: scanners/wildload.c
 	$(CC) -c scanners/wildload.c -o scanners/wildload.o $(CFLAGS)
 
+scanners/accolade.o: scanners/accolade.c
+	$(CC) -c scanners/accolade.c -o scanners/accolade.o $(CFLAGS)
+
 scanners/aces.o: scanners/aces.c
 	$(CC) -c scanners/aces.c -o scanners/aces.o $(CFLAGS)
 
