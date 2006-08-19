@@ -68,7 +68,13 @@
 
 #define LAME	0x0F	/* cutoff value for 'noise' pulses when rebuilding pauses.*/
 
-#define CPS	985248	/* 6510 cycles per second (PAL) */
+/* CPU cycles per second for C64, C16 and VIC20 PAL and NTSC */
+#define C64_PAL_CPS	985248
+#define C64_NTSC_CPS	1022727
+#define C16_PAL_CPS	886724
+#define C16_NTSC_CPS	894886
+#define VIC20_PAL_CPS	1108405
+#define VIC20_NTSC_CPS	1022727
 
 #define NA	-1	/* indicator: Not Applicable. */
 #define VV	-1	/* indicator: A variable value is used. */
