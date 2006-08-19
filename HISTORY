@@ -1,5 +1,5 @@
 v0.09
-	added Audiogenic (+clone) support (luigi).
+	added Accolade/EA (+clone) support (luigi).
 	Added options for selecting c16, vic20 and c64 tapes.
 	 No actual code support for c16 and vic20 YET. (bgk)
 	
