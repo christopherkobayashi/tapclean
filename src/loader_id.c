@@ -237,6 +237,9 @@ int idloader(unsigned long crc)
 		{0x206A8B68, LID_AUDIOGENIC},	/* Audiogenic loader */
 
 		{0xF1D441D8, LID_CULT},		/* Cult loader */
+		
+		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
+		{0xEA684D09, LID_ACCOLADE},	/* Accolade clone (EA: Chuck Yeager, PHP Pegasus, World Tour Golf) */
 		{0, 0}
 	};
 

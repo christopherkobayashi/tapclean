@@ -1,3 +1,7 @@
+v0.09
+	added Audiogenic (+clone) support (luigi).
+	
+
 v0.08
 	batchscan.c: Removed the "static const char tcbatchreportname[] = "tcbatch.txt";"
 	 for it's already defined in main.c (luigi).
@@ -9,8 +13,6 @@ v0.08
 	 the use of #ifdef WIN32 inside the whole code where system() is called (luigi).
 	Expanded main.c:display_usage() (bgk)
 	Added loader_id for Cult and removed for Alien Syndrome (bgk+luigi)
-	Added options for selecting c16, vic20 and c64 tapes.
-	 No actual code support for c16 and vic20 YET. (bgk)
 
 v0.07
 	Converted scanners/usgold.c to new coding style (bgk)

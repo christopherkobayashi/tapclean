@@ -177,4 +177,7 @@ int cult_describe(int);
    
 void aliensyndrome_search(void);
 int aliensyndrome_describe(int);
-   
+
+void accolade_search(void);
+int accolade_describe(int);
+

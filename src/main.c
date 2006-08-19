@@ -50,17 +50,13 @@ char prgunite			= FALSE;
 char extvisipatch		= FALSE;
 char incsubdirs			= FALSE;
 char sortbycrc			= FALSE;
-char c16                        = FALSE;
-char c20                        = FALSE;
-char c64                        = TRUE;
-char pal                        = TRUE;
-char ntsc                       = FALSE;
 
 char exportcyberloaders		= FALSE;
 
 static char preserveloadertable	= TRUE;
 
 static char noc64		= FALSE;
+static char noaccolade		= FALSE;
 static char noaces		= FALSE;
 static char noaliensy		= FALSE;
 static char noanirog		= FALSE;
@@ -138,10 +134,7 @@ int quiet = FALSE;		/* set 1 to stop the loader search routines from producing o
 				/* ie. "Scanning: Freeload". */
 				/* i set it (1) when (re)searching during optimization. */
 
-//int dbase_is_full = 0;	/* used by 'addblockdef' to indicate database capacity reached. */
-
-
-long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
+//int dbase_is_full = 0;		/* used by 'addblockdef' to indicate database capacity reached. */
 
 
 struct fmt_t ft_org[100];	/* a backup copy of the following... */
@@ -223,6 +216,7 @@ struct fmt_t ft[100] = {
 	{"ENIGMA TAPE"		,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 700, NA,    CSNO},
 	{"AUDIOGENIC"		,MSbF, 0x28, 0x1A, NA,  0x36, 0xF0, 0xAA, 4,   NA,    CSYES},
 	{"ALIEN SYNDROME"	,MSbF, 0x2C, 0x20, NA,  0x43, 0xE3, 0xED, 4,   NA,    CSYES},
+	{"ACCOLADE"		,MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,   NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -287,7 +281,8 @@ const char knam[100][32] = {
 	{"Snakeload"},
 	{"Ocean New 2"},
 	{"Audiogenic"},
-	{"Cult tape"}
+	{"Cult tape"},
+	{"Accolade (or clone)"}
 };
 
 
@@ -486,10 +481,7 @@ static void display_usage(void)
 	printf(" -rs  [tap]     Corrects the 'size' field of a TAPs header.\n");
 	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
-
-	printf(" -16            Commodore 16 tape.\n");
-	printf(" -20            Commodore VIC 20 tape.\n");
-	printf(" -64            Commodore 64 tape (default).\n");
+      
 	printf(" -boostclean    Raise cleaning threshold.\n");
 	printf(" -debug         Allows detected files to overlap.\n");
 	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
@@ -499,13 +491,11 @@ static void display_usage(void)
 	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
-	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
-	printf(" -ntsc          NTSC timing.\n");
-	printf(" -pal           PAL timing (default).\n");
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -tol [0-14]    Set pulsewidth read tolerance, default = 10.\n");
+	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
 }
 
 /*
@@ -532,16 +522,6 @@ static void process_options(int argc, char **argv)
 			debug = TRUE;
 		if (strcmp(argv[i], "-noid") == 0)
 			noid = TRUE;
-		if (strcmp(argv[i], "-16") == 0)
-			c16 = TRUE;
-		if (strcmp(argv[i], "-20") == 0)
-			c20 = TRUE;
-		if (strcmp(argv[i], "-64") == 0)
-			c64 = TRUE;
-		if (strcmp(argv[i], "-pal") == 0)
-			pal = TRUE;
-		if (strcmp(argv[i], "-ntsc") == 0)
-			ntsc = TRUE;
 		if (strcmp(argv[i], "-noc64eof") == 0)
 			noc64eof = TRUE;
 		if (strcmp(argv[i], "-docyberfault") == 0)
@@ -569,6 +549,8 @@ static void process_options(int argc, char **argv)
          
 		if (strcmp(argv[i], "-noc64") ==  0)
 			noc64 = TRUE;
+		if (strcmp(argv[i], "-noaccolade") == 0)
+			noaccolade = TRUE;
 		if (strcmp(argv[i], "-noaces") == 0)
 			noaces = TRUE;
 		if (strcmp(argv[i], "-noaliensy") == 0)
@@ -657,6 +639,7 @@ static void process_options(int argc, char **argv)
 		/* disable all scanners exc 'c64 rom tape' */
 
 		if (strcmp(argv[i], "-noall") == 0) {
+			noaccolade = TRUE;
 			noaces = TRUE;
 			noaliensy = TRUE;
 			noanirog = TRUE;
@@ -703,43 +686,6 @@ static void process_options(int argc, char **argv)
 	}
 
 	printf("\n\nRead tolerance = %d", tol - 1);
-}
-
-/*
- * Choose CPU cycles based on computer type and PAL/NTSC
- */
-
-static void handle_cps(void)
-{
-	printf("\n\nComputer type: ");
-	
-	if (c64 == TRUE) {
-		printf("C64 ");
-		if (pal == TRUE)
-			cps = C64_PAL_CPS;
-		else
-			cps = C64_NTSC_CPS;
-	} else if (c16 == TRUE) {
-		printf("C16 ");
-		if (pal == TRUE)
-			cps = C16_PAL_CPS;
-		else
-			cps = C16_NTSC_CPS;
-	} else if (c20 == TRUE) {
-		printf("VIC20 ");
-		if (pal == TRUE)
-			cps = VIC20_PAL_CPS;
-		else
-			cps = VIC20_NTSC_CPS;
-	}
-
-	if (pal == TRUE)
-		printf("PAL ");
-	else
-		printf("NTSC ");
-
-
-	printf("(%d Hz)", cps);
 }
 
 /*
@@ -926,6 +872,8 @@ static void search_tap(void)
 				audiogenic_search();
 			if (tap.cbmid == LID_CULT && nocult == FALSE && !dbase_is_full && !aborted)
 				cult_search();
+			if (tap.cbmid == LID_ACCOLADE && noaccolade == FALSE && !dbase_is_full && !aborted)
+				accolade_search();
 
 			/* todo : TURRICAN
 			 * todo : SEUCK
@@ -1076,6 +1024,9 @@ static void search_tap(void)
 
 			if (noaliensy == FALSE && !dbase_is_full && !aborted)
 				aliensyndrome_search();
+
+			if (noaccolade == FALSE && !dbase_is_full && !aborted)
+				accolade_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1270,6 +1221,8 @@ static void describe_file(int row)
 					break;
 		case ALIENSY:		aliensyndrome_describe(row);
 					break;
+		case ACCOLADE:		accolade_describe(row);
+					break;
 	}
 }
 
@@ -1286,9 +1239,9 @@ static void describe_blocks(void)
 	tap.total_read_errors = 0;
 
 	for (i = 0; blk[i]->lt != 0; i++) {
-		describe_file(i);
-
 		t = blk[i]->lt;
+
+		describe_file(i);
 
 		/* get generic info that all data blocks have... */
 
@@ -1388,7 +1341,7 @@ static float get_duration(int p1, int p2)
 	long i;
 	long zsum;
 	double tot = 0;
-	double p = (double)20000 / cps;
+	double p = (double)20000 / CPS;
 	float apr;
 
 	for (i = p1; i < p2; i++) {
@@ -1396,7 +1349,7 @@ static float get_duration(int p1, int p2)
 		/* handle normal pulses (non-zeroes) */
 
 		if (tap.tmem[i] != 0)
-			tot += ((double)(tap.tmem[i] * 8) / cps);
+			tot += ((double)(tap.tmem[i] * 8) / CPS);
 
 		/* handle v0 zeroes.. */
 
@@ -1407,7 +1360,7 @@ static float get_duration(int p1, int p2)
 
 		if (tap.tmem[i] == 0 && tap.version == 1) {
 			zsum = tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
-			tot += (double)zsum / cps;
+			tot += (double)zsum / CPS;
 			i += 3;
 		}
 	}
@@ -1802,7 +1755,6 @@ int main(int argc, char *argv[])
 	}
 
 	process_options(argc, argv);
-	handle_cps();
       
 	/* PROCESS ACTIONS... */
 
