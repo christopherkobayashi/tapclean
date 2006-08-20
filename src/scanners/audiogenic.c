@@ -54,9 +54,22 @@ void audiogenic_search(void)
 
 				/* printf("\nFound AUDIOGENIC pilot + sync @ $%04X",i);  */
 
-				sod = i + 8;
-				eod = sod + (258 * 8);
+				sod = i + 8; /* 1 byte is the sync value... */
+
+				/* ... then 1 byte is the header size and 256 is data size = 257 bytes...
+				   ... the trailing 0x01 value is NOT mandatory! */
+				eod = sod + ((HDSZ+256) * 8);
+
 				eof = eod + 7;
+
+				/* guess if there's a whole trailer byte */
+				if (readttbyte(eof + 1, lp, sp, tp, en) == 0x01)
+					eof +=8;
+				/* broken trailer byte: trace 'eof' to end of trailer */
+				else if (eof > 0)
+					while (eof < tap.len - 1 && tap.tmem[eof + 1] > sp - tol && tap.tmem[eof + 1] < sp + tol)
+						eof++;
+
 				addblockdef(AUDIOGENIC, sof, sod, eod, eof, 0);
 				i = eof;
 			}
@@ -77,20 +90,37 @@ int audiogenic_describe(int row)
 	sp = ft[AUDIOGENIC].sp;
 	lp = ft[AUDIOGENIC].lp;
  
-	blk[row]->cs = (readttbyte(blk[row]->p2, lp, sp, tp, en)) << 8;
+	
+	b = readttbyte(blk[row]->p2, lp, sp, tp, en);
+	blk[row]->cs = b << 8;
 	blk[row]->ce = blk[row]->cs + 255;
 	blk[row]->cx = 256;
+
+	/* block type */
+
+	strcat(info, "\n - Block type: ");
+	if (b == 0 || b == 2)
+		strcat(info, "execute");
+	else if (b == 1)
+		strcat(info, "re-sync");
+	else if (b == 0xCF)
+		strcat(info, "loader (part 2)");
+	else
+		strcat(info, "data");
+	strcat(info, lin);
 
 	/* get pilot & trailer lengths */
 
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 8) >> 3;
-	blk[row]->trail_len = 0;
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - 7;
 
 	/* show trailing byte */
 
 	b = readttbyte(blk[row]->p2 + (258 * 8), lp, sp, tp, en);
-	sprintf(lin, "\n - Final byte: $%02X", b);
-	strcat(info, lin);
+	if (b != -1) {
+		sprintf(lin, "\n - Trailer byte (unbroken): $%02X", b);
+		strcat(info, lin);
+	}
 
 	/* extract data and test checksum... */
 

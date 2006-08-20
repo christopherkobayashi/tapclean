@@ -1,8 +1,14 @@
+v0.10
+	Fixed audiogenic scanner.
+	 The 0x01 byte after a block is NOT mandatory. This assumption was causing problems with Loopz (luigi).
+	Fixed the 'trace eof' and 'addblockdef' issues in accolade_search().
+	 The same should be done for all similiar scanners (luigi).
+	Removed two levels of indentation inside accolade_search() (luigi).
+
 v0.09
 	added Accolade/EA (+clone) support (luigi).
 	Added options for selecting c16, vic20 and c64 tapes.
 	 No actual code support for c16 and vic20 YET. (bgk)
-	
 
 v0.08
 	batchscan.c: Removed the "static const char tcbatchreportname[] = "tcbatch.txt";"

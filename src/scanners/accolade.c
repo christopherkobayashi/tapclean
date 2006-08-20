@@ -72,56 +72,62 @@ void accolade_search (void)
 
 
 			/* Check if there's a valid sync value for this loader */
-			if (readttbyte(i, lp, sp, tp, en) == sv) {
-				sod = i + BITSINABYTE;
+			if (readttbyte(i, lp, sp, tp, en) != sv)
+				continue;
 
-				for (j = 0; j < HEADERSIZE; j++)
-					hb[j] = readttbyte(sod + j*BITSINABYTE, lp, sp, tp, en);
+			sod = i + BITSINABYTE;
 
-				s = hb[LOADOFFSETL] + (hb[LOADOFFSETH]<<8);
-				x = hb[DATAOFFSETL] + (hb[DATAOFFSETH]<<8);
+			/* Read header */
+			for (j = 0; j < HEADERSIZE; j++)
+				hb[j] = readttbyte(sod + j*BITSINABYTE, lp, sp, tp, en);
 
-				/* C64 memory location of the _LAST loaded byte_ */
-				e = s + x - 1;
+			/* Extract load location and size */
+			s = hb[LOADOFFSETL] + (hb[LOADOFFSETH] << 8);
+			x = hb[DATAOFFSETL] + (hb[DATAOFFSETH] << 8);
 
-
-				/* Compute the overload due to internal checksums */
-				bso = x / 256;
-				if (x % 256)
-					bso++;
+			/* C64 memory location of the _LAST loaded byte_ */
+			e = s + x - 1;
 
 
-				/* Plausibility check */
-				if (e <= 0xFFFF) {
-					/* Point to the first pulse of the checkbyte (that's final) */
-					eod = sod + (HEADERSIZE + x + bso - 1) * BITSINABYTE;
+			/* Compute the overload due to internal checksums */
+			bso = x / 256;
+			if (x % 256)
+				bso++;
 
-					/* Initially point to the last pulse of the checkbyte */
-					eof = eod + BITSINABYTE - 1;
 
-					/* Trace 'eof' to end of trailer (as seen in turrican, but also check nova and ocean for a different implementation) */
-					if(eof > 0 && eof < tap.len-1)
-						while(tap.tmem[eof + 1] > sp - tol && tap.tmem[eof + 1] < sp + tol && eof < tap.len - 1)
-							eof++;
+			/* Plausibility check */
+			if (e > 0xFFFF)
+				continue;
 
-					addblockdef(ACCOLADE, sof, sod, eod, eof, 0);
+			/* Point to the first pulse of the checkbyte (that's final) */
+			/* -1 because bso includes the last checkbyte! */
+			eod = sod + (HEADERSIZE + x + bso - 1) * BITSINABYTE;
 
-					/* Search for further files starting from the end of this one */
-					i = eof;
-				}
-			}
+			/* Debug only! */
+			//printf("\n checksum is :%02X\n", readttbyte(eod,lp,sp,tp,en));
+
+			/* Initially point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace 'eof' to end of trailer (as seen in turrican, 
+			   but also check a different implementation that uses readttbit()) */
+			if (eof > 0)
+				while (eof < tap.len-1 && tap.tmem[eof + 1] > sp - tol && tap.tmem[eof + 1] < sp + tol)
+					eof++;
+
+			if (addblockdef(ACCOLADE, sof, sod, eod, eof, 0) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
 		} else {
 			if (eop < 0)
 				i = (-eop);
 		}
 	}
 }
-/*---------------------------------------------------------------------------
-*/
+
 int accolade_describe (int row)
 {
 	int i;
-	int sod; /* file offset */
 	int hb[HEADERSIZE];
 	int en, tp, sp, lp;
 	int cb;
@@ -138,17 +144,17 @@ int accolade_describe (int row)
 
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-	sod = blk[row] -> p2;
+	s = blk[row] -> p2;
 
 
 	/* Read header */
 	for (i = 0; i < HEADERSIZE; i++)
-		hb[i]= readttbyte(sod + i*BITSINABYTE, lp, sp, tp, en);
+		hb[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 
 	/* Read filename */
 	for (i = 0; i < NAMESIZE; i++)
-		bfname[i] = hb[NAMEOFFSET+i];
+		bfname[i] = hb[NAMEOFFSET + i];
 	bfname[i] = 0;
 	
 	trim_string(bfname);
@@ -198,10 +204,10 @@ int accolade_describe (int row)
 		cb ^= hb[i];
 	b = hb[CHKBOFFSET];
 	if (cb == b) {
-		sprintf(lin, "\n - Header checkbyte OK (expected=$%02X, actual=$%02X)", b, cb);
+		sprintf(lin, "\n - Header checkbyte: OK (expected=$%02X, actual=$%02X)", b, cb);
 		strcat(info, lin);
 	} else {
-		sprintf(lin, "\n - Header checkbyte FAILED (expected=$%02X, actual=$%02X)", b, cb);
+		sprintf(lin, "\n - Header checkbyte: FAILED (expected=$%02X, actual=$%02X)", b, cb);
 		strcat(info, lin);
 	}
 
@@ -261,7 +267,7 @@ int accolade_describe (int row)
 			rd_err++;
 
 			/* for experts only */
-			sprintf(lin, "\n - Read Error on byte @$%X (prg offset: $%04X)", s + (i * BITSINABYTE), tot);
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), tot);
 			strcat(info, lin);
 		}
 		tot++;
