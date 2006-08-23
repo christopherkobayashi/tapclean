@@ -80,6 +80,11 @@ void aliensyndrome_search(void)
 				}
 			}
 		}
+		else
+		{
+			if(z<0)    /* find_pilot failed (too few/many), set i to failure point. */
+				i=(-z);
+		}
 	}
 }
 
