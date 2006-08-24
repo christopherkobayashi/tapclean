@@ -1,3 +1,11 @@
+v0.11
+	Additional fix inside audiogenic scanner (luigi).
+	Fixed bleepload scanner.
+	 The backtracing of pre-pilot pulses was missing a call to is_pause_param(). Mad Nurse now goes to 100% (luigi).
+	Final revision of the accolade/ea scanner (luigi).
+	Fixed is_pause_param() function in main.c.
+	 The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager now goes to 100% (luigi).
+
 v0.10
 	Fixed audiogenic scanner.
 	 The 0x01 byte after a block is NOT mandatory. This assumption was causing problems with Loopz (luigi).

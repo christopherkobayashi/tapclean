@@ -391,7 +391,7 @@ int cbm_describe(int row)
       /* extract file name... */
       for(i=0,j=0; i<16; i++)
       {
-         if(hd[i+5]<128)
+//         if(hd[i+5]<128) /* the pet2text() facility will handle this (luigi) */
             fn[j++]= hd[i+5];
       }
       fn[j]=0;

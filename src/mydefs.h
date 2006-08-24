@@ -50,7 +50,7 @@
 #endif
 #define OSAPI_CREATE_FOLDER "mkdir"
 
-#define VERSION_STR "TAPClean v0.09 Console - (C) 2006 XXX"
+#define VERSION_STR "TAPClean v0.11 Console - (C) 2006 XXX"
 #define BUILDER     "ldf"
 
 #define TRUE	1

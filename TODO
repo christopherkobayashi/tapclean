@@ -1,3 +1,4 @@
+ - Make some templates for the xxx_search() and xxx_describe() functions.
  - FIX xxx_search() functions by checking the return value from addblockdef() before assigning 'eof' to 'i'.
  - Fix long / int usage in crc32.c.
     This is not a problem with gcc, but with MS Visual C++ that assumes that

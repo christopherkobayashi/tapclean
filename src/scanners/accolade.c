@@ -3,7 +3,7 @@
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on cyberload_f4.c, turrican.c, which are part of "Final TAP".
+ * Based on cyberload_f4.c, turrican.c, that are part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
@@ -26,7 +26,11 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#define THISLOADER	ACCOLADE
+
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZE	1	/* amount of sync bytes */
 
 #define HEADERSIZE	21	/* size of block header */
 #define NAMESIZE	16	/* size of filename */
@@ -44,7 +48,7 @@ void accolade_search (void)
 {
 	int i, j;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
-	int hb[HEADERSIZE];		/* buffer to store block header info */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
 
 	int en, tp, sp, lp, sv;
 
@@ -52,70 +56,65 @@ void accolade_search (void)
 	unsigned int x, bso; 		/* block size and its overload due to internal checksums */
 
 
-	en = ft[ACCOLADE].en;
-	tp = ft[ACCOLADE].tp;
-	sp = ft[ACCOLADE].sp;
-	lp = ft[ACCOLADE].lp;
-	sv = ft[ACCOLADE].sv;
-
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+	sv = ft[THISLOADER].sv;
 
 	if(!quiet)
-		msgout("  Accolade (+clones)");
-
+		msgout("  Accolade (+clone)");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = find_pilot(i, ACCOLADE);
+		eop = find_pilot(i, THISLOADER);
 
 		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
 			sof = i;
 			i = eop;
-
 
 			/* Check if there's a valid sync value for this loader */
 			if (readttbyte(i, lp, sp, tp, en) != sv)
 				continue;
 
-			sod = i + BITSINABYTE;
+			/* Valid sync found, mark start of data */
+			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
 			/* Read header */
 			for (j = 0; j < HEADERSIZE; j++)
-				hb[j] = readttbyte(sod + j*BITSINABYTE, lp, sp, tp, en);
+				hd[j] = readttbyte(sod + j * BITSINABYTE, lp, sp, tp, en);
 
 			/* Extract load location and size */
-			s = hb[LOADOFFSETL] + (hb[LOADOFFSETH] << 8);
-			x = hb[DATAOFFSETL] + (hb[DATAOFFSETH] << 8);
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			x = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
 
-			/* C64 memory location of the _LAST loaded byte_ */
+			/* Compute C64 memory location of the _LAST loaded byte_ */
 			e = s + x - 1;
-
-
-			/* Compute the overload due to internal checksums */
-			bso = x / 256;
-			if (x % 256)
-				bso++;
-
 
 			/* Plausibility check */
 			if (e > 0xFFFF)
 				continue;
 
-			/* Point to the first pulse of the checkbyte (that's final) */
-			/* -1 because bso includes the last checkbyte! */
-			eod = sod + (HEADERSIZE + x + bso - 1) * BITSINABYTE;
+			/* Compute size overload due to internal checksums */
+			bso = x / 256;
+			if (x % 256)
+				bso++;
 
-			/* Debug only! */
-			//printf("\n checksum is :%02X\n", readttbyte(eod,lp,sp,tp,en));
+			/* Point to the first pulse of the checkbyte (that's final) */
+			/* Note: - 1 because "bso" also includes the last checkbyte! */
+			eod = sod + (HEADERSIZE + x + bso - 1) * BITSINABYTE;
 
 			/* Initially point to the last pulse of the checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (as seen in turrican, 
-			   but also check a different implementation that uses readttbit()) */
-			if (eof > 0)
-				while (eof < tap.len-1 && tap.tmem[eof + 1] > sp - tol && tap.tmem[eof + 1] < sp + tol)
-					eof++;
+			/* Trace 'eof' to end of trailer (also check a different 
+			   implementation that uses readttbit()) */
+			while (eof < tap.len - 1 && 
+					tap.tmem[eof + 1] > sp - tol && 
+					tap.tmem[eof + 1] < sp + tol)
+				eof++;
 
-			if (addblockdef(ACCOLADE, sof, sod, eod, eof, 0) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -128,34 +127,32 @@ void accolade_search (void)
 int accolade_describe (int row)
 {
 	int i;
-	int hb[HEADERSIZE];
+	int hd[HEADERSIZE];
 	int en, tp, sp, lp;
 	int cb;
-	char bfname[NAMESIZE+1], bfnameASCII[NAMESIZE+1];
+	char bfname[NAMESIZE + 1], bfnameASCII[NAMESIZE + 1];
 
 	int cnt, s, tot;
-	int b, rd_err=0;
+	int b, rd_err;
 	int good, done, boff, blocks;
 
-	en = ft[ACCOLADE].en;
-	tp = ft[ACCOLADE].tp;
-	sp = ft[ACCOLADE].sp;
-	lp = ft[ACCOLADE].lp;
 
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-
 	/* Read header */
 	for (i = 0; i < HEADERSIZE; i++)
-		hb[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
-
+		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 	/* Read filename */
 	for (i = 0; i < NAMESIZE; i++)
-		bfname[i] = hb[NAMEOFFSET + i];
-	bfname[i] = 0;
+		bfname[i] = hd[NAMEOFFSET + i];
+	bfname[i] = '\0';
 	
 	trim_string(bfname);
 	pet2text(bfnameASCII, bfname);
@@ -165,26 +162,20 @@ int accolade_describe (int row)
 	blk[row]->fn = (char*)malloc(strlen(bfnameASCII) + 1);
 	strcpy(blk[row]->fn, bfnameASCII);
 
-	sprintf(lin, "\n - Name : \"%s\"", bfnameASCII);
-	strcat(info, lin);
-
-
 	/* Read/compute C64 memory location for load/end address, and read data size */
-	blk[row]->cs = hb[LOADOFFSETL] + (hb[LOADOFFSETH] << 8);
-	blk[row]->cx = hb[DATAOFFSETL] + (hb[DATAOFFSETH] << 8);
+	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+	blk[row]->cx = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
 
 	/* C64 memory location of the _LAST loaded byte_ */
 	blk[row]->ce = blk[row]->cs + blk[row]->cx - 1;
-
 
 	/* Compute the number of sub-blocks in this file */
 	blocks = (blk[row]->cx) / 256;
 	if ((blk[row]->cx) % 256)
 		blocks++;
 
-	sprintf(lin, "\n - Sub-blocks: %d", blocks);
+	sprintf(lin, "\n - Sub-blocks : %d", blocks);
 	strcat(info, lin);
-
 
 	/* Compute pilot & trailer lengths */
 
@@ -194,23 +185,23 @@ int accolade_describe (int row)
 	/* ... trailer in pulses */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* if there IS pilot then disclude the sync byte. */
+	/* if there IS pilot then disclude the sync byte */
 	if(blk[row]->pilot_len > 0) 
-		blk[row]->pilot_len--;
-
+		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Test the header checkbyte */
 	for (cb = 0, i = 0; i < CHKBOFFSET; i++)
-		cb ^= hb[i];
-	b = hb[CHKBOFFSET];
+		cb ^= hd[i];
+
+	b = hd[CHKBOFFSET];
+
 	if (cb == b) {
-		sprintf(lin, "\n - Header checkbyte: OK (expected=$%02X, actual=$%02X)", b, cb);
+		sprintf(lin, "\n - Header checkbyte : OK (expected=$%02X, actual=$%02X)", b, cb);
 		strcat(info, lin);
 	} else {
-		sprintf(lin, "\n - Header checkbyte: FAILED (expected=$%02X, actual=$%02X)", b, cb);
+		sprintf(lin, "\n - Header checkbyte : FAILED (expected=$%02X, actual=$%02X)", b, cb);
 		strcat(info, lin);
 	}
-
 
 	/* Test all sub-block checksums individually */
 	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
@@ -229,7 +220,7 @@ int accolade_describe (int row)
 			
 			/* Note: p3 points to the first pulse of the checkbyte */
 			if (cnt == SBLOCKSIZE || s + boff + (cnt * BITSINABYTE) == blk[row]->p3) {
-				/* we reached the checkbyte (257th) */
+				/* we reached the checkbyte (257th byte or last one) */
 				b = readttbyte(s + boff + (cnt * BITSINABYTE), lp, sp, tp, en);
 				if (b == cb)
 					good++;
@@ -241,17 +232,19 @@ int accolade_describe (int row)
 		} while (!done);
 	} while (s + boff + (cnt * BITSINABYTE) < blk[row]->p3 - BITSINABYTE);
 
-	sprintf(lin,"\n - Verified sub-block checkbytes: %d of %d", good, blocks);
+	sprintf(lin,"\n - Verified sub-block checkbytes : %d of %d", good, blocks);
 	strcat(info, lin);
 
-
 	/* In case of multiple checksums in a file, use counts instead of a checksum pair */
+	/* Suggestion: for those loaders (like this one) where there's a header
+	   checksum too, use it here (but don't print it to the "info" buffer) */
 	blk[row]->cs_exp = blocks;
 	blk[row]->cs_act = good;
 
-
 	/* Decode all sub-blocks as one prg */
-	s=(blk[row]->p2) + (HEADERSIZE * BITSINABYTE);
+	rd_err = 0;
+
+	s = (blk[row]->p2) + (HEADERSIZE * BITSINABYTE);
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
@@ -278,6 +271,7 @@ int accolade_describe (int row)
 			s += ((SBLOCKSIZE + 1) * BITSINABYTE); /* jump to next sub-block */
 		}
 	}
+
 	blk[row]->rd_err = rd_err;
 
 	return(rd_err);

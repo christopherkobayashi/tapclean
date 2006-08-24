@@ -57,8 +57,9 @@ void audiogenic_search(void)
 				sod = i + 8; /* 1 byte is the sync value... */
 
 				/* ... then 1 byte is the header size and 256 is data size = 257 bytes...
-				   ... the trailing 0x01 value is NOT mandatory! */
-				eod = sod + ((HDSZ+256) * 8);
+				   ... the trailing 0x01 value is NOT mandatory! 
+				   This way eod points to the first bit of the checkbyte... (luigi) */
+				eod = sod + ((HDSZ+257) * 8);
 
 				eof = eod + 7;
 
@@ -96,7 +97,7 @@ int audiogenic_describe(int row)
 	blk[row]->ce = blk[row]->cs + 255;
 	blk[row]->cx = 256;
 
-	/* block type */
+	/* block type (luigi) */
 
 	strcat(info, "\n - Block type: ");
 	if (b == 0 || b == 2)
@@ -117,7 +118,7 @@ int audiogenic_describe(int row)
 	/* show trailing byte */
 
 	b = readttbyte(blk[row]->p2 + (258 * 8), lp, sp, tp, en);
-	if (b != -1) {
+	if (b != -1) { /* (luigi) */
 		sprintf(lin, "\n - Trailer byte (unbroken): $%02X", b);
 		strcat(info, lin);
 	}

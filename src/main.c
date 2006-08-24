@@ -2549,9 +2549,20 @@ int is_pause_param(int p)
 					return 1;	/* p is in a pause */
 			}
 		}
-	}
+	} else { /* luigi */
+		for (i = 20; i < tap.len - 4 ; i++) {
+			if (tap.tmem[i] == 0)	/* skip over v1 pauses */
+				i += 3;
+			else {
+				if (i == p)
+					return 0;	/* p is not in a pause */
 
-	return 0;
+				if (i > p)
+					return 1;	/* p is in a pause */
+			}
+		}
+	}
+//	return 0; /* luigi */
 }
 
 /*

@@ -85,7 +85,7 @@ void bleep_search(void)
                   /* trace "sof" back to start of L pulse leader on block 0... */
                   if(tap.tmem[sof-1]>ft[BLEEP].lp-tol && tap.tmem[sof-1]<ft[BLEEP].lp+tol)
                   {
-                     while(tap.tmem[sof-1]>ft[BLEEP].lp-tol && tap.tmem[sof-1]<ft[BLEEP].lp+tol)
+                     while(tap.tmem[sof-1]>ft[BLEEP].lp-tol && tap.tmem[sof-1]<ft[BLEEP].lp+tol && !is_pause_param(sof-1))
                         sof--;
                   }
                }
