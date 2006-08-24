@@ -58,9 +58,9 @@ void alternativewg_search(void)
 			{
 				hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
 				if (hd[h] == -1) /* fail in case of byte read error */
-					continue;
+					break;
 			}
-			if (hd[1] != 0x20)
+			if (h != HDSZ || hd[1] != 0x20)
 				continue;
 
 			s = hd[2] + (hd[3] << 8);	/* get start address */
