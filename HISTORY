@@ -1,3 +1,6 @@
+v0.12
+	Added scanner for Alternative World Games (fabbo)
+
 v0.11
 	Additional fix inside audiogenic scanner (luigi).
 	Fixed bleepload scanner.
@@ -5,6 +8,7 @@ v0.11
 	Final revision of the accolade/ea scanner (luigi).
 	Fixed is_pause_param() function in main.c.
 	 The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager now goes to 100% (luigi).
+	Some fixes to Alien Syndrome scanner (fabbo)
 
 v0.10
 	Fixed audiogenic scanner.
