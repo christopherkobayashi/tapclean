@@ -64,6 +64,7 @@ static char noc64		= FALSE;
 static char noaccolade		= FALSE;
 static char noaces		= FALSE;
 static char noaliensy		= FALSE;
+static char noalterwg		= FALSE;
 static char noanirog		= FALSE;
 static char noatlantis		= FALSE;
 static char noaudiogenic	= FALSE;
@@ -223,6 +224,7 @@ struct fmt_t ft[100] = {
 	{"AUDIOGENIC"		,MSbF, 0x28, 0x1A, NA,  0x36, 0xF0, 0xAA, 4,   NA,    CSYES},
 	{"ALIEN SYNDROME"	,MSbF, 0x2C, 0x20, NA,  0x43, 0xE3, 0xED, 4,   NA,    CSYES},
 	{"ACCOLADE"		,MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,   NA,    CSYES},
+	{"ALTERNATIVE WORLD G."	,MSbF, 0x4A, 0x33, NA,  0x65, 0x01, 0x00, 192,   NA,    CSNO},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -577,6 +579,8 @@ static void process_options(int argc, char **argv)
 			noaces = TRUE;
 		if (strcmp(argv[i], "-noaliensy") == 0)
 			noaliensy = TRUE;
+		if (strcmp(argv[i], "-noalterwg") == 0)
+			noalterwg = TRUE;
 		if (strcmp(argv[i], "-noanirog") == 0)
 			noanirog = TRUE;
 		if (strcmp(argv[i], "-noatlantis") == 0)
@@ -664,6 +668,7 @@ static void process_options(int argc, char **argv)
 			noaccolade = TRUE;
 			noaces = TRUE;
 			noaliensy = TRUE;
+			noalterwg = TRUE;
 			noanirog = TRUE;
 			noatlantis = TRUE;
 			noaudiogenic = TRUE;
@@ -1085,6 +1090,9 @@ static void search_tap(void)
 
 			if (noaccolade == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
+
+			if (noalterwg == FALSE && !dbase_is_full && !aborted)
+				alternativewg_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1280,6 +1288,8 @@ static void describe_file(int row)
 		case ALIENSY:		aliensyndrome_describe(row);
 					break;
 		case ACCOLADE:		accolade_describe(row);
+					break;
+		case ALTERWG:		alternativewg_describe(row);
 					break;
 	}
 }
