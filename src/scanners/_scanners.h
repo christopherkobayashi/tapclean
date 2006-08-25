@@ -193,3 +193,9 @@ int rainbowf2_describe(int);
 void trilogic_search(void);
 int trilogic_describe(int);
 
+void burnervar_search(void);
+int burnervar_describe(int);
+
+void oceannew4_search(void);
+int oceannew4_describe(int);
+

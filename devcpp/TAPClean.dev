@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=63
+UnitCount=65
 Type=1
 Ver=1
 ObjFiles=
@@ -32,7 +32,7 @@ CompilerSettings=
 [Unit1]
 FileName=..\src\batchscan.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -42,7 +42,7 @@ BuildCmd=
 [Unit2]
 FileName=..\src\clean.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -52,7 +52,7 @@ BuildCmd=
 [Unit3]
 FileName=..\src\crc32.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -62,7 +62,7 @@ BuildCmd=
 [Unit4]
 FileName=..\src\database.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -72,7 +72,7 @@ BuildCmd=
 [Unit5]
 FileName=..\src\filesearch.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -82,7 +82,7 @@ BuildCmd=
 [Unit6]
 FileName=..\src\loader_id.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -92,7 +92,7 @@ BuildCmd=
 [Unit7]
 FileName=..\src\main.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -102,7 +102,7 @@ BuildCmd=
 [Unit8]
 FileName=..\src\tap2audio.c
 CompileCpp=0
-Folder=TAPClean
+Folder=
 Compile=1
 Link=1
 Priority=1000
@@ -669,6 +669,26 @@ BuildCmd=
 
 [Unit63]
 FileName=..\src\scanners\rainbowarts_f2.c
+CompileCpp=0
+Folder=scanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit64]
+FileName=..\src\scanners\burner_var.c
+CompileCpp=0
+Folder=scanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit65]
+FileName=..\src\scanners\oceannew4.c
 CompileCpp=0
 Folder=scanners
 Compile=1

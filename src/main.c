@@ -70,6 +70,7 @@ static char noatlantis		= FALSE;
 static char noaudiogenic	= FALSE;
 static char nobleep		= FALSE;
 static char noburner		= FALSE;
+static char noburnervar		= FALSE;
 static char nochr		= FALSE;
 static char nocult		= FALSE;
 static char nocyber		= FALSE;
@@ -88,6 +89,7 @@ static char noocean		= FALSE;
 static char nooceannew1t1	= FALSE;
 static char nooceannew1t2	= FALSE;
 static char nooceannew2		= FALSE;
+static char nooceannew4		= FALSE;
 static char nopalacef1		= FALSE;
 static char nopalacef2		= FALSE;
 static char nopav		= FALSE;
@@ -231,6 +233,8 @@ struct fmt_t ft[100] = {
 	{"RAINBOW ARTS F1"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
 	{"RAINBOW ARTS F2"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
 	{"TRILOGIC"		,MSbF, 0x28, 0x1C, NA,  0x35, 0x0F, 0x0E, 200, NA,    CSYES},
+	{"BURNER VARIANT"	,VV,   0x30, 0x23, NA,  0x42, VV,   VV,   100, NA,    CSNO},
+	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -297,7 +301,9 @@ const char knam[100][32] = {
 	{"Audiogenic"},
 	{"Cult tape"},
 	{"Accolade (or clone)"},
-	{"Rainbow Arts (F1/F2)"}
+	{"Rainbow Arts (F1/F2)"},
+	{"Burner (Mastertronic Variant)"},
+	{"Ocean New 4"}
 };
 
 
@@ -598,6 +604,8 @@ static void process_options(int argc, char **argv)
 			nobleep = TRUE;
 		if (strcmp(argv[i], "-noburner") == 0)
 			noburner = TRUE;
+		if (strcmp(argv[i], "-noburnervar") == 0)
+			noburnervar = TRUE;
 		if (strcmp(argv[i], "-nochr") == 0)
 			nochr = TRUE;
 		if (strcmp(argv[i], "-nocult") == 0)
@@ -634,6 +642,8 @@ static void process_options(int argc, char **argv)
 			nooceannew1t2 = TRUE;
 		if (strcmp(argv[i], "-nooceannew2") == 0)
 			nooceannew2 = TRUE;
+		if (strcmp(argv[i], "-nooceannew4") == 0)
+			nooceannew4 = TRUE;
 		if (strcmp(argv[i], "-nopalacef1") == 0)
 			nopalacef1 = TRUE;
 		if (strcmp(argv[i], "-nopalacef2") == 0)
@@ -687,6 +697,7 @@ static void process_options(int argc, char **argv)
 			noaudiogenic = TRUE;
 			nobleep = TRUE;
 			noburner = TRUE;
+			noburnervar = TRUE;
 			nochr = TRUE;
 			nocult = TRUE;
 			nocyber = TRUE;
@@ -705,6 +716,7 @@ static void process_options(int argc, char **argv)
 			nooceannew1t1 = TRUE;
 			nooceannew1t2 = TRUE;
 			nooceannew2 = TRUE;
+			nooceannew4 = TRUE;
 			nopalacef1 = TRUE;
 			nopalacef2 = TRUE;
 			nopav = TRUE;
@@ -945,18 +957,30 @@ static void search_tap(void)
 
 			if (tap.cbmid == LID_SNAKE && nosnake51 == FALSE && !dbase_is_full && !aborted)
 				snakeload51_search();
+
 			if (tap.cbmid == LID_ATLAN && noatlantis == FALSE && !dbase_is_full && !aborted)
 				atlantis_search();
+
 			if (tap.cbmid == LID_AUDIOGENIC && noaudiogenic == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
+
 			if (tap.cbmid == LID_CULT && nocult == FALSE && !dbase_is_full && !aborted)
 				cult_search();
+
 			if (tap.cbmid == LID_ACCOLADE && noaccolade == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
+
 			if (tap.cbmid == LID_RAINBOWARTS && norainbowf1 == FALSE && !dbase_is_full && !aborted)
 				rainbowf1_search();
+
 			if (tap.cbmid == LID_RAINBOWARTS && norainbowf2 == FALSE && !dbase_is_full && !aborted)
 				rainbowf2_search();
+
+			if (tap.cbmid == LID_BURNERVAR && noburnervar == FALSE && !dbase_is_full && !aborted)
+				burnervar_search();
+
+			if (tap.cbmid == LID_OCNEW4 && nooceannew2 == FALSE && !dbase_is_full && !aborted)
+				oceannew4_search();
 
 			/* todo : TURRICAN
 			 * todo : SEUCK
@@ -1122,6 +1146,12 @@ static void search_tap(void)
 
 			if (notrilogic == FALSE && !dbase_is_full && !aborted)
 				trilogic_search();
+
+			if (noburnervar == FALSE && !dbase_is_full && !aborted)
+				burnervar_search();
+
+			if (nooceannew4 == FALSE && !dbase_is_full && !aborted)
+				oceannew4_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1325,6 +1355,10 @@ static void describe_file(int row)
 		case RAINBOWARTSF2:	rainbowf2_describe(row);
 					break;
 		case TRILOGIC:		trilogic_describe(row);
+					break;
+		case BURNERVAR:		burnervar_describe(row);
+					break;
+		case OCNEW4:		oceannew4_describe(row);
 					break;
 	}
 }

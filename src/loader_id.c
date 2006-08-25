@@ -241,8 +241,14 @@ int idloader(unsigned long crc)
 		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
 		{0xEA684D09, LID_ACCOLADE},	/* Accolade clone (EA: Chuck Yeager, PHP Pegasus, World Tour Golf) */
 
-		{0xED3BB9E4, LID_RAINBOWARTS},	/* Circus Attarctions, X-Out */
+		{0xED3BB9E4, LID_RAINBOWARTS},	/* Circus Attractions, X-Out */
 		{0xAC824E15, LID_RAINBOWARTS},	/* Grand Monster Slam (7 MB of TAP file!) */
+
+		{0x53A23D4D, LID_BURNERVAR},	/* Hektik, Magic Carpet */
+
+		{0xB211DFED, LID_OCNEW4},	/* Ocean New 4 */
+		{0x4E56C97A, LID_OCNEW4},	/* Out Run Europa (Variant) */
+		{0x6B4A0009, LID_OCNEW4},	/* Liverpool (Variant) */
 
 		{0, 0}
 	};
