@@ -46,7 +46,7 @@
 
 void accolade_search (void)
 {
-	int i, j;			/* counters */
+	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
@@ -81,8 +81,13 @@ void accolade_search (void)
 			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
 			/* Read header */
-			for (j = 0; j < HEADERSIZE; j++)
-				hd[j] = readttbyte(sod + j * BITSINABYTE, lp, sp, tp, en);
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
 
 			/* Extract load location and size */
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
