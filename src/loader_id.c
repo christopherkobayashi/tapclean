@@ -240,6 +240,10 @@ int idloader(unsigned long crc)
 		
 		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
 		{0xEA684D09, LID_ACCOLADE},	/* Accolade clone (EA: Chuck Yeager, PHP Pegasus, World Tour Golf) */
+
+		{0xED3BB9E4, LID_RAINBOWARTS},	/* Circus Attarctions, X-Out */
+		{0xAC824E15, LID_RAINBOWARTS},	/* Grand Monster Slam (7 MB of TAP file!) */
+
 		{0, 0}
 	};
 

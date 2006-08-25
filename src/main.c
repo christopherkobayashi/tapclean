@@ -92,6 +92,8 @@ static char nopalacef1		= FALSE;
 static char nopalacef2		= FALSE;
 static char nopav		= FALSE;
 static char norackit		= FALSE;
+static char norainbowf1		= FALSE;
+static char norainbowf2		= FALSE;
 static char noraster		= FALSE;
 static char noseuck		= FALSE;
 static char nosnake50		= FALSE;
@@ -99,6 +101,7 @@ static char nosnake51		= FALSE;
 static char nospav		= FALSE;
 static char nosuper		= FALSE;
 static char notdif1		= FALSE;
+static char notrilogic		= FALSE;
 static char noturbo		= FALSE;
 static char noturr		= FALSE;
 static char nousgold		= FALSE;
@@ -224,7 +227,10 @@ struct fmt_t ft[100] = {
 	{"AUDIOGENIC"		,MSbF, 0x28, 0x1A, NA,  0x36, 0xF0, 0xAA, 4,   NA,    CSYES},
 	{"ALIEN SYNDROME"	,MSbF, 0x2C, 0x20, NA,  0x43, 0xE3, 0xED, 4,   NA,    CSYES},
 	{"ACCOLADE"		,MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,   NA,    CSYES},
-	{"ALTERNATIVE WORLD G."	,MSbF, 0x4A, 0x33, NA,  0x65, 0x01, 0x00, 192,   NA,    CSNO},
+	{"ALTERNATIVE WORLD G."	,MSbF, 0x4A, 0x33, NA,  0x65, 0x01, 0x00, 192, NA,    CSNO},
+	{"RAINBOW ARTS F1"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
+	{"RAINBOW ARTS F2"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
+	{"TRILOGIC"		,MSbF, 0x28, 0x1C, NA,  0x35, 0x0F, 0x0E, 200, NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -290,7 +296,8 @@ const char knam[100][32] = {
 	{"Ocean New 2"},
 	{"Audiogenic"},
 	{"Cult tape"},
-	{"Accolade (or clone)"}
+	{"Accolade (or clone)"},
+	{"Rainbow Arts (F1/F2)"}
 };
 
 
@@ -635,6 +642,10 @@ static void process_options(int argc, char **argv)
 			nopav = TRUE;
 		if (strcmp(argv[i], "-norackit") == 0)
 			norackit = TRUE;
+		if (strcmp(argv[i], "-norainbowf1") == 0)
+			norainbowf1 = TRUE;
+		if (strcmp(argv[i], "-norainbowf2") == 0)
+			norainbowf2 = TRUE;
 		if (strcmp(argv[i], "-noraster") == 0)
 			noraster = TRUE;
 		if (strcmp(argv[i], "-noseuck") == 0)
@@ -649,6 +660,8 @@ static void process_options(int argc, char **argv)
 			nosuper = TRUE;
 		if (strcmp(argv[i], "-notdif1") == 0)
 			notdif1 = TRUE;
+		if (strcmp(argv[i], "-notrilogic") == 0)
+			notrilogic = TRUE;
 		if (strcmp(argv[i], "-noturbo") == 0)
 			noturbo = TRUE;
 		if (strcmp(argv[i], "-noturr") == 0)
@@ -696,6 +709,8 @@ static void process_options(int argc, char **argv)
 			nopalacef2 = TRUE;
 			nopav = TRUE;
 			norackit = TRUE;
+			norainbowf1 = TRUE;
+			norainbowf2 = TRUE;
 			noraster = TRUE;
 			noseuck = TRUE;
 			nosnake50 = TRUE;
@@ -703,6 +718,7 @@ static void process_options(int argc, char **argv)
 			nospav = TRUE;
 			nosuper = TRUE;
 			notdif1 = TRUE;
+			notrilogic = TRUE;
 			noturbo = TRUE;
 			noturr = TRUE;
 			nousgold = TRUE;
@@ -937,6 +953,10 @@ static void search_tap(void)
 				cult_search();
 			if (tap.cbmid == LID_ACCOLADE && noaccolade == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
+			if (tap.cbmid == LID_RAINBOWARTS && norainbowf1 == FALSE && !dbase_is_full && !aborted)
+				rainbowf1_search();
+			if (tap.cbmid == LID_RAINBOWARTS && norainbowf2 == FALSE && !dbase_is_full && !aborted)
+				rainbowf2_search();
 
 			/* todo : TURRICAN
 			 * todo : SEUCK
@@ -1093,6 +1113,15 @@ static void search_tap(void)
 
 			if (noalterwg == FALSE && !dbase_is_full && !aborted)
 				alternativewg_search();
+
+			if (norainbowf1 == FALSE && !dbase_is_full && !aborted)
+				rainbowf1_search();
+
+			if (norainbowf2 == FALSE && !dbase_is_full && !aborted)
+				rainbowf2_search();
+
+			if (notrilogic == FALSE && !dbase_is_full && !aborted)
+				trilogic_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1290,6 +1319,12 @@ static void describe_file(int row)
 		case ACCOLADE:		accolade_describe(row);
 					break;
 		case ALTERWG:		alternativewg_describe(row);
+					break;
+		case RAINBOWARTSF1:	rainbowf1_describe(row);
+					break;
+		case RAINBOWARTSF2:	rainbowf2_describe(row);
+					break;
+		case TRILOGIC:		trilogic_describe(row);
 					break;
 	}
 }

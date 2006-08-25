@@ -181,3 +181,15 @@ int aliensyndrome_describe(int);
 void accolade_search(void);
 int accolade_describe(int);
 
+void alternativewg_search(void);
+int alternativewg_describe(int);
+
+void rainbowf1_search(void);
+int rainbowf1_describe(int);
+
+void rainbowf2_search(void);
+int rainbowf2_describe(int);
+
+void trilogic_search(void);
+int trilogic_describe(int);
+
