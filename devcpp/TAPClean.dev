@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=65
+UnitCount=66
 Type=1
 Ver=1
 ObjFiles=
@@ -689,6 +689,16 @@ BuildCmd=
 
 [Unit65]
 FileName=..\src\scanners\oceannew4.c
+CompileCpp=0
+Folder=scanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit66]
+FileName=..\src\scanners\tdi_f2.c
 CompileCpp=0
 Folder=scanners
 Compile=1

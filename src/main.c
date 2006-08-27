@@ -103,6 +103,7 @@ static char nosnake51		= FALSE;
 static char nospav		= FALSE;
 static char nosuper		= FALSE;
 static char notdif1		= FALSE;
+static char notdif2		= FALSE;
 static char notrilogic		= FALSE;
 static char noturbo		= FALSE;
 static char noturr		= FALSE;
@@ -235,6 +236,7 @@ struct fmt_t ft[100] = {
 	{"TRILOGIC"		,MSbF, 0x28, 0x1C, NA,  0x35, 0x0F, 0x0E, 200, NA,    CSYES},
 	{"BURNER VARIANT"	,VV,   0x30, 0x23, NA,  0x42, VV,   VV,   100, NA,    CSNO},
 	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
+	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -670,6 +672,8 @@ static void process_options(int argc, char **argv)
 			nosuper = TRUE;
 		if (strcmp(argv[i], "-notdif1") == 0)
 			notdif1 = TRUE;
+		if (strcmp(argv[i], "-notdif2") == 0)
+			notdif2 = TRUE;
 		if (strcmp(argv[i], "-notrilogic") == 0)
 			notrilogic = TRUE;
 		if (strcmp(argv[i], "-noturbo") == 0)
@@ -730,6 +734,7 @@ static void process_options(int argc, char **argv)
 			nospav = TRUE;
 			nosuper = TRUE;
 			notdif1 = TRUE;
+			notdif2 = TRUE;
 			notrilogic = TRUE;
 			noturbo = TRUE;
 			noturr = TRUE;
@@ -1152,6 +1157,10 @@ static void search_tap(void)
 
 			if (nooceannew4 == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
+
+			if (notdif2 == FALSE && !dbase_is_full && !aborted)
+				tdif2_search();
+
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1359,6 +1368,8 @@ static void describe_file(int row)
 		case BURNERVAR:		burnervar_describe(row);
 					break;
 		case OCNEW4:		oceannew4_describe(row);
+					break;
+		case TDI_F2:		tdif2_describe(row);
 					break;
 	}
 }

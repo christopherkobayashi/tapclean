@@ -1,3 +1,10 @@
+v0.15
+	Edited Cult scanner (luigi).
+	Changed TDI scanner to acknowledge trailer pulses.
+	 All TDI TAP files which were optimized should be re-optimized (luigi).
+	Added scanner for TDI F2.
+	 The discovery of EOF markers in TDI TAP files was fundamental (luigi).
+
 v0.14
 	Added 2 scanners: Burner (Mastertronic Variant) and Ocean New 4 (luigi).
 
@@ -14,7 +21,7 @@ v0.11
 	Final revision of the accolade/ea scanner (luigi).
 	Fixed is_pause_param() function in main.c.
 	 The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager now goes to 100% (luigi).
-	Some fixes to Alien Syndrome scanner (fabbo)
+	Some fixes to Alien Syndrome scanner (fabbo).
 
 v0.10
 	Fixed audiogenic scanner.

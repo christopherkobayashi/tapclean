@@ -199,3 +199,6 @@ int burnervar_describe(int);
 void oceannew4_search(void);
 int oceannew4_describe(int);
 
+void tdif2_search(void);
+int tdif2_describe(int);
+

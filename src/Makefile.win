@@ -1,204 +1,225 @@
-# Project: tapclean
+# Project: TAPClean
 # Makefile created by Dev-C++ 4.9.9.2
 
 CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = main.o batchscan.o database.o clean.o crc32.o filesearch.o loader_id.o scanners/wildload.o scanners/accolade.o scanners/aces.o scanners/aliensyndrome.o scanners/alternativewg.o scanners/anirog.o scanners/atlantis.o scanners/audiogenic.o scanners/bleep_f1.o scanners/bleep_f2.o scanners/burner.o scanners/burner_var.o scanners/c64tape.o scanners/chr.o scanners/cult.o scanners/cyberload_f1.o scanners/cyberload_f2.o scanners/cyberload_f3.o scanners/cyberload_f4.o scanners/enigma.o scanners/firebird.o scanners/flashload.o scanners/freeload.o scanners/odeload.o scanners/hitec.o scanners/hitload.o scanners/ikloader.o scanners/jetload.o scanners/microload.o scanners/nova_f1.o scanners/nova_f2.o scanners/ocean.o scanners/oceannew1t1.o scanners/oceannew1t2.o scanners/oceannew2.o scanners/oceannew4.o scanners/palace_f1.o scanners/palace_f2.o scanners/pause.o scanners/pavloda.o scanners/rackit.o scanners/rainbowarts_f1.o scanners/rainbowarts_f2.o scanners/rasterload.o scanners/seuck.o scanners/snakeload50t1.o scanners/snakeload50t2.o scanners/snakeload51.o scanners/superpav.o scanners/supertape.o scanners/tdi.o scanners/trilogic.o scanners/turbotape.o scanners/turrican.o scanners/usgold.o scanners/virgin.o scanners/visiload.o tap2audio.o $(RES)
-LINKOBJ  = main.o batchscan.o database.o clean.o crc32.o filesearch.o loader_id.o scanners/wildload.o scanners/accolade.o scanners/aces.o scanners/aliensyndrome.o scanners/alternativewg.o scanners/anirog.o scanners/atlantis.o scanners/audiogenic.o scanners/bleep_f1.o scanners/bleep_f2.o scanners/burner.o scanners/burner_var.o scanners/c64tape.o scanners/chr.o scanners/cult.o scanners/cyberload_f1.o scanners/cyberload_f2.o scanners/cyberload_f3.o scanners/cyberload_f4.o scanners/enigma.o scanners/firebird.o scanners/flashload.o scanners/freeload.o scanners/odeload.o scanners/hitec.o scanners/hitload.o scanners/ikloader.o scanners/jetload.o scanners/microload.o scanners/nova_f1.o scanners/nova_f2.o scanners/ocean.o scanners/oceannew1t1.o scanners/oceannew1t2.o scanners/oceannew2.o scanners/oceannew2.o scanners/palace_f1.o scanners/palace_f2.o scanners/pause.o scanners/pavloda.o scanners/rackit.o scanners/rainbowarts_f1.o scanners/rainbowarts_f2.o scanners/rasterload.o scanners/seuck.o scanners/snakeload50t1.o scanners/snakeload50t2.o scanners/snakeload51.o scanners/superpav.o scanners/supertape.o scanners/tdi.o scanners/trilogic.o scanners/turbotape.o scanners/turrican.o scanners/usgold.o scanners/virgin.o scanners/visiload.o tap2audio.o $(RES)
-LIBS =  -L"C:/Dev-Cpp/lib"  
-INCS =  -I"C:/Dev-Cpp/include" 
-CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
-BIN  = tapclean.exe
+OBJ  = ../src/batchscan.o ../src/clean.o ../src/crc32.o ../src/database.o ../src/filesearch.o ../src/loader_id.o ../src/main.o ../src/tap2audio.o ../src/scanners/wildload.o ../src/scanners/accolade.o ../src/scanners/aces.o ../src/scanners/aliensyndrome.o ../src/scanners/anirog.o ../src/scanners/atlantis.o ../src/scanners/audiogenic.o ../src/scanners/bleep_f1.o ../src/scanners/bleep_f2.o ../src/scanners/burner.o ../src/scanners/c64tape.o ../src/scanners/chr.o ../src/scanners/cult.o ../src/scanners/cyberload_f1.o ../src/scanners/cyberload_f2.o ../src/scanners/cyberload_f3.o ../src/scanners/cyberload_f4.o ../src/scanners/enigma.o ../src/scanners/firebird.o ../src/scanners/flashload.o ../src/scanners/freeload.o ../src/scanners/hitec.o ../src/scanners/hitload.o ../src/scanners/ikloader.o ../src/scanners/jetload.o ../src/scanners/microload.o ../src/scanners/nova_f1.o ../src/scanners/nova_f2.o ../src/scanners/ocean.o ../src/scanners/oceannew1t1.o ../src/scanners/oceannew1t2.o ../src/scanners/oceannew2.o ../src/scanners/odeload.o ../src/scanners/palace_f1.o ../src/scanners/palace_f2.o ../src/scanners/pause.o ../src/scanners/pavloda.o ../src/scanners/rackit.o ../src/scanners/rasterload.o ../src/scanners/seuck.o ../src/scanners/snakeload50t1.o ../src/scanners/snakeload50t2.o ../src/scanners/snakeload51.o ../src/scanners/superpav.o ../src/scanners/supertape.o ../src/scanners/tdi.o ../src/scanners/turbotape.o ../src/scanners/turrican.o ../src/scanners/usgold.o ../src/scanners/virgin.o ../src/scanners/visiload.o ../src/scanners/alternativewg.o ../src/scanners/trilogic.o ../src/scanners/rainbowarts_f1.o ../src/scanners/rainbowarts_f2.o ../src/scanners/burner_var.o ../src/scanners/oceannew4.o ../src/scanners/tdi_f2.o $(RES)
+LINKOBJ  = ../src/batchscan.o ../src/clean.o ../src/crc32.o ../src/database.o ../src/filesearch.o ../src/loader_id.o ../src/main.o ../src/tap2audio.o ../src/scanners/wildload.o ../src/scanners/accolade.o ../src/scanners/aces.o ../src/scanners/aliensyndrome.o ../src/scanners/anirog.o ../src/scanners/atlantis.o ../src/scanners/audiogenic.o ../src/scanners/bleep_f1.o ../src/scanners/bleep_f2.o ../src/scanners/burner.o ../src/scanners/c64tape.o ../src/scanners/chr.o ../src/scanners/cult.o ../src/scanners/cyberload_f1.o ../src/scanners/cyberload_f2.o ../src/scanners/cyberload_f3.o ../src/scanners/cyberload_f4.o ../src/scanners/enigma.o ../src/scanners/firebird.o ../src/scanners/flashload.o ../src/scanners/freeload.o ../src/scanners/hitec.o ../src/scanners/hitload.o ../src/scanners/ikloader.o ../src/scanners/jetload.o ../src/scanners/microload.o ../src/scanners/nova_f1.o ../src/scanners/nova_f2.o ../src/scanners/ocean.o ../src/scanners/oceannew1t1.o ../src/scanners/oceannew1t2.o ../src/scanners/oceannew2.o ../src/scanners/odeload.o ../src/scanners/palace_f1.o ../src/scanners/palace_f2.o ../src/scanners/pause.o ../src/scanners/pavloda.o ../src/scanners/rackit.o ../src/scanners/rasterload.o ../src/scanners/seuck.o ../src/scanners/snakeload50t1.o ../src/scanners/snakeload50t2.o ../src/scanners/snakeload51.o ../src/scanners/superpav.o ../src/scanners/supertape.o ../src/scanners/tdi.o ../src/scanners/turbotape.o ../src/scanners/turrican.o ../src/scanners/usgold.o ../src/scanners/virgin.o ../src/scanners/visiload.o ../src/scanners/alternativewg.o ../src/scanners/trilogic.o ../src/scanners/rainbowarts_f1.o ../src/scanners/rainbowarts_f2.o ../src/scanners/burner_var.o ../src/scanners/oceannew4.o ../src/scanners/tdi_f2.o $(RES)
+LIBS =  -L"D:/Dev-Cpp/lib"  
+INCS =  -I"D:/Dev-Cpp/include" 
+CXXINCS =  -I"D:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"D:/Dev-Cpp/include/c++/3.4.2/backward"  -I"D:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"D:/Dev-Cpp/include/c++/3.4.2"  -I"D:/Dev-Cpp/include" 
+BIN  = TAPClean.exe
 CXXFLAGS = $(CXXINCS)  
 CFLAGS = $(INCS)  
 RM = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before tapclean.exe all-after
+all: all-before TAPClean.exe all-after
 
 
 clean: clean-custom
 	${RM} $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) $(LINKOBJ) -o "tapclean.exe" $(LIBS)
+	$(CC) $(LINKOBJ) -o "TAPClean.exe" $(LIBS)
 
-main.o: main.c
-	$(CC) -c main.c -o main.o $(CFLAGS)
+../src/batchscan.o: ../src/batchscan.c
+	$(CC) -c ../src/batchscan.c -o ../src/batchscan.o $(CFLAGS)
 
-batchscan.o: batchscan.c
-	$(CC) -c batchscan.c -o batchscan.o $(CFLAGS)
+../src/clean.o: ../src/clean.c
+	$(CC) -c ../src/clean.c -o ../src/clean.o $(CFLAGS)
 
-database.o: database.c
-	$(CC) -c database.c -o database.o $(CFLAGS)
+../src/crc32.o: ../src/crc32.c
+	$(CC) -c ../src/crc32.c -o ../src/crc32.o $(CFLAGS)
 
-clean.o: clean.c
-	$(CC) -c clean.c -o clean.o $(CFLAGS)
+../src/database.o: ../src/database.c
+	$(CC) -c ../src/database.c -o ../src/database.o $(CFLAGS)
 
-crc32.o: crc32.c
-	$(CC) -c crc32.c -o crc32.o $(CFLAGS)
+../src/filesearch.o: ../src/filesearch.c
+	$(CC) -c ../src/filesearch.c -o ../src/filesearch.o $(CFLAGS)
 
-filesearch.o: filesearch.c
-	$(CC) -c filesearch.c -o filesearch.o $(CFLAGS)
+../src/loader_id.o: ../src/loader_id.c
+	$(CC) -c ../src/loader_id.c -o ../src/loader_id.o $(CFLAGS)
 
-loader_id.o: loader_id.c
-	$(CC) -c loader_id.c -o loader_id.o $(CFLAGS)
+../src/main.o: ../src/main.c
+	$(CC) -c ../src/main.c -o ../src/main.o $(CFLAGS)
 
-scanners/wildload.o: scanners/wildload.c
-	$(CC) -c scanners/wildload.c -o scanners/wildload.o $(CFLAGS)
+../src/tap2audio.o: ../src/tap2audio.c
+	$(CC) -c ../src/tap2audio.c -o ../src/tap2audio.o $(CFLAGS)
 
-scanners/accolade.o: scanners/accolade.c
-	$(CC) -c scanners/accolade.c -o scanners/accolade.o $(CFLAGS)
+../src/scanners/wildload.o: ../src/scanners/wildload.c
+	$(CC) -c ../src/scanners/wildload.c -o ../src/scanners/wildload.o $(CFLAGS)
 
-scanners/aces.o: scanners/aces.c
-	$(CC) -c scanners/aces.c -o scanners/aces.o $(CFLAGS)
+../src/scanners/accolade.o: ../src/scanners/accolade.c
+	$(CC) -c ../src/scanners/accolade.c -o ../src/scanners/accolade.o $(CFLAGS)
 
-scanners/aliensyndrome.o: scanners/aliensyndrome.c
-	$(CC) -c scanners/aliensyndrome.c -o scanners/aliensyndrome.o $(CFLAGS)
+../src/scanners/aces.o: ../src/scanners/aces.c
+	$(CC) -c ../src/scanners/aces.c -o ../src/scanners/aces.o $(CFLAGS)
 
-scanners/anirog.o: scanners/anirog.c
-	$(CC) -c scanners/anirog.c -o scanners/anirog.o $(CFLAGS)
+../src/scanners/aliensyndrome.o: ../src/scanners/aliensyndrome.c
+	$(CC) -c ../src/scanners/aliensyndrome.c -o ../src/scanners/aliensyndrome.o $(CFLAGS)
 
-scanners/atlantis.o: scanners/atlantis.c
-	$(CC) -c scanners/atlantis.c -o scanners/atlantis.o $(CFLAGS)
+../src/scanners/anirog.o: ../src/scanners/anirog.c
+	$(CC) -c ../src/scanners/anirog.c -o ../src/scanners/anirog.o $(CFLAGS)
 
-scanners/audiogenic.o: scanners/audiogenic.c
-	$(CC) -c scanners/audiogenic.c -o scanners/audiogenic.o $(CFLAGS)
+../src/scanners/atlantis.o: ../src/scanners/atlantis.c
+	$(CC) -c ../src/scanners/atlantis.c -o ../src/scanners/atlantis.o $(CFLAGS)
 
-scanners/bleep_f1.o: scanners/bleep_f1.c
-	$(CC) -c scanners/bleep_f1.c -o scanners/bleep_f1.o $(CFLAGS)
+../src/scanners/audiogenic.o: ../src/scanners/audiogenic.c
+	$(CC) -c ../src/scanners/audiogenic.c -o ../src/scanners/audiogenic.o $(CFLAGS)
 
-scanners/bleep_f2.o: scanners/bleep_f2.c
-	$(CC) -c scanners/bleep_f2.c -o scanners/bleep_f2.o $(CFLAGS)
+../src/scanners/bleep_f1.o: ../src/scanners/bleep_f1.c
+	$(CC) -c ../src/scanners/bleep_f1.c -o ../src/scanners/bleep_f1.o $(CFLAGS)
 
-scanners/burner.o: scanners/burner.c
-	$(CC) -c scanners/burner.c -o scanners/burner.o $(CFLAGS)
+../src/scanners/bleep_f2.o: ../src/scanners/bleep_f2.c
+	$(CC) -c ../src/scanners/bleep_f2.c -o ../src/scanners/bleep_f2.o $(CFLAGS)
 
-scanners/c64tape.o: scanners/c64tape.c
-	$(CC) -c scanners/c64tape.c -o scanners/c64tape.o $(CFLAGS)
+../src/scanners/burner.o: ../src/scanners/burner.c
+	$(CC) -c ../src/scanners/burner.c -o ../src/scanners/burner.o $(CFLAGS)
 
-scanners/chr.o: scanners/chr.c
-	$(CC) -c scanners/chr.c -o scanners/chr.o $(CFLAGS)
+../src/scanners/c64tape.o: ../src/scanners/c64tape.c
+	$(CC) -c ../src/scanners/c64tape.c -o ../src/scanners/c64tape.o $(CFLAGS)
 
-scanners/cult.o: scanners/cult.c
-	$(CC) -c scanners/cult.c -o scanners/cult.o $(CFLAGS)
+../src/scanners/chr.o: ../src/scanners/chr.c
+	$(CC) -c ../src/scanners/chr.c -o ../src/scanners/chr.o $(CFLAGS)
 
-scanners/cyberload_f1.o: scanners/cyberload_f1.c
-	$(CC) -c scanners/cyberload_f1.c -o scanners/cyberload_f1.o $(CFLAGS)
+../src/scanners/cult.o: ../src/scanners/cult.c
+	$(CC) -c ../src/scanners/cult.c -o ../src/scanners/cult.o $(CFLAGS)
 
-scanners/cyberload_f2.o: scanners/cyberload_f2.c
-	$(CC) -c scanners/cyberload_f2.c -o scanners/cyberload_f2.o $(CFLAGS)
+../src/scanners/cyberload_f1.o: ../src/scanners/cyberload_f1.c
+	$(CC) -c ../src/scanners/cyberload_f1.c -o ../src/scanners/cyberload_f1.o $(CFLAGS)
 
-scanners/cyberload_f3.o: scanners/cyberload_f3.c
-	$(CC) -c scanners/cyberload_f3.c -o scanners/cyberload_f3.o $(CFLAGS)
+../src/scanners/cyberload_f2.o: ../src/scanners/cyberload_f2.c
+	$(CC) -c ../src/scanners/cyberload_f2.c -o ../src/scanners/cyberload_f2.o $(CFLAGS)
 
-scanners/cyberload_f4.o: scanners/cyberload_f4.c
-	$(CC) -c scanners/cyberload_f4.c -o scanners/cyberload_f4.o $(CFLAGS)
+../src/scanners/cyberload_f3.o: ../src/scanners/cyberload_f3.c
+	$(CC) -c ../src/scanners/cyberload_f3.c -o ../src/scanners/cyberload_f3.o $(CFLAGS)
 
-scanners/enigma.o: scanners/enigma.c
-	$(CC) -c scanners/enigma.c -o scanners/enigma.o $(CFLAGS)
+../src/scanners/cyberload_f4.o: ../src/scanners/cyberload_f4.c
+	$(CC) -c ../src/scanners/cyberload_f4.c -o ../src/scanners/cyberload_f4.o $(CFLAGS)
 
-scanners/firebird.o: scanners/firebird.c
-	$(CC) -c scanners/firebird.c -o scanners/firebird.o $(CFLAGS)
+../src/scanners/enigma.o: ../src/scanners/enigma.c
+	$(CC) -c ../src/scanners/enigma.c -o ../src/scanners/enigma.o $(CFLAGS)
 
-scanners/flashload.o: scanners/flashload.c
-	$(CC) -c scanners/flashload.c -o scanners/flashload.o $(CFLAGS)
+../src/scanners/firebird.o: ../src/scanners/firebird.c
+	$(CC) -c ../src/scanners/firebird.c -o ../src/scanners/firebird.o $(CFLAGS)
 
-scanners/freeload.o: scanners/freeload.c
-	$(CC) -c scanners/freeload.c -o scanners/freeload.o $(CFLAGS)
+../src/scanners/flashload.o: ../src/scanners/flashload.c
+	$(CC) -c ../src/scanners/flashload.c -o ../src/scanners/flashload.o $(CFLAGS)
 
-scanners/odeload.o: scanners/odeload.c
-	$(CC) -c scanners/odeload.c -o scanners/odeload.o $(CFLAGS)
+../src/scanners/freeload.o: ../src/scanners/freeload.c
+	$(CC) -c ../src/scanners/freeload.c -o ../src/scanners/freeload.o $(CFLAGS)
 
-scanners/hitec.o: scanners/hitec.c
-	$(CC) -c scanners/hitec.c -o scanners/hitec.o $(CFLAGS)
+../src/scanners/hitec.o: ../src/scanners/hitec.c
+	$(CC) -c ../src/scanners/hitec.c -o ../src/scanners/hitec.o $(CFLAGS)
 
-scanners/hitload.o: scanners/hitload.c
-	$(CC) -c scanners/hitload.c -o scanners/hitload.o $(CFLAGS)
+../src/scanners/hitload.o: ../src/scanners/hitload.c
+	$(CC) -c ../src/scanners/hitload.c -o ../src/scanners/hitload.o $(CFLAGS)
 
-scanners/ikloader.o: scanners/ikloader.c
-	$(CC) -c scanners/ikloader.c -o scanners/ikloader.o $(CFLAGS)
+../src/scanners/ikloader.o: ../src/scanners/ikloader.c
+	$(CC) -c ../src/scanners/ikloader.c -o ../src/scanners/ikloader.o $(CFLAGS)
 
-scanners/jetload.o: scanners/jetload.c
-	$(CC) -c scanners/jetload.c -o scanners/jetload.o $(CFLAGS)
+../src/scanners/jetload.o: ../src/scanners/jetload.c
+	$(CC) -c ../src/scanners/jetload.c -o ../src/scanners/jetload.o $(CFLAGS)
 
-scanners/microload.o: scanners/microload.c
-	$(CC) -c scanners/microload.c -o scanners/microload.o $(CFLAGS)
+../src/scanners/microload.o: ../src/scanners/microload.c
+	$(CC) -c ../src/scanners/microload.c -o ../src/scanners/microload.o $(CFLAGS)
 
-scanners/nova_f1.o: scanners/nova_f1.c
-	$(CC) -c scanners/nova_f1.c -o scanners/nova_f1.o $(CFLAGS)
+../src/scanners/nova_f1.o: ../src/scanners/nova_f1.c
+	$(CC) -c ../src/scanners/nova_f1.c -o ../src/scanners/nova_f1.o $(CFLAGS)
 
-scanners/nova_f2.o: scanners/nova_f2.c
-	$(CC) -c scanners/nova_f2.c -o scanners/nova_f2.o $(CFLAGS)
+../src/scanners/nova_f2.o: ../src/scanners/nova_f2.c
+	$(CC) -c ../src/scanners/nova_f2.c -o ../src/scanners/nova_f2.o $(CFLAGS)
 
-scanners/ocean.o: scanners/ocean.c
-	$(CC) -c scanners/ocean.c -o scanners/ocean.o $(CFLAGS)
+../src/scanners/ocean.o: ../src/scanners/ocean.c
+	$(CC) -c ../src/scanners/ocean.c -o ../src/scanners/ocean.o $(CFLAGS)
 
-scanners/oceannew1t1.o: scanners/oceannew1t1.c
-	$(CC) -c scanners/oceannew1t1.c -o scanners/oceannew1t1.o $(CFLAGS)
+../src/scanners/oceannew1t1.o: ../src/scanners/oceannew1t1.c
+	$(CC) -c ../src/scanners/oceannew1t1.c -o ../src/scanners/oceannew1t1.o $(CFLAGS)
 
-scanners/oceannew1t2.o: scanners/oceannew1t2.c
-	$(CC) -c scanners/oceannew1t2.c -o scanners/oceannew1t2.o $(CFLAGS)
+../src/scanners/oceannew1t2.o: ../src/scanners/oceannew1t2.c
+	$(CC) -c ../src/scanners/oceannew1t2.c -o ../src/scanners/oceannew1t2.o $(CFLAGS)
 
-scanners/oceannew2.o: scanners/oceannew2.c
-	$(CC) -c scanners/oceannew2.c -o scanners/oceannew2.o $(CFLAGS)
+../src/scanners/oceannew2.o: ../src/scanners/oceannew2.c
+	$(CC) -c ../src/scanners/oceannew2.c -o ../src/scanners/oceannew2.o $(CFLAGS)
 
-scanners/palace_f1.o: scanners/palace_f1.c
-	$(CC) -c scanners/palace_f1.c -o scanners/palace_f1.o $(CFLAGS)
+../src/scanners/odeload.o: ../src/scanners/odeload.c
+	$(CC) -c ../src/scanners/odeload.c -o ../src/scanners/odeload.o $(CFLAGS)
 
-scanners/palace_f2.o: scanners/palace_f2.c
-	$(CC) -c scanners/palace_f2.c -o scanners/palace_f2.o $(CFLAGS)
+../src/scanners/palace_f1.o: ../src/scanners/palace_f1.c
+	$(CC) -c ../src/scanners/palace_f1.c -o ../src/scanners/palace_f1.o $(CFLAGS)
 
-scanners/pause.o: scanners/pause.c
-	$(CC) -c scanners/pause.c -o scanners/pause.o $(CFLAGS)
+../src/scanners/palace_f2.o: ../src/scanners/palace_f2.c
+	$(CC) -c ../src/scanners/palace_f2.c -o ../src/scanners/palace_f2.o $(CFLAGS)
 
-scanners/pavloda.o: scanners/pavloda.c
-	$(CC) -c scanners/pavloda.c -o scanners/pavloda.o $(CFLAGS)
+../src/scanners/pause.o: ../src/scanners/pause.c
+	$(CC) -c ../src/scanners/pause.c -o ../src/scanners/pause.o $(CFLAGS)
 
-scanners/rackit.o: scanners/rackit.c
-	$(CC) -c scanners/rackit.c -o scanners/rackit.o $(CFLAGS)
+../src/scanners/pavloda.o: ../src/scanners/pavloda.c
+	$(CC) -c ../src/scanners/pavloda.c -o ../src/scanners/pavloda.o $(CFLAGS)
 
-scanners/rasterload.o: scanners/rasterload.c
-	$(CC) -c scanners/rasterload.c -o scanners/rasterload.o $(CFLAGS)
+../src/scanners/rackit.o: ../src/scanners/rackit.c
+	$(CC) -c ../src/scanners/rackit.c -o ../src/scanners/rackit.o $(CFLAGS)
 
-scanners/seuck.o: scanners/seuck.c
-	$(CC) -c scanners/seuck.c -o scanners/seuck.o $(CFLAGS)
+../src/scanners/rasterload.o: ../src/scanners/rasterload.c
+	$(CC) -c ../src/scanners/rasterload.c -o ../src/scanners/rasterload.o $(CFLAGS)
 
-scanners/snakeload50t1.o: scanners/snakeload50t1.c
-	$(CC) -c scanners/snakeload50t1.c -o scanners/snakeload50t1.o $(CFLAGS)
+../src/scanners/seuck.o: ../src/scanners/seuck.c
+	$(CC) -c ../src/scanners/seuck.c -o ../src/scanners/seuck.o $(CFLAGS)
 
-scanners/snakeload50t2.o: scanners/snakeload50t2.c
-	$(CC) -c scanners/snakeload50t2.c -o scanners/snakeload50t2.o $(CFLAGS)
+../src/scanners/snakeload50t1.o: ../src/scanners/snakeload50t1.c
+	$(CC) -c ../src/scanners/snakeload50t1.c -o ../src/scanners/snakeload50t1.o $(CFLAGS)
 
-scanners/snakeload51.o: scanners/snakeload51.c
-	$(CC) -c scanners/snakeload51.c -o scanners/snakeload51.o $(CFLAGS)
+../src/scanners/snakeload50t2.o: ../src/scanners/snakeload50t2.c
+	$(CC) -c ../src/scanners/snakeload50t2.c -o ../src/scanners/snakeload50t2.o $(CFLAGS)
 
-scanners/superpav.o: scanners/superpav.c
-	$(CC) -c scanners/superpav.c -o scanners/superpav.o $(CFLAGS)
+../src/scanners/snakeload51.o: ../src/scanners/snakeload51.c
+	$(CC) -c ../src/scanners/snakeload51.c -o ../src/scanners/snakeload51.o $(CFLAGS)
 
-scanners/supertape.o: scanners/supertape.c
-	$(CC) -c scanners/supertape.c -o scanners/supertape.o $(CFLAGS)
+../src/scanners/superpav.o: ../src/scanners/superpav.c
+	$(CC) -c ../src/scanners/superpav.c -o ../src/scanners/superpav.o $(CFLAGS)
 
-scanners/tdi.o: scanners/tdi.c
-	$(CC) -c scanners/tdi.c -o scanners/tdi.o $(CFLAGS)
+../src/scanners/supertape.o: ../src/scanners/supertape.c
+	$(CC) -c ../src/scanners/supertape.c -o ../src/scanners/supertape.o $(CFLAGS)
 
-scanners/turbotape.o: scanners/turbotape.c
-	$(CC) -c scanners/turbotape.c -o scanners/turbotape.o $(CFLAGS)
+../src/scanners/tdi.o: ../src/scanners/tdi.c
+	$(CC) -c ../src/scanners/tdi.c -o ../src/scanners/tdi.o $(CFLAGS)
 
-scanners/turrican.o: scanners/turrican.c
-	$(CC) -c scanners/turrican.c -o scanners/turrican.o $(CFLAGS)
+../src/scanners/turbotape.o: ../src/scanners/turbotape.c
+	$(CC) -c ../src/scanners/turbotape.c -o ../src/scanners/turbotape.o $(CFLAGS)
 
-scanners/usgold.o: scanners/usgold.c
-	$(CC) -c scanners/usgold.c -o scanners/usgold.o $(CFLAGS)
+../src/scanners/turrican.o: ../src/scanners/turrican.c
+	$(CC) -c ../src/scanners/turrican.c -o ../src/scanners/turrican.o $(CFLAGS)
 
-scanners/virgin.o: scanners/virgin.c
-	$(CC) -c scanners/virgin.c -o scanners/virgin.o $(CFLAGS)
+../src/scanners/usgold.o: ../src/scanners/usgold.c
+	$(CC) -c ../src/scanners/usgold.c -o ../src/scanners/usgold.o $(CFLAGS)
 
-scanners/visiload.o: scanners/visiload.c
-	$(CC) -c scanners/visiload.c -o scanners/visiload.o $(CFLAGS)
+../src/scanners/virgin.o: ../src/scanners/virgin.c
+	$(CC) -c ../src/scanners/virgin.c -o ../src/scanners/virgin.o $(CFLAGS)
 
-tap2audio.o: tap2audio.c
-	$(CC) -c tap2audio.c -o tap2audio.o $(CFLAGS)
+../src/scanners/visiload.o: ../src/scanners/visiload.c
+	$(CC) -c ../src/scanners/visiload.c -o ../src/scanners/visiload.o $(CFLAGS)
+
+../src/scanners/alternativewg.o: ../src/scanners/alternativewg.c
+	$(CC) -c ../src/scanners/alternativewg.c -o ../src/scanners/alternativewg.o $(CFLAGS)
+
+../src/scanners/trilogic.o: ../src/scanners/trilogic.c
+	$(CC) -c ../src/scanners/trilogic.c -o ../src/scanners/trilogic.o $(CFLAGS)
+
+../src/scanners/rainbowarts_f1.o: ../src/scanners/rainbowarts_f1.c
+	$(CC) -c ../src/scanners/rainbowarts_f1.c -o ../src/scanners/rainbowarts_f1.o $(CFLAGS)
+
+../src/scanners/rainbowarts_f2.o: ../src/scanners/rainbowarts_f2.c
+	$(CC) -c ../src/scanners/rainbowarts_f2.c -o ../src/scanners/rainbowarts_f2.o $(CFLAGS)
+
+../src/scanners/burner_var.o: ../src/scanners/burner_var.c
+	$(CC) -c ../src/scanners/burner_var.c -o ../src/scanners/burner_var.o $(CFLAGS)
+
+../src/scanners/oceannew4.o: ../src/scanners/oceannew4.c
+	$(CC) -c ../src/scanners/oceannew4.c -o ../src/scanners/oceannew4.o $(CFLAGS)
+
+../src/scanners/tdi_f2.o: ../src/scanners/tdi_f2.c
+	$(CC) -c ../src/scanners/tdi_f2.c -o ../src/scanners/tdi_f2.o $(CFLAGS)
