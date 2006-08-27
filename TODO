@@ -53,5 +53,6 @@
    Mostly done.
  - Do some major rewrite of scanners/*.
    There are WAY TOO MUCH duplication of code.
+ - Unify scanner/loader names/strings
 
 

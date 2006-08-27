@@ -4,6 +4,7 @@ v0.15
 	 All TDI TAP files which were optimized should be re-optimized (luigi).
 	Added scanner for TDI F2.
 	 The discovery of EOF markers in TDI TAP files was fundamental (luigi).
+	Display the scanners you've elected to not run (bgk)
 
 v0.14
 	Added 2 scanners: Burner (Mastertronic Variant) and Ocean New 4 (luigi).

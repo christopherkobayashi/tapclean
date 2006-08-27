@@ -78,7 +78,6 @@ static char noenigma		= FALSE;
 static char nofire		= FALSE;
 static char noflash		= FALSE;
 static char nofree		= FALSE;
-static char noode		= FALSE;
 static char nohit		= FALSE;
 static char nohitec		= FALSE;
 static char noik		= FALSE;
@@ -90,6 +89,7 @@ static char nooceannew1t1	= FALSE;
 static char nooceannew1t2	= FALSE;
 static char nooceannew2		= FALSE;
 static char nooceannew4		= FALSE;
+static char noode		= FALSE;
 static char nopalacef1		= FALSE;
 static char nopalacef2		= FALSE;
 static char nopav		= FALSE;
@@ -585,109 +585,212 @@ static void process_options(int argc, char **argv)
 			sortbycrc = TRUE;
 		if (strcmp(argv[i], "-ec") == 0)
 			exportcyberloaders = TRUE;
-         
+
+		if (strncmp(argv[i], "-no", 3) == 0)
+			printf("\nExcluded scanners:\n\n");
+
 		if (strcmp(argv[i], "-noc64") ==  0)
 			noc64 = TRUE;
-		if (strcmp(argv[i], "-noaccolade") == 0)
+		if (strcmp(argv[i], "-noaccolade") == 0) {
 			noaccolade = TRUE;
-		if (strcmp(argv[i], "-noaces") == 0)
+			printf(" Accolade/EA\n");
+		}
+		if (strcmp(argv[i], "-noaces") == 0) {
 			noaces = TRUE;
-		if (strcmp(argv[i], "-noaliensy") == 0)
+			printf(" Aces of Aces\n");
+		}
+		if (strcmp(argv[i], "-noaliensy") == 0) {
 			noaliensy = TRUE;
-		if (strcmp(argv[i], "-noalterwg") == 0)
+			printf(" Alien Syndrome\n");
+		}
+		if (strcmp(argv[i], "-noalterwg") == 0) {
 			noalterwg = TRUE;
-		if (strcmp(argv[i], "-noanirog") == 0)
+			printf(" Alternative World Games\n");
+		}
+		if (strcmp(argv[i], "-noanirog") == 0) {
 			noanirog = TRUE;
-		if (strcmp(argv[i], "-noatlantis") == 0)
+			printf(" Anirog\n");
+		}
+		if (strcmp(argv[i], "-noatlantis") == 0) {
 			noatlantis = TRUE;
-		if (strcmp(argv[i], "-noaudiogenic") == 0)
+			printf(" Atlantis\n");
+		}
+		if (strcmp(argv[i], "-noaudiogenic") == 0) {
 			noaudiogenic = TRUE;
-		if (strcmp(argv[i], "-nobleep") == 0)
+			printf(" Audiogenic\n");
+		}
+		if (strcmp(argv[i], "-nobleep") == 0) {
 			nobleep = TRUE;
-		if (strcmp(argv[i], "-noburner") == 0)
+			printf(" Bleepload\n");
+		}
+		if (strcmp(argv[i], "-noburner") == 0) {
 			noburner = TRUE;
-		if (strcmp(argv[i], "-noburnervar") == 0)
+			printf(" Burner\n");
+		}
+		if (strcmp(argv[i], "-noburnervar") == 0) {
 			noburnervar = TRUE;
-		if (strcmp(argv[i], "-nochr") == 0)
+			printf(" Burner Variant\n");
+		}
+		if (strcmp(argv[i], "-nochr") == 0) {
 			nochr = TRUE;
-		if (strcmp(argv[i], "-nocult") == 0)
+			printf(" CHR\n");
+		}
+		if (strcmp(argv[i], "-nocult") == 0) {
 			nocult = TRUE;
-		if (strcmp(argv[i], "-nocyber") == 0)
+			printf(" Cult\n");
+		}
+		if (strcmp(argv[i], "-nocyber") == 0) {
 			nocyber = TRUE;
-		if (strcmp(argv[i], "-noenigma") == 0)
+			printf(" Cyberload\n");
+		}
+		if (strcmp(argv[i], "-noenigma") == 0) {
 			noenigma = TRUE;
-		if (strcmp(argv[i], "-nofire") == 0)
+			printf(" Enigma\n");
+		}
+		if (strcmp(argv[i], "-nofire") == 0) {
 			nofire = TRUE;
-		if (strcmp(argv[i], "-noflash") == 0)
+			printf(" Firebird\n");
+		}
+		if (strcmp(argv[i], "-noflash") == 0) {
 			noflash = TRUE;
-		if (strcmp(argv[i], "-nofree") == 0)
+			printf(" Flashload\n");
+		}
+		if (strcmp(argv[i], "-nofree") == 0) {
 			nofree = TRUE;
-		if (strcmp(argv[i], "-noode") == 0)
-			noode = TRUE;
-		if (strcmp(argv[i], "-nohit") == 0)
+			printf(" Freeload\n");
+		}
+		if (strcmp(argv[i], "-nohit") == 0) {
 			nohit = TRUE;
-		if (strcmp(argv[i], "-nohitec") == 0)
+			printf(" Hitload\n");
+		}
+		if (strcmp(argv[i], "-nohitec") == 0) {
 			nohitec = TRUE;
-		if (strcmp(argv[i], "-nojet") == 0)
+			printf(" Hi-Tec\n");
+		}
+		if (strcmp(argv[i], "-nojet") == 0) {
 			nojet = TRUE;
-		if (strcmp(argv[i], "-noik") == 0)
+			printf(" Jetload\n");
+		}
+		if (strcmp(argv[i], "-noik") == 0) {
 			noik = TRUE;
-		if (strcmp(argv[i], "-nomicro") == 0)
+			printf(" IK\n");
+		}
+		if (strcmp(argv[i], "-nomicro") == 0) {
 			nomicro = TRUE;
-		if (strcmp(argv[i], "-nonova") == 0)
+			printf(" Microload\n");
+		}
+		if (strcmp(argv[i], "-nonova") == 0) {
 			nonova = TRUE;
-		if (strcmp(argv[i], "-noocean") == 0)
+			printf(" Novaload\n");
+		}
+		if (strcmp(argv[i], "-noocean") == 0) {
 			noocean = TRUE;
-		if (strcmp(argv[i], "-nooceannew1t1") == 0)
+			printf(" Ocean\n");
+		}
+		if (strcmp(argv[i], "-nooceannew1t1") == 0) {
 			nooceannew1t1 = TRUE;
-		if (strcmp(argv[i], "-nooceannew1t2") == 0)
+			printf(" Ocean F1\n");
+		}
+		if (strcmp(argv[i], "-nooceannew1t2") == 0) {
 			nooceannew1t2 = TRUE;
-		if (strcmp(argv[i], "-nooceannew2") == 0)
+			printf(" Ocean F2\n");
+		}
+		if (strcmp(argv[i], "-nooceannew2") == 0) {
 			nooceannew2 = TRUE;
-		if (strcmp(argv[i], "-nooceannew4") == 0)
+			printf(" Ocean New 2\n");
+		}
+		if (strcmp(argv[i], "-nooceannew4") == 0) {
 			nooceannew4 = TRUE;
-		if (strcmp(argv[i], "-nopalacef1") == 0)
+			printf(" Ocean New 4\n");
+		}
+		if (strcmp(argv[i], "-noode") == 0) {
+			noode = TRUE;
+			printf(" ODEload\n");
+		}
+		if (strcmp(argv[i], "-nopalacef1") == 0) {
 			nopalacef1 = TRUE;
-		if (strcmp(argv[i], "-nopalacef2") == 0)
+			printf(" Palace F1\n");
+		}
+		if (strcmp(argv[i], "-nopalacef2") == 0) {
 			nopalacef2 = TRUE;
-		if (strcmp(argv[i], "-nopav") == 0)
+			printf(" Palace F2\n");
+		}
+		if (strcmp(argv[i], "-nopav") == 0) {
 			nopav = TRUE;
-		if (strcmp(argv[i], "-norackit") == 0)
+			printf(" Pavloda\n");
+		}
+		if (strcmp(argv[i], "-norackit") == 0) {
 			norackit = TRUE;
-		if (strcmp(argv[i], "-norainbowf1") == 0)
+			printf(" Rack-It\n");
+		}
+		if (strcmp(argv[i], "-norainbowf1") == 0) {
 			norainbowf1 = TRUE;
-		if (strcmp(argv[i], "-norainbowf2") == 0)
+			printf(" Rainbow Arts F1\n");
+		}
+		if (strcmp(argv[i], "-norainbowf2") == 0) {
 			norainbowf2 = TRUE;
-		if (strcmp(argv[i], "-noraster") == 0)
+			printf(" Rainbow Arts F2\n");
+		}
+		if (strcmp(argv[i], "-noraster") == 0) {
 			noraster = TRUE;
-		if (strcmp(argv[i], "-noseuck") == 0)
+			printf(" Rasterload\n");
+		}
+		if (strcmp(argv[i], "-noseuck") == 0) {
 			noseuck = TRUE;
-		if (strcmp(argv[i], "-nosnake50") == 0)
+			printf(" SEUCK\n");
+		}
+		if (strcmp(argv[i], "-nosnake50") == 0) {
 			nosnake50 = TRUE;
-		if (strcmp(argv[i], "-nosnake51") == 0)
+			printf(" Snakeload 50\n");
+		}
+		if (strcmp(argv[i], "-nosnake51") == 0) {
 			nosnake51 = TRUE;
-		if (strcmp(argv[i], "-nospav") == 0)
+			printf(" Snakeload 51\n");
+		}
+		if (strcmp(argv[i], "-nospav") == 0) {
 			nospav = TRUE;
-		if (strcmp(argv[i], "-nosuper") == 0)
+			printf(" Super Pavloda\n");
+		}
+		if (strcmp(argv[i], "-nosuper") == 0) {
 			nosuper = TRUE;
-		if (strcmp(argv[i], "-notdif1") == 0)
+			printf(" Super Tape\n");
+		}
+		if (strcmp(argv[i], "-notdif1") == 0) {
 			notdif1 = TRUE;
-		if (strcmp(argv[i], "-notdif2") == 0)
+			printf(" TDI F1\n");
+		}
+		if (strcmp(argv[i], "-notdif2") == 0) {
 			notdif2 = TRUE;
-		if (strcmp(argv[i], "-notrilogic") == 0)
+			printf(" TDI F2\n");
+		}
+		if (strcmp(argv[i], "-notrilogic") == 0) {
 			notrilogic = TRUE;
-		if (strcmp(argv[i], "-noturbo") == 0)
+			printf(" Trilogic\n");
+		}
+		if (strcmp(argv[i], "-noturbo") == 0) {
 			noturbo = TRUE;
-		if (strcmp(argv[i], "-noturr") == 0)
+			printf(" Turbotape 250\n");
+		}
+		if (strcmp(argv[i], "-noturr") == 0) {
 			noturr = TRUE;
-		if (strcmp(argv[i], "-nousgold") == 0)
+			printf(" Turrican\n");
+		}
+		if (strcmp(argv[i], "-nousgold") == 0) {
 			nousgold = TRUE;
-		if (strcmp(argv[i], "-novirgin") == 0)
+			printf(" U.S. Gold\n");
+		}
+		if (strcmp(argv[i], "-novirgin") == 0) {
 			novirgin = TRUE;
-		if (strcmp(argv[i], "-novisi") == 0)
+			printf(" Virgin\n");
+		}
+		if (strcmp(argv[i], "-novisi") == 0) {
 			novisi = TRUE;
-		if (strcmp(argv[i], "-nowild") == 0)
+			printf(" Visiload\n");
+		}
+		if (strcmp(argv[i], "-nowild") == 0) {
 			nowild = TRUE;  
+			printf(" Wildload\n");
+		}
 
 		/* disable all scanners exc 'c64 rom tape' */
 
@@ -709,7 +812,6 @@ static void process_options(int argc, char **argv)
 			nofire = TRUE;
 			noflash = TRUE;
 			nofree = TRUE;
-			noode = TRUE;
 			nohit = TRUE;
 			nohitec = TRUE;
 			nojet = TRUE;
@@ -721,6 +823,7 @@ static void process_options(int argc, char **argv)
 			nooceannew1t2 = TRUE;
 			nooceannew2 = TRUE;
 			nooceannew4 = TRUE;
+			noode = TRUE;
 			nopalacef1 = TRUE;
 			nopalacef2 = TRUE;
 			nopav = TRUE;
@@ -742,6 +845,8 @@ static void process_options(int argc, char **argv)
 			novirgin = TRUE;
 			novisi = TRUE;
 			nowild = TRUE;
+
+			printf(" All except c64 ROM scanner\n");
 		}
 	}
 
@@ -781,7 +886,7 @@ static void handle_cps(void)
 	else
 		printf("NTSC ");
 
-	printf("(%d Hz)", cps);
+	printf("(%d Hz)\n", cps);
 }
 
 /*
