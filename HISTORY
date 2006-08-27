@@ -5,6 +5,7 @@ v0.15
 	Added scanner for TDI F2.
 	 The discovery of EOF markers in TDI TAP files was fundamental (luigi).
 	Display the scanners you've elected to not run (bgk)
+	Display list of scanners and -no<loader> parameters (bgk)
 
 v0.14
 	Added 2 scanners: Burner (Mastertronic Variant) and Ocean New 4 (luigi).

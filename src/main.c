@@ -515,6 +515,7 @@ static void display_usage(void)
 	printf(" -doprg         Create PRG files.\n");
 	printf(" -extvisipatch  Extract Visiload loader patch files.\n");
 	printf(" -incsubdirs    Make batch scan include subdirectories.\n");
+	printf(" -list          List of supported scanners and options used by -no<loader>\n");
 	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
@@ -525,6 +526,66 @@ static void display_usage(void)
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -tol [0-14]    Set pulsewidth read tolerance, default = 10.\n");
+}
+
+/*
+ * Display scanner list
+ */
+
+static void display_scanners(void)
+{
+	printf("\n\nList of supported scanners and their -no<loader> parameter names.\n\n");
+	printf(" C64 ROM loader               -noc64\n");
+	printf(" Accolade/EA                  -noaccolade\n");
+	printf(" Aces of Aces                 -noaces\n");
+	printf(" Alien Syndrome               -noaliensy\n");
+	printf(" Alternative World Games      -noalterwg\n");
+	printf(" Anirog                       -noanirog\n");
+	printf(" Atlantis                     -noatlantis\n");
+	printf(" Audiogenic                   -noaudiogenic\n");
+	printf(" Bleepload                    -nobleep\n");
+	printf(" Burner                       -noburner\n");
+	printf(" Burner Variant               -noburnervar\n");
+	printf(" CHR                          -nochr\n");
+	printf(" Cult                         -nocult\n");
+	printf(" Cyberload                    -nocyber\n");
+	printf(" Enigma                       -noenigma\n");
+	printf(" Firebird                     -nofire\n");
+	printf(" Flashload                    -noflas\n");
+	printf(" Freeload                     -nofree\n");
+	printf(" Hitload                      -nohit\n");
+	printf(" Hi-Tec                       -nohitec\n");
+	printf(" Jetload                      -nojet\n");
+	printf(" IK                           -noik\n");
+	printf(" Microload                    -nomicro\n");
+	printf(" Novaload                     -nonova\n");
+	printf(" Ocean                        -noocean\n");
+	printf(" Ocean F1                     -nooceannew1t1\n");
+	printf(" Ocean F2                     -nooceannew1t2\n");
+	printf(" Ocean New 2                  -nooceannew2\n");
+	printf(" Ocean New 4                  -nooceannew4\n");
+	printf(" ODEload                      -noode\n");
+	printf(" Palace F1                    -nopalacef1\n");
+	printf(" Palace F2                    -nopalacef2\n");
+	printf(" Pavloda                      -nopac\n");
+	printf(" Rack-It                      -norackit\n");
+	printf(" Rainbow Arts F1              -norainbowf1\n");
+	printf(" Rainbow Arts F2              -norainbowf2\n");
+	printf(" Rasterload                   -noraster\n");
+	printf(" SEUCK                        -noseuck\n");
+	printf(" Snakeload 50                 -nosnake50\n");
+	printf(" Snakeload 51                 -nosnake51\n");
+	printf(" Super Pavloda                -nospav\n");
+	printf(" Super Tape                   -nosuper\n");
+	printf(" TDI F1                       -notfif1\n");
+	printf(" TDI F2                       -notdif2\n");
+	printf(" Trilogic                     -notrilogic\n");
+	printf(" Turbotape 250                -noturbo\n");
+	printf(" Turrican                     -noturr\n");
+	printf(" U.S. Gold                    -nousgold\n");
+	printf(" Virgin                       -novirgin\n");
+	printf(" Visiload                     -novisi\n");
+	printf(" Wildload                     -nowild\n");
 }
 
 /*
@@ -581,6 +642,8 @@ static void process_options(int argc, char **argv)
 			extvisipatch = TRUE;
 		if (strcmp(argv[i], "-incsubdirs") == 0)
 			incsubdirs = TRUE;
+		if (strcmp(argv[i], "-list") == 0)
+			display_scanners();
 		if (strcmp(argv[i], "-sortbycrc") == 0)
 			sortbycrc = TRUE;
 		if (strcmp(argv[i], "-ec") == 0)
@@ -589,8 +652,10 @@ static void process_options(int argc, char **argv)
 		if (strncmp(argv[i], "-no", 3) == 0)
 			printf("\nExcluded scanners:\n\n");
 
-		if (strcmp(argv[i], "-noc64") ==  0)
+		if (strcmp(argv[i], "-noc64") ==  0) {
 			noc64 = TRUE;
+			printf(" C64 ROM loader\n");
+		}
 		if (strcmp(argv[i], "-noaccolade") == 0) {
 			noaccolade = TRUE;
 			printf(" Accolade/EA\n");
