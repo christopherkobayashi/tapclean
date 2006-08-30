@@ -1,3 +1,10 @@
+v0.16
+	Changed the trailer ack routines for the scanners I created.
+	 I ack pulses up to a max amount, based on experience (luigi).
+	PARTLY Fixed the c64tape.c trailer read routine.
+	 Trailer is now accounted even if terminated by a spike, not just a pause (luigi)
+	Moved TDI F2 search before TDI F1.
+
 v0.15
 	Edited Cult scanner (luigi).
 	Changed TDI scanner to acknowledge trailer pulses.

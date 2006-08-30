@@ -31,6 +31,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	10	/* amount of sync bytes */
+#define MAXTRAILER      8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	5	/* size of block header */
 
@@ -66,7 +67,7 @@ void rainbowf1_search (void)
 	sv = ft[THISLOADER].sv;
 
 	if(!quiet)
-		msgout("  Rainbow Arts T1");
+		msgout("  Rainbow Arts F1");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -120,7 +121,8 @@ void rainbowf1_search (void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses)
 			   Note: also check a different implementation that uses readttbit()) */
-			while (eof < tap.len - 1 && 
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					(tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
 					tap.tmem[eof + 1] < sp + tol ||
 					tap.tmem[eof + 1] > lp - tol && 

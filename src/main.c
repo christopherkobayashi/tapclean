@@ -1277,6 +1277,9 @@ static void search_tap(void)
 			if (nohitec == FALSE && !dbase_is_full && !aborted)
 				hitec_search();
 
+			if (notdif2 == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
+				tdif2_search();
+
 			if (notdif1 == FALSE && !dbase_is_full && !aborted)
 				tdi_search();
 

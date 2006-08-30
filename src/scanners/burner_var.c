@@ -31,6 +31,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
+#define MAXTRAILER      16	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
 
@@ -174,7 +175,8 @@ void burnervar_search (void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses)
 			   Note: also check a different implementation that uses readttbit()) */
-			while (eof < tap.len - 1 && 
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					(tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
 					tap.tmem[eof + 1] < sp + tol ||
 					tap.tmem[eof + 1] > lp - tol && 

@@ -31,6 +31,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
+#define MAXTRAILER      8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	21	/* size of block header */
 #define NAMESIZE	16	/* size of filename */
@@ -114,7 +115,8 @@ void accolade_search (void)
 
 			/* Trace 'eof' to end of trailer (also check a different 
 			   implementation that uses readttbit()) */
-			while (eof < tap.len - 1 && 
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > sp - tol && 
 					tap.tmem[eof + 1] < sp + tol)
 				eof++;

@@ -32,6 +32,7 @@
 
 #define SPARESYNCVAL	0xAA	/* value of the spare sync byte */
 #define SPRSYNCSEQSIZE	1	/* amount of spare sync bytes */
+#define MAXTRAILER      2032	/* max amount of trailer pulses read in */
 
 #define LOADOFFSETH	0x0E	/* load location (MSB) offset inside CBM data */
 #define LOADOFFSETL	0x0A	/* load location (LSB) offset inside CBM data */
@@ -40,7 +41,7 @@
 
 void cult_search (void)
 {
-	int i;				/* counter */
+	int i, h;				/* counter */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int ib;				/* condition variable */
 
@@ -116,13 +117,14 @@ void cult_search (void)
 
 			/* Trace 'eof' to end of trailer (also check a different 
 			   implementation that uses readttbit()) */
-			while (eof < tap.len - 1 && 
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER - 1 &&
 					tap.tmem[eof + 1] > sp - tol && 
 					tap.tmem[eof + 1] < sp + tol)
 				eof++;
 
 			/* Also account the bit 1 trailer pulse, if any */
-			if (eof > 0 && eof < tap.len - 1 && 
+			if (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > lp - tol && 
 					tap.tmem[eof + 1] < lp + tol)
 				eof++;

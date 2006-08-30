@@ -69,7 +69,8 @@ void tdi_search(void)
 
             /* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses)
                Note: also check a different implementation that uses readttbit()) */
-            while (eof < tap.len - 1 && 
+            j=0;
+            while (eof < tap.len - 1 && j++ < 8 &&
                   (tap.tmem[eof + 1] > ft[TDI_F1].sp - tol && /* no matter if overlapping occurrs here */
                   tap.tmem[eof + 1] < ft[TDI_F1].sp + tol ||
                   tap.tmem[eof + 1] > ft[TDI_F1].lp - tol && 

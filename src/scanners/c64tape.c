@@ -26,7 +26,6 @@
 
 #include "../main.h"
 #include "../mydefs.h"
-#include "../crc32.h"
 
 #define FIRST 0
 #define REPEAT 1
@@ -167,15 +166,11 @@ void cbm_search(void)
    if(!quiet)
       msgout("  C64 ROM tape");
    
-/* clear global header and data buffers... */
-
-	if (cbm_decoded == 0) {
-		for (i = 0; i < 192; i++)
-			cbm_header[i] = 0;
-
-		for (i = 0; i < 65536; i++)
-			cbm_program[i] = 0;
-	}
+   /* clear global header and data buffers... */
+   for(i=0; i<192; i++)
+      cbm_header[i]=0;
+   for(i=0; i<65536; i++)
+      cbm_program[i]=0;
    
    for(i=20; i<tap.len-20; i++)
    {
@@ -243,7 +238,7 @@ void cbm_search(void)
             {
                do
                   b= cbm_readbit(i+=2);
-               while((b==0 || b==1 || b==2) && i<tap.len);
+               while(b==0 || b==1 || b==2 && i<tap.len);
 
                eod= i-20;
                eof= eod+21;   /* overwrite below... */
@@ -259,7 +254,8 @@ void cbm_search(void)
             /* if it ends with a pause... (allowing for up to 2 pre-pause spikes)  */
             if(tap.tmem[cnt2]==0 || tap.tmem[cnt2+1]==0 || tap.tmem[cnt2+2]==0)
                eof= cnt2-1;  /* ...put eof there. */
-
+            else if (cnt2 - eof <= 79) /* partly fixed: not just a pause but also a spike is ok (luigi) */
+               eof = cnt2 - 1;
 
             /*---------------------------------------------------------------
              location is complete.....
@@ -365,21 +361,21 @@ int cbm_describe(int row)
       _dfe= hd[3]+ (hd[4]<<8);          /* remember end address of DATA block.  */
       _dfx= _dfe-_dfs;                  /* remember size of DATA block.         */
 
-      sprintf(lin,"\n - DATA FILE Load address : $%04lX", _dfs);
+      sprintf(lin,"\n - DATA FILE Load address : $%04X", _dfs);
       strcat(info,lin);
       if(hd[0]==1 && _dfs!=0x0801)
       {
          sprintf(lin," (fake address, actual=$0801)");
          strcat(info, lin);
       }
-      sprintf(lin,"\n - DATA FILE End address : $%04lX", _dfe);
+      sprintf(lin,"\n - DATA FILE End address : $%04X", _dfe);
       strcat(info,lin);
       if(hd[0]==1 && _dfs!=0x0801)
       {
-         sprintf(lin," (fake address, actual=$%04lX)",0x0801+ _dfx);
+         sprintf(lin," (fake address, actual=$%04X)",0x0801+ _dfx);
          strcat(info, lin);
       }
-      sprintf(lin,"\n - DATA FILE Size (calculated) : %ld bytes", _dfx);
+      sprintf(lin,"\n - DATA FILE Size (calculated) : %d bytes", _dfx);
       strcat(info,lin);
 
       if(hd[0]==1 && s!=0x0801)  /* BASIC filetypes always load to $0801 */
@@ -391,7 +387,7 @@ int cbm_describe(int row)
       /* extract file name... */
       for(i=0,j=0; i<16; i++)
       {
-//         if(hd[i+5]<128) /* the pet2text() facility will handle this (luigi) */
+//         if(hd[i+5]<128) /* the safe conversion is done in pet2text() later here (luigi) */
             fn[j++]= hd[i+5];
       }
       fn[j]=0;
@@ -429,7 +425,7 @@ int cbm_describe(int row)
       /* report inconsistancy between size in header and actual size... */
       if(blk[row]->cx!= (_dfe - _dfs))
       {
-         sprintf(lin," (Warning, Data size differs from header info!.)");
+         sprintf(lin," (Warning, Data size differs from header info!.)", blk[row]->cx);
          strcat(info,lin);
       }
    }

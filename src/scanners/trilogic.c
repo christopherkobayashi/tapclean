@@ -31,6 +31,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	0x0F	/* amount of sync bytes */
+#define MAXTRAILER      8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
 
@@ -126,7 +127,8 @@ void trilogic_search (void)
 			   implementation that uses readttbit()) */
 			/* Note: No trailer has been documented, but we are not pretending it
 			         here, just checking for it is future-proof */
-			while (eof < tap.len - 1 && 
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > sp - tol && 
 					tap.tmem[eof + 1] < sp + tol)
 				eof++;
