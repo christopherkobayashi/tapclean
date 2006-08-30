@@ -1331,9 +1331,6 @@ static void search_tap(void)
 			if (nooceannew4 == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
-			if (notdif2 == FALSE && !dbase_is_full && !aborted)
-				tdif2_search();
-
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
