@@ -31,7 +31,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER      8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	6	/* size of block header */
 
@@ -134,7 +134,8 @@ void oceannew4_search (void)
 				   implementation that uses readttbit()) */
 				/* Note: No trailer has been documented, but we are not pretending it
 				         here, just checking for it is future-proof */
-				while (eof < tap.len - 1 && 
+                                h = 0;
+				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
 						tap.tmem[eof + 1] < sp + tol)
 					eof++;
@@ -204,7 +205,7 @@ int oceannew4_describe (int row)
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
 
-   	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
@@ -220,8 +221,8 @@ int oceannew4_describe (int row)
 			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
 			strcat(info, lin);
 		}
-   	}
-   	b = hd[CHKBYOFFSET];
+	}
+	b = hd[CHKBYOFFSET];
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;
