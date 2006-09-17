@@ -23,6 +23,20 @@
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Byte
+ * Header: Yes
+ * Data: Continuos
+ * Checksum: No
+ * Post-data: Yes
+ * Trailer: Yes
+ * Trailer omogeneous: No
+ */
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -31,7 +45,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER      16	/* max amount of trailer pulses read in */
+#define MAXTRAILER	16	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
 
@@ -135,7 +149,7 @@ void burnervar_search (void)
 			sof = i;
 			i = eop;
 
-			/* Check if there's a valid sync value for this loader */
+			/* Check if there's a valid sync byte for this loader */
 			if (readttbyte(i, lp, sp, tp, en) != sv)
 				continue;
 
@@ -244,7 +258,7 @@ int burnervar_describe (int row)
 	if(blk[row]->pilot_len > 0) 
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
-	/* Extract data and test checksum... */
+	/* Extract data */
 	rd_err = 0;
 
 	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
@@ -252,7 +266,7 @@ int burnervar_describe (int row)
 	if (blk[row]->dd!=NULL)
 		free(blk[row]->dd);
 
-   	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
@@ -267,7 +281,7 @@ int burnervar_describe (int row)
 			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
 			strcat(info, lin);
 		}
-   	}
+	}
 
 	/* EOF marker */
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);

@@ -23,6 +23,20 @@
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: Yes
+ * Sync: Sequence (bytes)
+ * Header: Yes
+ * Data: Continuos
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: No
+ * Trailer omogeneous: No
+ */
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -31,7 +45,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	0x0F	/* amount of sync bytes */
-#define MAXTRAILER      8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
 
@@ -42,7 +56,7 @@
 
 void trilogic_search (void)
 {
-	int i, h, cnt2;			/* counter */
+	int i, h;			/* counter */
 
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
@@ -80,12 +94,12 @@ void trilogic_search (void)
 			i = eop;
 
 			/* Decode a 15 byte sequence (possibly a valid sync train) */
-			for (cnt2 = 0; cnt2 < SYNCSEQSIZE; cnt2++)
-				pat[cnt2] = readttbyte(i + (cnt2 * BITSINABYTE), lp, sp, tp, en);
+			for (h = 0; h < SYNCSEQSIZE; h++)
+				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
 			/* Check sync train. We may use the find_seq() facility too */
-			for (match = 1, cnt2 = 0; cnt2 < SYNCSEQSIZE; cnt2++)
-				if (pat[cnt2] != sypat[cnt2])
+			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
+				if (pat[h] != sypat[h])
 					match = 0;
 
 			/* Sync train doesn't match */
@@ -195,7 +209,7 @@ int trilogic_describe (int row)
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
 
-   	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
@@ -211,8 +225,8 @@ int trilogic_describe (int row)
 			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
 			strcat(info, lin);
 		}
-   	}
-   	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+	}
+	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

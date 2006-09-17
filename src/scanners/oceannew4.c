@@ -23,6 +23,20 @@
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Byte
+ * Header: Yes
+ * Data: Sub-blocks
+ * Checksum: Yes (inside header)
+ * Post-data: No
+ * Trailer: Spike
+ * Trailer omogeneous: No
+ */
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -72,7 +86,7 @@ void oceannew4_search (void)
 			sof = i;
 			i = eop;
 
-			/* Check if there's a valid sync value for this loader */
+			/* Check if there's a valid sync byte for this loader */
 			if (readttbyte(i, lp, sp, tp, en) != sv)
 				continue;
 
@@ -134,7 +148,7 @@ void oceannew4_search (void)
 				   implementation that uses readttbit()) */
 				/* Note: No trailer has been documented, but we are not pretending it
 				         here, just checking for it is future-proof */
-                                h = 0;
+				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
 						tap.tmem[eof + 1] < sp + tol)

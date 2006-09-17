@@ -23,6 +23,20 @@
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Byte
+ * Header: Yes
+ * Data: Sub-blocks
+ * Checksum: Yes (for each sub-block)
+ * Post-data: No
+ * Trailer: Yes
+ * Trailer omogeneous: Yes (bit 0 pulses)
+ */
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -31,7 +45,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER      8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	21	/* size of block header */
 #define NAMESIZE	16	/* size of filename */
@@ -74,7 +88,7 @@ void accolade_search (void)
 			sof = i;
 			i = eop;
 
-			/* Check if there's a valid sync value for this loader */
+			/* Check if there's a valid sync byte for this loader */
 			if (readttbyte(i, lp, sp, tp, en) != sv)
 				continue;
 
@@ -106,11 +120,11 @@ void accolade_search (void)
 			if (x % 256)
 				bso++;
 
-			/* Point to the first pulse of the checkbyte (that's final) */
+			/* Point to the first pulse of the last checkbyte (that's final) */
 			/* Note: - 1 because "bso" also includes the last checkbyte! */
 			eod = sod + (HEADERSIZE + x + bso - 1) * BITSINABYTE;
 
-			/* Initially point to the last pulse of the checkbyte */
+			/* Initially point to the last pulse of the last checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
 			/* Trace 'eof' to end of trailer (also check a different 

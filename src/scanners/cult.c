@@ -23,6 +23,20 @@
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: Yes
+ * Single on tape: Yes! -> once we acknowledge one, we can return (not done yet)
+ * Sync: Bit + Byte
+ * Header: No
+ * Data: Continuos
+ * Checksum: No
+ * Post-data: No
+ * Trailer: Yes
+ * Trailer omogeneous: Yes (bit 0 pulses) + 1 bit 1
+ */
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -32,7 +46,7 @@
 
 #define SPARESYNCVAL	0xAA	/* value of the spare sync byte */
 #define SPRSYNCSEQSIZE	1	/* amount of spare sync bytes */
-#define MAXTRAILER      2032	/* max amount of trailer pulses read in */
+#define MAXTRAILER	2032	/* max amount of trailer pulses read in */
 
 #define LOADOFFSETH	0x0E	/* load location (MSB) offset inside CBM data */
 #define LOADOFFSETL	0x0A	/* load location (LSB) offset inside CBM data */
@@ -41,7 +55,7 @@
 
 void cult_search (void)
 {
-	int i, h;				/* counter */
+	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int ib;				/* condition variable */
 
@@ -84,7 +98,9 @@ void cult_search (void)
 
 	/* Note: we may exit the "for" cycle if addblockdef() doesn't fail,
 	   since CULT is always just ONE turbo file. I didn't do that because 
-	   we may have more than one game on the same tape using Cult loader */
+	   we may have more than one game on the same tape using Cult loader,
+	   but such in a case whe must retrieve CBM information from their
+	   respective CBM parts... Not done actually. */
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
 
@@ -134,6 +150,8 @@ void cult_search (void)
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
+						/* Note: there's no further Cult file in a legacy Cult tape,
+						         so we should just "return" here. */
 
 		} else {
 			if (eop < 0)
