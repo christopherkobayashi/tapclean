@@ -1,7 +1,7 @@
 v0.17
 	Updated loaders: cult, burner_var, oceannew4, accolade, rainbowarts_f1,
 	 rainbowarts_f2, tdi_f2 and trilogic (Luigi)
-	New version of cult loader (Luigi)
+	New version of odeload loader (Luigi)
 v0.16
 	Changed the trailer ack routines for the scanners I created.
 	 I ack pulses up to a max amount, based on experience (luigi).
