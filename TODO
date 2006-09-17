@@ -54,5 +54,13 @@
  - Do some major rewrite of scanners/*.
    There are WAY TOO MUCH duplication of code.
  - Unify scanner/loader names/strings
-
+ - Add new header info to all 'old' scanners and check that the code actually
+   are doing what the header info says.
+   Messages from Luigi:
+    This header contains all the information needed to quickly check the code
+    and to automatize the code writing process. It should be filled in before
+    writing the search() function.
+    If a field is mandatory it must be checked within the search() function.
+    Check the scanners for mandatory fields and how they are hunted for inside
+    their respective search() function.
 
