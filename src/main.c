@@ -234,7 +234,7 @@ struct fmt_t ft[100] = {
 	{"RAINBOW ARTS F1"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
 	{"RAINBOW ARTS F2"	,LSbF, 0x2A, 0x19, NA,  0x36, 0xA0, 0x0A, 800, NA,    CSYES},
 	{"TRILOGIC"		,MSbF, 0x28, 0x1C, NA,  0x35, 0x0F, 0x0E, 200, NA,    CSYES},
-	{"BURNER VARIANT"	,VV,   0x30, 0x23, NA,  0x42, VV,   VV,   100, NA,    CSNO},
+	{"BURNER VARIANT"	,VV,   0x30, 0x23, NA,  0x42, VV,   VV,   50,  NA,    CSNO},
 	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
