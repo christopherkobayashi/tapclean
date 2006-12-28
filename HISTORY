@@ -1,3 +1,7 @@
+v0.19
+	Fixed off by one for tolerance.
+	Now S.D.I. cleans 100% (Cyberload) with tol=15
+
 v0.18
 	Fixed bug in Mastertronic Burner Variant.
 	Peepo/Luigi discovered a pilot size of only 96 bytes (was 192) (Luigi+Peepo)

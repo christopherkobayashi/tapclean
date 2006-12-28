@@ -525,7 +525,7 @@ static void display_usage(void)
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
-	printf(" -tol [0-14]    Set pulsewidth read tolerance, default = 10.\n");
+	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10.\n");
 }
 
 /*

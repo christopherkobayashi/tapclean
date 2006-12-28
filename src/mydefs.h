@@ -50,8 +50,8 @@
 #endif
 #define OSAPI_CREATE_FOLDER "mkdir"
 
-#define VERSION_STR "TAPClean v0.18 Console - (C) 2006 XXX"
-#define BUILDER     "luigi"
+#define VERSION_STR "TAPClean v0.19 Console - (C) 2006 XXX"
+#define BUILDER     "bgk"
 
 #define TRUE	1
 #define FALSE	0
@@ -64,7 +64,7 @@
 
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */
-#define MAXTOL  15      /* max bit reading tolerance (as above, its bias is 1) */
+#define MAXTOL  16      /* max bit reading tolerance (as above, its bias is 1) */
 
 #define LAME	0x0F	/* cutoff value for 'noise' pulses when rebuilding pauses.*/
 
