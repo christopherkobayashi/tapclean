@@ -1,6 +1,7 @@
 v0.18
 	Fixed bug in Mastertronic Burner Variant.
 	Peepo/Luigi discovered a pilot size of only 96 bytes (was 192) (Luigi+Peepo)
+
 v0.17
 	Updated loaders: cult, burner_var, oceannew4, accolade, rainbowarts_f1,
 	 rainbowarts_f2, tdi_f2 and trilogic (Luigi)
