@@ -1,3 +1,7 @@
+v0.20
+	Fixed the wav code. Now creating wavs should work.
+	Thanks to Enthusi for discovering this bug.
+
 v0.19
 	Fixed off by one for tolerance.
 	Now S.D.I. cleans 100% (Cyberload) with tol=15

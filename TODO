@@ -63,4 +63,5 @@
     If a field is mandatory it must be checked within the search() function.
     Check the scanners for mandatory fields and how they are hunted for inside
     their respective search() function.
+ - Fix int - long problem with all ftell, fwrite, fseek etc functions
 

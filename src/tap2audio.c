@@ -60,7 +60,7 @@ const char wavoutname[] =	"out.wav";
 static int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp, char *outbuf)
 {
 	if (!finished) {
-		outbuf[*bp++] = amp;
+		outbuf[(*bp)++] = amp;
 		if (*bp == BUFSZ) {				/* buffer full? */
 			fwrite(outbuf, 1, BUFSZ, filep);	/* add full buffer to the file */
 			*bp = 0;
@@ -281,26 +281,26 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 				totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos, outbuf);
 		}
  
-	/* write TAP v1 pause... */
+		/* write TAP v1 pause... */
 
-	if (b == 0 && tapversion == 1) {
-		ccnt = (tap[i + 1]) + (tap[i + 2] << 8) + (tap[i + 3] << 16);
-		i += 3;
-		lv = floor(ccnt * fratio);
-		if (sine)
-			totalsamples += drawwavesine(lv, 0, 0, fp, &bpos, outbuf);
-		else
-			totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos, outbuf);
-	}
+		if (b == 0 && tapversion == 1) {
+			ccnt = (tap[i + 1]) + (tap[i + 2] << 8) + (tap[i + 3] << 16);
+			i += 3;
+			lv = floor(ccnt * fratio);
+			if (sine)
+				totalsamples += drawwavesine(lv, 0, 0, fp, &bpos, outbuf);
+			else
+				totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos, outbuf);
+		}
  
-	/* write out non-pause... */
+		/* write out non-pause... */
 
-	if (b != 0) {
-		lv = floor((b * 8) * fratio);
-		if (sine)
-			totalsamples += drawwavesine(lv, 127, 0, fp, &bpos, outbuf);
-		else
-			totalsamples += drawwavesquare(lv, 127, 0, fp, &bpos, outbuf);
+		if (b != 0) {
+			lv = floor((b * 8) * fratio);
+			if (sine)
+				totalsamples += drawwavesine(lv, 127, 0, fp, &bpos, outbuf);
+			else
+				totalsamples += drawwavesquare(lv, 127, 0, fp, &bpos, outbuf);
 		}
 	}
 
@@ -315,12 +315,12 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	}
 
 	/* write DataChunkLen to wav header... */
-   
+  
 	dsize = totalsamples;
 	for (i = 0; i < 4; i++) {
 		b = ((dsize & (0xFF << (i * 8)))) >> (i * 8);
-		wavhd[40 + i] = b;
-	}
+			wavhd[40 + i] = b;
+		}
  
 	/* write header array to file and clean up... */
 
