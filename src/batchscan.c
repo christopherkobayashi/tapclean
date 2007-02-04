@@ -271,7 +271,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			sprintf(tfields[13], "%08lX", taps[i]->cbmcrc);
 			sprintf(tfields[14], "%s", knam[taps[i]->cbmid]);
 
-			for (j =0 ; j < FIELDS; j++) {	/* add padding if necessary... */
+			for (j = 0; j < FIELDS; j++) {	/* add padding if necessary... */
 				if (strlen(tfields[j]) > strlen(fields[j]))
 					padstring(fields[j], strlen(tfields[j]));
 			}

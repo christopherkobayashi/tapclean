@@ -1352,7 +1352,7 @@ static void search_tap(void)
 
 static void gap_describe(int row)
 {
-	strcpy(lin,"");
+	strcpy(lin, "");
 
 	if (blk[row]->xi > 1)
 		sprintf(lin, "\n - Length = %d pulses", blk[row]->xi);
@@ -1694,7 +1694,7 @@ static float get_duration(int p1, int p2)
 
 static int get_pulse_stats(void)
 {
-	int i,tot,b;
+	int i, tot, b;
 
 	for(i = 0; i < 256; i++)	/* clear pulse table...  */
 		tap.pst[i] = 0;
@@ -1761,99 +1761,6 @@ static void get_file_stats(void)
 }
 
 /*
- * show loader table values... (unused in console version)
- */
-
-static void show_loader_table(void)
-{
-	int i;
-	char inf[100];
-   
-	msgout("\nThe following table is generated from internal data that FT uses for");
-	msgout("\nscanning and cleaning, some values may change with program use.");
-	msgout("\n");
-	msgout("\n");
-
-	sprintf(lin, "\nFORMAT NAME            EN   TP  SP  MP  LP  PV  SV  CS");
-	msgout(lin);
-	msgout("\n");
-
-	for (i = 3; ft[i].en != 666; i++) {
-		strcpy(lin, "");
-		strcpy(inf, "");
-		sprintf(inf, "%-22s ", ft[i].name);
-		strcat(lin, inf);
-      
-		if (ft[i].en == LSbF)
-			sprintf(inf, "LSbF ");
-		if (ft[i].en == MSbF)
-			sprintf(inf, "MSbF ");
-		if (ft[i].en == XX)
-			sprintf(inf, "XX   ");
-		strcat(lin,inf);
-
-		if (ft[i].tp != XX)
-			sprintf(inf, "0x%02X ", ft[i].tp);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].sp != XX)
-			sprintf(inf, "0x%02X ", ft[i].sp);
-		else
-			sprintf(inf,"XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].mp != XX)
-			sprintf(inf, "0x%02X ", ft[i].mp);
-		else                sprintf(inf, "XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].lp != XX)
-			sprintf(inf, "0x%02X ", ft[i].lp);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].pv != XX)
-			sprintf(inf, "0x%02X ", ft[i].pv);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-		
-		if (ft[i].sv != XX)
-			sprintf(inf, "0x%02X ", ft[i].sv);
-		else
-			sprintf(inf, "XX  ");
-		strcat(lin, inf);
-
-		if (ft[i].has_cs == CSYES)
-			sprintf(inf, "Y   ");
-		else
-			sprintf(inf, "N   ");
-		strcat(lin, inf);
-		msgout(lin);
-	}
-
-	msgout("\n");
-	msgout("\nEN = Byte Endianess");
-	msgout("\nTP = Threshold Pulse");
-	msgout("\nSP = Short Pulse");
-	msgout("\nMP = Medium Pulse");
-	msgout("\nLP = Long Pulse");
-	msgout("\nPV = File Pilot Value");
-	msgout("\nSV = File Sync Value");
-	msgout("\nCS = File Checksum Available (Y/N)");
-	msgout("\n");
-	msgout("\nNote: XX = Variable/Not Applicable/Don't Care.");
-	msgout("\nNote: MSbF = Most Significant bit First, LSbF = Least Significant bit First.");
-	msgout("\nNote: Y = Yes, N = No.");
-	msgout("\nNote: If PV and SV are both 0 or 1 the pilot/sync is a bitstream.");
-	msgout("\n");
-	msgout("\n");
-}
-
-/*
  * Print the human readble TAP report to a buffer.
  * Note: this is done so I can send the info to both the screen and the report
  * without repeating the code.
@@ -1915,7 +1822,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", tstr[tap.tst_hd], tstr2[tap.fsigcheck], tstr2[tap.fvercheck], tstr2[tap.fsizcheck]);
 	strcat(buf, lin);
-	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", tstr[tap.tst_rc], tap.detected, tap.len-20, tap.detected_percent,"%%");
+	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", tstr[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent,"%%");
 	strcat(buf, lin); 
 	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", tstr[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
 	strcat(buf, lin);
@@ -2058,10 +1965,10 @@ int main(int argc, char *argv[])
 	/* TBA */
 	build_crc_table();
 
-	printf("\n------------------------------------------------------------------\n");
+	printf("\n----------------------------------------------------------------------\n");
 	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
-	printf("------------------------------------------------------------------\n");
+	printf("----------------------------------------------------------------------\n");
 
 	/* Note: options should be processed before actions! */
    
@@ -2731,7 +2638,7 @@ void clean(void)
 
 	msgout("\n");
 	msgout("\nCleaning finished.");
-	quiet=0;			/* allow talking again. */
+	quiet = 0;			/* allow talking again. */
 }
 
 /*
