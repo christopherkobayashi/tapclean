@@ -1,5 +1,5 @@
 /*
- * crc32.c (computes the crc32 checksums)
+ * crc32.c (computes crc32 checksums)
  *
  * Part of project "Final TAP". 
  * 
