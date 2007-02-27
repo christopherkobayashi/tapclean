@@ -64,4 +64,7 @@
     Check the scanners for mandatory fields and how they are hunted for inside
     their respective search() function.
  - Fix int - long problem with all ftell, fwrite, fseek etc functions
-
+ - Add time of tap output. cycles divided by frequency.
+   Convert to minutes:seconds.hundreds..
+   TAP-Time      :  0:17.90
+ - Make it possible to create wav without cleaning first...
