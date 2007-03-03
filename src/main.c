@@ -1771,6 +1771,8 @@ static void print_results(char *buf)
 {
 	char tstr[2][256] = {"PASS", "FAIL"};
 	char tstr2[2][256] = {"OK", "FAIL"};
+	int min;
+	float sec;
 
 	sprintf(buf, "\n\n\nGENERAL INFO AND TEST RESULTS\n");
    
@@ -1790,6 +1792,10 @@ static void print_results(char *buf)
 	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
 	strcat(buf, lin);
 	sprintf(lin, "\nMagic CRC32 : %08lX", tap.crc);
+	strcat(buf, lin);
+	min = tap.taptime / 60;
+	sec = tap.taptime - min * 60;
+	sprintf(lin, "\nTAP Time    : %d:%.2f", min, sec);
 	strcat(buf, lin);
 
 	if (tap.bootable) {
