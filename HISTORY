@@ -1,4 +1,5 @@
 v0.20
+	Added Tap time to the report
 	Fixed the wav code. Now creating wavs should work.
 	Thanks to Enthusi for discovering this bug.
 
