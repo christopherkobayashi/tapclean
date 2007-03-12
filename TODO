@@ -65,3 +65,4 @@
     their respective search() function.
  - Fix int - long problem with all ftell, fwrite, fseek etc functions
  - Make it possible to create wav without cleaning first...
+ - Fix broken CBM Header and Data Blocks if the other one of the pair is OK
