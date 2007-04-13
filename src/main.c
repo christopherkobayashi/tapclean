@@ -595,6 +595,7 @@ static void display_scanners(void)
 static void process_options(int argc, char **argv)
 {
 	int i;
+	int excludeflag = 1;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
@@ -649,8 +650,11 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-ec") == 0)
 			exportcyberloaders = TRUE;
 
-		if (strncmp(argv[i], "-no", 3) == 0)
+		if (strncmp(argv[i], "-no", 3) == 0 && excludeflag == 1)
+		{
 			printf("\nExcluded scanners:\n\n");
+			excludeflag = 0;
+    }
 
 		if (strcmp(argv[i], "-noc64") ==  0) {
 			noc64 = TRUE;
