@@ -1,14 +1,17 @@
 v0.20
-	Added Tap time to the report
-	Fixed the wav code. Now creating wavs should work.
-	Thanks to Enthusi for discovering this bug.
+	Converted scanners/c64tape.c to new coding style (bgk)
+	The Excluded Scanners message now is shown only once (Luigi)
+	Fix some compiler complaints (Luigi)
+	Added Tap time to the report (bgk).
+	Fixed the wav code. Now creating wavs should work (bgk+enthusi).
+	 Thanks to Enthusi for discovering this bug.
 
 v0.19
-	Fixed off by one for tolerance.
-	Now S.D.I. cleans 100% (Cyberload) with tol=15
+	Fixed off by one for tolerance (bgk).
+	 Now S.D.I. cleans 100% (Cyberload) with tol=15
 
 v0.18
-	Fixed bug in Mastertronic Burner Variant.
+	Fixed bug in Mastertronic Burner Variant. (Luigi?)
 	Peepo/Luigi discovered a pilot size of only 96 bytes (was 192) (Luigi+Peepo)
 
 v0.17
