@@ -654,7 +654,7 @@ static void process_options(int argc, char **argv)
 		{
 			printf("\nExcluded scanners:\n\n");
 			excludeflag = 0;
-    }
+		}
 
 		if (strcmp(argv[i], "-noc64") ==  0) {
 			noc64 = TRUE;
@@ -955,7 +955,7 @@ static void handle_cps(void)
 	else
 		printf("NTSC ");
 
-	printf("(%d Hz)\n", cps);
+	printf("(%ld Hz)\n", cps);
 }
 
 /*
@@ -2739,7 +2739,8 @@ int is_pause_param(int p)
 			}
 		}
 	}
-//	return 0; /* luigi */
+	// luigi: This point can't be reached
+	return 0; /* luigi: fake, here to avoid warning at compile time */
 }
 
 /*
