@@ -425,7 +425,7 @@ int cbm_describe(int row)
       /* report inconsistancy between size in header and actual size... */
       if(blk[row]->cx!= (_dfe - _dfs))
       {
-         sprintf(lin," (Warning, Data size differs from header info!.)", blk[row]->cx);
+         sprintf(lin," (Warning, Data size differs from header info!.)");
          strcat(info,lin);
       }
    }

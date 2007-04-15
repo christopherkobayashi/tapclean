@@ -191,10 +191,10 @@ void burnervar_search (void)
 			   Note: also check a different implementation that uses readttbit()) */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					(tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
-					tap.tmem[eof + 1] < sp + tol ||
-					tap.tmem[eof + 1] > lp - tol && 
-					tap.tmem[eof + 1] < lp + tol))
+					((tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
+					tap.tmem[eof + 1] < sp + tol) ||
+					(tap.tmem[eof + 1] > lp - tol && 
+					tap.tmem[eof + 1] < lp + tol)))
 				eof++;
 
 			/* Note: put discovered values in the extra-info field */

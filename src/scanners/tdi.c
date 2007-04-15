@@ -71,10 +71,10 @@ void tdi_search(void)
                Note: also check a different implementation that uses readttbit()) */
             j=0;
             while (eof < tap.len - 1 && j++ < 8 &&
-                  (tap.tmem[eof + 1] > ft[TDI_F1].sp - tol && /* no matter if overlapping occurrs here */
-                  tap.tmem[eof + 1] < ft[TDI_F1].sp + tol ||
-                  tap.tmem[eof + 1] > ft[TDI_F1].lp - tol && 
-                  tap.tmem[eof + 1] < ft[TDI_F1].lp + tol))
+                  ((tap.tmem[eof + 1] > ft[TDI_F1].sp - tol && /* no matter if overlapping occurrs here */
+                  tap.tmem[eof + 1] < ft[TDI_F1].sp + tol) ||
+                  (tap.tmem[eof + 1] > ft[TDI_F1].lp - tol && 
+                  tap.tmem[eof + 1] < ft[TDI_F1].lp + tol)))
                eof++;
 
             /* F2 files always appear to have a 0 as load address low.

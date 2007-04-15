@@ -71,8 +71,6 @@ void tdif2_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int xinfo;			/* extra info used in addblockdef() */
-
 	/* legacy sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
 		0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
