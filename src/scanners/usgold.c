@@ -66,7 +66,7 @@ void usgold_search(void)
 					   than it should, probably it uses the end address
 					   differently */
 					else if (addblockdef(USGOLD, sof, sod, eod - 8, eof - 8, BLK_GAUNTLET_VARIANT) >= 0)
-						i = eof;
+						i = eof - 8;
 				}
 			}
 		}
