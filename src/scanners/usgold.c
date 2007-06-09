@@ -29,6 +29,8 @@
 
 #define HDSZ 20
 
+#define BLK_GENUINE          0
+#define BLK_GAUNTLET_VARIANT 1
 
 void usgold_search(void)
 {
@@ -56,8 +58,15 @@ void usgold_search(void)
 				if (x > 0) {
 					eod = sod + ((x + HDSZ) * 8);
 					eof = eod + 7;
-					addblockdef(USGOLD, sof, sod, eod, eof, 0);
-					i = eof;
+					if (addblockdef(USGOLD, sof, sod, eod, eof, BLK_GENUINE) >= 0)
+						i = eof;
+
+					/* This change has been done to detect the first file 
+					   on Gauntlet side 2. The data size is 1 byte less 
+					   than it should, probably it uses the end address
+					   differently */
+					else if (addblockdef(USGOLD, sof, sod, eod - 8, eof - 8, BLK_GAUNTLET_VARIANT) >= 0)
+						i = eof;
 				}
 			}
 		}
@@ -70,6 +79,8 @@ int usgold_describe(int row)
 	int hd[HDSZ], rd_err, b, cb;
 	char fn[256];
 	char str[2000];
+
+	int xinfo;
 
 	/* decode the header... */
 
@@ -91,9 +102,18 @@ int usgold_describe(int row)
 
 	strcpy(blk[row]->fn, str);
 
+	/* Retrieve the info about the block type (genuine/Gauntlet variant) */
+	xinfo = blk[row]->xi;
+
 	blk[row]->cs = hd[16] + (hd[17] << 8);		/* record start address */
 	blk[row]->ce = hd[18] + (hd[19] << 8) - 1;	/* record end address */
 	blk[row]->cx = (blk[row]->ce + 1)-blk[row]->cs;	/* compute size */
+
+	/* Gauntlet side 2 full support */
+	if (xinfo == BLK_GAUNTLET_VARIANT) {
+		(blk[row]->ce) -= 1;
+		(blk[row]->cx) -= 1;
+	}
 
 	/* get pilot & trailer lengths */
 
