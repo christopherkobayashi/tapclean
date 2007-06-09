@@ -1,4 +1,6 @@
+
 v0.20
+        Fxed the eof value for Gauntlet after a successful addblockdef() call (Luigi)
 	Converted scanners/c64tape.c to new coding style (bgk)
 	The Excluded Scanners message now is shown only once (Luigi)
 	Fix some compiler complaints (Luigi)
