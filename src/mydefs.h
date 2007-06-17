@@ -51,7 +51,7 @@
 #endif
 #define OSAPI_CREATE_FOLDER "mkdir"
 
-#define VERSION_STR "TAPClean v0.20 Console - (C) 2006-2007 XXX"
+#define VERSION_STR "TAPClean v0.21 Console - (C) 2006-2007 XXX"
 #define BUILDER     "bgk"
 
 #define TRUE	1
@@ -62,6 +62,10 @@
 #define NUM_CRC 1000
 
 #define CLEANED_PREFIX	"clean."
+
+#define TAP_HEADER_SIZE 20
+#define TAP_ID_STRING	"C64-TAPE-RAW"
+#define DC2N_ID_STRING	"DC2N-TAP-RAW"
 
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */

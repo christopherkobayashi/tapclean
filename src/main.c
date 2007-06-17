@@ -2348,7 +2348,94 @@ int find_pilot(int pos, int fmt)
 	return 0;		/* never reached. */
 }
 
-/**
+/*
+ * Write a long pulse to the buffer
+ */
+
+long write_long_pulse(unsigned char *output_buffer, unsigned long lp)
+{
+	unsigned long zerot;
+
+	lp <<= 3;
+
+	while (lp != 0) {
+		if (lp >= 0x1000000)
+			zerot = 0xffffff;	/* zerot =  maximum */
+		else
+			zerot = lp;
+		lp -= zerot;
+
+		output_buffer[0] = 0x00;
+		output_buffer[1] = (unsigned char) (zerot & 0xFF);
+		output_buffer[2] = (unsigned char) ((zerot>>8) & 0xFF);
+		output_buffer[3] = (unsigned char) ((zerot>>16) & 0xFF);
+	}
+}
+
+/*
+ * Convert DC2N format to TAP v1
+ */
+
+long convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, long flen)
+{
+	long i, olen = 0;
+	unsigned long utime, clockcycles, longpulse = 0;
+	unsigned long pulse;
+
+	strncpy(output_buffer, TAP_ID_STRING, strlen(DC2N_ID_STRING));
+	output_buffer[0x0C] = 0x01;	/* TAP v1 */
+
+	i = 20;
+	olen = 20;
+
+	for (; i < flen;) {
+		utime = (unsigned long) input_buffer[i++];
+		utime += 256UL * (unsigned long) input_buffer[i++];
+
+		/* downsample data from 2MHz to C64 PAL frequency */
+		clockcycles = (utime * 30789UL + 31250UL) / 62500UL;
+
+		/* divide by eight, as requested by TAP V0 format */
+		pulse = (clockcycles + 4) / 8;	/* (utime * 30789UL + 250000UL) / 500000UL; */
+
+		/* assert minimal length */
+		if (pulse == 0)
+			pulse = 1;
+
+		if (pulse < 0x100) {	/* a pending overflow sequence ends with this pulse */
+			if (longpulse) {
+				longpulse += pulse;
+				write_long_pulse(&output_buffer[olen], longpulse);
+				olen = olen + 4;	/* length of long pulse */
+				longpulse = 0;
+			} else {
+				output_buffer[olen++] = (unsigned char) pulse;
+			}
+		} else if (utime < 0xFFFF) {	/* not a counter overflow, just a long pulse */
+			longpulse += pulse;
+			write_long_pulse(&output_buffer[olen], longpulse);
+			olen = olen + 4;
+			longpulse = 0;
+		} else	/* counter overflows get concatenated between them and any following */
+			longpulse += pulse;
+	}
+
+	/* write trailing longpulse (if any) */
+	if (longpulse) {
+		write_long_pulse(&output_buffer[olen], longpulse);
+		olen = olen + 4;
+	}
+
+	/* Fix TAP data size field inside the header */
+	output_buffer[16] = (unsigned char) ((olen - 20)  & 0xFF);
+	output_buffer[17] = (unsigned char) (((olen - 20) >>8) & 0xFF);
+	output_buffer[18] = (unsigned char) (((olen - 20) >>16) & 0xFF);
+	output_buffer[19] = (unsigned char) (((olen - 20) >>24) & 0xFF);
+
+	return olen;
+}
+
+/*
  * Load the named tap file into buffer (tap.tmem[])
  *
  * @param name	Name of the tap file to load
@@ -2360,7 +2447,8 @@ int find_pilot(int pos, int fmt)
 int load_tap(char *name)
 {
 	FILE *fp;
-	int flen;
+	long flen;
+	unsigned char *input_buffer, *output_buffer;
 
 	fp = fopen(name, "rb");
 	if (fp == NULL) {
@@ -2378,19 +2466,37 @@ int load_tap(char *name)
 	rewind(fp);
 
 	/* Allocate enough space to load the file into */
-	tap.tmem = (unsigned char*)malloc(flen);
-	if(tap.tmem == NULL) {
+	input_buffer = (unsigned char*)malloc(flen);
+	if (input_buffer == NULL) {
 		msgout("\nError: malloc failed in load_tap().");
 		fclose(fp);
 		return 0;
 	}
 
 	/* Load data into buffer */
-	fread(tap.tmem, flen, 1, fp);
+	fread(input_buffer, flen, 1, fp);
 	fclose(fp);
 
-	/* Set the 'tap' structure file length subfield */
-	tap.len = flen;
+	/* Check for DC2N format */
+	if (strncmp(DC2N_ID_STRING, (char *)input_buffer, strlen(DC2N_ID_STRING)) == 0) {
+		msgout("\nDC2N 16-bit TAP format detected. Converting to legacy TAP v1 (assuming 16-bit and 2MHz.)");
+
+		output_buffer = (unsigned char*)malloc(flen);
+		if (output_buffer == NULL) {
+			msgout("\nError: malloc failed in load_tap().");
+			free (input_buffer);
+			return 0;
+		}
+
+		tap.len = convert_dc2n(input_buffer, output_buffer, flen);
+		tap.tmem = output_buffer;
+		free (input_buffer);
+	} else {
+		tap.tmem = input_buffer;
+
+		/* Set the 'tap' structure file length subfield */
+		tap.len = flen;
+	}
 
 
 	/* the following were uncommented in GUI app..
