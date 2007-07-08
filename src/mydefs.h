@@ -65,7 +65,9 @@
 
 #define TAP_HEADER_SIZE 20
 #define TAP_ID_STRING	"C64-TAPE-RAW"
-#define DC2N_ID_STRING	"DC2N-TAP-RAW"
+
+#define DC2N_HEADER_SIZE	20
+#define DC2N_ID_STRING		"DC2N-TAP-RAW"
 
 #define FAIL	0xFFFFFFFF
 #define DEFTOL	11	/* default bit reading tolerance. (1 = zero tolerance) */
