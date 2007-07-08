@@ -4,6 +4,8 @@ v0.21
 	Converted scanners/ikloader.c to new coding style (bgk)
 	Converted scanners/hitload.c to new coding style (bgk)
 	Converted scanners/aces.c to new coding style (bgk)
+	The DC2N to TAP conversion routines were fixed and improved a bit (Luigi)
+	 This fixed the tap time reporting bug
 
 v0.20
 	Fixed the eof value for Gauntlet after a successful addblockdef() call (Luigi)
