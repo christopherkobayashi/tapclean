@@ -202,3 +202,5 @@ int oceannew4_describe(int);
 void tdif2_search(void);
 int tdif2_describe(int);
 
+void biturbo_search(void);
+int biturbo_describe(int);

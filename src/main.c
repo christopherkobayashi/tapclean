@@ -68,6 +68,7 @@ static char noalterwg		= FALSE;
 static char noanirog		= FALSE;
 static char noatlantis		= FALSE;
 static char noaudiogenic	= FALSE;
+static char nobiturbo		= FALSE;
 static char nobleep		= FALSE;
 static char noburner		= FALSE;
 static char noburnervar		= FALSE;
@@ -237,6 +238,7 @@ struct fmt_t ft[100] = {
 	{"BURNER VARIANT"	,VV,   0x30, 0x23, NA,  0x42, VV,   VV,   50,  NA,    CSNO},
 	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
+	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -543,6 +545,7 @@ static void display_scanners(void)
 	printf(" Anirog                       -noanirog\n");
 	printf(" Atlantis                     -noatlantis\n");
 	printf(" Audiogenic                   -noaudiogenic\n");
+	printf(" Biturbo                      -nobiturbo\n");
 	printf(" Bleepload                    -nobleep\n");
 	printf(" Burner                       -noburner\n");
 	printf(" Burner Variant               -noburnervar\n");
@@ -687,6 +690,10 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-noaudiogenic") == 0) {
 			noaudiogenic = TRUE;
 			printf(" Audiogenic\n");
+		}
+		if (strcmp(argv[i], "-nobiturbo") == 0) {
+			nobiturbo = TRUE;
+			printf(" Biturbo\n");
 		}
 		if (strcmp(argv[i], "-nobleep") == 0) {
 			nobleep = TRUE;
@@ -871,6 +878,7 @@ static void process_options(int argc, char **argv)
 			noanirog = TRUE;
 			noatlantis = TRUE;
 			noaudiogenic = TRUE;
+			nobiturbo = TRUE;
 			nobleep = TRUE;
 			noburner = TRUE;
 			noburnervar = TRUE;
@@ -1335,6 +1343,9 @@ static void search_tap(void)
 			if (nooceannew4 == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
+			if (nobiturbo == FALSE && !dbase_is_full && !aborted)
+				biturbo_search();
+
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1544,6 +1555,8 @@ static void describe_file(int row)
 		case OCNEW4:		oceannew4_describe(row);
 					break;
 		case TDI_F2:		tdif2_describe(row);
+					break;
+		case BITURBO:		biturbo_describe(row);
 					break;
 	}
 }

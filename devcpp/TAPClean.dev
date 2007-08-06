@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=66
+UnitCount=67
 Type=1
 Ver=1
 ObjFiles=
@@ -699,6 +699,16 @@ BuildCmd=
 
 [Unit62]
 FileName=..\src\scanners\odeload.c
+CompileCpp=0
+Folder=newscanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit67]
+FileName=..\src\scanners\biturbo.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
