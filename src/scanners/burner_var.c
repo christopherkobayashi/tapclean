@@ -109,7 +109,7 @@ void burnervar_search (void)
 		pv = blk[ib]->dd[0x88] ^ 0xCBMXORDECRYPT;
 		sv = blk[ib]->dd[0x93] ^ 0xCBMXORDECRYPT;
 		en = blk[ib]->dd[0x83] ^ 0xCBMXORDECRYPT;
-
+*/
 		/* MSbF rol ($26) or.. LSbF ror($66)  */
 /*		if(en == OPC_ROL || en == OPC_ROR)
 			match = 3;

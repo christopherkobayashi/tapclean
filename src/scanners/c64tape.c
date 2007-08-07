@@ -316,7 +316,7 @@ void cbm_search(void)
 				else {
 					do
 						b = cbm_readbit(i += 2);
-					while (b == 0 || b == 1 || b == 2 && i < tap.len);
+					while ((b == 0 || b == 1 || b == 2) && i < tap.len);
 
 					eod = i - 20;
 					eof = eod + 21;		/* overwrite below... */
@@ -409,7 +409,7 @@ int cbm_describe(int row)
 	 * and used by any subsequent 'data' describe.
 	 */
 
-	static long _dfs = 0, _dfe = 0, _dfx = 0;
+	static int _dfs = 0, _dfe = 0, _dfx = 0;
 
 	if (blk[row]->lt == CBM_HEAD) {
 

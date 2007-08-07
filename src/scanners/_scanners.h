@@ -204,3 +204,6 @@ int tdif2_describe(int);
 
 void biturbo_search(void);
 int biturbo_describe(int);
+
+void _108DE0A5_search(void);
+int _108DE0A5_describe(int);

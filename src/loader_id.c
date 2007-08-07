@@ -250,6 +250,8 @@ int idloader(unsigned long crc)
 		{0x4E56C97A, LID_OCNEW4},	/* Out Run Europa (Variant) */
 		{0x6B4A0009, LID_OCNEW4},	/* Liverpool (Variant) */
 
+		{0x108DE0A5, LID_108DE0A5},	/* REC magazine tapes (Italy) */
+
 		{0, 0}
 	};
 

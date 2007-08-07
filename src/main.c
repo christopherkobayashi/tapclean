@@ -61,6 +61,7 @@ char exportcyberloaders		= FALSE;
 static char preserveloadertable	= TRUE;
 
 static char noc64		= FALSE;
+static char no108DE0A5		= FALSE;
 static char noaccolade		= FALSE;
 static char noaces		= FALSE;
 static char noaliensy		= FALSE;
@@ -113,7 +114,7 @@ static char novirgin		= FALSE;
 static char novisi		= FALSE;
 static char nowild		= FALSE;
 
-static char loaded		= FALSE;
+//static char loaded		= FALSE;
 
 
 static int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
@@ -239,6 +240,7 @@ struct fmt_t ft[100] = {
 	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
+	{"108DE0A5"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x09, 400, NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -538,6 +540,7 @@ static void display_scanners(void)
 {
 	printf("\n\nList of supported scanners and their -no<loader> parameter names.\n\n");
 	printf(" C64 ROM loader               -noc64\n");
+	printf(" 108DE0A5                     -no108DE0A5\n");
 	printf(" Accolade/EA                  -noaccolade\n");
 	printf(" Aces of Aces                 -noaces\n");
 	printf(" Alien Syndrome               -noaliensy\n");
@@ -662,6 +665,10 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-noc64") ==  0) {
 			noc64 = TRUE;
 			printf(" C64 ROM loader\n");
+		}
+		if (strcmp(argv[i], "-no108DE0A5") == 0) {
+			no108DE0A5 = TRUE;
+			printf(" 108DE0A5\n");
 		}
 		if (strcmp(argv[i], "-noaccolade") == 0) {
 			noaccolade = TRUE;
@@ -871,6 +878,7 @@ static void process_options(int argc, char **argv)
 		/* disable all scanners exc 'c64 rom tape' */
 
 		if (strcmp(argv[i], "-noall") == 0) {
+			no108DE0A5 = TRUE;
 			noaccolade = TRUE;
 			noaces = TRUE;
 			noaliensy = TRUE;
@@ -1169,6 +1177,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_OCNEW4 && nooceannew2 == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
+			if (tap.cbmid == LID_108DE0A5 && no108DE0A5 == FALSE && !dbase_is_full && !aborted)
+				_108DE0A5_search();
+
 			/* todo : TURRICAN
 			 * todo : SEUCK
 			 * todo : JETLOAD
@@ -1345,6 +1356,9 @@ static void search_tap(void)
 
 			if (nobiturbo == FALSE && !dbase_is_full && !aborted)
 				biturbo_search();
+
+			if (no108DE0A5 == FALSE && !dbase_is_full && !aborted)
+				_108DE0A5_search();
 
 		}
 
@@ -1557,6 +1571,8 @@ static void describe_file(int row)
 		case TDI_F2:		tdif2_describe(row);
 					break;
 		case BITURBO:		biturbo_describe(row);
+					break;
+		case _108DE0A5:		_108DE0A5_describe(row);
 					break;
 	}
 }
