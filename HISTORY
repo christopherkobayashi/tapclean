@@ -1,5 +1,7 @@
 
 v0.21
+	Added new scanner: 108DE0A5 (Luigi)
+	Fixed all compilation warnings (Luigi)
 	Added new scanner: Biturbo (Luigi)
 	Added support for reading DC2N 16-bit 2MHz RAW TAP format (Luigi + bgk)
 	Converted scanners/ikloader.c to new coding style (bgk)
