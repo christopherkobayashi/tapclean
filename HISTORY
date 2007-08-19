@@ -1,5 +1,7 @@
 
 v0.21
+	Tape type now affects CBM loader pulsewidths (Luigi)
+         (cps is as defined in TAP format)
 	Added new scanner: 108DE0A5 (Luigi)
 	Fixed all compilation warnings (Luigi)
 	Added new scanner: Biturbo (Luigi)
