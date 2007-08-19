@@ -53,8 +53,6 @@ char sortbycrc			= FALSE;
 char c16			= FALSE;
 char c20			= FALSE;
 char c64			= TRUE;
-char pal			= TRUE;
-char ntsc			= FALSE;
 
 char exportcyberloaders		= FALSE;
 
@@ -619,16 +617,16 @@ static void process_options(int argc, char **argv)
 			debug = TRUE;
 		if (strcmp(argv[i], "-noid") == 0)
 			noid = TRUE;
-		if (strcmp(argv[i], "-16") == 0)
+		if (strcmp(argv[i], "-16") == 0) {
 			c16 = TRUE;
-		if (strcmp(argv[i], "-20") == 0)
+			c64 = FALSE;
+		}
+		if (strcmp(argv[i], "-20") == 0) {
 			c20 = TRUE;
+			c64 = FALSE;
+		}
 		if (strcmp(argv[i], "-64") == 0)
 			c64 = TRUE;
-		if (strcmp(argv[i], "-pal") == 0)
-			pal = TRUE;
-		if (strcmp(argv[i], "-ntsc") == 0)
-			ntsc = TRUE;
 		if (strcmp(argv[i], "-noc64eof") == 0)
 			noc64eof = TRUE;
 		if (strcmp(argv[i], "-docyberfault") == 0)
@@ -935,43 +933,33 @@ static void process_options(int argc, char **argv)
 		}
 	}
 
-	printf("\n\nRead tolerance = %d", tol - 1);
+	printf("\nRead tolerance = %d", tol - 1);
 }
 
 /*
  * Choose CPU cycles based on computer type and PAL/NTSC
  */
 
-static void handle_cps(void)
+static void handle_tape_type (void)
 {
-	printf("\n\nComputer type: ");
+	printf("\nTape type: ");
 
 	if (c64 == TRUE) {
 		printf("C64 ");
-		if (pal == TRUE)
-			cps = C64_PAL_CPS;
-		else
-			cps = C64_NTSC_CPS;
 	} else if (c16 == TRUE) {
 		printf("C16 ");
-		if (pal == TRUE)
-			cps = C16_PAL_CPS;
-		else
-			cps = C16_NTSC_CPS;
 	} else if (c20 == TRUE) {
 		printf("VIC20 ");
-		if (pal == TRUE)
-			cps = VIC20_PAL_CPS;
-		else
-			cps = VIC20_NTSC_CPS;
+
+		/* Force CBM pulsewidths to the ones found in VIC20 tapes */
+		ft [CBM_HEAD].sp = 0x2B;
+		ft [CBM_HEAD].mp = 0x3F;
+		ft [CBM_HEAD].lp = 0x53;
+
+		ft [CBM_DATA].sp = 0x2B;
+		ft [CBM_DATA].mp = 0x3F;
+		ft [CBM_DATA].lp = 0x53;
 	}
-
-	if (pal == TRUE)
-		printf("PAL ");
-	else
-		printf("NTSC ");
-
-	printf("(%ld Hz)\n", cps);
 }
 
 /*
@@ -2019,7 +2007,7 @@ int main(int argc, char *argv[])
 	}
 
 	process_options(argc, argv);
-	handle_cps();
+	handle_tape_type();
       
 	/* PROCESS ACTIONS... */
 
