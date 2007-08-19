@@ -2404,7 +2404,7 @@ static long convert_dc2n(unsigned char *input_buffer, unsigned char *output_buff
 	unsigned long utime, clockcycles, longpulse = 0;
 	unsigned long pulse;
 
-	strncpy(output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
+	strncpy((char *)output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
 	output_buffer[0x0C] = 0x01;	/* convert to TAP v1 */
 
 	i = DC2N_HEADER_SIZE;

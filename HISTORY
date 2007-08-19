@@ -1,5 +1,7 @@
 
 v0.21
+	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
+	Fixed the trailer read code in turbotape.c (Luigi)
 	Tape type now affects CBM loader pulsewidths (Luigi)
          (cps is as defined in TAP format)
 	Added new scanner: 108DE0A5 (Luigi)
