@@ -57,7 +57,7 @@ further notes:-
 void turbotape_search(void)
 {
    int i,cnt2,sof,sod,eod,eof,zcnt,z,hsize,psize;
-   unsigned char byt,pat[32],p,hd[HDSZ];
+   unsigned char byt,pat[32],hd[HDSZ];
 
    if(!quiet)
       msgout("  Turbotape 250 (+clones)");
@@ -140,18 +140,13 @@ void turbotape_search(void)
                               eod = sod+(psize*8); /* see psize calculation above */
                               eof=eod+7;
 
-                              if(eof<tap.len) /* this fixes a crash. where psize is wrong. */
-                              {
-                                 /* now trace to end of trailer (if exists)... */
-                                 p = tap.tmem[eof+1];
-                                 if(p>ft[TT_HEAD].sp-tol && p<ft[TT_HEAD].sp+tol)
-                                 {
-                                    do
-                                       eof++;
-                                    while(tap.tmem[eof+1]>ft[TT_HEAD].sp-tol && tap.tmem[eof+1]<ft[TT_HEAD].sp+tol && eof<tap.len);
-                                 }
-                                 addblockdef(TT_DATA, sof,sod,eod,eof,0);
-                              }
+                              /* now trace to end of trailer (if exists)... */
+                              while (eof < tap.len - 1 && 
+                                    tap.tmem[eof + 1] > ft[TT_HEAD].sp - tol && 
+                                    tap.tmem[eof + 1] < ft[TT_HEAD].sp + tol)
+                                 eof++;
+
+                              addblockdef(TT_DATA, sof,sod,eod,eof,0);
                            }
                         }
                      }
