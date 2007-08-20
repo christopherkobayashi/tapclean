@@ -53,8 +53,8 @@
 #define NAMEOFFSET	4	/* filename offset inside header */
 #define DATAOFFSETH	1	/* data size (MSB) offset inside header */
 #define DATAOFFSETL	0	/* data size (LSB) offset inside header */
-#define LOADOFFSETH	3	/* load location (MSB) offset inside CBM data */
-#define LOADOFFSETL	2	/* load location (LSB) offset inside CBM data */
+#define LOADOFFSETH	3	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	2	/* load location (LSB) offset inside header */
 
 #define EOFMARKER	0x20	/* EOF marker */
 

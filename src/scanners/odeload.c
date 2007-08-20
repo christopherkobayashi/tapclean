@@ -49,10 +49,10 @@
 
 #define HEADERSIZE	4	/* size of block header */
 
-#define LOADOFFSETH	1	/* load location (MSB) offset inside CBM data */
-#define LOADOFFSETL	0	/* load location (LSB) offset inside CBM data */
-#define ENDOFFSETH	3	/* end location (MSB) offset inside CBM header */
-#define ENDOFFSETL	2	/* end location (LSB) offset inside CBM header */
+#define LOADOFFSETH	1	/* load location (MSB) offset header */
+#define LOADOFFSETL	0	/* load location (LSB) offset header */
+#define ENDOFFSETH	3	/* end location (MSB) offset inside header */
+#define ENDOFFSETL	2	/* end location (LSB) offset inside header */
 
 void odeload_search (void)
 {
