@@ -238,7 +238,7 @@ struct fmt_t ft[100] = {
 	{"OCEAN NEW TAPE F4"	,MSbF, 0x2D, 0x24, NA,  0x44, 0x40, 0x5A, 50,  200,   CSYES},
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
-	{"108DE0A5"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x09, 400, NA,    CSYES},
+	{"108DE0A5"		,LSbF, 0x1F, 0x1B, NA,  0x30, 0x02, 0x09, 200, NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
