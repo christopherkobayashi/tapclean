@@ -517,9 +517,9 @@ int save_prgs(void)
 	chdir(exedir);
 
 	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
-		system(OSAPI_DELETE_FILE" *.prg");
+		unlink ("*.prg");
 	} else {
-		system(OSAPI_CREATE_FOLDER" prg");
+		mkdir("prg");
 		chdir("prg");
 	}
 

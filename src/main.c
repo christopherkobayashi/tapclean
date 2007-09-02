@@ -2655,15 +2655,13 @@ void report(void)
 	fp = fopen(temptcreportname, "r");	/* delete any existing temp file... */
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcreportname);
-		system(lin);
+		unlink (temptcreportname);
 	}
 
 	fp = fopen(tcreportname, "r");		/* delete any existing report file... */
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", tcreportname);
-		system(lin);
+		unlink (tcreportname);
 	}     
 
 	fp = fopen(temptcreportname, "w+t");	/* create new report file... */
@@ -2705,8 +2703,9 @@ void report(void)
 		}
 		fclose(fp);
 
-		sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcreportname, tcreportname);
-		system(lin);
+		//sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcreportname, tcreportname);
+		//system(lin);
+		rename (temptcreportname, tcreportname);
 	} else
 		msgout("\nError: failed to create report file.");
        
@@ -3105,36 +3104,31 @@ void deleteworkfiles(void)
 	fp = fopen(temptcreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcreportname);
-		system(lin);
+		unlink (temptcreportname);
 	}
 
 	fp = fopen(tcreportname, "r");     
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", tcreportname);
-		system(lin);
+		unlink (tcreportname);
 	}
 
 	fp = fopen(temptcbatchreportname, "r");      
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", temptcbatchreportname);
-		system(lin);
+		unlink (temptcbatchreportname);
 	}
 
 	fp = fopen(tcbatchreportname, "r");    
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", tcbatchreportname);
-		system(lin);
+		unlink (tcbatchreportname);
 	}
 
 	fp = fopen(tcinfoname, "r");   
 	if (fp != NULL) {
 		fclose(fp);
-		sprintf(lin, OSAPI_DELETE_FILE" %s", tcinfoname);
-		system(lin);
+		unlink (tcinfoname);
 	}  
 }  
 

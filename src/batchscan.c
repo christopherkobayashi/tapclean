@@ -345,8 +345,9 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		fclose(fp);
 
 		chdir(exedir);
-		sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcbatchreportname, tcbatchreportname);
-		system(lin);
+//		sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcbatchreportname, tcbatchreportname);
+//		system(lin);
+		rename (temptcbatchreportname, tcbatchreportname);
            
 		/*  print path/name of batch report to screen.. */
 

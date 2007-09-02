@@ -40,18 +40,13 @@
 #include "scanners/_scanners.h"
 #include "crc32.h"
 
-/* OS dependent APIs and slash */
+/* OS dependent slash */
 
 #ifdef WIN32
-#define OSAPI_DELETE_FILE "del"
-#define OSAPI_RENAME_FILE "ren"
 #define SLASH   '\\'
 #else
-#define OSAPI_DELETE_FILE "rm"
-#define OSAPI_RENAME_FILE "mv"
 #define SLASH   '/'
 #endif
-#define OSAPI_CREATE_FOLDER "mkdir"
 
 #define VERSION_STR "TAPClean v0.21 Console - (C) 2006-2007 XXX"
 #define BUILDER     "bgk"
