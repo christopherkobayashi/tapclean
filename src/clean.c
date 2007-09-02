@@ -495,7 +495,8 @@ void fix_boot_pilot(void)
 
 void convert_to_v1(void)
 {
-	int i, j, z, z1, z2, z3;
+	int i, j;
+	unsigned int  z;
 	unsigned char b, *buf;
 
 	if (tap.version == 1)
@@ -535,16 +536,13 @@ void convert_to_v1(void)
 			if (z > 16777215)	/* allowed maximum is about 17 secs  */
 				z = 16777215;
 
-			/* get 24 bits worth of the total cycles... */
-
-			z1 = (unsigned long)(z & (0xFF0000)) >> 16;
-			z2 = (unsigned long)(z & (0xFF00)) >> 8;
-			z3 = (unsigned long)(z & (0xFF));
-
 			buf[j] = 0;		/* write v1 pause...  */
-			buf[j + 1] = z3;
-			buf[j + 2] = z2;
-			buf[j + 3] = z1;
+
+			/* get 24 bits worth of the total cycles... */
+			buf[j + 1] = (unsigned char) (z & 0xFF);
+			buf[j + 2] = (unsigned char) ((z>>8) & 0xFF);
+			buf[j + 3] = (unsigned char) ((z>>16) & 0xFF);
+
 			j += 4;
 			i -= 2;			/* have to step this back. */
 		}
@@ -577,7 +575,8 @@ void convert_to_v1(void)
 
 void convert_to_v0(void)
 {
-	int i, j, z, c, total;
+	int i, j, total;
+	unsigned int  z, c;
 	unsigned char b, *tmp;
 
 	if (tap.version == 0)
@@ -598,11 +597,11 @@ void convert_to_v0(void)
 
 			/* get cycle count. */
 
-			z = (unsigned long) tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
+			z = (unsigned /*long*/ int) tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
 
 			/* output 1 zero for each 20000 cycles. */
 
-			c = (unsigned long) z / 20000;
+			c = (unsigned /*long*/ int) z / 20000;
 			if (c == 0)
 				c = 1;
 			i += 3;
@@ -623,11 +622,11 @@ void convert_to_v0(void)
 
 			/* get cycle count. */
 
-			z = (unsigned long) tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
+			z = (unsigned /*long*/ int) tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
 
 			/* output 1 zero for each 20000 cycles.  */
 
-			c = (unsigned long) z / 20000;
+			c = (unsigned /*long*/ int) z / 20000;
 
 			if (c == 0)
 				tmp[j++] = 0;	/* we must output at least one. */

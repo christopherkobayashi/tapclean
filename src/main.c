@@ -1677,8 +1677,8 @@ static int check_size(void)
 
 static float get_duration(int p1, int p2)
 {
-	long i;
-	long zsum;
+	/*long*/ int i;
+	unsigned /*long*/ int zsum;
 	double tot = 0;
 	double p = (double)20000 / cps;
 	float apr;
@@ -1812,7 +1812,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
 	strcat(buf, lin);
-	sprintf(lin, "\nMagic CRC32 : %08lX", tap.crc);
+	sprintf(lin, "\nMagic CRC32 : %08X", tap.crc);
 	strcat(buf, lin);
 	min = tap.taptime / 60;
 	sec = tap.taptime - min * 60;
@@ -2369,10 +2369,10 @@ int find_pilot(int pos, int fmt)
  * Write a long pulse to the buffer
  */
 
-static long write_long_pulse(unsigned char *output_buffer, unsigned long lp)
+static /*long*/ int write_long_pulse(unsigned char *output_buffer, unsigned long lp)
 {
-	unsigned long zerot;
-	long wbytes = 0;
+	unsigned /*long*/ int zerot;
+	/*long*/ int wbytes = 0;
 
 	lp <<= 3;
 
@@ -2398,9 +2398,10 @@ static long write_long_pulse(unsigned char *output_buffer, unsigned long lp)
  * Convert DC2N format to TAP v1
  */
 
-static long convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, long flen)
+static /*long*/ int convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, long int flen)
 {
-	long i, olen;
+	/*long*/ int olen;
+	long i;
 	unsigned long utime, clockcycles, longpulse = 0;
 	unsigned long pulse;
 

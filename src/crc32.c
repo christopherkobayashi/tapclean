@@ -25,7 +25,7 @@
  *  
  * Usage:
  *
- *  unsigned long crc = -1L
+ *  unsigned int crc = -1L
  *  crc = crc32(buffer, length, crc)
  *
  */
@@ -70,7 +70,7 @@ int build_crc_table(void)
  * Return the CRC32 for 'buffer' of length 'count' bytes.
  */
 
-unsigned long compute_crc32(unsigned char *buffer, int count)
+unsigned /*long*/ int compute_crc32(unsigned char *buffer, int count)
 {
 	unsigned int t1, t2, crc = 0xFFFFFFFF;
 

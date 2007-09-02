@@ -81,7 +81,7 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 int visiload_readbyte(int pos, int endi,int abits)
 {
    int b,valid;
-   long i;
+   /*long*/ int i;
    unsigned char mb[8],p;
    
    /* check that all required bits are inside the tap and not inside any pauses... */

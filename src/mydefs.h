@@ -95,7 +95,6 @@
 #define CSYES	1	/* indicator: A checksum is used. */
 #define CSNO	0	/* indicator: A checksum is not used. */
 
-
 /* each of these constants indexes an entry in the "ft[]" fmt_t array... */
 
 enum {	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
@@ -155,8 +154,8 @@ struct tap_t
 	int version;		/* TAP version (currently 0 or 1). */
 	int bootable;		/* holds the number of bootable ROM file sequences */
 	int changed;		/* flags that the tap has been altered (+ needs rescan) */
-	unsigned long crc;	/* overall (data extraction) crc32 for this tap */
-	unsigned long cbmcrc;	/* crc32 of the 1st CBM program found */
+	unsigned /*long*/ int crc;	/* overall (data extraction) crc32 for this tap */
+	unsigned /*long*/ int cbmcrc;	/* crc32 of the 1st CBM program found */
 	int cbmid;		/* loader id, see enums in mydefs.h (-1 = N/A) */
 	char cbmname[20];	/* filename for first CBM file (if exists). */
 	int tst_hd;
@@ -181,8 +180,8 @@ struct tap_tr
 	int total_gaps;		/* number of gaps. */
 	int fdate;		/* age of file. (date and time stamp). */
 	int version;		/* TAP version (currently 0 or 1). */
-	unsigned long crc;	/* overall (data extraction) crc32 for this tap */
-	unsigned long cbmcrc;	/* crc32 of the 1st CBM program found  */
+	unsigned /*long*/ int crc;	/* overall (data extraction) crc32 for this tap */
+	unsigned /*long*/ int cbmcrc;	/* crc32 of the 1st CBM program found  */
 	int cbmid;		/* loader id, see enums in mydefs.h (-1 = N/A) */
 	char cbmname[20];	/* filename for first CBM file (if exists). */
 	int tst_hd;

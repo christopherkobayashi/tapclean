@@ -264,11 +264,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			sprintf(tfields[6], "%s", cstr[taps[i]->tst_rd]);
 			sprintf(tfields[7], "%d", taps[i]->total_data_files);
 			sprintf(tfields[8], "%d", taps[i]->total_gaps);
-			sprintf(tfields[9], "%08lX", taps[i]->crc);
+			sprintf(tfields[9], "%08X", taps[i]->crc);
 			sprintf(tfields[10], "%d", taps[i]->version);
 			sprintf(tfields[11], "%d", taps[i]->purity);
 			sprintf(tfields[12], "%d", taps[i]->len);
-			sprintf(tfields[13], "%08lX", taps[i]->cbmcrc);
+			sprintf(tfields[13], "%08X", taps[i]->cbmcrc);
 			sprintf(tfields[14], "%s", knam[taps[i]->cbmid]);
 
 			for (j = 0; j < FIELDS; j++) {	/* add padding if necessary... */
@@ -296,11 +296,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			sprintf(tfields[6], "%s", cstr[taps[i]->tst_rd]);
 			sprintf(tfields[7], "%d", taps[i]->total_data_files);
 			sprintf(tfields[8], "%d", taps[i]->total_gaps);
-			sprintf(tfields[9], "%08lX", taps[i]->crc);
+			sprintf(tfields[9], "%08X", taps[i]->crc);
 			sprintf(tfields[10], "%d", taps[i]->version);
 			sprintf(tfields[11], "%d", taps[i]->purity);
 			sprintf(tfields[12], "%d", taps[i]->len);
-			sprintf(tfields[13], "%08lX", taps[i]->cbmcrc);
+			sprintf(tfields[13], "%08X", taps[i]->cbmcrc);
 			sprintf(tfields[14], "%s", knam[taps[i]->cbmid]);
 
 			/* pad each data field to match its field header if necessary... */

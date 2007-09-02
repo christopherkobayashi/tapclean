@@ -1,4 +1,7 @@
 
+v0.22
+	First attempt to make the source 64-bit safe in gcc compiler (Luigi)
+
 v0.21
 	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
 	Fixed the trailer read code in turbotape.c (Luigi)
