@@ -2625,11 +2625,6 @@ int analyze(void)
 
 	tap.crc = compute_overall_crc();
 
-	if (doprg == TRUE) {
-		make_prgs();
-		save_prgs();
-	}
-
 	return 1;
 }
 
@@ -2717,6 +2712,11 @@ void report(void)
 		fprintf(stdout, rbuf);
 
 	free(rbuf);
+
+	if (doprg == TRUE) {
+		make_prgs();
+		save_prgs();
+	}
 }
 
 /*

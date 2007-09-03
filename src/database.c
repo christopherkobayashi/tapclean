@@ -516,8 +516,19 @@ int save_prgs(void)
 
 	chdir(exedir);
 
-	if (chdir("prg") == 0) {	/* delete old prg's and prg folder if exists... */
-		unlink ("*.prg");
+	if (chdir("prg") == 0) {	/* delete old prg's if exist... */
+		DIR *dirp;
+
+		dirp = opendir(".");
+		if (dirp != NULL)
+		{
+			struct dirent *dp;
+
+			while ((dp = readdir(dirp)) != NULL)
+				if (strncmp(dp->d_name, ".", 1))
+					unlink (dp->d_name);
+			closedir(dirp);
+		}
 	} else {
 		mkdir("prg");
 		chdir("prg");

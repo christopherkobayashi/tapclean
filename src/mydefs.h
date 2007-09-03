@@ -35,6 +35,7 @@
 #include <malloc.h>
 #include <time.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "database.h"
 #include "scanners/_scanners.h"
