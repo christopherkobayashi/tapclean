@@ -411,7 +411,74 @@ int cbm_describe(int row)
 
 	static int _dfs = 0, _dfe = 0, _dfx = 0;
 
-	if (blk[row]->lt == CBM_HEAD) {
+	// SEQ FILE support
+
+	// This method is not complete and it is unreliable if there are
+	// unrecognized blocks, so that do NOT use it.
+#ifdef CHAINEDCBMSEQSUPPORT
+	// Keep a local variable to chain together SEQ files
+	static int _dseqindex = 0;
+#endif
+
+	// Read the block type (can't fail if the search stage was successful)
+	if (blk[row]->lt == CBM_HEAD)
+	{
+		// Get header info offset
+		s = blk[row]->p2;
+
+		// Get type
+		hd[0] = cbm_readbyte(s);
+
+		// Type is SEQ Data
+		if (hd[0] == 0x02)
+		{
+#ifdef CHAINEDCBMSEQSUPPORT
+			// Is it first SEQ?
+			if (_dseqindex == 0)
+			{
+#endif
+				// Use the info inside CBM block
+				// Note: force it in case CBM Header is broken
+				_dfs = 0x033C;
+				_dfe = 0x03FC;
+				_dfx = 0x00C0;
+#ifdef CHAINEDCBMSEQSUPPORT
+			}
+#endif
+
+			// Force block infos into blk struct
+			blk[row]->cs = _dfs;
+			blk[row]->ce = _dfe - 1;
+			blk[row]->cx = _dfe - _dfs;
+
+#ifdef CHAINEDCBMSEQSUPPORT
+			// Update static info for next block in a chain.
+			// Anyway the files won't be chained because of the
+			// REPEAT copies!
+			if (blk[row]->xi == REPEAT)
+			{
+				_dfs += 0x00C0;
+				_dfe += 0x00C0;
+			}
+#endif
+
+			// Fill in the info buffer
+			strcat(info, "\n - File ID : ");
+			sprintf(lin, blk[row]->xi == REPEAT?"REPEAT":"FIRST");
+			strcat(info, lin);
+
+			strcat(info, "\n - DATA FILE type : Data block for SEQ file");
+
+		}
+#ifdef CHAINEDCBMSEQSUPPORT
+		else
+			_dseqindex = 0;
+#endif
+	}
+	// END - SEQ FILE support
+
+
+	if (blk[row]->lt == CBM_HEAD && hd[0] != 0x02) {
 
 		/* decode the first 21 bytes... */
 
@@ -441,8 +508,8 @@ int cbm_describe(int row)
 
 		if (b == 1)
 			strcpy(tmp, " - DATA FILE type : BASIC");
-		if (b == 2)
-			strcpy(tmp, " - DATA FILE type : Data block for SEQ file");
+//		if (b == 2)
+//			strcpy(tmp, " - DATA FILE type : Data block for SEQ file");
 		if (b == 3)
 			strcpy(tmp, " - DATA FILE type : PRG");
 		if (b == 4)
