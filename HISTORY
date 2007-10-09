@@ -1,5 +1,6 @@
 
 v0.22
+	Added proper SEQ file support (Luigi)
 	First attempt to make the source 64-bit safe in gcc compiler (Luigi)
 	Removed system calls after suggestion from iAN CooG (Luigi)
 	Moved prg file making from analyze() to report() (Luigi)
