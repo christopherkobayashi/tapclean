@@ -36,7 +36,10 @@
 
 /*---------------------------------------------------------------------------
 */
-int pav_readbyte(int pos)
+// If last pulse of the checkbyte is broken, surely it's not $1F,$1F, so that
+// it must be $3F (bit 0). If it's not a long pulse, it is then forced to $3F.
+// ok_to_fix is TRUE only while reading a checkbyte in the search routine.
+int pav_readbyte(int pos, char ok_to_fix)
 {
    int i,valid,val, extras;
    int bitpos,bit,byt;
@@ -50,6 +53,9 @@ int pav_readbyte(int pos)
       if(pos+i<20 || pos+i>tap.len-1) /* check next 8 bits are inside the TAP.. */
          return -1;
 
+      // If the last bit of the checksum was joined into a pause, we cannot fix
+      // it here because this would require to shift ahead everything and insert 
+      // a pulse in this position (pretty hard to do safely here using C!)
       if(is_pause_param(pos+i))
       {
          add_read_error(pos+i); /* read error, unexpected pause */
@@ -69,10 +75,24 @@ int pav_readbyte(int pos)
          valid++;
       }
 
+//    DEBUG ONLY
+//      if (ok_to_fix == TRUE)
+//         printf("\n %d-th: %d.", bitpos,bit);
+
       if(valid==0)  /* pulse didnt qualify as either SHORT or LONG... */
       {
-         add_read_error(pos+i);  /* read error, pulsewidth out of range */
-         return -1;
+         // Reliably fix the last bit of checksum (single bit 0 pulse, $3F)
+         if (bitpos == 7 && ok_to_fix == TRUE)
+         {
+            tap.tmem[pos+i] = ft[PAV].lp;
+            bit = 1;
+            valid = 1;
+         }
+         else
+         {
+            add_read_error(pos+i);  /* read error, pulsewidth out of range */
+            return -1;
+         }
       }
 
       if(valid==2)  /* pulse qualified as 0 AND 1!!!..... */
@@ -91,6 +111,8 @@ int pav_readbyte(int pos)
       {
          i++;        /* bump tmem index to next pulse (AGAIN). */
          extras++;   /* count additional pulses used. */
+
+         // TODO: check 2nd one too and force it if broken
       }
    }
 
@@ -135,7 +157,7 @@ void pav_search(void)
             for(off=0,tcnt=0; tcnt<HDSZ; tcnt++)
             {
                xtr=0;
-               byt= pav_readbyte(sod+off);
+               byt= pav_readbyte(sod+off, FALSE);
 
                if(byt==-1 && !quiet)
                {
@@ -162,7 +184,8 @@ void pav_search(void)
                for(off=0,tcnt=0; tcnt<x+HDSZ+1; tcnt++)
                {
                   xtr=0;
-                  byt = pav_readbyte(sod+off);
+                  // attempt to fix checkbyte too if broken
+                  byt = pav_readbyte(sod+off, (tcnt==x+HDSZ));
                   if(byt!=-1)
                      xtr = (byt&0xFF00)>>8;
                   off+=(8+xtr);  /* add size of previous byte to off. */
@@ -192,7 +215,7 @@ int pav_describe(int row)
    for(off=0,i=0; i<HDSZ; i++)
    {
       xtr=0;
-      b= pav_readbyte(s+off);
+      b= pav_readbyte(s+off, FALSE);
       if(b!=-1)
       {
          xtr= (b&0xFF00)>>8;
@@ -221,7 +244,7 @@ int pav_describe(int row)
 
    for(i=0; i<blk[row]->cx; i++)
    {
-      b= pav_readbyte(s+off);
+      b= pav_readbyte(s+off, FALSE);
       if(b!=-1)
       {
          xtr = (b&0xFF00)>>8;
@@ -234,9 +257,19 @@ int pav_describe(int row)
 
       off+=(8+xtr);  /* add size of previous byte to off. */
    }
-   b= pav_readbyte(s+off) & 0xFF;   /* read actual checkbyte */
+
+   b= pav_readbyte(s+off, FALSE);   /* read actual checkbyte */
+   if (b == -1)
+   {
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + off);
+			strcat(info, lin);
+   }
+
    blk[row]->cs_exp= cb;
-   blk[row]->cs_act= b;
+   blk[row]->cs_act= b & 0xFF;
    blk[row]->rd_err= rd_err;      
    return 0;
 }

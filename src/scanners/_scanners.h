@@ -108,7 +108,7 @@ int supertape_readbyte(int, int);
 void supertape_search(void);
 int supertape_describe(int);
     
-int pav_readbyte(int);
+int pav_readbyte(int, char);
 void pav_search(void);
 int pav_describe(int);
  
