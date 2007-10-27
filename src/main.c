@@ -1009,7 +1009,6 @@ static void search_tap(void)
 			if (ldrswt[noturbo  ].state == FALSE && !dbase_is_full && !aborted)
 				turbotape_search();
 
-			if (nofree == FALSE && !dbase_is_full && !aborted)
 			if (ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
 				easytape_search();
 
