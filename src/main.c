@@ -53,64 +53,136 @@ char sortbycrc			= FALSE;
 char c16			= FALSE;
 char c20			= FALSE;
 char c64			= TRUE;
+char pal				= TRUE;
+char ntsc				= FALSE;
 
 char exportcyberloaders		= FALSE;
 
 static char preserveloadertable	= TRUE;
 
-static char noc64		= FALSE;
-static char no108DE0A5		= FALSE;
-static char noaccolade		= FALSE;
-static char noaces		= FALSE;
-static char noaliensy		= FALSE;
-static char noalterwg		= FALSE;
-static char noanirog		= FALSE;
-static char noatlantis		= FALSE;
-static char noaudiogenic	= FALSE;
-static char nobiturbo		= FALSE;
-static char nobleep		= FALSE;
-static char noburner		= FALSE;
-static char noburnervar		= FALSE;
-static char nochr		= FALSE;
-static char nocult		= FALSE;
-static char nocyber		= FALSE;
-static char noenigma		= FALSE;
-static char nofire		= FALSE;
-static char noflash		= FALSE;
-static char nofree		= FALSE;
-static char nohit		= FALSE;
-static char nohitec		= FALSE;
-static char noik		= FALSE;
-static char nojet		= FALSE;
-static char nomicro		= FALSE;
-static char nonova		= FALSE;
-static char noocean		= FALSE;
-static char nooceannew1t1	= FALSE;
-static char nooceannew1t2	= FALSE;
-static char nooceannew2		= FALSE;
-static char nooceannew4		= FALSE;
-static char noode		= FALSE;
-static char nopalacef1		= FALSE;
-static char nopalacef2		= FALSE;
-static char nopav		= FALSE;
-static char norackit		= FALSE;
-static char norainbowf1		= FALSE;
-static char norainbowf2		= FALSE;
-static char noraster		= FALSE;
-static char noseuck		= FALSE;
-static char nosnake50		= FALSE;
-static char nosnake51		= FALSE;
-static char nospav		= FALSE;
-static char nosuper		= FALSE;
-static char notdif1		= FALSE;
-static char notdif2		= FALSE;
-static char notrilogic		= FALSE;
-static char noturbo		= FALSE;
-static char noturr		= FALSE;
-static char nousgold		= FALSE;
-static char novirgin		= FALSE;
-static char novisi		= FALSE;
-static char nowild		= FALSE;
+/*
+parameters -no/do and descriptions
+*/
+struct _ldrswt{
+    char desc[24];
+    char par[12];
+    char state;
+}ldrswt[]=
+{
+ {"C64 ROM loader"          ,"c64"        ,FALSE}
+,{"108DE0A5"                ,"108DE0A5"   ,FALSE}
+,{"Accolade/EA"             ,"accolade"   ,FALSE}
+,{"Ace of Aces"             ,"aces"       ,FALSE}
+,{"ActionReplay"            ,"ar"         ,FALSE}
+,{"Alien Syndrome"          ,"aliensy"    ,FALSE}
+,{"Alternative World Games" ,"alterwg"    ,FALSE}
+,{"Anirog"                  ,"anirog"     ,FALSE}
+,{"Atlantis"                ,"atlantis"   ,FALSE}
+,{"Audiogenic"              ,"audiogenic" ,FALSE}
+,{"Biturbo"                 ,"biturbo"    ,FALSE}
+,{"Bleepload"               ,"bleep"      ,FALSE}
+,{"Burner"                  ,"burner"     ,FALSE}
+,{"Burner Variant"          ,"burnervar"  ,FALSE}
+,{"CHR"                     ,"chr"        ,FALSE}
+,{"Cult"                    ,"cult"       ,FALSE}
+,{"Cyberload"               ,"cyber"      ,FALSE}
+,{"Easytape"                ,"easytape"   ,FALSE}
+,{"Enigma"                  ,"enigma"     ,FALSE}
+,{"Firebird"                ,"fire"       ,FALSE}
+,{"Flashload"               ,"flash"      ,FALSE}
+,{"Freeload"                ,"free"       ,FALSE}
+,{"Galadriel"               ,"galadriel"  ,FALSE}
+,{"Hitload"                 ,"hit"        ,FALSE}
+,{"Hi-Tec"                  ,"hitec"      ,FALSE}
+,{"Jetload"                 ,"jet"        ,FALSE}
+,{"IK"                      ,"ik"         ,FALSE}
+,{"Microload"               ,"micro"      ,FALSE}
+,{"Novaload"                ,"nova"       ,FALSE}
+,{"Ocean"                   ,"ocean"      ,FALSE}
+,{"Ocean F1"                ,"oceannew1t1",FALSE}
+,{"Ocean F2"                ,"oceannew1t2",FALSE}
+,{"Ocean New 2"             ,"oceannew2"  ,FALSE}
+,{"Ocean New 4"             ,"oceannew4"  ,FALSE}
+,{"ODEload"                 ,"ode"        ,FALSE}
+,{"Palace F1"               ,"palacef1"   ,FALSE}
+,{"Palace F2"               ,"palacef2"   ,FALSE}
+,{"Pavloda"                 ,"pav"        ,FALSE}
+,{"Rack-It"                 ,"rackit"     ,FALSE}
+,{"Rainbow Arts F1"         ,"rainbowf1"  ,FALSE}
+,{"Rainbow Arts F2"         ,"rainbowf2"  ,FALSE}
+,{"Rasterload"              ,"raster"     ,FALSE}
+,{"SEUCK"                   ,"seuck"      ,FALSE}
+,{"Snakeload 50"            ,"snake50"    ,FALSE}
+,{"Snakeload 51"            ,"snake51"    ,FALSE}
+,{"Super Pavloda"           ,"spav"       ,FALSE}
+,{"Super Tape"              ,"super"      ,FALSE}
+,{"TDI F1"                  ,"tdif1"      ,FALSE}
+,{"TDI F2"                  ,"tdif2"      ,FALSE}
+,{"Trilogic"                ,"trilogic"   ,FALSE}
+,{"Turbotape 250"           ,"turbo"      ,FALSE}
+,{"Turrican"                ,"turr"       ,FALSE}
+,{"U.S. Gold"               ,"usgold"     ,FALSE}
+,{"Virgin"                  ,"virgin"     ,FALSE}
+,{"Visiload"                ,"visi"       ,FALSE}
+,{"Wildload"                ,"wild"       ,FALSE}
+};
+enum{noc64=0
+    ,no108DE0A5
+    ,noaccolade
+    ,noaces
+    ,noar
+    ,noaliensy
+    ,noalterwg
+    ,noanirog
+    ,noatlantis
+    ,noaudiogenic
+    ,nobiturbo
+    ,nobleep
+    ,noburner
+    ,noburnervar
+    ,nochr
+    ,nocult
+    ,nocyber
+    ,noeasytape
+    ,noenigma
+    ,nofire
+    ,noflash
+    ,nofree
+    ,nogaladriel
+    ,nohit
+    ,nohitec
+    ,noik
+    ,nojet
+    ,nomicro
+    ,nonova
+    ,noocean
+    ,nooceannew1t1
+    ,nooceannew1t2
+    ,nooceannew2
+    ,nooceannew4
+    ,noode
+    ,nopalacef1
+    ,nopalacef2
+    ,nopav
+    ,norackit
+    ,norainbowf1
+    ,norainbowf2
+    ,noraster
+    ,noseuck
+    ,nosnake50
+    ,nosnake51
+    ,nospav
+    ,nosuper
+    ,notdif1
+    ,notdif2
+    ,notrilogic
+    ,noturbo
+    ,noturr
+    ,nousgold
+    ,novirgin
+    ,novisi
+    ,nowild
+    };
 
 //static char loaded		= FALSE;
 
@@ -239,6 +311,10 @@ struct fmt_t ft[100] = {
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
 	{"108DE0A5"		,LSbF, 0x1F, 0x1B, NA,  0x30, 0x02, 0x09, 200, NA,    CSYES},
+	{"EASYTAPE1"            ,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x52, 50,  NA,    CSYES},
+	{"EASYTAPE2"            ,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x52, 50,  NA,    CSYES},
+	{"ACTIONREPLAY"         ,LSbF, 0x2f, 0x23, NA,  0x53, 0x7f, 0x52,  1,  NA,    CSYES},
+	{"ACTIONREPLAY_SUPER"   ,LSbF, 0x20, 0x13, NA,  0x2b, 0x7f, 0x52,  1,  NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -307,7 +383,9 @@ const char knam[100][32] = {
 	{"Accolade (or clone)"},
 	{"Rainbow Arts (F1/F2)"},
 	{"Burner (Mastertronic Variant)"},
-	{"Ocean New 4"}
+	{"Ocean New 4"},
+	{"Easytape"},
+	{"ActionReplay"}
 };
 
 
@@ -522,6 +600,7 @@ static void display_usage(void)
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
 	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
+	printf(" -do<loader>    Scan only for this loader, to use after -noall.\n");
 	printf(" -ntsc          NTSC timing.\n");
 	printf(" -pal           PAL timing (default).\n");
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
@@ -536,60 +615,21 @@ static void display_usage(void)
 
 static void display_scanners(void)
 {
-	printf("\n\nList of supported scanners and their -no<loader> parameter names.\n\n");
-	printf(" C64 ROM loader               -noc64\n");
-	printf(" 108DE0A5                     -no108DE0A5\n");
-	printf(" Accolade/EA                  -noaccolade\n");
-	printf(" Aces of Aces                 -noaces\n");
-	printf(" Alien Syndrome               -noaliensy\n");
-	printf(" Alternative World Games      -noalterwg\n");
-	printf(" Anirog                       -noanirog\n");
-	printf(" Atlantis                     -noatlantis\n");
-	printf(" Audiogenic                   -noaudiogenic\n");
-	printf(" Biturbo                      -nobiturbo\n");
-	printf(" Bleepload                    -nobleep\n");
-	printf(" Burner                       -noburner\n");
-	printf(" Burner Variant               -noburnervar\n");
-	printf(" CHR                          -nochr\n");
-	printf(" Cult                         -nocult\n");
-	printf(" Cyberload                    -nocyber\n");
-	printf(" Enigma                       -noenigma\n");
-	printf(" Firebird                     -nofire\n");
-	printf(" Flashload                    -noflas\n");
-	printf(" Freeload                     -nofree\n");
-	printf(" Hitload                      -nohit\n");
-	printf(" Hi-Tec                       -nohitec\n");
-	printf(" Jetload                      -nojet\n");
-	printf(" IK                           -noik\n");
-	printf(" Microload                    -nomicro\n");
-	printf(" Novaload                     -nonova\n");
-	printf(" Ocean                        -noocean\n");
-	printf(" Ocean F1                     -nooceannew1t1\n");
-	printf(" Ocean F2                     -nooceannew1t2\n");
-	printf(" Ocean New 2                  -nooceannew2\n");
-	printf(" Ocean New 4                  -nooceannew4\n");
-	printf(" ODEload                      -noode\n");
-	printf(" Palace F1                    -nopalacef1\n");
-	printf(" Palace F2                    -nopalacef2\n");
-	printf(" Pavloda                      -nopac\n");
-	printf(" Rack-It                      -norackit\n");
-	printf(" Rainbow Arts F1              -norainbowf1\n");
-	printf(" Rainbow Arts F2              -norainbowf2\n");
-	printf(" Rasterload                   -noraster\n");
-	printf(" SEUCK                        -noseuck\n");
-	printf(" Snakeload 50                 -nosnake50\n");
-	printf(" Snakeload 51                 -nosnake51\n");
-	printf(" Super Pavloda                -nospav\n");
-	printf(" Super Tape                   -nosuper\n");
-	printf(" TDI F1                       -notfif1\n");
-	printf(" TDI F2                       -notdif2\n");
-	printf(" Trilogic                     -notrilogic\n");
-	printf(" Turbotape 250                -noturbo\n");
-	printf(" Turrican                     -noturr\n");
-	printf(" U.S. Gold                    -nousgold\n");
-	printf(" Virgin                       -novirgin\n");
-	printf(" Visiload                     -novisi\n");
-	printf(" Wildload                     -nowild\n");
+    int i,l;
+    printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names.\n\n");
+    l=sizeof(ldrswt)/sizeof(*ldrswt);
+    for(i=0;i<l;i++)
+	printf(" %-24s  -no%-12s  -do%-12s\n",ldrswt[i].desc,ldrswt[i].par,ldrswt[i].par );
+}
+
+/* noall */
+static void set_noall(void)
+{
+    int i,l;
+    l=sizeof(ldrswt)/sizeof(*ldrswt);
+    ldrswt[0].state = FALSE;
+    for(i=1;i<l;i++)
+	ldrswt[i].state = TRUE;
 }
 
 /*
@@ -600,6 +640,8 @@ static void process_options(int argc, char **argv)
 {
 	int i;
 	int excludeflag = 1;
+	int jj,sl;
+	sl=sizeof(ldrswt)/sizeof(*ldrswt);
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
@@ -627,6 +669,10 @@ static void process_options(int argc, char **argv)
 		}
 		if (strcmp(argv[i], "-64") == 0)
 			c64 = TRUE;
+		if (strcmp(argv[i], "-pal") == 0)
+			pal = TRUE;
+		if (strcmp(argv[i], "-ntsc") == 0)
+			ntsc = TRUE;
 		if (strcmp(argv[i], "-noc64eof") == 0)
 			noc64eof = TRUE;
 		if (strcmp(argv[i], "-docyberfault") == 0)
@@ -648,288 +694,59 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-incsubdirs") == 0)
 			incsubdirs = TRUE;
 		if (strcmp(argv[i], "-list") == 0)
+        {
 			display_scanners();
+            exit(0);
+        }
 		if (strcmp(argv[i], "-sortbycrc") == 0)
 			sortbycrc = TRUE;
 		if (strcmp(argv[i], "-ec") == 0)
 			exportcyberloaders = TRUE;
 
-		if (strncmp(argv[i], "-no", 3) == 0 && excludeflag == 1)
+		/* process all -no<loader> */
+		if (strncmp(argv[i], "-no", 3) == 0)
+		{
+			if (excludeflag == 1)
 		{
 			printf("\nExcluded scanners:\n\n");
 			excludeflag = 0;
 		}
-
-		if (strcmp(argv[i], "-noc64") ==  0) {
-			noc64 = TRUE;
-			printf(" C64 ROM loader\n");
-		}
-		if (strcmp(argv[i], "-no108DE0A5") == 0) {
-			no108DE0A5 = TRUE;
-			printf(" 108DE0A5\n");
-		}
-		if (strcmp(argv[i], "-noaccolade") == 0) {
-			noaccolade = TRUE;
-			printf(" Accolade/EA\n");
-		}
-		if (strcmp(argv[i], "-noaces") == 0) {
-			noaces = TRUE;
-			printf(" Aces of Aces\n");
-		}
-		if (strcmp(argv[i], "-noaliensy") == 0) {
-			noaliensy = TRUE;
-			printf(" Alien Syndrome\n");
-		}
-		if (strcmp(argv[i], "-noalterwg") == 0) {
-			noalterwg = TRUE;
-			printf(" Alternative World Games\n");
-		}
-		if (strcmp(argv[i], "-noanirog") == 0) {
-			noanirog = TRUE;
-			printf(" Anirog\n");
-		}
-		if (strcmp(argv[i], "-noatlantis") == 0) {
-			noatlantis = TRUE;
-			printf(" Atlantis\n");
-		}
-		if (strcmp(argv[i], "-noaudiogenic") == 0) {
-			noaudiogenic = TRUE;
-			printf(" Audiogenic\n");
-		}
-		if (strcmp(argv[i], "-nobiturbo") == 0) {
-			nobiturbo = TRUE;
-			printf(" Biturbo\n");
-		}
-		if (strcmp(argv[i], "-nobleep") == 0) {
-			nobleep = TRUE;
-			printf(" Bleepload\n");
-		}
-		if (strcmp(argv[i], "-noburner") == 0) {
-			noburner = TRUE;
-			printf(" Burner\n");
-		}
-		if (strcmp(argv[i], "-noburnervar") == 0) {
-			noburnervar = TRUE;
-			printf(" Burner Variant\n");
-		}
-		if (strcmp(argv[i], "-nochr") == 0) {
-			nochr = TRUE;
-			printf(" CHR\n");
-		}
-		if (strcmp(argv[i], "-nocult") == 0) {
-			nocult = TRUE;
-			printf(" Cult\n");
-		}
-		if (strcmp(argv[i], "-nocyber") == 0) {
-			nocyber = TRUE;
-			printf(" Cyberload\n");
-		}
-		if (strcmp(argv[i], "-noenigma") == 0) {
-			noenigma = TRUE;
-			printf(" Enigma\n");
-		}
-		if (strcmp(argv[i], "-nofire") == 0) {
-			nofire = TRUE;
-			printf(" Firebird\n");
-		}
-		if (strcmp(argv[i], "-noflash") == 0) {
-			noflash = TRUE;
-			printf(" Flashload\n");
-		}
-		if (strcmp(argv[i], "-nofree") == 0) {
-			nofree = TRUE;
-			printf(" Freeload\n");
-		}
-		if (strcmp(argv[i], "-nohit") == 0) {
-			nohit = TRUE;
-			printf(" Hitload\n");
-		}
-		if (strcmp(argv[i], "-nohitec") == 0) {
-			nohitec = TRUE;
-			printf(" Hi-Tec\n");
-		}
-		if (strcmp(argv[i], "-nojet") == 0) {
-			nojet = TRUE;
-			printf(" Jetload\n");
-		}
-		if (strcmp(argv[i], "-noik") == 0) {
-			noik = TRUE;
-			printf(" IK\n");
-		}
-		if (strcmp(argv[i], "-nomicro") == 0) {
-			nomicro = TRUE;
-			printf(" Microload\n");
-		}
-		if (strcmp(argv[i], "-nonova") == 0) {
-			nonova = TRUE;
-			printf(" Novaload\n");
-		}
-		if (strcmp(argv[i], "-noocean") == 0) {
-			noocean = TRUE;
-			printf(" Ocean\n");
-		}
-		if (strcmp(argv[i], "-nooceannew1t1") == 0) {
-			nooceannew1t1 = TRUE;
-			printf(" Ocean F1\n");
-		}
-		if (strcmp(argv[i], "-nooceannew1t2") == 0) {
-			nooceannew1t2 = TRUE;
-			printf(" Ocean F2\n");
-		}
-		if (strcmp(argv[i], "-nooceannew2") == 0) {
-			nooceannew2 = TRUE;
-			printf(" Ocean New 2\n");
-		}
-		if (strcmp(argv[i], "-nooceannew4") == 0) {
-			nooceannew4 = TRUE;
-			printf(" Ocean New 4\n");
-		}
-		if (strcmp(argv[i], "-noode") == 0) {
-			noode = TRUE;
-			printf(" ODEload\n");
-		}
-		if (strcmp(argv[i], "-nopalacef1") == 0) {
-			nopalacef1 = TRUE;
-			printf(" Palace F1\n");
-		}
-		if (strcmp(argv[i], "-nopalacef2") == 0) {
-			nopalacef2 = TRUE;
-			printf(" Palace F2\n");
-		}
-		if (strcmp(argv[i], "-nopav") == 0) {
-			nopav = TRUE;
-			printf(" Pavloda\n");
-		}
-		if (strcmp(argv[i], "-norackit") == 0) {
-			norackit = TRUE;
-			printf(" Rack-It\n");
-		}
-		if (strcmp(argv[i], "-norainbowf1") == 0) {
-			norainbowf1 = TRUE;
-			printf(" Rainbow Arts F1\n");
-		}
-		if (strcmp(argv[i], "-norainbowf2") == 0) {
-			norainbowf2 = TRUE;
-			printf(" Rainbow Arts F2\n");
-		}
-		if (strcmp(argv[i], "-noraster") == 0) {
-			noraster = TRUE;
-			printf(" Rasterload\n");
-		}
-		if (strcmp(argv[i], "-noseuck") == 0) {
-			noseuck = TRUE;
-			printf(" SEUCK\n");
-		}
-		if (strcmp(argv[i], "-nosnake50") == 0) {
-			nosnake50 = TRUE;
-			printf(" Snakeload 50\n");
-		}
-		if (strcmp(argv[i], "-nosnake51") == 0) {
-			nosnake51 = TRUE;
-			printf(" Snakeload 51\n");
-		}
-		if (strcmp(argv[i], "-nospav") == 0) {
-			nospav = TRUE;
-			printf(" Super Pavloda\n");
-		}
-		if (strcmp(argv[i], "-nosuper") == 0) {
-			nosuper = TRUE;
-			printf(" Super Tape\n");
-		}
-		if (strcmp(argv[i], "-notdif1") == 0) {
-			notdif1 = TRUE;
-			printf(" TDI F1\n");
-		}
-		if (strcmp(argv[i], "-notdif2") == 0) {
-			notdif2 = TRUE;
-			printf(" TDI F2\n");
-		}
-		if (strcmp(argv[i], "-notrilogic") == 0) {
-			notrilogic = TRUE;
-			printf(" Trilogic\n");
-		}
-		if (strcmp(argv[i], "-noturbo") == 0) {
-			noturbo = TRUE;
-			printf(" Turbotape 250\n");
-		}
-		if (strcmp(argv[i], "-noturr") == 0) {
-			noturr = TRUE;
-			printf(" Turrican\n");
-		}
-		if (strcmp(argv[i], "-nousgold") == 0) {
-			nousgold = TRUE;
-			printf(" U.S. Gold\n");
-		}
-		if (strcmp(argv[i], "-novirgin") == 0) {
-			novirgin = TRUE;
-			printf(" Virgin\n");
-		}
-		if (strcmp(argv[i], "-novisi") == 0) {
-			novisi = TRUE;
-			printf(" Visiload\n");
-		}
-		if (strcmp(argv[i], "-nowild") == 0) {
-			nowild = TRUE;  
-			printf(" Wildload\n");
+		else if (excludeflag == 2) {
+				printf("You cannot mix -no<loader> and -do<loader>\n");
+				exit(1);
 		}
 
-		/* disable all scanners exc 'c64 rom tape' */
+			for(jj=0;jj<sl;jj++)
+			{
+				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
+				{
+					ldrswt[jj].state = TRUE;
+					printf(" %s\n",ldrswt[jj].desc);
+				}
+			}
+		}
 
-		if (strcmp(argv[i], "-noall") == 0) {
-			no108DE0A5 = TRUE;
-			noaccolade = TRUE;
-			noaces = TRUE;
-			noaliensy = TRUE;
-			noalterwg = TRUE;
-			noanirog = TRUE;
-			noatlantis = TRUE;
-			noaudiogenic = TRUE;
-			nobiturbo = TRUE;
-			nobleep = TRUE;
-			noburner = TRUE;
-			noburnervar = TRUE;
-			nochr = TRUE;
-			nocult = TRUE;
-			nocyber = TRUE;
-			noenigma = TRUE;
-			nofire = TRUE;
-			noflash = TRUE;
-			nofree = TRUE;
-			nohit = TRUE;
-			nohitec = TRUE;
-			nojet = TRUE;
-			noik = TRUE;
-			nomicro = TRUE;
-			nonova = TRUE;
-			noocean = TRUE;
-			nooceannew1t1 = TRUE;
-			nooceannew1t2 = TRUE;
-			nooceannew2 = TRUE;
-			nooceannew4 = TRUE;
-			noode = TRUE;
-			nopalacef1 = TRUE;
-			nopalacef2 = TRUE;
-			nopav = TRUE;
-			norackit = TRUE;
-			norainbowf1 = TRUE;
-			norainbowf2 = TRUE;
-			noraster = TRUE;
-			noseuck = TRUE;
-			nosnake50 = TRUE;
-			nosnake51 = TRUE;
-			nospav = TRUE;
-			nosuper = TRUE;
-			notdif1 = TRUE;
-			notdif2 = TRUE;
-			notrilogic = TRUE;
-			noturbo = TRUE;
-			noturr = TRUE;
-			nousgold = TRUE;
-			novirgin = TRUE;
-			novisi = TRUE;
-			nowild = TRUE;
 
-			printf(" All except c64 ROM scanner\n");
+		/* process all -do<loader> */
+
+		if (strncmp(argv[i], "-do", 3) == 0)
+		{
+			if (excludeflag==0) {
+				printf("You cannot mix -no<loader> and -do<loader>\n");
+				exit(1);
+			}
+			if (excludeflag==1) {
+				set_noall();
+				excludeflag=2;
+			}
+			for(jj=0;jj<sl;jj++)
+			{
+				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
+				{
+					ldrswt[jj].state = FALSE;
+					printf(" +%s\n",ldrswt[jj].desc);
+				}
+			}
 		}
 	}
 
@@ -940,26 +757,36 @@ static void process_options(int argc, char **argv)
  * Choose CPU cycles based on computer type and PAL/NTSC
  */
 
-static void handle_tape_type (void)
+static void handle_cps(void)
 {
-	printf("\nTape type: ");
+	printf("\n\nComputer type: ");
 
 	if (c64 == TRUE) {
 		printf("C64 ");
+		if (pal == TRUE)
+			cps = C64_PAL_CPS;
+		else
+			cps = C64_NTSC_CPS;
 	} else if (c16 == TRUE) {
 		printf("C16 ");
+		if (pal == TRUE)
+			cps = C16_PAL_CPS;
+		else
+			cps = C16_NTSC_CPS;
 	} else if (c20 == TRUE) {
 		printf("VIC20 ");
-
-		/* Force CBM pulsewidths to the ones found in VIC20 tapes */
-		ft [CBM_HEAD].sp = 0x2B;
-		ft [CBM_HEAD].mp = 0x3F;
-		ft [CBM_HEAD].lp = 0x53;
-
-		ft [CBM_DATA].sp = 0x2B;
-		ft [CBM_DATA].mp = 0x3F;
-		ft [CBM_DATA].lp = 0x53;
+		if (pal == TRUE)
+			cps = VIC20_PAL_CPS;
+		else
+			cps = VIC20_NTSC_CPS;
 	}
+
+	if (pal == TRUE)
+		printf("PAL ");
+	else
+		printf("NTSC ");
+
+	printf("(%ld Hz)\n", cps);
 }
 
 /*
@@ -1016,55 +843,56 @@ static void search_tap(void)
 
 		if (!quiet) {
 			sprintf(lin, "\n  Loader ID: %s.\n", knam[tap.cbmid]);
+			sprintf(lin, "\n  Loader ID: %s.\n", knam[tap.cbmid]);
 			msgout(lin);
 		}
 
 		if (noid == FALSE) {	/* scanning shortcuts enabled?  */
-			if (tap.cbmid == LID_T250 && noturbo == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_T250 	&& ldrswt[noturbo].state == FALSE && !dbase_is_full && !aborted)
 				turbotape_search();
 
-			if (tap.cbmid == LID_FREE && nofree == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FREE 	&& ldrswt[nofree ].state== FALSE && !dbase_is_full && !aborted)
 				freeload_search();
 
-			if (tap.cbmid == LID_ODE && nofree == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ODE 	&& ldrswt[noode ].state== FALSE && !dbase_is_full && !aborted)
 				odeload_search();
 
-			if (tap.cbmid == LID_NOVA && nonova == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_NOVA 	&& ldrswt[nonova ].state== FALSE && !dbase_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (tap.cbmid == LID_BLEEP && nobleep == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_BLEEP 	&& ldrswt[nobleep].state == FALSE && !dbase_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (tap.cbmid == LID_OCEAN && noocean == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCEAN 	&& ldrswt[noocean].state == FALSE && !dbase_is_full && !aborted)
 				ocean_search();
 
-			if (tap.cbmid == LID_CYBER && nocyber == FALSE &&!dbase_is_full) {
+			if (tap.cbmid == LID_CYBER 	&& ldrswt[nocyber].state == FALSE &&!dbase_is_full) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (tap.cbmid == LID_USG && nousgold == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_USG 	&& ldrswt[nousgold	].state == FALSE && !dbase_is_full && !aborted)
 				usgold_search();
 
-			if (tap.cbmid == LID_ACE && noaces == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ACE 	&& ldrswt[noaces 	].state == FALSE && !dbase_is_full && !aborted)
 				aces_search();
 
-			if (tap.cbmid == LID_MIC && nomicro == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].state == FALSE && !dbase_is_full && !aborted)
 				micro_search();
 
-			if (tap.cbmid == LID_RAST && noraster == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].state == FALSE && !dbase_is_full && !aborted)
 				raster_search();
 
-			if (tap.cbmid == LID_CHR && nochr == FALSE && !dbase_is_full)
+			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].state == FALSE && !dbase_is_full)
 				chr_search();
 
-			if (tap.cbmid == LID_BURN && noburner == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].state == FALSE && !dbase_is_full && !aborted)
 				burner_search();
 
 			/* if it's a visiload then choose correct type now... */
@@ -1082,90 +910,90 @@ static void search_tap(void)
 				visi_type = VISI_T4;
 
 			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4) {
-				if (novisi == FALSE && !dbase_is_full && !aborted)
+				if (ldrswt[novisi].state == FALSE && !dbase_is_full && !aborted)
 					visiload_search();
 			}
 
-			if (tap.cbmid == LID_WILD && nowild == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
 				wild_search();
 
-			if (tap.cbmid == LID_HIT && nohit == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_HIT 	&& ldrswt[nohit     ].state == FALSE && !dbase_is_full && !aborted)
 				hitload_search();
 
-			if (tap.cbmid == LID_RACK && norackit == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RACK 	&& ldrswt[norackit	].state	== FALSE && !dbase_is_full && !aborted)
 				rackit_search();
 
-			if (tap.cbmid == LID_SPAV && nospav == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SPAV 	&& ldrswt[nospav	].state == FALSE && !dbase_is_full && !aborted)
 				superpav_search();
 
-			if (tap.cbmid == LID_ANI && noanirog == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].state == FALSE && !dbase_is_full && !aborted) {
 				anirog_search();
 				freeload_search();
 			}
 
-			if (tap.cbmid == LID_SUPER && nosuper == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].state == FALSE && !dbase_is_full && !aborted)
 				supertape_search();
 
-			if (tap.cbmid == LID_FIRE && nofire == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FIRE 	&& ldrswt[nofire	].state == FALSE && !dbase_is_full && !aborted)
 				firebird_search();
 
-			if (tap.cbmid == LID_PAV && nopav == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_PAV 	&& ldrswt[nopav		].state == FALSE && !dbase_is_full && !aborted)
 				pav_search();
 
-			if (tap.cbmid == LID_IK && noik == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_IK 	&& ldrswt[noik		].state == FALSE && !dbase_is_full && !aborted)
 				ik_search();
 
-			if (tap.cbmid == LID_FLASH && noflash == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FLASH 	&& ldrswt[noflash	].state == FALSE && !dbase_is_full && !aborted)
 				flashload_search();
 
-			if (tap.cbmid == LID_VIRG && novirgin == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_VIRG 	&& ldrswt[novirgin	].state == FALSE && !dbase_is_full && !aborted)
 				virgin_search();
 
-			if (tap.cbmid == LID_HTEC && nohitec == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].state == FALSE && !dbase_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1T1 && nooceannew1t1 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T1 && ldrswt[nooceannew1t1].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (tap.cbmid == LID_OCNEW1T2 && nooceannew1t2 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T2 && ldrswt[nooceannew1t2].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (tap.cbmid == LID_OCNEW2 && nooceannew2 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW2   && ldrswt[nooceannew2].state == FALSE && !dbase_is_full && !aborted)
 				oceannew2_search();
 
-			if (tap.cbmid == LID_SNAKE && nosnake50 == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_SNAKE 	&& ldrswt[nosnake50].state == FALSE && !dbase_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (tap.cbmid == LID_SNAKE && nosnake51 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SNAKE 		&& ldrswt[nosnake51		].state == FALSE && !dbase_is_full && !aborted)
 				snakeload51_search();
 
-			if (tap.cbmid == LID_ATLAN && noatlantis == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ATLAN 		&& ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
 				atlantis_search();
 
-			if (tap.cbmid == LID_AUDIOGENIC && noaudiogenic == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_AUDIOGENIC && ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
 
-			if (tap.cbmid == LID_CULT && nocult == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_CULT 		&& ldrswt[nocult		].state == FALSE && !dbase_is_full && !aborted)
 				cult_search();
 
-			if (tap.cbmid == LID_ACCOLADE && noaccolade == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ACCOLADE	    && ldrswt[noaccolade].state == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS && norainbowf1 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS    && ldrswt[norainbowf1].state == FALSE && !dbase_is_full && !aborted)
 				rainbowf1_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS && norainbowf2 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS    && ldrswt[norainbowf2].state == FALSE && !dbase_is_full && !aborted)
 				rainbowf2_search();
 
-			if (tap.cbmid == LID_BURNERVAR && noburnervar == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_BURNERVAR	    && ldrswt[noburnervar].state == FALSE && !dbase_is_full && !aborted)
 				burnervar_search();
 
-			if (tap.cbmid == LID_OCNEW4 && nooceannew2 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW4	    && ldrswt[nooceannew2   ].state == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
-			if (tap.cbmid == LID_108DE0A5 && no108DE0A5 == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_108DE0A5      && ldrswt[no108DE0A5    ].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
 
 			/* todo : TURRICAN
@@ -1178,175 +1006,188 @@ static void search_tap(void)
 		/* Scan the lot.. (if shortcuts are disabled or no loader ID was found) */
 
 		if ((noid == FALSE && tap.cbmid == 0) || (noid == TRUE)) {
-			if (noturbo == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturbo  ].state == FALSE && !dbase_is_full && !aborted)
 				turbotape_search();
 
 			if (nofree == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
+				easytape_search();
+
+			if (ldrswt[noar      	].state == FALSE && !dbase_is_full && !aborted)
+				ar_search();
+
+			if (ldrswt[nofree   ].state == FALSE && !dbase_is_full && !aborted)
 				freeload_search();
 
-			if (noode == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noode    ].state == FALSE && !dbase_is_full && !aborted)
 				odeload_search();
 
-			if (nocult == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nocult   ].state == FALSE && !dbase_is_full && !aborted)
 				cult_search();
 
 			/* comes here to avoid ocean misdetections
 			 * snakeload is a 'safer' scanner than ocean.
 			 */
 
-			if (nosnake50 == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nosnake50	].state == FALSE && !dbase_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (nosnake51 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nosnake51	].state == FALSE && !dbase_is_full && !aborted)
 				snakeload51_search();
 
-			if (nonova == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nonova   ].state == FALSE && !dbase_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (nobleep == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nobleep  ].state == FALSE && !dbase_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (noocean == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noocean  ].state == FALSE && !dbase_is_full && !aborted)
 				ocean_search();
 
-			if (nocyber == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nocyber  ].state == FALSE && !dbase_is_full && !aborted) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (nousgold == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nousgold ].state == FALSE && !dbase_is_full && !aborted)
 				usgold_search();
 
-			if (noaces == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaces   ].state == FALSE && !dbase_is_full && !aborted)
 				aces_search();
 
-			if (nomicro == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nomicro  ].state == FALSE && !dbase_is_full && !aborted)
 				micro_search();
 
-			if (noraster == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noraster ].state == FALSE && !dbase_is_full && !aborted)
 				raster_search();
 
-			if (nochr == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nochr    ].state == FALSE && !dbase_is_full && !aborted)
 				chr_search();
 
-			if (noburner == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noburner ].state == FALSE && !dbase_is_full && !aborted)
 				burner_search();
 
-			if (novisi == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novisi   ].state == FALSE && !dbase_is_full && !aborted)
 				visiload_search();
 
-			if (nowild == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nowild   ].state == FALSE && !dbase_is_full && !aborted)
 				wild_search();
 
-			if (nohit == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohit    ].state == FALSE && !dbase_is_full && !aborted)
 				hitload_search();
 
-			if (norackit == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norackit ].state == FALSE && !dbase_is_full && !aborted)
 				rackit_search();
 
-			if (nospav == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nospav   ].state == FALSE && !dbase_is_full && !aborted)
 				superpav_search();
 
-			if (noanirog == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noanirog ].state == FALSE && !dbase_is_full && !aborted)
 				anirog_search();
 
-			if (nosuper == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nosuper  ].state == FALSE && !dbase_is_full && !aborted)
 				supertape_search();
 
-			if (nofire == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofire   ].state == FALSE && !dbase_is_full && !aborted)
 				firebird_search();
 
-			if (nopav == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopav    ].state == FALSE && !dbase_is_full && !aborted)
 				pav_search();
 
-			if (noik == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noik	    ].state == FALSE && !dbase_is_full && !aborted)
 				ik_search();
 
-			if (noturr == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturr   ].state == FALSE && !dbase_is_full && !aborted)
 				turrican_search();
 
-			if (noseuck == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noseuck  ].state == FALSE && !dbase_is_full && !aborted)
 				seuck1_search();
 
-			if (nojet == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nojet    ].state == FALSE && !dbase_is_full && !aborted)
 				jetload_search();
 
-			if (noflash == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noflash  ].state == FALSE && !dbase_is_full && !aborted)
 				flashload_search();
 
-			if (novirgin == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novirgin ].state == FALSE && !dbase_is_full && !aborted)
 				virgin_search();
 
-			if (nohitec == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohitec  ].state == FALSE && !dbase_is_full && !aborted)
 				hitec_search();
 
-			if (notdif2 == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
+			if (ldrswt[notdif2  ].state == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
 				tdif2_search();
 
-			if (notdif1 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[notdif1  ].state == FALSE && !dbase_is_full && !aborted)
 				tdi_search();
 
-			if (nooceannew1t1 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew1t1].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (nooceannew1t2 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew1t2].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (nooceannew2 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew2_search();
 
-			if (noatlantis == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
 				atlantis_search();
 
-			if (nopalacef1 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopalacef1	].state == FALSE && !dbase_is_full && !aborted)
 				palacef1_search();
 
-			if (nopalacef2 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopalacef2	].state == FALSE && !dbase_is_full && !aborted)
 				palacef2_search();
 
-			if (noenigma == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noenigma 	].state == FALSE && !dbase_is_full && !aborted)
 				enigma_search();
 
-			if (noaudiogenic == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaudiogenic ].state == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
 
-			if (noaliensy == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaliensy	].state == FALSE && !dbase_is_full && !aborted)
 				aliensyndrome_search();
 
-			if (noaccolade == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
 
-			if (noalterwg == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noalterwg	].state	== FALSE && !dbase_is_full && !aborted)
 				alternativewg_search();
 
-			if (norainbowf1 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norainbowf1	].state	== FALSE && !dbase_is_full && !aborted)
 				rainbowf1_search();
 
-			if (norainbowf2 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norainbowf2	].state	== FALSE && !dbase_is_full && !aborted)
 				rainbowf2_search();
 
-			if (notrilogic == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[notrilogic	].state	== FALSE && !dbase_is_full && !aborted)
 				trilogic_search();
 
-			if (noburnervar == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noburnervar	].state	== FALSE && !dbase_is_full && !aborted)
 				burnervar_search();
 
-			if (nooceannew4 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew4	].state	== FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
-			if (nobiturbo == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nobiturbo   ].state == FALSE && !dbase_is_full && !aborted)
 				biturbo_search();
 
-			if (no108DE0A5 == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[no108DE0A5  ].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
+
+			if (ldrswt[noeasytape  ].state == FALSE && !dbase_is_full && !aborted)
+				easytape_search();
+
+			if (ldrswt[noar        ].state == FALSE && !dbase_is_full && !aborted)
+				ar_search();
 
 		}
 
@@ -1562,6 +1403,12 @@ static void describe_file(int row)
 					break;
 		case _108DE0A5:		_108DE0A5_describe(row);
 					break;
+        case EASYTAPE1:   easytape_describe(row);
+        			break;
+        case EASYTAPE2:   easytape_describe(row);
+        			break;
+        case ACTIONREPLAY:    ar_describe(row);
+        			break;
 	}
 }
 
@@ -2007,7 +1854,7 @@ int main(int argc, char *argv[])
 	}
 
 	process_options(argc, argv);
-	handle_tape_type();
+	handle_cps();
       
 	/* PROCESS ACTIONS... */
 
