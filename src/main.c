@@ -600,7 +600,7 @@ static void display_usage(void)
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
 	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
-	printf(" -do<loader>    Scan only for this loader, to use after -noall.\n");
+	printf(" -do<loader>    Scan only for this loader.\n");
 	printf(" -ntsc          NTSC timing.\n");
 	printf(" -pal           PAL timing (default).\n");
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
@@ -706,20 +706,20 @@ static void process_options(int argc, char **argv)
 		/* process all -no<loader> */
 		if (strncmp(argv[i], "-no", 3) == 0)
 		{
-			if (excludeflag == 1)
-		{
-			printf("\nExcluded scanners:\n\n");
-			excludeflag = 0;
-		}
-		else if (excludeflag == 2) {
-				printf("You cannot mix -no<loader> and -do<loader>\n");
-				exit(1);
-		}
 
 			for(jj=0;jj<sl;jj++)
 			{
 				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
 				{
+					if (excludeflag == 1)
+					{
+						printf("\nExcluded scanners:\n\n");
+						excludeflag = 0;
+					}
+					else if (excludeflag == 2) {
+						printf("You cannot mix -no<loader> and -do<loader>\n");
+						exit(1);
+					}
 					ldrswt[jj].state = TRUE;
 					printf(" %s\n",ldrswt[jj].desc);
 				}
@@ -731,18 +731,20 @@ static void process_options(int argc, char **argv)
 
 		if (strncmp(argv[i], "-do", 3) == 0)
 		{
-			if (excludeflag==0) {
-				printf("You cannot mix -no<loader> and -do<loader>\n");
-				exit(1);
-			}
-			if (excludeflag==1) {
-				set_noall();
-				excludeflag=2;
-			}
+
 			for(jj=0;jj<sl;jj++)
 			{
 				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
 				{
+					if (excludeflag==0) {
+						printf("You cannot mix -no<loader> and -do<loader>\n");
+						exit(1);
+					}
+					if (excludeflag==1) {
+						printf("\nIncluded scanners:\n\n");
+						set_noall();
+						excludeflag=2;
+					}
 					ldrswt[jj].state = FALSE;
 					printf(" +%s\n",ldrswt[jj].desc);
 				}
@@ -769,12 +771,32 @@ static void handle_cps(void)
 			cps = C64_NTSC_CPS;
 	} else if (c16 == TRUE) {
 		printf("C16 ");
+		/* Force CBM pulsewidths to the ones found in C16/+4 tapes */
+
+		ft [CBM_HEAD].sp = 0x35;
+		ft [CBM_HEAD].mp = 0x6A;
+		ft [CBM_HEAD].lp = 0xD4;
+
+		ft [CBM_DATA].sp = 0x35;
+		ft [CBM_DATA].mp = 0x6A;
+		ft [CBM_DATA].lp = 0xD4;
+
 		if (pal == TRUE)
 			cps = C16_PAL_CPS;
 		else
 			cps = C16_NTSC_CPS;
 	} else if (c20 == TRUE) {
 		printf("VIC20 ");
+
+		/* Force CBM pulsewidths to the ones found in VIC20 tapes */
+		ft [CBM_HEAD].sp = 0x2B;
+		ft [CBM_HEAD].mp = 0x3F;
+		ft [CBM_HEAD].lp = 0x53;
+
+		ft [CBM_DATA].sp = 0x2B;
+		ft [CBM_DATA].mp = 0x3F;
+		ft [CBM_DATA].lp = 0x53;
+
 		if (pal == TRUE)
 			cps = VIC20_PAL_CPS;
 		else
