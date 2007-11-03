@@ -54,10 +54,12 @@ struct node *get_dir_list(char *rootdir)
 	char cwd[1024], temp[1024];
 	int complete, t;
 	char *ret;
-#ifdef WIN32
+#if defined WIN32
 	long handle;
 	int done;
 	struct _finddata_t ffblk;
+#elif defined DJGPP
+	struct ffblk ffblk;
 #else
 	struct dirent **namelist;
 	int n, i;
@@ -83,7 +85,7 @@ struct node *get_dir_list(char *rootdir)
 		 * Find/record all directories in the current one (ignores "." and "..")
 		 * a new node is created (and made current) for each one found...
 		 */
-#ifdef WIN32
+#if defined WIN32
 		handle = _findfirst("*.*", &ffblk);
 		if (handle != -1) {
 			done = 0;            
@@ -114,6 +116,32 @@ struct node *get_dir_list(char *rootdir)
 			}   
 		}
 		_findclose(handle);
+#elif defined DJGPP
+		if (findfirst("*.*", &ffblk, FA_DIREC) == 0) {
+			do {
+				/* valid directory = a directory and not named '.' or '..' */  
+            
+				if (ffblk.ff_attrib & FA_DIREC && strcmp(ffblk.ff_name, ".") != 0 && strcmp(ffblk.ff_name, "..") != 0) {
+
+					/* create the name for the new node (CWD+\+DIR name)... */
+
+					strcpy(temp, cwd);
+					t = strlen(temp);
+					if (temp[t - 1] != SLASH) {
+						temp[t] = SLASH;
+						temp[t + 1] = '\0';
+					}
+					strcat(temp, ffblk.ff_name);
+                            
+					/* create and switch to latest node... */
+
+					c->link = make_node(temp);
+					if (c->link == NULL)
+						return NULL;	/* error creating node!. */
+					c = c->link;
+				}
+			} while (findnext(&ffblk)==0);
+		}
 #else
 		n = scandir(".", &namelist, NULL, NULL);
 
@@ -169,10 +197,12 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 	struct node *files, *d, *f;
 	char temp[1024];
 	int t;
-#ifdef WIN32
+#if defined WIN32
 	long handle;
 	int done;
 	struct _finddata_t ffblk;
+#elif defined DJGPP
+	struct ffblk ffblk;
 #else
 	struct dirent **namelist;
 	int n, i;
@@ -191,7 +221,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 
 	while(d!=NULL) {
 		chdir(d->name);
-#ifdef WIN32
+#if defined WIN32
 		handle = _findfirst(mask, &ffblk);
       
 		if (handle != -1) {
@@ -217,6 +247,30 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 			}
 		}
 		_findclose(handle);
+#elif defined DJGPP
+		if (findfirst(mask, &ffblk, FA_DIREC) == 0) {
+			do {
+				/* valid directory = a directory and not named '.' or '..' */  
+            
+				if (!(ffblk.ff_attrib & FA_DIREC)) {
+
+					/* create the name for the new node (CWD+\+DIR name)... */
+
+					strcpy(temp, d->name);
+					t = strlen(temp);
+					if (temp[t - 1] != SLASH) {
+						temp[t] = SLASH;
+						temp[t + 1] = '\0';
+					}
+					strcat(temp, ffblk.ff_name);
+                            
+					/* create and switch to latest node... */
+
+					f->link = make_node(temp);
+					f = f->link;
+				}
+			} while (findnext(&ffblk)==0);
+		}
 #else
 		n = scandir(".", &namelist, NULL, NULL);
 

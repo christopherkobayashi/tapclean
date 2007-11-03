@@ -26,9 +26,11 @@
 #include <stdio.h>
 #include "mydefs.h"
 
-#ifdef WIN32
+#if (defined WIN32)
 #include <io.h>
 #include <direct.h>
+#elif defined DJGPP
+#include <dir.h>
 #else
 #include <dirent.h>
 #include <unistd.h>
