@@ -122,7 +122,7 @@ int cbm_readbit(int pos)
 
 	/* b2 has ambiguity between M and L pulse... */
 
-	if (b2amb == 5) {
+	if (b2amb == 6) {
 		if ((p2 - ft[CBM_HEAD].mp) < (ft[CBM_HEAD].lp - p2)) {
 			b2 = MP;	 /* choose closest to ideal. */
 			b2amb = 2;
