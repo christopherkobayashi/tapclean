@@ -80,7 +80,7 @@ void ar_search(void)
 {
     int i,cnt2,sof,sod,eod,eof,z,ldrtype,nseq;
     int t,bufszh,bufszd,s,e,x,j;
-    int cbmheader=0,cbmdata=0,easy2retry=0;
+    int cbmheader=0,cbmdata=0;
     unsigned int xinfo=0;
     unsigned char pat[32],hd[8];
     unsigned char *bufh=NULL,*bufd=NULL;
