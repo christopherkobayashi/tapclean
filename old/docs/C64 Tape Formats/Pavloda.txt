@@ -11,7 +11,7 @@ this document.
 Found on...
 
 Potty Pigeon, Starion, Horace Goes Skiing, Mr Wimpy, Android 2, Bozo's Night Out, Cavelon, 
-Zim Sala Bim... 
+Zim Sala Bim, The Hobbit (Melbourne House)... 
 
 --------------------------------------------------------------------------------
 
@@ -38,13 +38,14 @@ In other words you need to add all n Data bytes and add 1 for each of them.
 
 Notes:- 
 
+Encoding:
 We see Bit 0 and Bit 1 pulses length is not usual since the first one is bigger. The curious 
 thing is that this loader uses a rare bit reading routine... 
 
 Usually bit reading routines involving CIA timers, start one of CIA count-downs when a 
 signal is sent on the flag line and then wait next signal. When it's sent CIA timer is read 
 and if it did not reach 0 the coming pulse is bigger than threshold, otherwise it's shorter. 
-One will be Bit 0 pulse and the other Bit 1 pulse. 
+The former is Bit 0 pulse and the latter is Bit 1 pulse. 
 
 This loader swaps the order of these 2 operations: starts countdown when a signal is sent 
 on the flag line, but FIRST makes the timer count down to 0 and THEN checks the flag line 
@@ -55,6 +56,18 @@ with start of next data pulse). The Loader's coder decided to use Bit 1 pulse fo
 
 Of course we may say that Bit 1 pulse is $1F and each time one occurs, the next pulse has 
 no meaning. 
+
+Trailer:
+The trailer is missing. As a conseguence of that, the last pulse of the checkbyte may be 
+faulty: either oversized or joined into a long pulse.
+
+A reliable decoding process is possible:
+
+ - if the last bit in a checkbyte is 1, then it's encoding is $1F-$1F therefore only the 
+   second pulse of the couple is broken, which is not problematic at all. So that, if 
+   the last valid pulse in a block is A SINGLE $1F, then the faulty pulse is $1F.
+ - if a $3F or a $1F-$1F couple preceeds the faulty pulse, the latter was originally 
+   intended to be $3F.
 
 
 
