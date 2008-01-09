@@ -36,9 +36,15 @@
 
 /*---------------------------------------------------------------------------
 */
-// If last pulse of the checkbyte is broken, surely it's not $1F,$1F, so that
+// If last pulse of the checkbyte is broken, surely it's not $1F,$1F (in that 
+// case it would not matter, for the second $1F is not even decoded), so that
 // it must be $3F (bit 0). If it's not a long pulse, it is then forced to $3F.
 // ok_to_fix is TRUE only while reading a checkbyte in the search routine.
+//
+// Update: If the last checkbyte pulse is a long pulse start, we cannot
+// account the whole block. When block ack fails, we now try tro step back by 
+// one TAP pulse. If the block is then acknowledged the checkbyte is rebuilt
+// by the decoding routine but NOT by the cleaning routine.
 int pav_readbyte(int pos, char ok_to_fix)
 {
    int i,valid,val, extras;
@@ -195,7 +201,15 @@ void pav_search(void)
                eod = sod+off;
                eof = eod + 8+xtr-1;
 
-               addblockdef(PAV, sof,sod,eod,eof, 0);
+               /* At this point the last pulse may be not only corrupted, 
+                  but it may have been joined to a longpulse */
+               if (addblockdef(PAV, sof,sod,eod,eof, 0) < 0)
+               {
+                  /* Try not to ask for last pulse (checksum will result
+                     wrong, but at least the block is added) */
+                  eof--;
+                  addblockdef(PAV, sof,sod,eod,eof, 0);
+               }
 
                i = eof;  /* optimize search */
             }
