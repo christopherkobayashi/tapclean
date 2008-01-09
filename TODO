@@ -1,3 +1,6 @@
+ - When last pulse of a checkbyte is broken in Pavloda (either oversized or 
+    merged into a long pulse) the cleaning stage must fix it. The last pulse is 
+    0x3F if no 0x1F preceeds it and it's 0x1F otherwise.
  - Make some templates for the xxx_search() and xxx_describe() functions.
  - FIX xxx_search() functions by checking the return value from addblockdef() before assigning 'eof' to 'i'.
  - Fix long / int usage in crc32.c.

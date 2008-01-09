@@ -4,12 +4,16 @@ v0.22
 	First attempt to make the source 64-bit safe in gcc compiler (Luigi)
 	Removed system calls after suggestion from iAN CooG (Luigi)
 	Moved prg file making from analyze() to report() (Luigi)
+	Integrated Action Replay and Easytape scanners done by iAN Coof (Fabbo)
+	Pavload scanner has been enhanced, but cleaning of tapes won't yet fix
+	 a problem with the last pulse, which is known to be 0x3F if broken and 
+   no 0x1F preceeds it, otherwise it's 0x1F.
 
 v0.21
 	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
 	Fixed the trailer read code in turbotape.c (Luigi)
 	Tape type now affects CBM loader pulsewidths (Luigi)
-         (cps is as defined in TAP format)
+	 (cps is as defined in TAP format)
 	Added new scanner: 108DE0A5 (Luigi)
 	Fixed all compilation warnings (Luigi)
 	Added new scanner: Biturbo (Luigi)
