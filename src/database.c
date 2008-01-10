@@ -517,6 +517,20 @@ int save_prgs(void)
 	chdir(exedir);
 
 	if (chdir("prg") == 0) {	/* delete old prg's if exist... */
+#ifdef WIN32
+    intptr_t dirp;
+    struct _finddata_t dp;
+
+    dirp = _findfirst("*.*", &dp);
+    if (dirp != -1)
+    {
+      do 
+      {
+        if (strncmp(dp.name, ".", 1))
+          unlink(dp.name);
+      } while(_findnext(dirp, &dp) == 0);
+    }
+#else
 		DIR *dirp;
 
 		dirp = opendir(".");
@@ -529,6 +543,7 @@ int save_prgs(void)
 					unlink (dp->d_name);
 			closedir(dirp);
 		}
+#endif
 	} else {
 		mkdir("prg");
 		chdir("prg");

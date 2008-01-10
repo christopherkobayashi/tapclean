@@ -34,8 +34,13 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <time.h>
+#ifdef WIN32
+#include <direct.h>
+#include <io.h>
+#else
 #include <unistd.h>
 #include <dirent.h>
+#endif
 
 #include "database.h"
 #include "scanners/_scanners.h"
