@@ -59,7 +59,7 @@ void cult_search (void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int ib;				/* condition variable */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -131,15 +131,14 @@ void cult_search (void)
 			/* Point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (also check a different 
-			   implementation that uses readttbit()) */
+			/* Trace 'eof' to end of trailer */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER - 1 &&
 					tap.tmem[eof + 1] > sp - tol && 
 					tap.tmem[eof + 1] < sp + tol)
 				eof++;
 
-			/* Also account the bit 1 trailer pulse, if any */
+			/* Also account the single bit 1 trailer pulse, if any */
 			if (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > lp - tol && 
 					tap.tmem[eof + 1] < lp + tol)

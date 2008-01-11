@@ -34,6 +34,10 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.2  2008/01/11 00:22:20  luigidifraia
+ * Uniformed code and comments in the new scanners.
+ * Added read error check for unreadable checkbytes.
+ *
  * Revision 1.1  2007/08/06 18:32:03  luigidifraia
  * Initial revision
  *
@@ -79,7 +83,7 @@ void biturbo_search (void)
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int ib;				/* condition variable */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -190,8 +194,7 @@ void biturbo_search (void)
 			/* Initially point to the last pulse of the checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (also check a different 
-			   implementation that uses readttbit()) */
+			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > sp - tol && 
@@ -269,6 +272,17 @@ int biturbo_describe(int row)
 		}
 	}
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+
+	if (b == -1)
+	{
+		/* Do NOT increase read errors for this one is not within DATA, just be 
+		   sure the checksum check will fail by setting it to a wrong value */
+		b = (~cb) & 0xFF;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

@@ -34,7 +34,7 @@
  * Checksum: Yes (inside header)
  * Post-data: No
  * Trailer: Spike
- * Trailer omogeneous: No
+ * Trailer omogeneous: N/A
  */
 
 #include "../mydefs.h"
@@ -63,7 +63,7 @@ void oceannew4_search (void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x, bso; 		/* block size and its overload due to padding */
@@ -75,7 +75,7 @@ void oceannew4_search (void)
 	lp = ft[THISLOADER].lp;
 	sv = ft[THISLOADER].sv;
 
-	if(!quiet)
+	if (!quiet)
 		msgout("  New Ocean Tape 4");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
@@ -144,10 +144,9 @@ void oceannew4_search (void)
 				/* Point to the last pulse of the last byte */
 				eof = eod + BITSINABYTE - 1;
 
-				/* Trace 'eof' to end of trailer (also check a different 
-				   implementation that uses readttbit()) */
-				/* Note: No trailer has been documented, but we are not pretending it
-				         here, just checking for it is future-proof */
+				/* Trace 'eof' to end of trailer */
+				/* Note: No trailer has been documented, but we are not strictly
+			         requiring one here, just checking for it is future-proof */
 				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
@@ -182,7 +181,7 @@ int oceannew4_describe (int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-	/* Read header */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 

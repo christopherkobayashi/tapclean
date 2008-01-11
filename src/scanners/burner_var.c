@@ -73,11 +73,13 @@ void burnervar_search (void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int pv, sv;
-	int en, tp, sp, lp;
+	int pv, sv;			/* dynamically discovered pilot & sync byte */
+	int en, tp, sp, lp;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
+
+	int xinfo;			/* extra info used in addblockdef() */
 
 	int ib, match;			/* condition variables */
 
@@ -86,7 +88,7 @@ void burnervar_search (void)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	if(!quiet)
+	if (!quiet)
 		msgout("  Burner (Mastertronic Variant)");
 
 	/* First we retrieve the burner variables from the CBM header */
@@ -187,8 +189,7 @@ void burnervar_search (void)
 			/* Point to the last pulse of the exe ptr MSB/last data byte for Burner legacy */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses)
-			   Note: also check a different implementation that uses readttbit()) */
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					((tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
@@ -197,8 +198,10 @@ void burnervar_search (void)
 					tap.tmem[eof + 1] < lp + tol)))
 				eof++;
 
-			/* Note: put discovered values in the extra-info field */
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, pv + (sv<<8)+ (en<<16)) >= 0)
+			/* Store the discovered values in the extra-info field  */
+			xinfo = pv + (sv<<8)+ (en<<16);
+
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -235,7 +238,7 @@ int burnervar_describe (int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-	/* Read header */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
@@ -285,16 +288,15 @@ int burnervar_describe (int row)
 
 	/* EOF marker */
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+
 	if (b != -1) {
 		sprintf(lin, "\n - Marker : ");
 		strcat(info, lin);
 		strcat(info, b == 0 ? "EOF" : "not EOF");
 	}
-	else
-		rd_err++;
+	/* Do NOT increase read errors for this one is not within DATA*/
 
 	/* Suggestion: maybe also print the execution ptr */
-
 
 	blk[row]->rd_err = rd_err;
 

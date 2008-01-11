@@ -34,7 +34,7 @@
  * Checksum: Yes
  * Post-data: Yes
  * Trailer: Yes
- * Trailer omogeneous: Yes
+ * Trailer omogeneous: Yes (bit 0 pulses)
  */
 
 #include "../mydefs.h"
@@ -61,12 +61,11 @@
 void tdif2_search (void)
 {
 	int i, h;			/* counters */
-
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -98,6 +97,10 @@ void tdif2_search (void)
 			/* Decode a 10 byte sequence (possibly a valid sync train) */
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
+
+			/* Note: no need to check if readttbyte is returning -1, for 
+			         the following comparison (DONE ON ALL READ BYTES)
+				 will fail all the same in that case */
 
 			/* Check sync train. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
@@ -134,7 +137,7 @@ void tdif2_search (void)
 			/* Point to the first pulse of the checkbyte (that's final) */
 			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
 
-			/* Point to the last pulse of the checkbyte */
+			/* Initially point to the last pulse of the checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
 			/* Now TRY to add the largest block and then smaller ones */
@@ -142,8 +145,7 @@ void tdif2_search (void)
 				eod += 4 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
 				eof += 4 * BITSINABYTE + BITSINABYTE; 
 
-				/* Trace 'eof' to end of trailer (also check a different 
-				   implementation that uses readttbit()) */
+				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
@@ -159,8 +161,7 @@ void tdif2_search (void)
 				eod += 2 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
 				eof += 2 * BITSINABYTE + BITSINABYTE; 
 
-				/* Trace 'eof' to end of trailer (also check a different 
-				   implementation that uses readttbit()) */
+				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
@@ -176,8 +177,7 @@ void tdif2_search (void)
 				eod += 1 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
 				eof += 1 * BITSINABYTE + BITSINABYTE; 
 
-				/* Trace 'eof' to end of trailer (also check a different 
-				   implementation that uses readttbit()) */
+				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 						tap.tmem[eof + 1] > sp - tol && 
@@ -220,7 +220,7 @@ int tdif2_describe (int row)
 	/* Set header size accordingly */
    	hdsz = HEADERSIZE + fnamesz;
 
-	/* Read header */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < hdsz; i++)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
@@ -289,6 +289,17 @@ int tdif2_describe (int row)
 		}
 	}
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+
+	if (b == -1)
+	{
+		/* Do NOT increase read errors for this one is not within DATA, just be 
+		   sure the checksum check will fail by setting it to a wrong value */
+		b = (~cb) & 0xFF;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

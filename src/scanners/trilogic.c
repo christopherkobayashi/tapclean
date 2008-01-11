@@ -34,7 +34,7 @@
  * Checksum: Yes
  * Post-data: No
  * Trailer: No
- * Trailer omogeneous: No
+ * Trailer omogeneous: N/A
  */
 
 #include "../mydefs.h"
@@ -57,12 +57,11 @@
 void trilogic_search (void)
 {
 	int i, h;			/* counter */
-
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -97,6 +96,10 @@ void trilogic_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
+			/* Note: no need to check if readttbyte is returning -1, for 
+			         the following comparison (DONE ON ALL READ BYTES)
+				 will fail all the same in that case */
+
 			/* Check sync train. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
 				if (pat[h] != sypat[h])
@@ -123,8 +126,8 @@ void trilogic_search (void)
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1;
 
 			/* Plausibility check */
-			/* Note: a plausibility check is on s == 0x0801 because load address
-				 is the very same file for all genuine Trilogic tapes! */
+			/* Note: there's a plausibility check on s == 0x0801 because load address
+				 is the very same for all genuine Trilogic tapes! */
 			if (e < s || s != 0x0801)
 				continue;
 
@@ -134,13 +137,12 @@ void trilogic_search (void)
 			/* Point to the first pulse of the checkbyte (that's final) */
 			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
 
-			/* Point to the last pulse of the checkbyte */
+			/* Initially point to the last pulse of the checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (also check a different 
-			   implementation that uses readttbit()) */
-			/* Note: No trailer has been documented, but we are not pretending it
-			         here, just checking for it is future-proof */
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			/* Note: No trailer has been documented, but we are not strictly
+			         requiring one here, just checking for it is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > sp - tol && 
@@ -175,7 +177,7 @@ int trilogic_describe (int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-	/* Read header */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
@@ -227,6 +229,17 @@ int trilogic_describe (int row)
 		}
 	}
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+
+	if (b == -1)
+	{
+		/* Do NOT increase read errors for this one is not within DATA, just be 
+		   sure the checksum check will fail by setting it to a wrong value */
+		b = (~cb) & 0xFF;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;

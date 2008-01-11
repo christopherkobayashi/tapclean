@@ -65,7 +65,7 @@ void accolade_search (void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x, bso; 		/* block size and its overload due to internal checksums */
@@ -77,7 +77,7 @@ void accolade_search (void)
 	lp = ft[THISLOADER].lp;
 	sv = ft[THISLOADER].sv;
 
-	if(!quiet)
+	if (!quiet)
 		msgout("  Accolade (+clone)");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
@@ -127,8 +127,7 @@ void accolade_search (void)
 			/* Initially point to the last pulse of the last checkbyte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (also check a different 
-			   implementation that uses readttbit()) */
+			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
 					tap.tmem[eof + 1] > sp - tol && 
@@ -166,7 +165,7 @@ int accolade_describe (int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-	/* Read header */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
