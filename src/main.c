@@ -1418,12 +1418,12 @@ static void describe_file(int row)
 					break;
 		case _108DE0A5:		_108DE0A5_describe(row);
 					break;
-        case EASYTAPE1:   easytape_describe(row);
-        			break;
-        case EASYTAPE2:   easytape_describe(row);
-        			break;
-        case ACTIONREPLAY:    ar_describe(row);
-        			break;
+		case EASYTAPE1:   easytape_describe(row);
+					break;
+		case EASYTAPE2:   easytape_describe(row);
+					break;
+		case ACTIONREPLAY:    ar_describe(row);
+					break;
 	}
 }
 
