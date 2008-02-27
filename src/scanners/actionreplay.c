@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.4  2008/02/27 23:37:59  luigidifraia
+ * Subtract number of sync pulses from pilot instead of bytes
+ *
  * Revision 1.3  2008/02/27 20:41:03  luigidifraia
  * Removed Easytape and rewritten Action Replay scanner from scratch
  *
@@ -49,7 +52,7 @@
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes
- * Trailer omogeneous: ?
+ * Trailer homogeneous: No
  */
 
 #include "../mydefs.h"
@@ -224,9 +227,9 @@ int ar_describe_hdr(int row)
 	/* ... trailer in pulses */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* if there IS pilot then disclude the sync sequence */
+	/* if there IS pilot then disclude the sync sequence (1 bit + 2 bytes) */
 	if (blk[row]->pilot_len > 0) 
-		blk[row]->pilot_len -= SYNCSEQSIZE;
+		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	return 0;
 }
@@ -259,9 +262,9 @@ int ar_describe_data(int row)
 	/* ... trailer in pulses */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* if there IS pilot then disclude the sync sequence */
+	/* if there IS pilot then disclude the sync sequence (1 bit + 2 bytes) */
 	if (blk[row]->pilot_len > 0) 
-		blk[row]->pilot_len -= SYNCSEQSIZE;
+		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	/* Use the right pulsewidths to read data block */
 	if (dt == DATATHRESHL_TURBO)
