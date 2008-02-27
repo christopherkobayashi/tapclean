@@ -1,417 +1,309 @@
-/*---------------------------------------------------------------------------
-  actionreplay.c
-  derived from turbotape_easytape.c, iAN CooG/HF
+/*
+ * actionreplay.c (by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ *  
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; either version 2 of the License, or (at your option) any later 
+ * version.
+ *  
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *  
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
-  Part of project "Final TAP".
+/*
+ * $Id$
+ *
+ *        $Source$
+ *       $RCSfile$
+ *         $State$
+ *      $Revision$
+ *          $Date$
+ *        $Author$
+ *
+ * $Log$
+ * Revision 1.3  2008/02/27 20:41:03  luigidifraia
+ * Removed Easytape and rewritten Action Replay scanner from scratch
+ *
+ */
 
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-
-
-
-   This program is free software; you can redistribute it and/or modify it under
-   the terms of the GNU General Public License as published by the Free Software
-   Foundation; either version 2 of the License, or (at your option) any later
-   version.
-
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-   PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License along with
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
-   St, Fifth Floor, Boston, MA 02110-1301 USA
-
-
-  Notes:-
-
-
-AR mk3 loader Found in some "algasoft" tapes
-also found info about AR mk4 and later versions here:
-http://www.geocities.com/SiliconValley/Platform/8224/c64tape/actionreplay.txt
-Action Replay cartridge loader
-==============================
-  info by Fabrizio Gennari <fabrizio.ge@tiscalinet.it>
-
-Used by the Action Replay cartridge to save freezed games.
-
-Encoding:
----------
-
-In the pilot tone, sync sequence and first bytes of header, pulses are like this:
- Threshold: $1D0 (464) clock cycles
- Bit 0: TAP byte $23
- Bit 1: TAP byte $53
-
-Data Endianess: LEAST Significant bit First
-
- Lead-In :  a stream of 1's, typically about 2048 of them, followed by a single 0 bit
- Sync sequence:  $52, $42
-
-Structure:
-----------
- 00-01 Complement of length of data (High, Low byte)
- 02-03 Start Address of data        (High, Low byte)
- 04    Checksum (XOR of all data bytes)
- 05    discarded (typically $00)
- 06    Low byte of threshold for data bytes
- 07    discarded (typically $00)
- 08    Data bytes
-
-To calculate the number of data bytes, do 65536-complement of length. To
-calculate threshold for data bytes, do $100+low byte. There are two
-possibilities for the threshold: $1D0 (in that case, following pulses are
-identical to previous ones: this is the case of Turbo backup) and $111 (in that
-case, pulses are TAP bytes $13 for 0 and $2B for 1: that is the case of
-Superturbo backup)
----------------------------------------------------------------------------*/
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Bit + Sequence (bytes)
+ * Header: Yes
+ * Data: Continuos
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: Yes
+ * Trailer omogeneous: ?
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
 
-#define HDSZ 8
-#define MAXCBMBACKTRACE 0x2A00  /* max amount of pulses between turbo file and the
-                                   'FIRST' instance of its CBM data block.
-                                   The typical value is less than this one */
-/*---------------------------------------------------------------------------
-*/
-void ar_search(void)
+#define THISLOADER	ACTIONREPLAY_HDR
+
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZE	0x02	/* amount of sync bytes */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+
+#define HEADERSIZE	8	/* size of block header */
+
+#define LOADOFFSETH	2	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	3	/* load location (LSB) offset inside header */
+#define DATAOFFSETH	0	/* data size (MSB) offset inside header */
+#define DATAOFFSETL	1	/* data size (LSB) offset inside header */
+#define CHKBYOFFSET	4	/* data read threshold (LSB) offset inside header */
+#define DATATHRESHL	6	/* data read threshold (LSB) offset inside header */
+
+#define DATATHRESHL_TURBO	0xD0
+#define DATATHRESHL_SUPERTURBO	0x11
+
+void ar_search (void)
 {
-    int i,cnt2,sof,sod,eod,eof,z,ldrtype,nseq;
-    int t,bufszh,bufszd,s,e,x,j;
-    int cbmheader=0,cbmdata=0;
-    unsigned int xinfo=0;
-    unsigned char pat[32],hd[8];
-    unsigned char *bufh=NULL,*bufd=NULL;
-	int lp;
-    int sp;
-    int tp;
-    int en;
+	int i, h;			/* counters */
+	int lt, dt;			/* loader/threshold used by data block */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
+
+	int en, tp, sp, lp, sv;		/* encoding parameters */
+
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
+
+	int xinfo;			/* extra info used in addblockdef() */
+
+	/* legacy sync pattern */
+	static int sypat[SYNCSEQSIZE] = {
+		0x52, 0x42
+	};
+	int match;			/* condition variable */
 
 
-    if(!quiet)
-        msgout("  ActionReplay");
-    /* scan the tape finding the 1st cbmheader containing a easytape */
-    cbmheader=1;
-    cbmdata=1;
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+	sv = ft[THISLOADER].sv;
 
-    for(i=20; i<tap.len-8; i++)
-    {
-        t= find_decode_block(CBM_HEAD,cbmheader);
+	if (!quiet)
+		msgout("  Action Replay");
 
-        if(t!=-1)
-        {
-            if(blk[t]->p1 < i-MAXCBMBACKTRACE)
-            {
-                i--;
-                cbmheader++;
-                continue;
-            }
-        }
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, THISLOADER);
 
-        if(t!=-1)
-        {
-            bufszh= blk[t]->cx;
-            bufh= malloc(bufszh*sizeof(int));
-            for(j=0; j<bufszh; j++)
-                bufh[j]= blk[t]->dd[j];
-        }
-        else
-        {
-            if (bufd) free(bufd);
-            if (bufh) free(bufh);
-            return;  /* there is no further cbmheader, let's get outta here*/
-        }
-        i=blk[t]->p4;
-        while(t!=-1)
-        {
-            t= find_decode_block(CBM_DATA,cbmdata);
-            if(t!=-1)
-            {
-                if(blk[t]->p1 < i-MAXCBMBACKTRACE)
-                {
-                    cbmdata++;
-                    continue;
-                }
-                break;
-            }
-        }
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
 
-        if(t!=-1)
-        {
-            bufszd= blk[t]->cx;
-            bufd= malloc(bufszd*sizeof(int));
-            for(j=0; j<bufszd; j++)
-                bufd[j]= blk[t]->dd[j];
-        }
-        else
-        {
-            if (bufd) free(bufd);
-            if (bufh) free(bufh);
-            return;  /* there is no cbmdata, (weird) let's get outta here*/
-        }
-        j=(int)*(short int*)(bufh+1);
-        ldrtype=0;
-        switch(j)
-        {
-        case 0x326:
-            ldrtype=ACTIONREPLAY;
-            nseq=0x42;
-            if(!quiet)
-                msgout(" +AR3");
-            break;
-		case 0x2f0:
-            ldrtype=ACTIONREPLAY;
-            nseq=0x42;
-            if(!quiet)
-                msgout(" +AR4");
-            break;
-        default:
-            ldrtype=0;
-            break;
-        }
-        /* set new start point from end of this cbm data block anyway */
-        i=blk[t]->p4;
-        if(!ldrtype)
-        {
-            if (bufd){ free(bufd);bufd=NULL;}
-            if (bufh){ free(bufh);bufh=NULL;}
-            /* not a known header, retry from here */
-            i--;
-            cbmheader++;
-        }
-        else
-        {
-            /* found something, start from here */
-            lp=ft[ldrtype].lp;
-            sp=ft[ldrtype].sp;
-            tp=ft[ldrtype].tp;
-            en=ft[ldrtype].en;
-            break;
-        }
-    }
+			/* Check if there's a valid sync bit for this loader */
+			if (readttbit(i, lp, sp, tp) != sv)
+				continue;
 
+			i++; /* Take into account this bit */
 
-    for(/*i=20*/; i<tap.len-8; i++)
-    {
-		if((z=find_pilot(i,ldrtype))>0)
-        {
-            sof=i;
-            i=z;
-            /* sync = $52+$4x */
-            for(cnt2=0; cnt2<2; cnt2++)
-            {
-                pat[cnt2] = readttbyte(i+(cnt2*8), lp, sp, tp, en);
-            }
+			/* Decode a 2 byte sequence (possibly a valid sync train) */
+			for (h = 0; h < SYNCSEQSIZE; h++)
+				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-            if( pat[0]==ft[ldrtype].sv && pat[1]==nseq )
-            {
-                i=i+(2*8);
-                sod=i;
-				for(cnt2=0; cnt2<8; cnt2++)
-				{
-					hd[cnt2]=readttbyte(i+(cnt2*8), lp, sp, tp, en);
-				}
-				s = hd[3]|(hd[2]<<8);
-				e = s+(0xffff-(hd[1]|(hd[0]<<8)));
-				xinfo=hd[6];
-				/*
-				hd[0],hd[1] hi/lo reciprocal of filesize
-				            the loader INCrements $AE/AF and continues loading until they're 0000
-				hd[2],hd[3] hi/lo startaddr
-				hd[4]=expected xorchecksum
-				hd[5]=ignored, always $00
-				hd[6]=$dd06 new value (so far it's always $11)
-				hd[7]=ignored, always $00
-				*/
+			/* Note: no need to check if readttbyte is returning -1, for 
+			         the following comparison (DONE ON ALL READ BYTES)
+				 will fail all the same in that case */
 
-                i=i+(cnt2*8);
+			/* Check sync train. We may use the find_seq() facility too */
+			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
+				if (pat[h] != sypat[h])
+					match = 0;
 
-                if(e>s)
-                {
-                    x=e-s-1;
-                    eod=sod+(x*8);
-                    eof=eod+48; /* MUST CHECK: sometimes there are 48 bytes not cleaned at end of tape */
-                    //eof=eof+7;
-                   	eof+=16;
-                    addblockdef(ldrtype, sof,sod,eod,eof, xinfo);
-                    xinfo=0;
-                    i=eof;   /* optimize search */
-                    /*
-                    now search next cbmheader
-                    COPIED FROM TOP
-                    */
-                    if (bufd){ free(bufd);bufd=NULL;}
-                    if (bufh){ free(bufh);bufh=NULL;}
+			/* Sync train doesn't match */
+			if (!match)
+				continue;
 
-                    cbmheader+=2;
+			/* Valid sync train found, mark start of data */
+			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
-                    for(/*i=20*/; i<tap.len-8; i++)
-                    {
-                        t= find_decode_block(CBM_HEAD,cbmheader);
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
 
-                        if(t!=-1)
-                        {
-                            if(blk[t]->p1 < i-MAXCBMBACKTRACE)
-                            {
-                                i--;
-                                cbmheader++;
-                                continue;
-                            }
-                        }
+			/* Extract load location and size */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			x = 0x10000 - (hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8));
 
-                        if(t!=-1)
-                        {
-                            bufszh= blk[t]->cx;
-                            bufh= malloc(bufszh*sizeof(int));
-                            for(j=0; j<bufszh; j++)
-                                bufh[j]= blk[t]->dd[j];
-                        }
-                        else
-                        {
-                            if (bufd) free(bufd);
-                            if (bufh) free(bufh);
-                            return;  /* there is no further cbmheader, let's get outta here*/
-                        }
-                        i=blk[t]->p4;
-                        while(t!=-1)
-                        {
-                            t= find_decode_block(CBM_DATA,cbmdata);
-                            if(t!=-1)
-                            {
-                                if(blk[t]->p1 < i-MAXCBMBACKTRACE)
-                                {
-                                    cbmdata++;
-                                    continue;
-                                }
-                                break;
-                            }
-                        }
+			/* Compute C64 memory location of the _LAST loaded byte_ */
+			e = s + x - 1;
 
-                        if(t!=-1)
-                        {
-                            bufszd= blk[t]->cx;
-                            bufd= malloc(bufszd*sizeof(int));
-                            for(j=0; j<bufszd; j++)
-                                bufd[j]= blk[t]->dd[j];
-                        }
-                        else
-                        {
-                            if (bufd) free(bufd);
-                            if (bufh) free(bufh);
-                            return;  /* there is no cbmdata, (weird) let's get outta here*/
-                        }
-                        j=(int)*(short int*)(bufh+1);
-                        ldrtype=0;
-                        switch(j)
-                        {
-                        case 0x326:
-                            ldrtype=ACTIONREPLAY;
-                            nseq=0x42;
-                            if(!quiet)
-                                msgout(" +AR3");
-                            break;
-                		case 0x2f0:
-                            ldrtype=ACTIONREPLAY;
-                            nseq=0x42;
-                            if(!quiet)
-                                msgout(" +AR4");
-                            break;
-                        default:
-                            ldrtype=0;
-                            break;
-                        }
-                        /* set new start point from end of this cbm data block anyway */
-                        i=blk[t]->p4;
-                        if(!ldrtype)
-                        {
-                            if (bufd){ free(bufd);bufd=NULL;}
-                            if (bufh){ free(bufh);bufh=NULL;}
-                            /* not a known header, retry from here */
-                            i--;
-                            cbmheader++;
-                        }
-                        else
-                        {
-                            /* found something, start from here */
-                            lp=ft[ldrtype].lp;
-                            sp=ft[ldrtype].sp;
-                            tp=ft[ldrtype].tp;
-                            en=ft[ldrtype].en;
-                            break;
-                        }
-                    }
-                }
-            }
+			/* Genuine AR loads at 0x0801 */
+			if (s != 0x0801)
+				continue;
 
-        }
-    }
+			/* Plausibility check */
+			if (e > 0xFFFF)
+				continue;
 
-    if (bufd){ free(bufd);bufd=NULL;}
-    if (bufh){ free(bufh);bufh=NULL;}
+			/* Additional plausibility check for this loader */
+			dt = hd[DATATHRESHL];
+			if (dt != DATATHRESHL_TURBO && dt != DATATHRESHL_SUPERTURBO)
+				continue;
+
+			/* Point to the first pulse of the last data byte (that's final) */
+			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+
+			/* Point to the last pulse of the last byte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			h = 0;
+			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
+					((tap.tmem[eof + 1] > sp - tol && 
+					tap.tmem[eof + 1] < sp + tol) ||
+					(tap.tmem[eof + 1] > lp - tol && 
+					tap.tmem[eof + 1] < lp + tol)))
+				eof++;
+
+			/* Pass details over to the describe stage */
+			xinfo = dt << 24; /* threshold */
+			xinfo |= (hd[CHKBYOFFSET]) << 16; /* checksum */
+			xinfo |= e; /* end address */
+
+			if (dt == DATATHRESHL_TURBO)
+				lt = ACTIONREPLAY_TURBO;
+			else
+				lt = ACTIONREPLAY_STURBO;
+
+			/* Acknowledge data part first */
+			if (addblockdef(lt, sod + HEADERSIZE * BITSINABYTE, sod + HEADERSIZE * BITSINABYTE, eod, eof, xinfo) >= 0)
+				i = eof; /* Search for further files starting from the end of this one */
+			else
+				continue;
+
+			/* Acknowledge header part only if data was acked */
+			addblockdef(THISLOADER, sof, sod, sod + (HEADERSIZE - 1) * BITSINABYTE, sod + (HEADERSIZE - 1) * BITSINABYTE + BITSINABYTE - 1, 0);
+
+		} else {
+			if (eop < 0)
+				i = (-eop);
+		}
+	}
 }
-/*---------------------------------------------------------------------------
-*/
-int ar_describe(int row)
+
+int ar_describe_hdr(int row)
 {
+	/* Just for security purposes, init to 0 the fields that do not apply */
+	blk[row]->cs = 0;
+	blk[row]->ce = 0;
+	blk[row]->cx = 0;
 
-    int i,s,off;
-    int b,cb,hd[8],rd_err;
-    int ldrtype=blk[row]->lt;
-	int lp=ft[ldrtype].lp;
-    int sp=ft[ldrtype].sp;
-    int tp=ft[ldrtype].tp;
-    int en=ft[ldrtype].en;
+	/* Compute pilot & trailer lengths (trailer will always be 0) */
 
-    /* decode header... */
-    s= blk[row]->p2;
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
 
-    off=HDSZ;
-    for(i=0; i<off; i++)
-        hd[i]= readttbyte(s+(i*8), lp, sp, tp, en);
-    /* compute C64 start address, end address and size...  */
+	/* ... trailer in pulses */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	blk[row]->cs = hd[3]+ (hd[2]<<8);
-	blk[row]->ce = blk[row]->cs +(0xffff-(hd[1]+ (hd[0]<<8)));
-	blk[row]->cs_act=hd[4];
-	if(hd[6]==0x11)
-	{
-		ldrtype=ACTIONREPLAY_SUPER;
-		lp=ft[ldrtype].lp;
-		sp=ft[ldrtype].sp;
-		tp=ft[ldrtype].tp;
-		en=ft[ldrtype].en;
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0) 
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	return 0;
+}
+
+int ar_describe_data(int row)
+{
+	int lt, dt, i, s;
+	int en, tp, sp, lp;
+	int cb;
+
+	int b, rd_err;
+
+
+	/* Set load address */
+	blk[row]->cs = 0x0801;
+
+	/* Retrieve C64 memory location for end address, checksum and data type from extra-info */
+	blk[row]->ce = blk[row]->xi & 0xFFFF;
+	blk[row]->cs_act = (blk[row]->xi & 0x00FF0000) >> 16;
+	dt = (blk[row]->xi & 0xFF000000) >> 24;
+
+	/* Compute size */
+	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+
+	/* Compute pilot & trailer lengths (pilot will always be 0) */
+
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+	/* ... trailer in pulses */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0) 
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Use the right pulsewidths to read data block */
+	if (dt == DATATHRESHL_TURBO)
+		lt = ACTIONREPLAY_TURBO;
+	else
+		lt = ACTIONREPLAY_STURBO;
+
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	lp = ft[lt].lp;
+
+	/* Extract data and test checksum... */
+	rd_err = 0;
+	cb = 0;
+
+	s = blk[row]->p2;
+
+	if (blk[row]->dd != NULL)
+		free(blk[row]->dd);
+
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+	for (i = 0; i < blk[row]->cx; i++) {
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		cb ^= b;
+		
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
+			strcat(info, lin);
+		}
 	}
 
-    blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
-    /* get pilot trailer lengths...  */
-    blk[row]->pilot_len= (blk[row]->p2- blk[row]->p1 -8) >>3;
-    blk[row]->trail_len= (blk[row]->p4- blk[row]->p3 -7) >>3;
+	blk[row]->cs_exp = cb & 0xFF;
 
-    /* extract data... */
-    rd_err=0;
-    s= (blk[row]->p2)+(off*8);
-    cb=0;
-    if(blk[row]->dd!=NULL)
-        free(blk[row]->dd);
-    blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+	blk[row]->rd_err = rd_err;
 
-    for(i=0; i<blk[row]->cx; i++)
-    {
-        b=readttbyte(s+(i*8), lp, sp, tp, en);
-        if(b==-1)
-            rd_err++;
-
-        cb^=b;
-
-        blk[row]->dd[i]= b;
-    }
-
-	blk[row]->cs_exp= cb &0xFF;
-
-    blk[row]->rd_err= rd_err;
-    return 0;
-
+	return 0;
 }
-

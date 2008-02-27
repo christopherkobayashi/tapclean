@@ -86,7 +86,6 @@ struct _ldrswt{
 ,{"CHR"                     ,"chr"        ,FALSE}
 ,{"Cult"                    ,"cult"       ,FALSE}
 ,{"Cyberload"               ,"cyber"      ,FALSE}
-,{"Easytape"                ,"easytape"   ,FALSE}
 ,{"Enigma"                  ,"enigma"     ,FALSE}
 ,{"Firebird"                ,"fire"       ,FALSE}
 ,{"Flashload"               ,"flash"      ,FALSE}
@@ -143,7 +142,6 @@ enum{noc64=0
     ,nochr
     ,nocult
     ,nocyber
-    ,noeasytape
     ,noenigma
     ,nofire
     ,noflash
@@ -311,10 +309,10 @@ struct fmt_t ft[100] = {
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
 	{"108DE0A5"		,LSbF, 0x1F, 0x1B, NA,  0x30, 0x02, 0x09, 200, NA,    CSYES},
-	{"EASYTAPE1"            ,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x52, 50,  NA,    CSYES},
-	{"EASYTAPE2"            ,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x52, 50,  NA,    CSYES},
-	{"ACTIONREPLAY"         ,LSbF, 0x2f, 0x23, NA,  0x53, 0x7f, 0x52,  1,  NA,    CSYES},
-	{"ACTIONREPLAY_SUPER"   ,LSbF, 0x20, 0x13, NA,  0x2b, 0x7f, 0x52,  1,  NA,    CSYES},
+	{"ACTIONREPLAY_HEADER"  ,LSbF, 0x3A, 0x23, NA,  0x53, 0x01, 0x00, 1500,NA,    CSNO},
+	{"ACTIONREPLAY_TURBO"   ,LSbF, 0x3A, 0x23, NA,  0x53, NA,   NA,   NA,  NA,    CSYES},
+	{"ACTIONREPLAY_SUPERTURBO"
+				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -384,8 +382,9 @@ const char knam[100][32] = {
 	{"Rainbow Arts (F1/F2)"},
 	{"Burner (Mastertronic Variant)"},
 	{"Ocean New 4"},
-	{"Easytape"},
-	{"ActionReplay"}
+	{"108DE0A5"}
+	/* Only loaders with a LID_ entry in mydefs.h. Do not list 
+	them all here! */
 };
 
 
@@ -1198,9 +1197,6 @@ static void search_tap(void)
 			if (ldrswt[no108DE0A5  ].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
 
-			if (ldrswt[noeasytape  ].state == FALSE && !dbase_is_full && !aborted)
-				easytape_search();
-
 			if (ldrswt[noar        ].state == FALSE && !dbase_is_full && !aborted)
 				ar_search();
 
@@ -1418,11 +1414,11 @@ static void describe_file(int row)
 					break;
 		case _108DE0A5:		_108DE0A5_describe(row);
 					break;
-		case EASYTAPE1:   easytape_describe(row);
+		case ACTIONREPLAY_HDR:	ar_describe_hdr(row);
 					break;
-		case EASYTAPE2:   easytape_describe(row);
+		case ACTIONREPLAY_TURBO:	ar_describe_data(row);
 					break;
-		case ACTIONREPLAY:    ar_describe(row);
+		case ACTIONREPLAY_STURBO:	ar_describe_data(row);
 					break;
 	}
 }

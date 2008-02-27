@@ -208,8 +208,6 @@ int biturbo_describe(int);
 void _108DE0A5_search(void);
 int _108DE0A5_describe(int);
 
-void easytape_search(void);
-int easytape_describe(int);
-
 void ar_search(void);
-int ar_describe(int);
+int ar_describe_hdr(int);
+int ar_describe_data(int);
