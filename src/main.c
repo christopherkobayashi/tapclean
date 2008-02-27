@@ -1416,9 +1416,9 @@ static void describe_file(int row)
 					break;
 		case ACTIONREPLAY_HDR:	ar_describe_hdr(row);
 					break;
-		case ACTIONREPLAY_TURBO:	ar_describe_data(row);
-					break;
-		case ACTIONREPLAY_STURBO:	ar_describe_data(row);
+		case ACTIONREPLAY_TURBO:
+		case ACTIONREPLAY_STURBO:
+					ar_describe_data(row);
 					break;
 	}
 }
