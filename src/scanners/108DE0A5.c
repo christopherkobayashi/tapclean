@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.3  2008/02/27 20:38:04  luigidifraia
+ * Removed an extra comma
+ *
  * Revision 1.2  2008/01/11 00:22:20  luigidifraia
  * Uniformed code and comments in the new scanners.
  * Added read error check for unreadable checkbytes.
@@ -87,7 +90,7 @@ void _108DE0A5_search (void)
 
 	/* legacy sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
-		0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,
+		0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
 	};
 	int match;			/* condition variable */
 
