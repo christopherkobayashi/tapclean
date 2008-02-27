@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=70
+UnitCount=69
 Type=1
 Ver=1
 ObjFiles=
@@ -27,7 +27,7 @@ CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000000000
+CompilerSettings=0000000000000001000000
 
 [Unit1]
 FileName=..\src\batchscan.c
@@ -142,7 +142,7 @@ BuildCmd=
 [Unit12]
 FileName=..\src\scanners\aliensyndrome.c
 CompileCpp=0
-Folder=newscanners
+Folder=scanners
 Compile=1
 Link=1
 Priority=1000
@@ -602,7 +602,7 @@ BuildCmd=
 [Unit59]
 FileName=..\src\scanners\alternativewg.c
 CompileCpp=0
-Folder=newscanners
+Folder=scanners
 Compile=1
 Link=1
 Priority=1000
@@ -729,16 +729,6 @@ BuildCmd=
 
 [Unit69]
 FileName=..\src\scanners\actionreplay.c
-CompileCpp=0
-Folder=newscanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit70]
-FileName=..\src\scanners\turbotape_easytape.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
