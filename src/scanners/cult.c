@@ -34,7 +34,7 @@
  * Checksum: No
  * Post-data: No
  * Trailer: Yes
- * Trailer omogeneous: Yes (bit 0 pulses) + 1 bit 1
+ * Trailer homogeneous: Yes (bit 0 pulses) + 1 bit 1
  */
 
 #include "../mydefs.h"

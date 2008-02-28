@@ -34,7 +34,7 @@
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes
- * Trailer omogeneous: No
+ * Trailer homogeneous: No
  */
 
 #include "../mydefs.h"
@@ -226,13 +226,13 @@ int rainbowf1_describe (int row)
 			strcat(info, lin);
 		}
 	}
-	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
+	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 	if (b == -1)
 	{
 		/* Do NOT increase read errors for this one is not within DATA, just be 
 		   sure the checksum check will fail by setting it to a wrong value */
-		b = (~cb) & 0xFF;
+		b = ~cb;
 
 		/* for experts only */
 		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
@@ -240,8 +240,7 @@ int rainbowf1_describe (int row)
 	}
 
 	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = b;
-
+	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
 
 	return(rd_err);

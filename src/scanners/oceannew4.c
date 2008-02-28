@@ -34,7 +34,7 @@
  * Checksum: Yes (inside header)
  * Post-data: No
  * Trailer: Spike
- * Trailer omogeneous: N/A
+ * Trailer homogeneous: N/A
  */
 
 #include "../mydefs.h"
@@ -235,10 +235,11 @@ int oceannew4_describe (int row)
 			strcat(info, lin);
 		}
 	}
+
 	b = hd[CHKBYOFFSET];
 
 	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = b;
+	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
 
 	return(rd_err);

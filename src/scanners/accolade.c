@@ -34,7 +34,7 @@
  * Checksum: Yes (for each sub-block)
  * Post-data: No
  * Trailer: Yes
- * Trailer omogeneous: Yes (bit 0 pulses)
+ * Trailer homogeneous: Yes (bit 0 pulses)
  */
 
 #include "../mydefs.h"

@@ -34,7 +34,7 @@
  * Checksum: No
  * Post-data: Yes
  * Trailer: Yes
- * Trailer omogeneous: No
+ * Trailer homogeneous: No
  */
 
 #include "../mydefs.h"

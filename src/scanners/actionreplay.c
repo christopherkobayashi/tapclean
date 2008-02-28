@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.5  2008/02/28 22:03:04  luigidifraia
+ * Uniformed all new scanners as much as possible
+ *
  * Revision 1.4  2008/02/27 23:37:59  luigidifraia
  * Subtract number of sync pulses from pilot instead of bytes
  *
@@ -305,8 +308,7 @@ int ar_describe_data(int row)
 	}
 
 	blk[row]->cs_exp = cb & 0xFF;
-
 	blk[row]->rd_err = rd_err;
 
-	return 0;
+	return(rd_err);
 }
