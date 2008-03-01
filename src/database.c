@@ -282,10 +282,28 @@ int count_bootparts(void)
 int count_unopt_pulses(int slot)
 {
 	int i, t, b, imperfect;
+	int s, e;
 
 	t = blk[slot]->lt;
 
-	for(imperfect = 0, i = blk[slot]->p1; i < blk[slot]->p4 + 1; i++) {
+	s = blk[slot]->p1;
+	e = blk[slot]->p4;
+
+	imperfect = 0;
+
+	/* Trailer uses different pulsewidths, so do not consider it unoptimized 
+	   according to the block pulsewidths */
+	if (t == ACTIONREPLAY_STURBO) {
+		for (i = blk[slot]->p3 + 8; i <  blk[slot]->p4 + 1; i++) {
+			b = tap.tmem[i];
+			if (b != ft[ACTIONREPLAY_TURBO].sp && b != ft[ACTIONREPLAY_TURBO].lp)
+				imperfect++;
+		}
+
+		e = blk[slot]->p3;		/* move block end backwards */
+	}
+
+	for(i = s; i < e + 1; i++) {
 		b = tap.tmem[i];
 		if (b != ft[t].sp && b != ft[t].mp && b != ft[t].lp)
 			imperfect++;

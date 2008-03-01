@@ -415,6 +415,31 @@ void clean_files(void)
 			}
 		}
 
+		/* clean AR Superturbo trailer that uses header pulseset */
+		if (t == ACTIONREPLAY_STURBO) {
+			int st, et;
+			int spt, lpt, tpt;
+			
+			st = blk[i]->p3 + 8;		/* get trailer start */
+			et = blk[i]->p4; 
+
+			spt = ft[ACTIONREPLAY_TURBO].sp;
+			lpt = ft[ACTIONREPLAY_TURBO].lp;
+			tpt = ft[ACTIONREPLAY_TURBO].tp;
+
+			for (j = st; j < et + 1; j++) {
+				b = tap.tmem[j];
+				if (b > tpt && b < lpt + limit)
+					tap.tmem[j] = lpt;
+				if (b < tpt && b > spt - limit)
+					tap.tmem[j] = spt;
+
+				/* note: pulses that match threshold are unaffected. */
+			}
+
+			e = blk[i]->p3;		/* move block end backwards */
+		}
+
 		/* clean... (threshold IS available)... */
 
 		if (t > 2 && tp != NA) {
