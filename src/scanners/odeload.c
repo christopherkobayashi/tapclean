@@ -208,9 +208,9 @@ int odeload_describe (int row)
    	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 	if (b == -1)
 	{
-		/* Do NOT increase read errors for this one is not within DATA, just be 
-		   sure the checksum check will fail by setting it to a wrong value */
-		b = ~cb;
+		/* Even if not within data, we cannot validate data reliably if
+		   checksum is unreadable, so that increase read errors */
+		rd_err++;
 
 		/* for experts only */
 		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
