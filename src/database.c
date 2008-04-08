@@ -563,7 +563,7 @@ int save_prgs(void)
 		}
 #endif
 	} else {
-		mkdir("prg");
+		mkdir("prg", 0755);
 		chdir("prg");
 	}
 
