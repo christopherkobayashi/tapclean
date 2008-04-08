@@ -563,7 +563,11 @@ int save_prgs(void)
 		}
 #endif
 	} else {
+#ifdef WIN32
+		mkdir("prg");
+#else
 		mkdir("prg", 0755);
+#endif
 		chdir("prg");
 	}
 
