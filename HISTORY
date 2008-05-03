@@ -12,6 +12,7 @@ v0.22
 	Uniformed code and comments in the new scanners (Luigi)
 	Added read error check for unreadable checkbytes in the new scanners (Luigi)
 	Removed Easytape and substituted Action Replay scanner (Luigi)
+	Added Ash+Dave scanner (Luigi)
 
 v0.21
 	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)

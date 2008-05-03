@@ -211,3 +211,6 @@ int _108DE0A5_describe(int);
 void ar_search(void);
 int ar_describe_hdr(int);
 int ar_describe_data(int);
+
+void ashdave_search(void);
+int ashdave_describe(int);

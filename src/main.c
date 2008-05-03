@@ -77,6 +77,7 @@ struct _ldrswt{
 ,{"Alien Syndrome"          ,"aliensy"    ,FALSE}
 ,{"Alternative World Games" ,"alterwg"    ,FALSE}
 ,{"Anirog"                  ,"anirog"     ,FALSE}
+,{"Ash+Dave"                ,"ashdave"    ,FALSE}
 ,{"Atlantis"                ,"atlantis"   ,FALSE}
 ,{"Audiogenic"              ,"audiogenic" ,FALSE}
 ,{"Biturbo"                 ,"biturbo"    ,FALSE}
@@ -133,6 +134,7 @@ enum{noc64=0
     ,noaliensy
     ,noalterwg
     ,noanirog
+    ,noashdave
     ,noatlantis
     ,noaudiogenic
     ,nobiturbo
@@ -313,6 +315,7 @@ struct fmt_t ft[100] = {
 	{"ACTIONREPLAY_TURBO"   ,LSbF, 0x3A, 0x23, NA,  0x53, NA,   NA,   NA,  NA,    CSYES},
 	{"ACTIONREPLAY_SUPERTURBO"
 				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
+	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -1200,6 +1203,8 @@ static void search_tap(void)
 			if (ldrswt[noar        ].state == FALSE && !dbase_is_full && !aborted)
 				ar_search();
 
+			if (ldrswt[noashdave   ].state == FALSE && !dbase_is_full && !aborted)
+				ashdave_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1419,6 +1424,8 @@ static void describe_file(int row)
 		case ACTIONREPLAY_TURBO:
 		case ACTIONREPLAY_STURBO:
 					ar_describe_data(row);
+					break;
+		case ASHDAVE:		ashdave_describe(row);
 					break;
 	}
 }

@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=76
+UnitCount=77
 Type=1
 Ver=1
 ObjFiles=
@@ -21,7 +21,7 @@ OverrideOutput=0
 OverrideOutputName=TAPClean.exe
 HostApplication=
 Folders=headers,newscanners,scanners
-CommandLine=
+CommandLine=-t dump0209.tap
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
@@ -801,6 +801,16 @@ BuildCmd=
 FileName=..\src\scanners\_scanners.h
 CompileCpp=0
 Folder=headers
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit77]
+FileName=..\src\scanners\ashdave.c
+CompileCpp=0
+Folder=newscanners
 Compile=1
 Link=1
 Priority=1000
