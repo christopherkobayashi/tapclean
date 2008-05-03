@@ -54,6 +54,9 @@
 #define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
+#define POSTDATASIZE	3	/* size in bytes of the MANDATORY information 
+				   that is found after file data */
+
 #define CBMXORDECRYPT	0x59	/* use this value to decrypt CBM header bytes */
 
 #define V1PILOTOFFSET	0x87	/* offset to p.v. inside CBM header */
@@ -66,6 +69,13 @@
 
 #define OPC_ROL		0x26	/* 65xx ROL OPCode */
 #define OPC_ROR		0x66	/* 65xx ROR OPCode */
+
+enum {
+	BURNERVAR_NOMATCH=0,
+	BURNERVAR_FIRST,
+	BURNERVAR_SECOND,
+	BURNERVAR_LEGACY
+};
 
 void burnervar_search (void)
 {
@@ -96,7 +106,7 @@ void burnervar_search (void)
 	if (ib == -1)
 		return;    /* failed to locate cbm header. */
 
-	match = 0;
+	match = BURNERVAR_NOMATCH;
 	
 	pv = blk[ib]->dd[V1PILOTOFFSET]  ^ CBMXORDECRYPT;
 	sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;
@@ -104,31 +114,31 @@ void burnervar_search (void)
 
 	/* MSbF rol ($26) or.. LSbF ror($66)  */
 	if (en == OPC_ROL || en == OPC_ROR)
-		match = 1;
+		match = BURNERVAR_FIRST;
 	
 	/* Legacy Burner support */
-/*	if (match == 0) {
+/*	if (match == BURNERVAR_NOMATCH) {
 		pv = blk[ib]->dd[0x88] ^ 0xCBMXORDECRYPT;
 		sv = blk[ib]->dd[0x93] ^ 0xCBMXORDECRYPT;
 		en = blk[ib]->dd[0x83] ^ 0xCBMXORDECRYPT;
 */
 		/* MSbF rol ($26) or.. LSbF ror($66)  */
 /*		if(en == OPC_ROL || en == OPC_ROR)
-			match = 3;
+			match = BURNERVAR_LEGACY;
 	}
 */
-	if (match == 0) {
+	if (match == BURNERVAR_NOMATCH) {
 		pv = blk[ib]->dd[V2PILOTOFFSET] ^ CBMXORDECRYPT;
 		sv = blk[ib]->dd[V2SYNCOFFSET] ^ CBMXORDECRYPT;
 		en = blk[ib]->dd[V2ENDIANOFFSET] ^ CBMXORDECRYPT;
 
 		/* MSbF rol ($26) or.. LSbF ror($66)  */
 		if(en == OPC_ROL || en == OPC_ROR)
-			match = 2;
+			match = BURNERVAR_SECOND;
 	}
 
 	/* Nothing to do, definitely not a Burner variant */
-	if (match == 0)
+	if (match == BURNERVAR_NOMATCH)
 		return;
 
 	/* Convert en from the OPCode to any of the internally used values */
@@ -179,9 +189,9 @@ void burnervar_search (void)
 			x = e - s + 1;
 
 			/* Point to the first pulse of the exe ptr, MSB */
-			/* Note: + 3 because there's a EOF marker and an exe ptr in v1 and v2 */
-			if (match == 1 || match == 2)
-				eod = sod + (HEADERSIZE + x + 3 - 1) * BITSINABYTE;
+			/* Note: + POSTDATASIZE because there's a EOF marker and an exe ptr in v1 and v2 */
+			if (match == BURNERVAR_FIRST || match == BURNERVAR_SECOND)
+				eod = sod + (HEADERSIZE + x + POSTDATASIZE - 1) * BITSINABYTE;
 			/* Legacy Burner support */
 /*			else
 				eod = sod + (HEADERSIZE + x) * BITSINABYTE;*/
@@ -258,7 +268,7 @@ int burnervar_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync byte */
-	if(blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0) 
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract data */
@@ -289,12 +299,12 @@ int burnervar_describe (int row)
 	/* EOF marker */
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
+	/* Do NOT increase read errors for this one is not within DATA */
 	if (b != -1) {
 		sprintf(lin, "\n - Marker : ");
 		strcat(info, lin);
 		strcat(info, b == 0 ? "EOF" : "not EOF");
 	}
-	/* Do NOT increase read errors for this one is not within DATA*/
 
 	/* Suggestion: maybe also print the execution ptr */
 
