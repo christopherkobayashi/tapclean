@@ -129,8 +129,10 @@ void oceannew4_search (void)
 			         here, just checking is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol)
+					((tap.tmem[eof + 1] > sp - tol && 
+					tap.tmem[eof + 1] < sp + tol) ||
+					(tap.tmem[eof + 1] > lp - tol && 
+					tap.tmem[eof + 1] < lp + tol)))
 				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
@@ -149,8 +151,10 @@ void oceannew4_search (void)
 			         requiring one here, just checking for it is future-proof */
 				h = 0;
 				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-						tap.tmem[eof + 1] > sp - tol && 
-						tap.tmem[eof + 1] < sp + tol)
+						((tap.tmem[eof + 1] > sp - tol && 
+						tap.tmem[eof + 1] < sp + tol) ||
+						(tap.tmem[eof + 1] > lp - tol && 
+						tap.tmem[eof + 1] < lp + tol)))
 					eof++;
 
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
