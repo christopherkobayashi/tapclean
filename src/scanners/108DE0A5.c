@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.6  2008/05/10 23:09:08  luigidifraia
+ * Removed wrong comment
+ *
  * Revision 1.5  2008/03/02 11:16:32  luigidifraia
  * Reinserted increment on read errors upon failed checksum reads
  *
@@ -218,8 +221,6 @@ int _108DE0A5_describe(int row)
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
 
 	/* ... trailer in pulses */
-	/* Note: No trailer has been documented, but we are not pretending it
-	         here, just checking for it is future-proof */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence */
