@@ -27,7 +27,7 @@
  * Status: Beta
  *
  * CBM inspection needed: No
- * Single on tape: ??
+ * Single on tape: No
  * Sync: Byte
  * Header: Yes
  * Data: Continuos
@@ -275,8 +275,10 @@ int ashdave_describe (int row)
 #endif
 
 	if (blk[row]->xi)
+	{
 		strcat(info, "\n - Automatically fixed last trailer byte ");
 		strcat(info, "\n   to be accounted by the cleaning process");
+	}
 
 	blk[row]->rd_err = rd_err;
 
