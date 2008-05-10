@@ -252,6 +252,9 @@ int idloader(unsigned /*long*/ int crc)
 
 		{0x108DE0A5, LID_108DE0A5},	/* REC magazine tapes (Italy) */
 
+		{0xAE9A2682, LID_FREE_SLOW},	/* Freeload Slowload (Platoon) */
+		{0x0AC328F5, LID_FREE_SLOW},	/* Freeload Slowload (Rambo, Great Escape, Top Gun) */
+
 		{0, 0}
 	};
 

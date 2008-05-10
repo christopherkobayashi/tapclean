@@ -91,6 +91,7 @@ struct _ldrswt{
 ,{"Firebird"                ,"fire"       ,FALSE}
 ,{"Flashload"               ,"flash"      ,FALSE}
 ,{"Freeload"                ,"free"       ,FALSE}
+,{"Freeload Slowload"       ,"frslow"     ,FALSE}
 ,{"Galadriel"               ,"galadriel"  ,FALSE}
 ,{"Hitload"                 ,"hit"        ,FALSE}
 ,{"Hi-Tec"                  ,"hitec"      ,FALSE}
@@ -148,6 +149,7 @@ enum{noc64=0
     ,nofire
     ,noflash
     ,nofree
+    ,nofrslow
     ,nogaladriel
     ,nohit
     ,nohitec
@@ -316,6 +318,7 @@ struct fmt_t ft[100] = {
 	{"ACTIONREPLAY_SUPERTURBO"
 				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
 	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
+	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
 	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
 };
@@ -385,7 +388,8 @@ const char knam[100][32] = {
 	{"Rainbow Arts (F1/F2)"},
 	{"Burner (Mastertronic Variant)"},
 	{"Ocean New 4"},
-	{"108DE0A5"}
+	{"108DE0A5"},
+	{"Freeload Slowload"}
 	/* Only loaders with a LID_ entry in mydefs.h. Do not list 
 	them all here! */
 };
@@ -1020,6 +1024,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_108DE0A5      && ldrswt[no108DE0A5    ].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
 
+			if (tap.cbmid == LID_FREE_SLOW     && ldrswt[nofrslow    ].state == FALSE && !dbase_is_full && !aborted)
+				freeslow_search();
+
 			/* todo : TURRICAN
 			 * todo : SEUCK
 			 * todo : JETLOAD
@@ -1205,6 +1212,9 @@ static void search_tap(void)
 
 			if (ldrswt[noashdave   ].state == FALSE && !dbase_is_full && !aborted)
 				ashdave_search();
+
+			if (ldrswt[nofrslow    ].state == FALSE && !dbase_is_full && !aborted)
+				freeslow_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1426,6 +1436,8 @@ static void describe_file(int row)
 					ar_describe_data(row);
 					break;
 		case ASHDAVE:		ashdave_describe(row);
+					break;
+		case FREE_SLOW:		freeslow_describe(row);
 					break;
 	}
 }
