@@ -1770,8 +1770,8 @@ static void print_database(char *buf)
 			strcat(buf, lin);
 
 			if (ft[blk[i]->lt].has_cs == TRUE) {	/* checkbytes, if applicable */
-				sprintf(lin, "\nCheckbyte Actual/Expected: $%02X/$%02X", blk[i]->cs_act, blk[i]->cs_exp);
-        sprintf(lin, "\nChecksum test: %s", blk[i]->cs_act == blk[i]->cs_exp ? "PASS" : "FAIL");
+				sprintf(lin, "\nCheckbyte Actual/Expected: $%02X/$%02X, %s",
+					blk[i]->cs_act, blk[i]->cs_exp, blk[i]->cs_act == blk[i]->cs_exp ? "PASS" : "FAIL");
 				strcat(buf, lin);
 			}
 
