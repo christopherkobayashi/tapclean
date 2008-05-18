@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.7  2008/05/18 23:25:17  luigidifraia
+ * Implemented integer wraparound prevention in new scanners
+ *
  * Revision 1.6  2008/05/10 23:09:08  luigidifraia
  * Removed wrong comment
  *
@@ -152,7 +155,13 @@ void _108DE0A5_search (void)
 
 			/* Extract load and end locations */
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1;
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			// Prevent int wraparound when subtracting 1 from end location
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
 
 			/* Plausibility check */
 			if (e < s)

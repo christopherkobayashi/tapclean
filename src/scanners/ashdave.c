@@ -3,7 +3,7 @@
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on burner.c, which are part of "Final TAP".
+ * Based on burner.c, which is part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
@@ -123,7 +123,13 @@ void ashdave_search (void)
 
 			/* Extract load and end locations */
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1;
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			// Prevent int wraparound when subtracting 1 from end location
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
 
 			/* Plausibility check */
 			if (e < s)
@@ -274,8 +280,7 @@ int ashdave_describe (int row)
 	}
 #endif
 
-	if (blk[row]->xi)
-	{
+	if (blk[row]->xi) {
 		strcat(info, "\n - Automatically fixed last trailer byte ");
 		strcat(info, "\n   to be accounted by the cleaning process");
 	}

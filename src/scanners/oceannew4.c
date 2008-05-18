@@ -104,7 +104,13 @@ void oceannew4_search (void)
 
 			/* Extract load and end locations */
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1;
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			// Prevent int wraparound when subtracting 1 from end location
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
 
 			/* Plausibility check */
 			if (e < s)
@@ -135,8 +141,9 @@ void oceannew4_search (void)
 					tap.tmem[eof + 1] < lp + tol)))
 				eof++;
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0) {
 				i = eof;	/* Search for further files starting from the end of this one */
+			}
 			else {
 				/* Try the variant (the one with no data padding) */
 

@@ -87,7 +87,13 @@ void cult_search (void)
 	if (ib == -1)
 		return;		/* failed to locate cbm header. */
 
-	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8) - 1;
+	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+
+	// Prevent int wraparound when subtracting 1 from end location
+	if (e == 0)
+		e = 0xFFFF;
+	else
+		e--;
 
 	/* Plausibility checks (here since CULT is always just ONE TURBO file) */
 	/* Note: a plausibility check is on s == 0x0801 because load address

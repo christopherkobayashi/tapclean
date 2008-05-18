@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.5  2008/05/18 23:25:17  luigidifraia
+ * Implemented integer wraparound prevention in new scanners
+ *
  * Revision 1.4  2008/03/02 11:16:32  luigidifraia
  * Reinserted increment on read errors upon failed checksum reads
  *
@@ -176,8 +179,15 @@ void biturbo_search (void)
 					break;
 				}
 
+				/* Extract load and end locations */
 				s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
-				e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8) - 1;
+				e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+
+				// Prevent int wraparound when subtracting 1 from end location
+				if (e == 0)
+					e = 0xFFFF;
+				else
+					e--;
 
 				/* Plausibility check. Maybe a read error in the 'FIRST' instance of CBM data, so it's
 				   worth trying the next CBM data file, which should be the 'REPEATED' instance. */

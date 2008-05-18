@@ -101,7 +101,13 @@ void odeload_search (void)
 
 			/* Extract load and end locations */
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1;
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			// Prevent int wraparound when subtracting 1 from end location
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
 
 			/* Plausibility check */
 			if (e < s)
