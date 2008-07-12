@@ -30,6 +30,8 @@
 #define FIRST 0
 #define REPEAT 1
 
+#define PULSESINABYTE 20
+
 /*
  * cbm_readbit...
  *
@@ -163,8 +165,8 @@ int cbm_readbyte(int pos)
 
 	/* check next 20 pulses are not inside a pause and *are* inside the tap... */
 
-	for (i = 0; i < 20; i++) {
-		if (pos + i < 20 || pos + i > tap.len - 1)
+	for (i = 0; i < PULSESINABYTE; i++) {
+		if (pos + i < PULSESINABYTE || pos + i > tap.len - 1)
 			return -1;
 
 		if (is_pause_param(pos + i)) {
@@ -216,7 +218,7 @@ void cbm_search(void)
 	int cnt2, di, len, crc;
 	int cbmid, valid, j, is_a_header;
 	unsigned char b, pat[32], crcdone = 0;
-   
+	int s, e;
 
 	if (!quiet)
 		msgout("  C64 ROM tape");
@@ -228,7 +230,7 @@ void cbm_search(void)
 	for (i = 0; i < 65536; i++)
 		cbm_program[i] = 0;
  
-	for (i = 20; i < tap.len - 20; i++) {
+	for (i = 20; i < tap.len - PULSESINABYTE; i++) {
 		b = cbm_readbyte(i);
 
 		/* find a $09 or an $89... */
@@ -236,7 +238,7 @@ void cbm_search(void)
 		if (b == 0x09 || b == 0x89) {
 			for (cnt2 = 0; cnt2 < 9; cnt2++)
 				/* decode a 10 byte CBM sequence */
-				pat[cnt2] = cbm_readbyte(i + (cnt2 * 20));
+				pat[cnt2] = cbm_readbyte(i + (cnt2 * PULSESINABYTE));
 
 			valid=0;
 
@@ -247,7 +249,7 @@ void cbm_search(void)
 			    pat[8] == 0x01) {
 				valid = 1;
 				cbmid = REPEAT;
-				sod = i + (9 * 20);	/* record first byte of actual data */
+				sod = i + (9 * PULSESINABYTE);	/* record first byte of actual data */
 			}
 
 			if (pat[0] == 0x89 && pat[1] == 0x88 &&
@@ -257,16 +259,19 @@ void cbm_search(void)
 			    pat[8] == 0x81 ) {
 				valid = 1;
 				cbmid = FIRST;   
-				sod = i + (9 * 20);	/* record first byte of actual data */
+				sod = i + (9 * PULSESINABYTE);	/* record first byte of actual data */
 			}
 
 			/* decode the first byte to discover whether its a header or not... */
 
 			b = cbm_readbyte(sod);
 
-			/* filetype = 1 - 6, assume its a header. (this COULD fail!) */
+			s = cbm_readbyte(sod + PULSESINABYTE) + 256 * cbm_readbyte (sod + 2*PULSESINABYTE);
+			e = cbm_readbyte(sod + 3*PULSESINABYTE) + 256 * cbm_readbyte (sod + 4*PULSESINABYTE);
 
-			if (b > 0 && b < 6)
+			/* filetype = 1 - 6, assume its a header. (this COULD fail!) */
+			/* Also make a plausibility test by checking load and end address then (luigi) */
+			if (b > 0 && b < 6 && e > s)
 				is_a_header = 1;
 			else
 				is_a_header = 0;
@@ -302,8 +307,8 @@ void cbm_search(void)
 				if (!noc64eof) {
 					while (cbm_readbit(i) != 3 && i < tap.len)
 						i++;	/* note : could do + 2 but makes no difference.  */
-					eod = i - 20;
-					eof = eod + 21;	/* overwrite below... */
+					eod = i - PULSESINABYTE;
+					eof = eod + PULSESINABYTE + 1;	/* overwrite below... */
 				}
 
 				/* Not expecting EOF's?...
@@ -318,8 +323,8 @@ void cbm_search(void)
 						b = cbm_readbit(i += 2);
 					while ((b == 0 || b == 1 || b == 2) && i < tap.len);
 
-					eod = i - 20;
-					eof = eod + 21;		/* overwrite below... */
+					eod = i - PULSESINABYTE;
+					eof = eod + PULSESINABYTE + 1;		/* overwrite below... */
 				}
 
 				/* now, we scan through any 'S' pulses (trailer) after the last data marker,
@@ -354,7 +359,7 @@ void cbm_search(void)
 				 * data block then try and identify the loader...
 				 */
 
-				if (((eod - sod) / 20) > 203)	/* just a precaution to make sure we ID'd the   */
+				if (((eod - sod) / PULSESINABYTE) > 203)	/* just a precaution to make sure we ID'd the   */
 					is_a_header = 0;	/* file correctly. (header must be < 200 bytes) */
 								/* see Hover Bovver.tap                         */
 								/* add: '500cc GP' headers are 203 bytes.       */
@@ -367,7 +372,7 @@ void cbm_search(void)
 
 					if (cbm_decoded == 0) {
 						for (j = 0; j < 192; j++)
-							cbm_header[j] = cbm_readbyte(sod + (j * 20));
+							cbm_header[j] = cbm_readbyte(sod + (j * PULSESINABYTE));
 						cbm_decoded++;
 					}
 				} else {
@@ -384,9 +389,9 @@ void cbm_search(void)
 
 						/* decode block... (and generate CRC) */
 
-						for (di = sod, cnt2 = 0; di < eod; di += 20)
+						for (di = sod, cnt2 = 0; di < eod; di += PULSESINABYTE)
 							cbm_program[cnt2++] = cbm_readbyte(di);
-						len = (eod - sod) / 20;
+						len = (eod - sod) / PULSESINABYTE;
 						crc = compute_crc32(cbm_program, len);
 						tap.cbmcrc = crc;	/* store it globally too */
 						crcdone = 1;
@@ -484,7 +489,7 @@ int cbm_describe(int row)
 
 		s = blk[row]->p2;
 		for (i = 0; i < 21; i++)
-			hd[i] = cbm_readbyte(s + (i * 20));
+			hd[i] = cbm_readbyte(s + (i * PULSESINABYTE));
 
 		if (blk[row]->xi == REPEAT) {
 			sprintf(lin, "\n - File ID : REPEAT");
@@ -499,7 +504,7 @@ int cbm_describe(int row)
 		/* get info about this header... */
 
 		blk[row]->cs= 0x033C;
-		blk[row]->cx= ((blk[row]->p3 - blk[row]->p2) /20);
+		blk[row]->cx= ((blk[row]->p3 - blk[row]->p2) /PULSESINABYTE);
 		blk[row]->ce= blk[row]->cs + blk[row]->cx -1;
  
 		/* now extract info about the related DATA block... */
@@ -580,7 +585,7 @@ int cbm_describe(int row)
       
 		blk[row]->cs = _dfs;
 		blk[row]->ce = _dfe - 1;
-		blk[row]->cx = ((blk[row]->p3 - blk[row]->p2) / 20);
+		blk[row]->cx = ((blk[row]->p3 - blk[row]->p2) / PULSESINABYTE);
 
 		/* report inconsistancy between size in header and actual size... */
 
@@ -603,7 +608,7 @@ int cbm_describe(int row)
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = cbm_readbyte(s + (i * 20));
+		b = cbm_readbyte(s + (i * PULSESINABYTE));
 		if (b == -1)
 			rd_err++;
 		else {
@@ -611,15 +616,15 @@ int cbm_describe(int row)
 			blk[row]->dd[i] = b;
 		}
 	}
-	b = cbm_readbyte(s + (i * 20));	/* read the actual checkbyte. */
+	b = cbm_readbyte(s + (i * PULSESINABYTE));	/* read the actual checkbyte. */
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b;
 	blk[row]->rd_err = rd_err;
 
 	/* get pilot & trailer lengths */
 
-	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1 - (9 * 20);
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - 21;
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1 - (9 * PULSESINABYTE);
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - PULSESINABYTE - 1;
 
 	return 0;
 }
