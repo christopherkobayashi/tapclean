@@ -17,8 +17,12 @@ v0.22
 	Fixed pulse disambiguation check in c64tape.c (Fabbo)
 	Added Freeload Slowload scanner (Luigi)
 	Implemented integer wraparound prevention in new scanners (Luigi)
-	Improved recognition of DATA blocks when data starts with 0x01...0x06 by requesting a plausibility check on load and end addresses
-	 Those blocks should not be misrecognized as HEADER ones anymore (Luigi)
+	Improved recognition of CBM DATA blocks when data starts with 0x01...0x06 
+	 by requesting a plausibility check on load and end addresses. Those blocks 
+	 should not be misrecognized as CBM HEADER ones anymore. Maggotmania is now
+	 recognized properly (Luigi)
+	Improved recognition of CBM HEADER blocks in Ping Pong (payload is 294 byte 
+	 long) (Luigi)
 
 v0.21
 	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
