@@ -218,7 +218,7 @@ void cbm_search(void)
 	int cnt2, di, len, crc;
 	int cbmid, valid, j, is_a_header;
 	unsigned char b, pat[32], crcdone = 0;
-	int s, e;
+	int s, e, x;
 
 	if (!quiet)
 		msgout("  C64 ROM tape");
@@ -350,8 +350,7 @@ void cbm_search(void)
 					eof = cnt2 - 1;		/* ...put eof there. */
 
 				else if (cnt2 - eof <= 79)	/* partly fixed: not just a pause but also a spike is ok (luigi) */
-
-				eof = cnt2 - 1;
+  				eof = cnt2 - 1;
 
 				/*
 				 * location is complete.....
@@ -359,10 +358,14 @@ void cbm_search(void)
 				 * data block then try and identify the loader...
 				 */
 
-				if (((eod - sod) / PULSESINABYTE) > 203)	/* just a precaution to make sure we ID'd the   */
+        /* Size of payload (the chunk between sync train and checksum) */
+        x = (eod - sod) / PULSESINABYTE;
+
+				if (x > 203 && x != 294)	/* just a precaution to make sure we ID'd the   */
 					is_a_header = 0;	/* file correctly. (header must be < 200 bytes) */
 								/* see Hover Bovver.tap                         */
 								/* add: '500cc GP' headers are 203 bytes.       */
+								/* add: 'Ping Pong' headers are 294 bytes.      */
 
 				if (is_a_header) {
 					addblockdef(CBM_HEAD, sof, sod, eod, eof, cbmid);
