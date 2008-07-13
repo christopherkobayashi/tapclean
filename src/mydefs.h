@@ -87,6 +87,9 @@
 #define VIC20_PAL_CPS	1108405
 #define VIC20_NTSC_CPS	1022727
 
+#define VIC20_BASIC_START_ADDR	0x1001
+#define C64_BASIC_START_ADDR	0x0801
+
 #define NA	-1	/* indicator: Not Applicable. */
 #define VV	-1	/* indicator: A variable value is used. */
 #define XX	-1	/* indicator: Dont care. */
@@ -221,6 +224,10 @@ extern int aborted;		/* general 'operation aborted' flag */
 extern int tol;			/* turbotape bit reading tolerance. */
 extern char lin[64000];		/* general purpose string building buffer */
 extern char info[1048576];	/* string building buffer, gathers output from scanners */
+
+extern char c16;
+extern char c20;
+extern char c64;
 
 extern const char knam[100][32];
 

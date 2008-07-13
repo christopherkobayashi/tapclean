@@ -358,8 +358,8 @@ void cbm_search(void)
 				 * data block then try and identify the loader...
 				 */
 
-        /* Size of payload (the chunk between sync train and checksum) */
-        x = (eod - sod) / PULSESINABYTE;
+				/* Size of payload (the chunk between sync train and checksum) */
+				x = (eod - sod) / PULSESINABYTE;
 
 				if (x > 203 && x != 294)	/* just a precaution to make sure we ID'd the   */
 					is_a_header = 0;	/* file correctly. (header must be < 200 bytes) */
@@ -407,11 +407,15 @@ void cbm_search(void)
 
 int cbm_describe(int row)
 {
-	int s, i, j, b, rd_err, cb;
+	int s, i, j, b, rd_err, cb, startadr;
 	char tmp[256];
 	unsigned char hd[32];
 	char fn[256];
 	char str[2000];
+
+	startadr = C64_BASIC_START_ADDR;
+	if (c20 == TRUE)
+		startadr = VIC20_BASIC_START_ADDR;
 
 	/* data file start,end. these are set by a 'header' describe
 	 * and used by any subsequent 'data' describe.
@@ -534,25 +538,25 @@ int cbm_describe(int row)
 
 		sprintf(lin, "\n - DATA FILE Load address : $%04X", _dfs);
 		strcat(info, lin);
-		if (hd[0] == 1 && _dfs != 0x0801) {
-			sprintf(lin, " (fake address, actual=$0801)");
+		if (hd[0] == 1 && _dfs != startadr) {
+			sprintf(lin, " (fake address, actual=$%04X)", startadr);
 			strcat(info, lin);
 		}
 
 		sprintf(lin, "\n - DATA FILE End address : $%04X", _dfe);
 		strcat(info, lin);
-		if (hd[0] == 1 && _dfs != 0x0801) {
-			sprintf(lin, " (fake address, actual=$%04X)", 0x0801 + _dfx);
+		if (hd[0] == 1 && _dfs != startadr) {
+			sprintf(lin, " (fake address, actual=$%04X)", startadr + _dfx);
 			strcat(info, lin);
 		}
 
 		sprintf(lin, "\n - DATA FILE Size (calculated) : %d bytes", _dfx);
 		strcat(info, lin);
 
-		/* BASIC filetypes always load to $0801 */
+		/* BASIC filetypes always load to $0801 (C64)/$1001 (VIC20)*/
 
-		if (hd[0] == 1 && s != 0x0801) {
-			_dfs = 0x0801;
+		if (hd[0] == 1 && s != startadr) {
+			_dfs = startadr;
 			_dfe = _dfs + _dfx;
 		}
       
