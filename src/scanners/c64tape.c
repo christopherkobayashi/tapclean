@@ -42,7 +42,7 @@
  *
 */
 
-int cbm_readbit(int pos)
+static int cbm_readbit(int pos)
 {
 	#define SP 0
 	#define MP 1
@@ -158,7 +158,7 @@ int cbm_readbit(int pos)
  * on success: returns resulting byte value 0-255, else -1 on error.
  */
 
-int cbm_readbyte(int pos)
+static int cbm_readbyte(int pos)
 {
 	int i, tcnt = 0, bit, byt = 0;
 	char check = 1;		/* start value for checkbit xor is 1 */
@@ -305,10 +305,25 @@ void cbm_search(void)
 				/* Expect EOF markers?... */
 
 				if (!noc64eof) {
-					while (cbm_readbit(i) != 3 && i < tap.len)
-						i++;	/* note : could do + 2 but makes no difference.  */
-					eod = i - PULSESINABYTE;
-					eof = eod + PULSESINABYTE + 1;	/* overwrite below... */
+          for(eod = i; i <= tap.len - 2; i+=2)
+          {
+            int bitres = cbm_readbit(i);
+            if (bitres == -1)
+            {
+              break;
+            }
+            if (bitres == 2)
+            {
+              eod = i - PULSESINABYTE;
+            }
+            if (bitres == 3)
+            {
+              eod = i - PULSESINABYTE;
+              i++;
+              break;
+            }
+          }
+          eof = i;	/* overwrite below... */
 				}
 
 				/* Not expecting EOF's?...

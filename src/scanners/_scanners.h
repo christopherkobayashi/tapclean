@@ -25,8 +25,6 @@
 void pause_search(void);
 void pause_describe(int);
   
-int cbm_readbit(int);
-int cbm_readbyte(int);
 void cbm_search(void);
 int cbm_describe(int);
     
