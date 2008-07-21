@@ -305,25 +305,19 @@ void cbm_search(void)
 				/* Expect EOF markers?... */
 
 				if (!noc64eof) {
-          for(eod = i; i <= tap.len - 2; i+=2)
-          {
-            int bitres = cbm_readbit(i);
-            if (bitres == -1)
-            {
-              break;
-            }
-            if (bitres == 2)
-            {
-              eod = i - PULSESINABYTE;
-            }
-            if (bitres == 3)
-            {
-              eod = i - PULSESINABYTE;
-              i++;
-              break;
-            }
-          }
-          eof = i;	/* overwrite below... */
+                    for(eod = i; i <= tap.len - 2; i+=2) {
+                        int bitres = cbm_readbit(i);
+                        if (bitres == -1)
+                            break;
+                        if (bitres == 2)
+                            eod = i - PULSESINABYTE;
+                        if (bitres == 3) {
+                            eod = i - PULSESINABYTE;
+                            i++;
+                            break;
+                        }
+                    }
+                    eof = i;	/* overwrite below... */
 				}
 
 				/* Not expecting EOF's?...
