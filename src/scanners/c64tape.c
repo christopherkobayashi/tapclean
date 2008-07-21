@@ -413,15 +413,15 @@ int cbm_describe(int row)
 	char fn[256];
 	char str[2000];
 
+	/* data file start,end. these are set by a 'header' describe
+	* and used by any subsequent 'data' describe.
+	*/
+
+	static int _dfs = 0, _dfe = 0, _dfx = 0;
+
 	startadr = C64_BASIC_START_ADDR;
 	if (c20 == TRUE)
 		startadr = VIC20_BASIC_START_ADDR;
-
-	/* data file start,end. these are set by a 'header' describe
-	 * and used by any subsequent 'data' describe.
-	 */
-
-	static int _dfs = 0, _dfe = 0, _dfx = 0;
 
 	// SEQ FILE support
 
