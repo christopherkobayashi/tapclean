@@ -2450,6 +2450,12 @@ int analyze(void)
 
 	tap.taptime = get_duration(20, tap.len);
 
+    /* While cleaning, analyze() is called very often: the same 
+       information is appended to the 'info' buffer continuously.
+       This may lead to buffer overflow (Super Man, Visiload T1) so 
+       that we empty the buffer here for it's not used anyway */
+	strcpy(info, "");	/* clear 'info' ready to receive new text */
+
 	/* now call search_tap() to fill the file database (blk) */
 	/* + call describe_blocks() to extract data and get checksum info. */
 
