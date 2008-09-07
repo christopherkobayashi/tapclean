@@ -101,7 +101,8 @@
 
 /* each of these constants indexes an entry in the "ft[]" fmt_t array... */
 
-enum {	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
+enum {
+	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
 	CULT, USGOLD, ACES, WILD,WILD_STOP,NOVA, NOVA_SPC, OCEAN_F1, OCEAN_F2,
 	OCEAN_F3, CHR_T1, CHR_T2, CHR_T3, RASTER, CYBER_F1, CYBER_F2, CYBER_F3,
 	CYBER_F4_1, CYBER_F4_2, CYBER_F4_3, BLEEP, BLEEP_TRIG, BLEEP_SPC,
@@ -122,7 +123,8 @@ enum {	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
  * see also string array 'knam' in the main file.
  */
 
-enum {	LID_FREE=1, LID_ODE, LID_BLEEP, LID_CHR, LID_BURN, LID_WILD, LID_USG,
+enum {
+	LID_FREE=1, LID_ODE, LID_BLEEP, LID_CHR, LID_BURN, LID_WILD, LID_USG,
 	LID_MIC, LID_ACE, LID_T250, LID_RACK, LID_OCEAN, LID_RAST, LID_SPAV,
 	LID_HIT, LID_ANI, LID_VIS1, LID_VIS2, LID_VIS3, LID_VIS4, LID_FIRE,
 	LID_NOVA, LID_IK, LID_PAV, LID_CYBER, LID_VIRG, LID_HTEC, LID_FLASH,
@@ -215,7 +217,6 @@ struct fmt_t
 };
 extern struct fmt_t ft[100];
 
-
 extern unsigned char cbm_header[192];		/* some formats must have their loader... */
 extern unsigned char cbm_program[65536];	/* interrogated. */
 extern int cbm_decoded;				/* 1= yes, 0= no */
@@ -258,10 +259,75 @@ extern char prgunite;
 extern char extvisipatch;
 extern char incsubdirs;
 extern char sortbycrc;
-
 extern char exportcyberloaders;
+
+struct ldrswt_t		/* Loader -no/-do switches */
+{
+	char desc[24];	/* Human readable description of loader */
+	char par[12];	/* Whatever can follow the "-do" and "-no" prefixes 
+			   to include or exclude a loader */
+	char state;	/* Set to TRUE to exclude loader */
+};
+
+enum {
+	noc64 = 0,
+	no108DE0A5,
+	noaccolade,
+	noaces,
+	noar,
+	noaliensy,
+	noalterwg,
+	noanirog,
+	noashdave,
+	noatlantis,
+	noaudiogenic,
+	nobiturbo,
+	nobleep,
+	noburner,
+	noburnervar,
+	nochr,
+	nocult,
+	nocyber,
+	noenigma,
+	nofire,
+	noflash,
+	nofree,
+	nofrslow,
+	nohit,
+	nohitec,
+	noik,
+	nojet,
+	nomicro,
+	nonova,
+	noocean,
+	nooceannew1t1,
+	nooceannew1t2,
+	nooceannew2,
+	nooceannew4,
+	noode,
+	nopalacef1,
+	nopalacef2,
+	nopav,
+	norackit,
+	norainbowf1,
+	norainbowf2,
+	noraster,
+	noseuck,
+	nosnake50,
+	nosnake51,
+	nospav,
+	nosuper,
+	notdif1,
+	notdif2,
+	notrilogic,
+	noturbo,
+	noturr,
+	nousgold,
+	novirgin,
+	novisi,
+	nowild
+};
 
 extern int dbase_is_full;
 
 #endif
-

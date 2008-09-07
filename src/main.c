@@ -53,141 +53,77 @@ char sortbycrc			= FALSE;
 char c16			= FALSE;
 char c20			= FALSE;
 char c64			= TRUE;
-char pal				= TRUE;
-char ntsc				= FALSE;
-
+char pal			= TRUE;
+char ntsc			= FALSE;
 char exportcyberloaders		= FALSE;
 
 static char preserveloadertable	= TRUE;
 
 /*
-parameters -no/do and descriptions
-*/
-struct _ldrswt{
-    char desc[24];
-    char par[12];
-    char state;
-}ldrswt[]=
-{
- {"C64 ROM loader"          ,"c64"        ,FALSE}
-,{"108DE0A5"                ,"108DE0A5"   ,FALSE}
-,{"Accolade/EA"             ,"accolade"   ,FALSE}
-,{"Ace of Aces"             ,"aces"       ,FALSE}
-,{"ActionReplay"            ,"ar"         ,FALSE}
-,{"Alien Syndrome"          ,"aliensy"    ,FALSE}
-,{"Alternative World Games" ,"alterwg"    ,FALSE}
-,{"Anirog"                  ,"anirog"     ,FALSE}
-,{"Ash+Dave"                ,"ashdave"    ,FALSE}
-,{"Atlantis"                ,"atlantis"   ,FALSE}
-,{"Audiogenic"              ,"audiogenic" ,FALSE}
-,{"Biturbo"                 ,"biturbo"    ,FALSE}
-,{"Bleepload"               ,"bleep"      ,FALSE}
-,{"Burner"                  ,"burner"     ,FALSE}
-,{"Burner Variant"          ,"burnervar"  ,FALSE}
-,{"CHR"                     ,"chr"        ,FALSE}
-,{"Cult"                    ,"cult"       ,FALSE}
-,{"Cyberload"               ,"cyber"      ,FALSE}
-,{"Enigma"                  ,"enigma"     ,FALSE}
-,{"Firebird"                ,"fire"       ,FALSE}
-,{"Flashload"               ,"flash"      ,FALSE}
-,{"Freeload"                ,"free"       ,FALSE}
-,{"Freeload Slowload"       ,"frslow"     ,FALSE}
-,{"Galadriel"               ,"galadriel"  ,FALSE}
-,{"Hitload"                 ,"hit"        ,FALSE}
-,{"Hi-Tec"                  ,"hitec"      ,FALSE}
-,{"Jetload"                 ,"jet"        ,FALSE}
-,{"IK"                      ,"ik"         ,FALSE}
-,{"Microload"               ,"micro"      ,FALSE}
-,{"Novaload"                ,"nova"       ,FALSE}
-,{"Ocean"                   ,"ocean"      ,FALSE}
-,{"Ocean F1"                ,"oceannew1t1",FALSE}
-,{"Ocean F2"                ,"oceannew1t2",FALSE}
-,{"Ocean New 2"             ,"oceannew2"  ,FALSE}
-,{"Ocean New 4"             ,"oceannew4"  ,FALSE}
-,{"ODEload"                 ,"ode"        ,FALSE}
-,{"Palace F1"               ,"palacef1"   ,FALSE}
-,{"Palace F2"               ,"palacef2"   ,FALSE}
-,{"Pavloda"                 ,"pav"        ,FALSE}
-,{"Rack-It"                 ,"rackit"     ,FALSE}
-,{"Rainbow Arts F1"         ,"rainbowf1"  ,FALSE}
-,{"Rainbow Arts F2"         ,"rainbowf2"  ,FALSE}
-,{"Rasterload"              ,"raster"     ,FALSE}
-,{"SEUCK"                   ,"seuck"      ,FALSE}
-,{"Snakeload 50"            ,"snake50"    ,FALSE}
-,{"Snakeload 51"            ,"snake51"    ,FALSE}
-,{"Super Pavloda"           ,"spav"       ,FALSE}
-,{"Super Tape"              ,"super"      ,FALSE}
-,{"TDI F1"                  ,"tdif1"      ,FALSE}
-,{"TDI F2"                  ,"tdif2"      ,FALSE}
-,{"Trilogic"                ,"trilogic"   ,FALSE}
-,{"Turbotape 250"           ,"turbo"      ,FALSE}
-,{"Turrican"                ,"turr"       ,FALSE}
-,{"U.S. Gold"               ,"usgold"     ,FALSE}
-,{"Virgin"                  ,"virgin"     ,FALSE}
-,{"Visiload"                ,"visi"       ,FALSE}
-,{"Wildload"                ,"wild"       ,FALSE}
+ * Parameters -no/-do and descriptions
+ *
+ * See enum for this table in mydefs.h: these must be kept in sync.
+ */
+struct ldrswt_t ldrswt[] = {
+	/* description (max 23 chars),   parameter,     exclude? */
+	{"C64 ROM loader"		,"c64"		,FALSE},
+	{"108DE0A5"			,"108DE0A5"	,FALSE},
+	{"Accolade/EA"			,"accolade"	,FALSE},
+	{"Ace of Aces"			,"aces"		,FALSE},
+	{"ActionReplay"			,"ar"		,FALSE},
+	{"Alien Syndrome"		,"aliensy"	,FALSE},
+	{"Alternative World Games"	,"alterwg"	,FALSE},
+	{"Anirog"			,"anirog"	,FALSE},
+	{"Ash+Dave"			,"ashdave"	,FALSE},
+	{"Atlantis"			,"atlantis"	,FALSE},
+	{"Audiogenic"			,"audiogenic"	,FALSE},
+	{"Biturbo"			,"biturbo"	,FALSE},
+	{"Bleepload"			,"bleep"	,FALSE},
+	{"Burner"			,"burner"	,FALSE},
+	{"Burner Variant"		,"burnervar"	,FALSE},
+	{"CHR"				,"chr"		,FALSE},
+	{"Cult"				,"cult"		,FALSE},
+	{"Cyberload"			,"cyber"	,FALSE},
+	{"Enigma"			,"enigma"	,FALSE},
+	{"Firebird"			,"fire"		,FALSE},
+	{"Flashload"			,"flash"	,FALSE},
+	{"Freeload"			,"free"		,FALSE},
+	{"Freeload Slowload"		,"frslow"	,FALSE},
+	{"Hitload"			,"hit"		,FALSE},
+	{"Hi-Tec"			,"hitec"	,FALSE},
+	{"Jetload"			,"jet"		,FALSE},
+	{"IK"				,"ik"		,FALSE},
+	{"Microload"			,"micro"	,FALSE},
+	{"Novaload"			,"nova"		,FALSE},
+	{"Ocean"			,"ocean"	,FALSE},
+	{"Ocean F1"			,"oceannew1t1"	,FALSE},
+	{"Ocean F2"			,"oceannew1t2"	,FALSE},
+	{"Ocean New 2"			,"oceannew2"	,FALSE},
+	{"Ocean New 4"			,"oceannew4"	,FALSE},
+	{"ODEload"			,"ode"		,FALSE},
+	{"Palace F1"			,"palacef1"	,FALSE},
+	{"Palace F2"			,"palacef2"	,FALSE},
+	{"Pavloda"			,"pav"		,FALSE},
+	{"Rack-It"			,"rackit"	,FALSE},
+	{"Rainbow Arts F1"		,"rainbowf1"	,FALSE},
+	{"Rainbow Arts F2"		,"rainbowf2"	,FALSE},
+	{"Rasterload"			,"raster"	,FALSE},
+	{"SEUCK"			,"seuck"	,FALSE},
+	{"Snakeload 50"			,"snake50"	,FALSE},
+	{"Snakeload 51"			,"snake51"	,FALSE},
+	{"Super Pavloda"		,"spav"		,FALSE},
+	{"Super Tape"			,"super"	,FALSE},
+	{"TDI F1"			,"tdif1"	,FALSE},
+	{"TDI F2"			,"tdif2"	,FALSE},
+	{"Trilogic"			,"trilogic"	,FALSE},
+	{"Turbotape 250"		,"turbo"	,FALSE},
+	{"Turrican"			,"turr"		,FALSE},
+	{"U.S. Gold"			,"usgold"	,FALSE},
+	{"Virgin"			,"virgin"	,FALSE},
+	{"Visiload"			,"visi"		,FALSE},
+	{"Wildload"			,"wild"		,FALSE}
+	/* description (max 23 chars),   parameter,     exclude? */
 };
-enum{noc64=0
-    ,no108DE0A5
-    ,noaccolade
-    ,noaces
-    ,noar
-    ,noaliensy
-    ,noalterwg
-    ,noanirog
-    ,noashdave
-    ,noatlantis
-    ,noaudiogenic
-    ,nobiturbo
-    ,nobleep
-    ,noburner
-    ,noburnervar
-    ,nochr
-    ,nocult
-    ,nocyber
-    ,noenigma
-    ,nofire
-    ,noflash
-    ,nofree
-    ,nofrslow
-    ,nogaladriel
-    ,nohit
-    ,nohitec
-    ,noik
-    ,nojet
-    ,nomicro
-    ,nonova
-    ,noocean
-    ,nooceannew1t1
-    ,nooceannew1t2
-    ,nooceannew2
-    ,nooceannew4
-    ,noode
-    ,nopalacef1
-    ,nopalacef2
-    ,nopav
-    ,norackit
-    ,norainbowf1
-    ,norainbowf2
-    ,noraster
-    ,noseuck
-    ,nosnake50
-    ,nosnake51
-    ,nospav
-    ,nosuper
-    ,notdif1
-    ,notdif2
-    ,notrilogic
-    ,noturbo
-    ,noturr
-    ,nousgold
-    ,novirgin
-    ,novisi
-    ,nowild
-    };
-
-//static char loaded		= FALSE;
-
 
 static int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
 static char note_errors;	/* set true only when decoding identified files, */
@@ -224,9 +160,30 @@ int quiet = FALSE;		/* set 1 to stop the loader search routines from producing o
 
 long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
 
+
+/*
+ * Where a field is marked 'VV', loader/file interrogation is required to
+ * discover the missing value.
+ *
+ * NOTE: some of the values (like number of pilot bytes) may not agree with
+ * the loader docs, this is done to let partly damaged games be detected
+ * and fixed.
+ *
+ * en = byte endianess, 0=LSbF, 1=MSbF
+ * tp = threshold pulsewidth (if applicable)
+ * sp = ideal short pulsewidth
+ * mp = ideal medium pulsewidth (if applicable)
+ * lp = ideal long pulsewidth
+ * pv = pilot value
+ * sv = sync value
+ * pmin = minimum pilots that should be present.
+ * pmax = maximum pilots that should be present.
+ * has_cs = flag, provides checksums, 1=yes, 0=no.
+ */
+
 struct fmt_t ft_org[100];	/* a backup copy of the following... */
 struct fmt_t ft[100] = {
-	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
+	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 
 	{""			,NA,   NA,   NA,   NA,  NA,   NA,   NA,   NA,  NA,    NA},
 	{"UNRECOGNIZED"		,NA,   NA,   NA,   NA,  NA,   NA,   NA,   NA,  NA,    NA},
@@ -319,34 +276,24 @@ struct fmt_t ft[100] = {
 				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
 	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
 	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
+
+	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
-	/* name,                 en,    tp,   sp,   mp,  lp,   pv,   sv,  pmin, pmax, has_cs. */
+	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 };
-/* where a field is marked 'VV', loader/file interrogation is required to
- * discover the missing value.
- * NOTE: some of the values (like number of pilot bytes) may not agree with
- * the loader docs, this is done to let partly damaged games be detected
- * and fixed.
+
+/* 
+ * The following strings are used to describe which loader signature has been 
+ * found in CBM data file.
  *
- * en = byte endianess, 0=LSbF, 1=MSbF
- * tp = threshold pulsewidth (if applicable)
- * sp = ideal short pulsewidth
- * mp = ideal medium pulsewidth (if applicable)
- * lp = ideal long pulsewidth
- * pv = pilot value
- * sv = sync value
- * pmin = minimum pilots that should be present.
- * pmax = maximum pilots that should be present.
- * has_cs = flag, provides checksums, 1=yes, 0=no.
+ * See enum for this table in mydefs.h: these must be kept in sync.
  */
 
-
-
-/* The following strings are used by the loader ID system...
- *   see enum for this table in mydefs.h...
- */
-
-const char knam[100][32] = {
+const char knam[][32] = {
+	/*
+	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
+	 * them all here!
+	 */
 	{"n/a"},
 	{"Freeload (or clone)"},
 	{"Odeload"},
@@ -390,8 +337,10 @@ const char knam[100][32] = {
 	{"Ocean New 4"},
 	{"108DE0A5"},
 	{"Freeload Slowload"}
-	/* Only loaders with a LID_ entry in mydefs.h. Do not list 
-	them all here! */
+	/*
+	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
+	 * them all here!
+	 */
 };
 
 
@@ -407,8 +356,8 @@ const char temptcbatchreportname[] =	"tcbatch.tmp";
 char exedir[MAXPATH];			/* global, assigned in main(), includes trailing slash. */
 
 
-/**
- *	Internal usage functions
+/*
+ * Internal usage functions
  */
 
 /*
@@ -646,8 +595,9 @@ static void process_options(int argc, char **argv)
 {
 	int i;
 	int excludeflag = 1;
-	int jj,sl;
-	sl=sizeof(ldrswt)/sizeof(*ldrswt);
+
+	int jj, sl;	/* counter and amount of loader switches */
+	sl = sizeof(ldrswt)/sizeof(*ldrswt);
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
@@ -658,7 +608,7 @@ static void process_options(int argc, char **argv)
 					printf("\n\nTolerance parameter out of range, using default (= 10).");
 				}
 			} else
-				printf("\n\nTolerance parameter missing, using default (= 10).");
+				printf("\n\nTolerance parameter missing, using default (= %d).", DEFTOL);
 		}
 
 		if (strcmp(argv[i], "-debug") == 0)
@@ -700,34 +650,29 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-incsubdirs") == 0)
 			incsubdirs = TRUE;
 		if (strcmp(argv[i], "-list") == 0)
-        {
+		{
 			display_scanners();
-            exit(0);
-        }
+			exit(0);
+		}
 		if (strcmp(argv[i], "-sortbycrc") == 0)
 			sortbycrc = TRUE;
 		if (strcmp(argv[i], "-ec") == 0)
 			exportcyberloaders = TRUE;
 
 		/* process all -no<loader> */
-		if (strncmp(argv[i], "-no", 3) == 0)
-		{
-
-			for(jj=0;jj<sl;jj++)
-			{
-				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
-				{
-					if (excludeflag == 1)
-					{
+		if (strncmp(argv[i], "-no", 3) == 0) {
+			for(jj = 0; jj < sl; jj++) {
+				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0) {
+					if (excludeflag == 1) {
 						printf("\nExcluded scanners:\n\n");
+						/* Print above message only once */
 						excludeflag = 0;
-					}
-					else if (excludeflag == 2) {
+					} else if (excludeflag == 2) {
 						printf("You cannot mix -no<loader> and -do<loader>\n");
 						exit(1);
 					}
 					ldrswt[jj].state = TRUE;
-					printf(" %s\n",ldrswt[jj].desc);
+					printf(" %s\n", ldrswt[jj].desc);
 				}
 			}
 		}
@@ -735,24 +680,20 @@ static void process_options(int argc, char **argv)
 
 		/* process all -do<loader> */
 
-		if (strncmp(argv[i], "-do", 3) == 0)
-		{
-
-			for(jj=0;jj<sl;jj++)
-			{
-				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0)
-				{
-					if (excludeflag==0) {
+		if (strncmp(argv[i], "-do", 3) == 0) {
+			for(jj = 0; jj < sl; jj++) {
+				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0) {
+					if (excludeflag == 1) {
+						printf("\nIncluded scanners:\n\n");
+						set_noall();
+						/* Print above message only once */
+						excludeflag = 2;
+					} else if (excludeflag == 0) {
 						printf("You cannot mix -no<loader> and -do<loader>\n");
 						exit(1);
 					}
-					if (excludeflag==1) {
-						printf("\nIncluded scanners:\n\n");
-						set_noall();
-						excludeflag=2;
-					}
 					ldrswt[jj].state = FALSE;
-					printf(" +%s\n",ldrswt[jj].desc);
+					printf(" +%s\n", ldrswt[jj].desc);
 				}
 			}
 		}
@@ -1027,7 +968,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_FREE_SLOW     && ldrswt[nofrslow    ].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
-			/* todo : TURRICAN
+			/*
+			 * todo : TURRICAN
 			 * todo : SEUCK
 			 * todo : JETLOAD
 			 * todo : TENGEN
@@ -1049,8 +991,11 @@ static void search_tap(void)
 			if (ldrswt[nocult   ].state == FALSE && !dbase_is_full && !aborted)
 				cult_search();
 
-			/* comes here to avoid ocean misdetections
-			 * snakeload is a 'safer' scanner than ocean.
+			/*
+			 * Comes here to avoid ocean misdetections.
+			 * Snakeload is a 'safer' scanner than ocean (the
+			 * confidence level with which it is acknowledged is
+			 * higher than ocean).
 			 */
 
 			if (ldrswt[nosnake50	].state == FALSE && !dbase_is_full && !aborted) {
@@ -1221,7 +1166,7 @@ static void search_tap(void)
 		scan_gaps();	/* add any gaps to the block list */
 		sort_blocks();	/* sort the blocks into order of appearance */
 
-		tap.changed=0;	/* important to clear this. */
+		tap.changed = 0;	/* important to clear this. */
 
 		if (quiet)
 			msgout("  Done.");
@@ -1236,8 +1181,6 @@ static void search_tap(void)
 
 static void gap_describe(int row)
 {
-	strcpy(lin, "");
-
 	if (blk[row]->xi > 1)
 		sprintf(lin, "\n - Length = %d pulses", blk[row]->xi);
 	else
@@ -1252,7 +1195,7 @@ static void gap_describe(int row)
  * any data in the block and fill in all missing information for that file.
  *
  * Note: Any "additional" (unstored in the database) text info will be available
- * in the global buffer 'info'. (this could be improved).
+ * in the global buffer 'info' (this could be improved).
  */
 
 static void describe_file(int row)
@@ -1532,7 +1475,7 @@ static int check_version(void)
 }
 
 /*
- * Verifies the TAP header 'size' field.
+ * Verify the TAP header 'size' field.
  * Returns 0 if ok, else 1.
  */
 
@@ -1659,7 +1602,8 @@ static void get_file_stats(void)
 }
 
 /*
- * Print the human readble TAP report to a buffer.
+ * Print the human readable TAP report to a buffer.
+ *
  * Note: this is done so I can send the info to both the screen and the report
  * without repeating the code.
  * Note: Call 'analyze()' before calling this!.
@@ -1667,8 +1611,8 @@ static void get_file_stats(void)
 
 static void print_results(char *buf)
 {
-	char tstr[2][256] = {"PASS", "FAIL"};
-	char tstr2[2][256] = {"OK", "FAIL"};
+	char szpass[2][5] = {"PASS", "FAIL"};
+	char szok[2][5] = {"OK", "FAIL"};
 	int min;
 	float sec;
 
@@ -1724,15 +1668,15 @@ static void print_results(char *buf)
 
 	sprintf(lin, "\n");
 	strcat(buf, lin);
-	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", tstr[tap.tst_hd], tstr2[tap.fsigcheck], tstr2[tap.fvercheck], tstr2[tap.fsizcheck]);
+	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", szpass[tap.tst_hd], szok[tap.fsigcheck], szok[tap.fvercheck], szok[tap.fsizcheck]);
 	strcat(buf, lin);
-	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", tstr[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent,"%%");
+	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", szpass[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent,"%%");
 	strcat(buf, lin); 
-	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", tstr[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
+	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", szpass[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
 	strcat(buf, lin);
-	sprintf(lin, "\nRead test         : %s [%d Errors]", tstr[tap.tst_rd], tap.total_read_errors);
+	sprintf(lin, "\nRead test         : %s [%d Errors]", szpass[tap.tst_rd], tap.total_read_errors);
 	strcat(buf, lin);
-	sprintf(lin, "\nOptimization test : %s [%d of %d files OK]", tstr[tap.tst_op], tap.optimized_files, tap.total_data_files);
+	sprintf(lin, "\nOptimization test : %s [%d of %d files OK]", szpass[tap.tst_op], tap.optimized_files, tap.total_data_files);
 	strcat(buf, lin);
 	sprintf(lin, "\n");
 	strcat(buf, lin);
