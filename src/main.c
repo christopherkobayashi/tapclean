@@ -2677,7 +2677,7 @@ int is_pause_param(int p)
 					return 1;	/* p is in a pause */
 			}
 		}
-	} else { /* luigi */
+	} else { /* luigi: just start at the beginning then */
 		for (i = 20; i < tap.len - 4 ; i++) {
 			if (tap.tmem[i] == 0)	/* skip over v1 pauses */
 				i += 3;
@@ -2690,8 +2690,7 @@ int is_pause_param(int p)
 			}
 		}
 	}
-	// luigi: This point can't be reached
-	return 0; /* luigi: fake, here to avoid warning at compile time */
+	return 0; /* p is the pos of one of the last 4 pulses in the TAP file */
 }
 
 /*
