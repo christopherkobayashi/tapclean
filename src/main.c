@@ -812,7 +812,6 @@ static void search_tap(void)
 
 		if (!quiet) {
 			sprintf(lin, "\n  Loader ID: %s.\n", knam[tap.cbmid]);
-			sprintf(lin, "\n  Loader ID: %s.\n", knam[tap.cbmid]);
 			msgout(lin);
 		}
 
@@ -921,51 +920,51 @@ static void search_tap(void)
 			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].state == FALSE && !dbase_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1T1 && ldrswt[nooceannew1t1].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (tap.cbmid == LID_OCNEW1T2 && ldrswt[nooceannew1t2].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (tap.cbmid == LID_OCNEW2   && ldrswt[nooceannew2].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew2_search();
 
-			if (tap.cbmid == LID_SNAKE 	&& ldrswt[nosnake50].state == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].state == FALSE && !dbase_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (tap.cbmid == LID_SNAKE 		&& ldrswt[nosnake51		].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].state == FALSE && !dbase_is_full && !aborted)
 				snakeload51_search();
 
-			if (tap.cbmid == LID_ATLAN 		&& ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ATLAN	&& ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
 				atlantis_search();
 
-			if (tap.cbmid == LID_AUDIOGENIC && ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
 
-			if (tap.cbmid == LID_CULT 		&& ldrswt[nocult		].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].state == FALSE && !dbase_is_full && !aborted)
 				cult_search();
 
-			if (tap.cbmid == LID_ACCOLADE	    && ldrswt[noaccolade].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS    && ldrswt[norainbowf1].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf1	].state == FALSE && !dbase_is_full && !aborted)
 				rainbowf1_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS    && ldrswt[norainbowf2].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf2	].state == FALSE && !dbase_is_full && !aborted)
 				rainbowf2_search();
 
-			if (tap.cbmid == LID_BURNERVAR	    && ldrswt[noburnervar].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].state == FALSE && !dbase_is_full && !aborted)
 				burnervar_search();
 
-			if (tap.cbmid == LID_OCNEW4	    && ldrswt[nooceannew2   ].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
-			if (tap.cbmid == LID_108DE0A5      && ldrswt[no108DE0A5    ].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
 
-			if (tap.cbmid == LID_FREE_SLOW     && ldrswt[nofrslow    ].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
 			/*
@@ -979,16 +978,16 @@ static void search_tap(void)
 		/* Scan the lot.. (if shortcuts are disabled or no loader ID was found) */
 
 		if ((noid == FALSE && tap.cbmid == 0) || (noid == TRUE)) {
-			if (ldrswt[noturbo  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturbo	].state == FALSE && !dbase_is_full && !aborted)
 				turbotape_search();
 
-			if (ldrswt[nofree   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofree	].state == FALSE && !dbase_is_full && !aborted)
 				freeload_search();
 
-			if (ldrswt[noode    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noode	].state == FALSE && !dbase_is_full && !aborted)
 				odeload_search();
 
-			if (ldrswt[nocult   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nocult	].state == FALSE && !dbase_is_full && !aborted)
 				cult_search();
 
 			/*
@@ -1006,96 +1005,96 @@ static void search_tap(void)
 			if (ldrswt[nosnake51	].state == FALSE && !dbase_is_full && !aborted)
 				snakeload51_search();
 
-			if (ldrswt[nonova   ].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nonova	].state == FALSE && !dbase_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (ldrswt[nobleep  ].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nobleep	].state == FALSE && !dbase_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (ldrswt[noocean  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noocean	].state == FALSE && !dbase_is_full && !aborted)
 				ocean_search();
 
-			if (ldrswt[nocyber  ].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nocyber	].state == FALSE && !dbase_is_full && !aborted) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (ldrswt[nousgold ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nousgold	].state == FALSE && !dbase_is_full && !aborted)
 				usgold_search();
 
-			if (ldrswt[noaces   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaces	].state == FALSE && !dbase_is_full && !aborted)
 				aces_search();
 
-			if (ldrswt[nomicro  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nomicro	].state == FALSE && !dbase_is_full && !aborted)
 				micro_search();
 
-			if (ldrswt[noraster ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noraster	].state == FALSE && !dbase_is_full && !aborted)
 				raster_search();
 
-			if (ldrswt[nochr    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nochr	].state == FALSE && !dbase_is_full && !aborted)
 				chr_search();
 
-			if (ldrswt[noburner ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noburner	].state == FALSE && !dbase_is_full && !aborted)
 				burner_search();
 
-			if (ldrswt[novisi   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novisi	].state == FALSE && !dbase_is_full && !aborted)
 				visiload_search();
 
-			if (ldrswt[nowild   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
 				wild_search();
 
-			if (ldrswt[nohit    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohit	].state == FALSE && !dbase_is_full && !aborted)
 				hitload_search();
 
-			if (ldrswt[norackit ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norackit	].state == FALSE && !dbase_is_full && !aborted)
 				rackit_search();
 
-			if (ldrswt[nospav   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nospav	].state == FALSE && !dbase_is_full && !aborted)
 				superpav_search();
 
-			if (ldrswt[noanirog ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noanirog	].state == FALSE && !dbase_is_full && !aborted)
 				anirog_search();
 
-			if (ldrswt[nosuper  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nosuper	].state == FALSE && !dbase_is_full && !aborted)
 				supertape_search();
 
-			if (ldrswt[nofire   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofire	].state == FALSE && !dbase_is_full && !aborted)
 				firebird_search();
 
-			if (ldrswt[nopav    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopav	].state == FALSE && !dbase_is_full && !aborted)
 				pav_search();
 
-			if (ldrswt[noik	    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noik		].state == FALSE && !dbase_is_full && !aborted)
 				ik_search();
 
-			if (ldrswt[noturr   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturr	].state == FALSE && !dbase_is_full && !aborted)
 				turrican_search();
 
-			if (ldrswt[noseuck  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noseuck	].state == FALSE && !dbase_is_full && !aborted)
 				seuck1_search();
 
-			if (ldrswt[nojet    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nojet	].state == FALSE && !dbase_is_full && !aborted)
 				jetload_search();
 
-			if (ldrswt[noflash  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noflash	].state == FALSE && !dbase_is_full && !aborted)
 				flashload_search();
 
-			if (ldrswt[novirgin ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novirgin	].state == FALSE && !dbase_is_full && !aborted)
 				virgin_search();
 
-			if (ldrswt[nohitec  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohitec	].state == FALSE && !dbase_is_full && !aborted)
 				hitec_search();
 
-			if (ldrswt[notdif2  ].state == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
+			if (ldrswt[notdif2	].state == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
 				tdif2_search();
 
-			if (ldrswt[notdif1  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[notdif1	].state == FALSE && !dbase_is_full && !aborted)
 				tdi_search();
 
 			if (ldrswt[nooceannew1t1].state == FALSE && !dbase_is_full && !aborted)
@@ -1116,10 +1115,10 @@ static void search_tap(void)
 			if (ldrswt[nopalacef2	].state == FALSE && !dbase_is_full && !aborted)
 				palacef2_search();
 
-			if (ldrswt[noenigma 	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noenigma	].state == FALSE && !dbase_is_full && !aborted)
 				enigma_search();
 
-			if (ldrswt[noaudiogenic ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
 				audiogenic_search();
 
 			if (ldrswt[noaliensy	].state == FALSE && !dbase_is_full && !aborted)
@@ -1146,19 +1145,19 @@ static void search_tap(void)
 			if (ldrswt[nooceannew4	].state	== FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
-			if (ldrswt[nobiturbo   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nobiturbo	].state == FALSE && !dbase_is_full && !aborted)
 				biturbo_search();
 
-			if (ldrswt[no108DE0A5  ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
 				_108DE0A5_search();
 
-			if (ldrswt[noar        ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noar		].state == FALSE && !dbase_is_full && !aborted)
 				ar_search();
 
-			if (ldrswt[noashdave   ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noashdave	].state == FALSE && !dbase_is_full && !aborted)
 				ashdave_search();
 
-			if (ldrswt[nofrslow    ].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 		}
 
@@ -2394,10 +2393,10 @@ int analyze(void)
 
 	tap.taptime = get_duration(20, tap.len);
 
-    /* While cleaning, analyze() is called very often: the same 
-       information is appended to the 'info' buffer continuously.
-       This may lead to buffer overflow (Super Man, Visiload T1) so 
-       that we empty the buffer here for it's not used anyway */
+	/* While cleaning, analyze() is called very often: the same 
+	   information is appended to the 'info' buffer continuously.
+	   This may lead to buffer overflow (Super Man, Visiload T1) so 
+	   that we empty the buffer here for it's not used anyway */
 	strcpy(info, "");	/* clear 'info' ready to receive new text */
 
 	/* now call search_tap() to fill the file database (blk) */
