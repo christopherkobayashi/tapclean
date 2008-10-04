@@ -30,7 +30,7 @@ struct blk_t
 	int p2;			/*!< first data pulse offset (should be long) */
 	int p3;			/*!< last data pulse offset (should be long) */
 	int p4;			/*!< last pulse offset (should be long) */
-	int xi;			/*!< extra info offset (should be long) */
+	int xi;			/*!< extra info (should be long) */
 
 	int cs;			/*!< c64 RAM start pos (16 bit value) */
 	int ce;			/*!< c64 RAM end pos (16 bit value) */

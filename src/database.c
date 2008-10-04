@@ -96,7 +96,7 @@ void reset_database(void)
  *	@param eof end of block offset
  *	@param xi extra info offset
  *	
- *	@return Slot number the block went to
+ *	@return Slot number the block went to (value is >= 0)
  *	@return DBERR on invalid block definition
  *	@return DBFULL on database full
  */
@@ -445,8 +445,10 @@ void make_prgs(void)
 	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
 	unsigned char *tmp, done;
 
-	/* create table of all exported files by index (of blk)... */
-
+	/* Create table of all exported files by index (of blk)...
+	 * It is used to check if next file is a neighbour without having
+	 * to scan ahead for next blk with data in it
+	 */
 	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
 		if (blk[i]->dd != NULL)
 			pt[j++] = i;
@@ -536,24 +538,21 @@ int save_prgs(void)
 
 	if (chdir("prg") == 0) {	/* delete old prg's if exist... */
 #ifdef WIN32
-    intptr_t dirp;
-    struct _finddata_t dp;
+		intptr_t dirp;
+		struct _finddata_t dp;
 
-    dirp = _findfirst("*.*", &dp);
-    if (dirp != -1)
-    {
-      do 
-      {
-        if (strncmp(dp.name, ".", 1))
-          unlink(dp.name);
-      } while(_findnext(dirp, &dp) == 0);
-    }
+		dirp = _findfirst("*.*", &dp);
+		if (dirp != -1) {
+			do {
+				if (strncmp(dp.name, ".", 1))
+					unlink(dp.name);
+			} while(_findnext(dirp, &dp) == 0);
+		}
 #else
 		DIR *dirp;
 
 		dirp = opendir(".");
-		if (dirp != NULL)
-		{
+		if (dirp != NULL) {
 			struct dirent *dp;
 
 			while ((dp = readdir(dirp)) != NULL)
@@ -577,7 +576,11 @@ int save_prgs(void)
 			strcat(lin, " BAD");
 		strcat(lin, ".prg");
 
+#ifdef WIN32
 		fp = fopen(lin, "w+b");
+#else
+		fp = fopen(lin, "w+");
+#endif
 		if (fp != NULL) {
 			fputc(prg[i].cs & 0xFF, fp);		/* write low byte of start address */
 			fputc((prg[i].cs & 0xFF00) >> 8, fp);	/* write high byte of start address */
