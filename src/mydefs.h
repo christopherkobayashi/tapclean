@@ -54,8 +54,8 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.21 Console - (C) 2006-2007 XXX"
-#define BUILDER     "bgk"
+#define VERSION_STR "TAPClean v0.22 Console - (C) 2006-2008 XXX"
+#define BUILDER     "tce"
 
 #define TRUE	1
 #define FALSE	0
