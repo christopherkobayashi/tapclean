@@ -33,6 +33,7 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#define PREPILOTVALUE	0x20
 #define HDSZ 10
 
 
@@ -40,8 +41,7 @@ void chr_search(void)
 {
 	int i, j, z, sof, sod, eod, eof;
 	int x, hd[HDSZ];
-	int en, tp, sp, lp, sv, ld,pass = 1;
-	char lname[3][3] = {"T1", "T2", "T3"};
+	int en, tp, sp, lp, sv, ld, pass = 1;
 
 	do {
 		if (pass == 1)
@@ -58,7 +58,7 @@ void chr_search(void)
 		sv = ft[ld].sv;
 
 		if (!quiet) {
-			sprintf(lin, "  CHR Loader %s", lname[pass - 1]);
+			sprintf(lin, "  CHR Loader T%d", pass);
 			msgout(lin);
 		}
 
@@ -77,12 +77,10 @@ void chr_search(void)
 					if (j == 156) {	/* whole sequence (156 bytes) exists?  */
 						sod = i + (157 * 8);
 
-						/* now just just trace back from sof through any $20 bytes (pre-leader) */
+						/* now just just trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
 
-						if (readttbyte(sof - 8, lp, sp, tp, en) == 0x20) {
-							while (readttbyte(sof - 8, lp, sp, tp, en) == 0x20)
-								sof -= 8;
-						}
+						while (readttbyte(sof - 8, lp, sp, tp, en) == PREPILOTVALUE)
+							sof -= 8;
 
 						/* to find the last pulse, we look in the header for the start/end addresses... */
 
