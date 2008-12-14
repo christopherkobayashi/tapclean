@@ -103,7 +103,8 @@ void odeload_search (void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			// Prevent int wraparound when subtracting 1 from end location
+			/* Prevent int wraparound when subtracting 1 from end location 
+			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
 			else
@@ -167,7 +168,14 @@ int odeload_describe (int row)
 
 	/* Extract load and end locations */
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1; /* we want the location of the last loaded byte */
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+	/* Prevent int wraparound when subtracting 1 from end location 
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
 
 	/* Compute size */
 	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;

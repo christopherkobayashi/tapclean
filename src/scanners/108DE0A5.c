@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.8  2008/12/14 11:49:07  luigidifraia
+ * Updated int wraparound prevention
+ *
  * Revision 1.7  2008/05/18 23:25:17  luigidifraia
  * Implemented integer wraparound prevention in new scanners
  *
@@ -157,7 +160,8 @@ void _108DE0A5_search (void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			// Prevent int wraparound when subtracting 1 from end location
+			/* Prevent int wraparound when subtracting 1 from end location 
+			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
 			else
@@ -219,7 +223,14 @@ int _108DE0A5_describe(int row)
 
 	/* Extract load and end locations */
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8) - 1; /* we want the location of the last loaded byte */
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+	/* Prevent int wraparound when subtracting 1 from end location 
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
 
 	/* Compute size */
 	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;

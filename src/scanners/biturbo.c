@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.6  2008/12/14 11:49:07  luigidifraia
+ * Updated int wraparound prevention
+ *
  * Revision 1.5  2008/05/18 23:25:17  luigidifraia
  * Implemented integer wraparound prevention in new scanners
  *
@@ -183,7 +186,8 @@ void biturbo_search (void)
 				s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
 				e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 
-				// Prevent int wraparound when subtracting 1 from end location
+				/* Prevent int wraparound when subtracting 1 from end location 
+				   to get the location of the last loaded byte */
 				if (e == 0)
 					e = 0xFFFF;
 				else

@@ -89,7 +89,8 @@ void cult_search (void)
 
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 
-	// Prevent int wraparound when subtracting 1 from end location
+	/* Prevent int wraparound when subtracting 1 from end location 
+	   to get the location of the last loaded byte */
 	if (e == 0)
 		e = 0xFFFF;
 	else
