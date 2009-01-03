@@ -91,8 +91,8 @@ struct ldrswt_t ldrswt[] = {
 	{"Freeload Slowload"		,"frslow"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
-	{"Jetload"			,"jet"		,FALSE},
 	{"IK"				,"ik"		,FALSE},
+	{"Jetload"			,"jet"		,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
 	{"Ocean"			,"ocean"	,FALSE},
@@ -570,21 +570,21 @@ static void display_usage(void)
 
 static void display_scanners(void)
 {
-    int i,l;
-    printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names.\n\n");
-    l=sizeof(ldrswt)/sizeof(*ldrswt);
-    for(i=0;i<l;i++)
-	printf(" %-24s  -no%-12s  -do%-12s\n",ldrswt[i].desc,ldrswt[i].par,ldrswt[i].par );
+	int i,l;
+	printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names.\n\n");
+	l=sizeof(ldrswt)/sizeof(*ldrswt);
+	for(i=0;i<l;i++)
+		printf(" %-24s  -no%-12s  -do%-12s\n",ldrswt[i].desc,ldrswt[i].par,ldrswt[i].par );
 }
 
 /* noall */
 static void set_noall(void)
 {
-    int i,l;
-    l=sizeof(ldrswt)/sizeof(*ldrswt);
-    ldrswt[0].state = FALSE;
-    for(i=1;i<l;i++)
-	ldrswt[i].state = TRUE;
+	int i,l;
+	l=sizeof(ldrswt)/sizeof(*ldrswt);
+	ldrswt[0].state = FALSE;
+	for(i=1;i<l;i++)
+		ldrswt[i].state = TRUE;
 }
 
 /*

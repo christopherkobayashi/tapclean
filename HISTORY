@@ -1,4 +1,7 @@
 
+v0.23
+	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
+
 v0.22
 	Added proper SEQ file support (Luigi)
 	First attempt to make the source 64-bit safe in gcc compiler (Luigi)
