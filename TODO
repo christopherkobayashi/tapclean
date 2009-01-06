@@ -1,20 +1,31 @@
+ - Cleaned dmp files (DC2N files) should be named .tap, not .dmp
+ - Review Hi-Tec and Virgin loader. These should really be Hi-Tec/Mastertronic 
+   T1, T2, T3, where:
+    CBM Data CRC32 0x895DCF44 -> T1 (Threshold 0x015E)
+    CBM Data CRC32 0x342A2416 -> T2 (Threshold 0x016E)
+    CBM Data CRC32 0xFADDF41C -> T3 (Threshold 0x017E)
+   Disambiguation should be achieved by means of the fast scanning based on CBM 
+   Data CRC32. (Luigi)
  - When last pulse of a checkbyte is broken in Pavloda (either oversized or 
-    merged into a long pulse) the cleaning stage must fix it. The last pulse is 
-    0x3F if no 0x1F preceeds it and it's 0x1F otherwise.
+   merged into a long pulse) the cleaning stage must fix it. The last pulse is 
+   0x3F if no 0x1F preceeds it and it's 0x1F otherwise. (Luigi)
  - It must be responsibility of the cleaning process to reconstruct the last 
-    bit of the last byte of pattern foung in Ash+Dave trailer, 0x77, not of the 
-    scanner. Move the reconstruction there.
- - Make some templates for the xxx_search() and xxx_describe() functions.
- - FIX xxx_search() functions by checking the return value from addblockdef() before assigning 'eof' to 'i'.
+   bit of the last byte of pattern foung in Ash+Dave trailer, 0x77, not of the 
+   scanner. Move the reconstruction there. (Luigi)
+ - Make some templates for the xxx_search() and xxx_describe() functions. (Luigi)
+    Done to some extent.
+ - FIX xxx_search() functions by checking the return value from addblockdef() 
+   before assigning 'eof' to 'i'. (Luigi)
+    Done for new scanners.
  - Fix long / int usage in crc32.c.
     This is not a problem with gcc, but with MS Visual C++ that assumes that
     the size for int and long (4 bytes) are different
-   Or replace it with SHA256 as crc32 is not safe
+    Or replace it with SHA256 as crc32 is not safe
  - Check for memory and filehandle leaks (error handling).
-   Partly done.
+    Partly done.
  - Add a portable strupr function for sort_list in filesearch.c.
-   Use strcasecmp instead?
-   strupr from Peter Karlsson
+    Use strcasecmp instead?
+    strupr from Peter Karlsson
      #include <ctype.h>		/* toupper() */                 
      void strupr(char *s)
      {
@@ -22,43 +33,40 @@
                      *s = toupper(*s);
                 } while(*s++);
      }
- - Add warning about Gremlin Fastload (if we add that loader)
-   Only clean those if you know what you are doing.
-   Certain pulses can be misdetected/converted.
+ - Add warning about Gremlin Fastload (if we add that loader) (Luigi)
+    Only clean those if you know what you are doing.
+    Certain pulses can be misdetected/converted.
  - Split the code into more manageable parts
-   Much of this is now done.
+    Much of this is now done.
  - Make the code more generic
- - Add support for vic20 and Plus4 tapes
- - Add support for NTSC?
  - Check start/end pilot/data/trailer:
-   SLC says:
-   Example from tcreport.txt: Location: $A726 -> $AF33 -> $75C9B -> $76491
-   The first points to the first pulse in the file (usually pilot).
-   The second as you know points to the first datapulse.
-   The third one points to the first pulse of the last byte..
-   this is usually a checkbyte, but in the case it's NOT,
-   it's pointing to the first pulse of the last databyte
-   This you also needs to compensate for when calculating the crc32 and
-   extracts data and also when counting trailers.
-   And the last value points to the very last pulse in a file, that being
-   last pulse of a databyte, checkbyte or just a trailer.
-   CHECK: ODEload + Cult
-   Probably check ALL loaders....
-
+    SLC says:
+    Example from tcreport.txt: Location: $A726 -> $AF33 -> $75C9B -> $76491
+    The first points to the first pulse in the file (usually pilot).
+    The second as you know points to the first datapulse.
+    The third one points to the first pulse of the last byte..
+    this is usually a checkbyte, but in the case it's NOT,
+    it's pointing to the first pulse of the last databyte
+    This you also needs to compensate for when calculating the crc32 and
+    extracts data and also when counting trailers.
+    And the last value points to the very last pulse in a file, that being
+    last pulse of a databyte, checkbyte or just a trailer.
+    CHECK: ODEload + Cult
+    Probably check ALL loaders....
  - Use dynamic memory allocation for file/dir names where possible.
  - Avoid hardcoded values as much as possible, use #define.
- - Use "static" and "const" keyword usage where possible.
-   Much is done.
+ - Use "static" and "const" keywords whenever possible.
+    Much is done.
  - Use the getcwd(buffer, size) call with buffer initialized to NULL and 
    size to -1, which should be memory safe. Then allocate a new string 
    whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
    free the first one.
  - Get rid of most #ifdef WIN32 stuff.
-   We need to handle both windows and linux(unix), but #ifdefs are ugly.
-   Keep to a bare minimum.
-   Mostly done.
- - Do some major rewrite of scanners/*.
-   There are WAY TOO MUCH duplication of code.
+    We need to handle both windows and linux(unix), but #ifdefs are ugly.
+    Keep to a bare minimum.
+    Mostly done.
+ - Do some major rewrite of scanners.
+    There are WAY TOO MUCH duplication of code.
  - Unify scanner/loader names/strings
  - Add new header info to all 'old' scanners and check that the code actually
    are doing what the header info says.
@@ -72,5 +80,4 @@
  - Fix int - long problem with all ftell, fwrite, fseek etc functions
  - Make it possible to create wav without cleaning first...
  - Fix broken CBM Header and Data Blocks if the other one of the pair is OK
- - Cleaned dmp files (DC2N files) should be named .tap, not .dmp
 
