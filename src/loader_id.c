@@ -64,6 +64,7 @@ int idloader(unsigned /*long*/ int crc)
 		{0x4D7D872D, LID_FREE},
 		{0x2CC1E59C, LID_FREE},
 		{0x89D45404, LID_FREE},
+		{0xE493F1F9, LID_FREE},		/* Orion, Ivan 'Ironman' Stewart's Super Off Road */
 
 		{0xD5961DB0, LID_ODE},
 
@@ -140,6 +141,7 @@ int idloader(unsigned /*long*/ int crc)
 		{0x4FA62BEC, LID_USG},
 		{0x266B6BD6, LID_USG},
 		{0x17060B09, LID_USG},
+		{0x32935096, LID_USG},		/* Buckaroo Banzai and Strange Odyssey */
 
 		{0x0645F350, LID_MIC},
 		{0x78C43CB9, LID_MIC},
@@ -215,6 +217,8 @@ int idloader(unsigned /*long*/ int crc)
 
 		{0x001B30E8, LID_NOVA},
 		{0xA5950CFF, LID_NOVA},
+		{0x5926FCC5, LID_NOVA},		/* Great Gurianos, Chain Reaction, Frank Bruno's Boxing */
+		{0xF3D49D59, LID_NOVA},		/* Bomb Jack, Commando, Airwolf 2, Paperboy */
 
 		{0x25197B4E, LID_IK},
 
@@ -223,7 +227,7 @@ int idloader(unsigned /*long*/ int crc)
 		{0x0936B7DF, LID_VIRG},
 		{0x075AE096, LID_VIRG},		/* Fist 2 (Mastertronic) */
 		{0x342A2416, LID_VIRG},		/* same as "Hi-Tec" loader but thres=$016E   Future Bike */
-		{0x895DCF44, LID_VIRG},		/* This is "Virgin Loader"  (thres=$015E)   Guardian II,Alcazar,Toy Bizarre, Hard Drivin */
+		{0x895DCF44, LID_VIRG},		/* This is "Virgin Loader"  (thres=$015E)   Guardian II, Alcazar, Toy Bizarre, Hard Drivin */
 
 		{0xFADDF41C, LID_HTEC},		/* This is "Hi-Tec" Loader.  (thres=$017E)  Chevy Chase, Top Cat, Yogi */
 
@@ -239,12 +243,14 @@ int idloader(unsigned /*long*/ int crc)
 		{0xF1D441D8, LID_CULT},		/* Cult loader */
 		
 		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
+		{0xF22D0DAB, LID_ACCOLADE},	/* Motor Massacre, Test Drive, Duel, The: Test Drive II */
 		{0xEA684D09, LID_ACCOLADE},	/* Accolade clone (EA: Chuck Yeager, PHP Pegasus, World Tour Golf) */
 
 		{0xED3BB9E4, LID_RAINBOWARTS},	/* Circus Attractions, X-Out */
 		{0xAC824E15, LID_RAINBOWARTS},	/* Grand Monster Slam (7 MB of TAP file!) */
 
 		{0x53A23D4D, LID_BURNERVAR},	/* Hektik, Magic Carpet */
+		{0x7E47C195, LID_BURNERVAR},	/* Mind Control, BMX Racers, Spectipede */
 
 		{0xB211DFED, LID_OCNEW4},	/* Ocean New 4 */
 		{0x4E56C97A, LID_OCNEW4},	/* Out Run Europa (Variant) */
