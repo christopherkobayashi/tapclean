@@ -66,7 +66,7 @@ void oceannew4_search (void)
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
-	unsigned int x, bso; 		/* block size and its overload due to padding */
+	unsigned int x, bso; 		/* block size and its overhead due to padding */
 
 
 	en = ft[THISLOADER].en;

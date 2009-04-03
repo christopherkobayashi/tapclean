@@ -68,7 +68,7 @@ void accolade_search (void)
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
-	unsigned int x, bso; 		/* block size and its overload due to internal checksums */
+	unsigned int x, bso; 		/* block size and its overhead due to internal checksums */
 
 
 	en = ft[THISLOADER].en;
@@ -115,7 +115,7 @@ void accolade_search (void)
 			if (e > 0xFFFF)
 				continue;
 
-			/* Compute size overload due to internal checksums */
+			/* Compute size overhead due to internal checksums */
 			bso = x / 256;
 			if (x % 256)
 				bso++;
