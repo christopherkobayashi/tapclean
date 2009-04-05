@@ -74,11 +74,14 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 
 #define HDSZ 4
 
+/* As found in first header byte of T1 modifier at the end of a chain */
+#define OVERSIZED_BIT1_PULSE 0x5A
+
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
  'abits' specifies a number of additional (1) bits that MUST precede the byte
 */
-int visiload_readbyte(int pos, int endi,int abits)
+int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
 {
    int b,valid;
    /*long*/ int i;
@@ -99,8 +102,24 @@ int visiload_readbyte(int pos, int endi,int abits)
       p = tap.tmem[pos+i];
       if(p<(ft[visi_type].lp-tol) || p>(ft[visi_type].lp+tol))  /* not valid 1 bit? */
       {
-         add_read_error(pos+i);  /* read error, visiload 'addbits' failed. */
-         return -1;
+         /* 
+          * If this is a known oversized bit 1 pulse in Visiload T1 where
+          * allowed, fix it now
+          */
+         if(visi_type == VISI_T1 && 
+               allow_known_oversized && 
+               p>(OVERSIZED_BIT1_PULSE-tol) && 
+               p<(OVERSIZED_BIT1_PULSE+tol))
+         {
+            tap.tmem[pos+i] = ft[VISI_T1].lp;
+            mb[i]=1;
+            valid++;
+         }
+         else
+         {
+            add_read_error(pos+i);  /* read error, visiload 'addbits' failed. */
+            return -1;
+         }
       }
    }
 
@@ -175,15 +194,15 @@ void visiload_search(void)
    {
       /* note: first block always has pilot, MSbF endianess, 1 additional bit per byte. */
 
-      b= visiload_readbyte(i,en,ab);   /* look for a pilot byte... */
+      b= visiload_readbyte(i,en,ab,0);   /* look for a pilot byte... */
       if(b== ft[visi_type].pv)
       {
          sof= i;
          zcnt=0;
-         while(visiload_readbyte(i+(zcnt*(8+ab)), en, ab)==ft[visi_type].pv) /* step thru all pilot bytes.. */
+         while(visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0)==ft[visi_type].pv) /* step thru all pilot bytes.. */
             zcnt++;
 
-         b= visiload_readbyte(i+(zcnt*(8+ab)), en, ab); /* should be a sync */
+         b= visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0); /* should be a sync */
 
          if(b==ft[visi_type].sv && zcnt>ft[visi_type].pmin)    /* got enough pilots + sync?... */
          {
@@ -200,7 +219,7 @@ void visiload_search(void)
                {
                   do  /* find a first pilot byte... */
                   {
-                     b= visiload_readbyte(j,en,ab);
+                     b= visiload_readbyte(j,en,ab,0);
                      j++;
                   }
                   while(b!=ft[visi_type].pv && j<tap.len-100);
@@ -208,7 +227,7 @@ void visiload_search(void)
                   sof= j;
                   do  /* read thru all pilot bytes... */
                   {
-                     b= visiload_readbyte(j,en,ab);
+                     b= visiload_readbyte(j,en,ab,0);
                      j+=(8+ab);
                   }
                   while(b==ft[visi_type].pv && j<tap.len-100);
@@ -217,7 +236,7 @@ void visiload_search(void)
                   /* ! should check pilot count here?, theres usually only 2 or 3 pilots ! */
 
                   /* check sync byte... */
-                  b= visiload_readbyte(j, en, ab);
+                  b= visiload_readbyte(j, en, ab, 0);
                   if(b!=ft[visi_type].sv)
                   {
                      if(!quiet)
@@ -236,7 +255,11 @@ void visiload_search(void)
                /* decode header... (taking into account additional header bytes) */
                for(hcnt=0; hcnt<HDSZ+ah+1; hcnt++)  /* note: +1 reads 1 data byte too. */
                {
-                  hd[hcnt]= visiload_readbyte(sod+(hcnt*(8+ab)), en, ab);
+                 /* 
+                  * Allow correction of oversized bit 1 pulses in Visiload T1 header
+                  * Correction is not allowed anywhere else
+                  */
+                  hd[hcnt]= visiload_readbyte(sod+(hcnt*(8+ab)), en, ab, 1);
 
                   if(hd[hcnt]==-1)   /* 27/8/2002 : this may stop the crashes */
                   {
@@ -244,12 +267,12 @@ void visiload_search(void)
                      {
                         sprintf(lin,"\nFATAL : read error in Visiload header! ($%04X).",j+(hcnt*(8+ab)));
                         msgout(lin);
-                        sprintf(lin,"header begins at $%04X and should hold %d bytes.",j,HDSZ+ah);
+                        sprintf(lin,"\nHeader begins at $%04X and should hold %d bytes.",j,HDSZ+ah);
                         msgout(lin);
 
                         sprintf(lin,"\nVisiload search was aborted.");
                         msgout(lin);
-                        sprintf(lin,"Experts note : Manual correction of this location should allow detection of more Visiload files. ");
+                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of more Visiload files. ");
                         msgout(lin);
                         sprintf(lin,"Typically the pulse found there will be too large to register as a Visiload LONG or the data-stream may ");
                         msgout(lin);
@@ -335,7 +358,7 @@ int visiload_describe(int row)
    /* decode the header... */
    s = blk[row]->p2;
    for(i=ah; i<HDSZ+ah+1; i++)
-      hd[i-ah] = visiload_readbyte(s+(i*(8+ab)), xsb, ab);
+      hd[i-ah] = visiload_readbyte(s+(i*(8+ab)), xsb, ab, 0);
 
    /* compute C64 start address, end address and size... */
    blk[row]->cs = (hd[2]<<8)+ hd[3];
@@ -395,7 +418,7 @@ int visiload_describe(int row)
    
    for(i=0; i< blk[row]->cx; i++)
    {
-      b = visiload_readbyte(s+(i*(8+ab)), xsb,ab);
+      b = visiload_readbyte(s+(i*(8+ab)), xsb, ab, 0);
       if(b==-1)
          rd_err++;
       blk[row]->dd[i] =b;

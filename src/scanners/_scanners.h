@@ -61,7 +61,7 @@ int ocean_describe(int);
 void raster_search(void);
 int raster_describe(int);
     
-int visiload_readbyte(int, int, int);
+int visiload_readbyte(int, int, int, int);
 void visiload_search(void);
 int visiload_describe(int);
     
