@@ -45,6 +45,7 @@
 #include "database.h"
 #include "scanners/_scanners.h"
 #include "crc32.h"
+#include "dc2nconv.h"
 
 /* OS dependent slash */
 
@@ -54,7 +55,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.22 Console - (C) 2006-2008 XXX"
+#define VERSION_STR "TAPClean v0.22 Console - (C) 2006-2009 TC Team"
 #define BUILDER     "tce"
 
 #define TRUE	1
