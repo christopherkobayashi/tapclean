@@ -1,6 +1,9 @@
 
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
+	Improvement: if they occur in file header Visiload T1 oversized pulses 
+	  do not cause scanner to stop looking for Visiload blocks (Luigi)
+	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
 
 v0.22
 	Added proper SEQ file support (Luigi)
