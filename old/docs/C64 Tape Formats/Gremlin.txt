@@ -1,0 +1,67 @@
+
+--------------------------------------------------------------------------------
+
+Found on...
+"Auf Wiedersehen Monty" and "Bulldog" (on Gremlin's "10 Great Games") and "Krakout".
+
+
+--------------------------------------------------------------------------------
+
+After CBM Files, there is another CBM DATA block, loaded at $0400. Data files are partly crypted and it's needed some uncrypting before executing the Main Loader. 
+
+Turbo blocks 
+------------ 
+Threshold: $0160 (352) microseconds (TAP byte $2B). 
+Bit 0: $1F 
+Bit 1: $40 
+Endianess: LSbF 
+
+Pilot Byte: $E3 
+Sync Byte: $ED 
+
+Blocks are chained, everyone has its own header, without pauses between them:
+
+Header
+------
+1 byte: Block ID (descending, last one is $01)
+2 bytes: Load Address (low, high) 
+1 byte: Block Size ($00=256)
+
+Data: "Block Size" encrypted bytes. To uncrypt it you have to XOR each read byte with its destination address, low and high bytes, and then with a single Uncrypt byte. Uncrypt byte is one from the Uncrypt block (see ahead), starting from the first one and advancing by one byte at time. When the last Uncrypt byte has been used, restart from first one. 
+
+2 bytes: Execution address, immediately executed if Checkbyte matches. 
+1 byte: Checkbyte (XOR of all UNCRYPTED data bytes with $00). 
+
+-------------------------------------------------------- 
+Complete Uncrypt blocks (which is the loader itself) 
+
+Auf Wiedersehen Monty: 
+78 A9 E7 8D FA FF 8D FE FF A9 00 8D FB FF 8D FF 
+FF A2 43 9A AD FD FF 48 A2 FF 9A A9 7F 8D 0D DC 
+8D 0D DD AD 0D DC AD 0D DD A9 60 8D 04 DD A9 01 
+8D 05 DD A9 00 8D 20 D0 8D 11 D0 85 0A 85 02 A9 
+19 8D 0E DD 20 D7 00 66 07 A5 07 C9 E3 D0 F5 20 
+CA 00 C9 E3 F0 F9 C9 ED D0 EA 20 CA 00 85 05 20 
+CA 00 85 08 20 CA 00 85 09 20 CA 00 85 06 A0 00 
+20 CA 00 A6 02 55 0B E8 E0 DC D0 02 A2 00 86 02 
+45 09 45 08 C6 01 91 08 E6 01 8D 20 D0 45 0A 85 
+0A E6 08 D0 02 E6 09 C6 06 D0 D3 C6 05 D0 BB 20 
+CA 00 85 03 20 CA 00 85 04 20 CA 00 C5 0A D0 03 
+6C 03 00 AD 20 D0 18 69 04 8D 20 D0 4C BE 00 A2 
+08 20 D7 00 66 07 CA D0 F8 A5 07 60 A9 10 2C 0D 
+DC F0 FB 4E 0D DD A9 19 8D 0E DD 60
+
+Bulldog and Krakout: 
+78 A9 D1 8D FA FF 8D FE FF A9 00 8D FB FF 8D FF 
+FF A9 7F 8D 0D DC 8D 0D DD AD 0D DC AD 0D DD A9 
+60 8D 04 DD A9 01 8D 05 DD A9 00 8D 20 D0 85 FF 
+85 F6 A9 19 8D 0E DD 20 BE 00 66 FC A5 FC C9 E3 
+D0 F5 20 B1 00 C9 E3 F0 F9 C9 ED D0 EA 20 B1 00 
+85 FA 20 B1 00 85 FD 20 B1 00 85 FE 20 B1 00 85 
+FB A0 00 20 B1 00 A6 F6 55 02 E8 E0 CF D0 02 A2 
+00 86 F6 45 FE 45 FD C6 01 91 FD E6 01 45 FF 85 
+FF E6 FD D0 02 E6 FE C6 FB D0 D6 C6 FA D0 BE 20 
+B1 00 85 F7 20 B1 00 85 F8 20 B1 00 C5 FF D0 03 
+6C F7 00 AD 20 D0 18 69 04 8D 20 D0 4C A5 00 A2 
+08 20 BE 00 66 FC CA D0 F8 A5 FC 60 A9 10 2C 0D 
+DC F0 FB 4E 0D DD A9 19 8D 0E DD EE 20 D0 60

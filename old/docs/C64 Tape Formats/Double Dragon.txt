@@ -1,0 +1,25 @@
+DOUBLE DRAGON
+
+--------------------------------------------------------------------------------
+
+Found in Double Dragon
+
+--------------------------------------------------------------------------------
+
+Threshold = 360 ($1E0) clock cycles
+Endianess : MSbF
+
+Pilot : $80
+Sync : $40
+
+Structure:
+----------
+
+After sync byte, the following information is given :
+
+1 byte : Block number (identifies the block)
+2 bytes : Start Address of data (LSBF)
+2 bytes : End Address of data (LSBF)
+n bytes : DATA
+
+No checksum

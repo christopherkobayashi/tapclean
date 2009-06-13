@@ -1,0 +1,26 @@
+EMPIRE
+
+--------------------------------------------------------------------------------
+
+Found in Cool Croc Twins, Volfied...
+
+Very similar to Double Dragon loader, only the block number is missing
+
+--------------------------------------------------------------------------------
+
+Threshold = 360 ($1E0) clock cycles
+Endianess : MSbF
+
+Pilot byte : $80
+Sync : $40
+
+Structure:
+----------
+
+After sync byte, the following information is given :
+
+2 bytes : Start Address of data (LSBF)
+2 bytes : End Address of data (LSBF)
+n bytes : DATA
+
+No checksum

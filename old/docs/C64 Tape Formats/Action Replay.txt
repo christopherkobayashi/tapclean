@@ -1,0 +1,31 @@
+ACTION REPLAY CARTRIDGE
+
+--------------------------------------------------------------------------------
+
+Used by the Action Replay cartridge to save freezed games.
+
+--------------------------------------------------------------------------------
+
+In the pilot tone, sync sequence and first bytes of header, pulses are like this:
+ Threshold = $1D0 (464) clock cycles
+ Bit 0 : TAP byte $23
+ Bit 1 : TAP byte $53
+ Endianess: LSbF
+ Pilot :  a stream of 1's, typically about 2048 of them, followed by a single 0 bit
+ Sync : $52, $42
+
+Structure:
+----------
+2 bytes : Complement of length of data (MSBF)
+2 bytes : Start Address of data        (MSBF)
+1 byte : Checksum (XOR of all data bytes)
+1 byte : discarded (typically $00)
+1 byte : Low byte of threshold for data bytes
+1 byte : discarded (typically $00)
+n bytes : Data 
+
+To calculate the number of data bytes, do 65536-complement of length.
+To calculate threshold for data bytes, do $100+low byte.
+There are two possibilities for the threshold:
+$1D0 (in that case, following pulses are identical to previous ones:this is the case of Turbo backup)
+$111 (in that case, pulses are TAP bytes $13 for 0 and $2B for 1: that is the case of Superturbo backup)
