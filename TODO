@@ -1,3 +1,6 @@
+ - Allow partial EOFMARKER (i.e. only 7 valid pulses followed by a single over-
+   stretched one) in tdi_f2.c. Last pulse is often corrupted. (Luigi)
+    Code written, it is going to be tested.
  - Cleaned dmp files (DC2N files) should be named .tap, not .dmp
  - Review Hi-Tec and Virgin loader. These should really be Hi-Tec/Mastertronic 
    T1, T2, T3, where:
@@ -10,7 +13,7 @@
    merged into a long pulse) the cleaning stage must fix it. The last pulse is 
    0x3F if no 0x1F preceeds it and it's 0x1F otherwise. (Luigi)
  - It must be responsibility of the cleaning process to reconstruct the last 
-   bit of the last byte of pattern foung in Ash+Dave trailer, 0x77, not of the 
+   bit of the last byte of pattern found in Ash+Dave trailer, 0x77, not of the 
    scanner. Move the reconstruction there. (Luigi)
  - Make some templates for the xxx_search() and xxx_describe() functions. (Luigi)
     Done to some extent.
