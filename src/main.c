@@ -89,6 +89,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Flashload"			,"flash"	,FALSE},
 	{"Freeload"			,"free"		,FALSE},
 	{"Freeload Slowload"		,"frslow"	,FALSE},
+	{"Go For The Gold"		,"goforgold"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
 	{"IK"				,"ik"		,FALSE},
@@ -276,6 +277,7 @@ struct fmt_t ft[100] = {
 				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
 	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
 	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
+	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200, NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -336,7 +338,8 @@ const char knam[][32] = {
 	{"Burner (Mastertronic Variant)"},
 	{"Ocean New 4"},
 	{"108DE0A5"},
-	{"Freeload Slowload"}
+	{"Freeload Slowload"},
+	{"Go For The Gold"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
 	 * them all here!
@@ -967,6 +970,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
+			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
+				goforgold_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1159,6 +1165,12 @@ static void search_tap(void)
 
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
+
+			/* Do not add this until additonal games using this format are found.
+			   For the time being having it active would just slow down testing and
+			   cleaning other tapes.*/
+			//if (ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
+			//	goforgold_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
@@ -1380,6 +1392,8 @@ static void describe_file(int row)
 		case ASHDAVE:		ashdave_describe(row);
 					break;
 		case FREE_SLOW:		freeslow_describe(row);
+					break;
+		case GOFORGOLD:		goforgold_describe(row);
 					break;
 	}
 }

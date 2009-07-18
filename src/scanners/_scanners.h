@@ -215,3 +215,6 @@ int ashdave_describe(int);
 
 void freeslow_search(void);
 int freeslow_describe(int);
+
+void goforgold_search(void);
+int goforgold_describe(int);

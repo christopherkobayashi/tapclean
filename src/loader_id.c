@@ -261,6 +261,9 @@ int idloader(unsigned /*long*/ int crc)
 		{0xAE9A2682, LID_FREE_SLOW},	/* Freeload Slowload (Platoon) */
 		{0x0AC328F5, LID_FREE_SLOW},	/* Freeload Slowload (Rambo, Great Escape, Top Gun) */
 
+		{0x565C0FCD, LID_GOFORGOLD},	/* Go For The Gold (Peepo's) */
+		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
+
 		{0, 0}
 	};
 
