@@ -91,7 +91,10 @@ In other words... Threshold = Enciphered_Threshold * 1.5!.
 
 
 Note: The F4 loader is usually stored in a 2nd F2 file immediately preceeding any F4 files.
-      (Exceptions to this rule are Afterburner and Alien 3 which should be investigated).
+      (Exceptions to this rule are Afterburner and Alien 3 which should be investigated. 
+      Myth is also an exception: There's only one F2 file and the F4 loader is contained 
+      in F3 files. The F4 load parameters can be extracted from the 105-th F3 block - info
+      contributed by Kevin Palberg).
 
 
 

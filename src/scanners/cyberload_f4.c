@@ -176,7 +176,7 @@ void cyberload_f4_search(void)
          sof=i;
          i=z;
          b= readttbyte(i, ft[CYBER_F4_1].lp, ft[CYBER_F4_1].sp, NA, MSbF);
-         if(b==0x96 || b==0xAA || b==0x99)  /* cyber_f4_sync */
+         if(b==0x96 || b==0xAA || b==0x99 || b==0x55)  /* cyber_f4_sync */
          {
             sod=i+8;
 
