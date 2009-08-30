@@ -260,20 +260,22 @@ void unify_pauses(void)
 				tmp[c++] = tap.tmem[i];
 
 			if (tap.tmem[i] < LAME + 1) {	/* found a v0 LAME byte... */
-				s = i;			/* save location of first LAME. */
+				s = i + 1;			/* save location of first LAME. */
+				j = 0;
 
 				/* find nearest following block (of x bytes) with NO LAME bytes... */
 
-				do {
-					z = 0;	/* this goes to 1 if a LAME byte exists in block. */
-					for (j = 0; j < 30 && (s + j) < tap.len; j++) {
-						if (tap.tmem[s + j] < LAME + 1)
-							z = 1;
+				while ((s + j) < tap.len) {
+					if (tap.tmem[s + j] < LAME + 1) {
+						j = 0;
+						s++;
 					}
-					s++;
-				} while(z == 1);
-
-				s--;
+					else {
+						j++;
+						if (j == 30)
+							break;
+					}
+				}
 
 				/* at this point we have the nearest block with no LAMEs. */
 				/* and 's' will be pointing at its first byte. */
@@ -299,7 +301,7 @@ void unify_pauses(void)
 				for (j = 0; j < p; j++)
 					tmp[c++] = 0;
 
-				i = s - 1;
+				i = s;
 			}
 		}
 	}
