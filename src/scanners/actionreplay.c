@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.6  2009/09/18 19:28:13  luigidifraia
+ * Use readttbit to read the trailer (new scanners only atm)
+ *
  * Revision 1.5  2008/02/28 22:03:04  luigidifraia
  * Uniformed all new scanners as much as possible
  *
@@ -182,11 +185,9 @@ void ar_search (void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					((tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol) ||
-					(tap.tmem[eof + 1] > lp - tol && 
-					tap.tmem[eof + 1] < lp + tol)))
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
 			/* Pass details over to the describe stage */

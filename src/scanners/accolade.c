@@ -129,9 +129,9 @@ void accolade_search (void)
 
 			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol)
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) == 0)
 				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)

@@ -135,11 +135,9 @@ void oceannew4_search (void)
 			/* Note: No trailer has been documented, but we are not pretending it
 			         here, just checking is future-proof */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					((tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol) ||
-					(tap.tmem[eof + 1] > lp - tol && 
-					tap.tmem[eof + 1] < lp + tol)))
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0) {
@@ -158,11 +156,9 @@ void oceannew4_search (void)
 				/* Note: No trailer has been documented, but we are not strictly
 			         requiring one here, just checking for it is future-proof */
 				h = 0;
-				while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-						((tap.tmem[eof + 1] > sp - tol && 
-						tap.tmem[eof + 1] < sp + tol) ||
-						(tap.tmem[eof + 1] > lp - tol && 
-						tap.tmem[eof + 1] < lp + tol)))
+				while (eof < tap.len - 1 &&
+          h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
 					eof++;
 
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)

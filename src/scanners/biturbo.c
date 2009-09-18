@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.7  2009/09/18 19:28:13  luigidifraia
+ * Use readttbit to read the trailer (new scanners only atm)
+ *
  * Revision 1.6  2008/12/14 11:49:07  luigidifraia
  * Updated int wraparound prevention
  *
@@ -216,9 +219,9 @@ void biturbo_search (void)
 
 			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol)
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) == 0)
 				eof++;
 
 			/* Store the info read from CBM part as extra-info */

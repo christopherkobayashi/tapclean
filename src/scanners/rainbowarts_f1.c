@@ -139,11 +139,9 @@ void rainbowf1_search (void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					((tap.tmem[eof + 1] > sp - tol && /* no matter if overlapping occurrs here */
-					tap.tmem[eof + 1] < sp + tol) ||
-					(tap.tmem[eof + 1] > lp - tol && 
-					tap.tmem[eof + 1] < lp + tol)))
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)

@@ -138,17 +138,17 @@ void cult_search (void)
 			/* Point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer */
+			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
-			while (eof < tap.len - 1 && h++ < MAXTRAILER - 1 &&
-					tap.tmem[eof + 1] > sp - tol && 
-					tap.tmem[eof + 1] < sp + tol)
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) == 0)
 				eof++;
 
 			/* Also account the single bit 1 trailer pulse, if any */
-			if (eof < tap.len - 1 && h++ < MAXTRAILER &&
-					tap.tmem[eof + 1] > lp - tol && 
-					tap.tmem[eof + 1] < lp + tol)
+			if (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) == 1)
 				eof++;
 
 			/* Store the info read from CBM part as extra-info */
