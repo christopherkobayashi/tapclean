@@ -1,11 +1,12 @@
 
 v0.23
-	Improvement: Cyberload F4 scanner now recognizes Myth's F4 files (Kevin)
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
 	Improvement: if they occur in file header Visiload T1 oversized pulses 
 	  do not cause scanner to stop looking for Visiload blocks (Luigi)
 	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
 	Added "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
+	Improvement: Cyberload F4 scanner now recognizes Myth's F4 files (Kevin)
+	Changed trailer read block to use readttbit in new scanners (Luigi)
 
 v0.22
 	Added proper SEQ file support (Luigi)
