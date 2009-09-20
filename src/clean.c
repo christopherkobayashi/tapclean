@@ -153,7 +153,7 @@ void clip_ends(void)
 
 void unify_pauses(void)
 {
-	int i, j, z, tot, c, p, s, m;
+	int i, j, tot, c, p, s, m;
 	unsigned char *tmp;
 
 	/*
