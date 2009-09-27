@@ -130,8 +130,7 @@ void oceannew4_search (void)
 			/* Point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Trace 'eof' to end of trailer (also check a different 
-			   implementation that uses readttbit()) */
+			/* Trace 'eof' to end of trailer */
 			/* Note: No trailer has been documented, but we are not pretending it
 			         here, just checking is future-proof */
 			h = 0;
