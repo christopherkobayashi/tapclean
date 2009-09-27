@@ -218,3 +218,6 @@ int freeslow_describe(int);
 
 void goforgold_search(void);
 int goforgold_describe(int);
+
+void fastevil_search(void);
+int fastevil_describe(int);

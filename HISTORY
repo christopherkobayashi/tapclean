@@ -7,6 +7,7 @@ v0.23
 	Added "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
 	Improvement: Cyberload F4 scanner now recognizes Myth's F4 files (Kevin)
 	Changed trailer read block to use readttbit in new scanners (Luigi)
+	Added "Fast Evil" loader, found in "The Evil Dead" (Luigi)
 
 v0.22
 	Added proper SEQ file support (Luigi)

@@ -85,6 +85,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
+	{"Fast Evil"			,"fastevil"	,FALSE},
 	{"Firebird"			,"fire"		,FALSE},
 	{"Flashload"			,"flash"	,FALSE},
 	{"Freeload"			,"free"		,FALSE},
@@ -278,6 +279,7 @@ struct fmt_t ft[100] = {
 	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
 	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200, NA,    CSYES},
+	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200, NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -339,7 +341,8 @@ const char knam[][32] = {
 	{"Ocean New 4"},
 	{"108DE0A5"},
 	{"Freeload Slowload"},
-	{"Go For The Gold"}
+	{"Go For The Gold"},
+	{"Fast Evil"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
 	 * them all here!
@@ -973,6 +976,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
 				goforgold_search();
 
+			if (tap.cbmid == LID_FASTEVIL	&& ldrswt[nofastevil	].state == FALSE && !dbase_is_full && !aborted)
+				fastevil_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1166,11 +1172,16 @@ static void search_tap(void)
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
-			/* Do not add this until additonal games using this format are found.
+			/* Do not add the following ones until additonal games using this format are found.
 			   For the time being having it active would just slow down testing and
-			   cleaning other tapes.*/
+			   cleaning other tapes. Besides, these are looked for when signature 
+			   is found in CBM Data block*/
+
 			//if (ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
 			//	goforgold_search();
+
+			//if (ldrswt[nofastevil		].state == FALSE && !dbase_is_full && !aborted)
+			//	fastevil_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */

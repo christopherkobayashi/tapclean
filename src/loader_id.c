@@ -264,6 +264,8 @@ int idloader(unsigned /*long*/ int crc)
 		{0x565C0FCD, LID_GOFORGOLD},	/* Go For The Gold (Peepo's) */
 		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
 
+		{0x958D7E97, LID_FASTEVIL},	/* The Evil Dead (Peepo's & D-ram's) */
+
 		{0, 0}
 	};
 
