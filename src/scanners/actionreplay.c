@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.7  2009/10/17 20:21:11  luigidifraia
+ * Uniformed sync count and comment
+ *
  * Revision 1.6  2009/09/18 19:28:13  luigidifraia
  * Use readttbit to read the trailer (new scanners only atm)
  *
@@ -68,7 +71,7 @@
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
-#define SYNCSEQSIZE	0x02	/* amount of sync bytes */
+#define SYNCSEQSIZE	2	/* amount of sync bytes */
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	8	/* size of block header */
@@ -98,7 +101,7 @@ void ar_search (void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	/* legacy sync pattern */
+	/* Expected sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
 		0x52, 0x42
 	};

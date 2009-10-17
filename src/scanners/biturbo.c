@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.8  2009/10/17 20:22:17  luigidifraia
+ * Uniformed sync count and comment
+ *
  * Revision 1.7  2009/09/18 19:28:13  luigidifraia
  * Use readttbit to read the trailer (new scanners only atm)
  *
@@ -79,7 +82,7 @@
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
-#define SYNCSEQSIZE	0x11	/* amount of sync bytes */
+#define SYNCSEQSIZE	17	/* amount of sync bytes */
 #define MAXTRAILER	2040	/* max amount of trailer pulses read in */
 
 #define LOADOFFSETH	0x5D	/* load location (MSB) offset inside CBM data */
@@ -103,7 +106,7 @@ void biturbo_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	/* legacy sync pattern */
+	/* Expected sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
 		0x10, 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 
 		0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,

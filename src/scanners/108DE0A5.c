@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.10  2009/10/17 20:20:23  luigidifraia
+ * Uniformed sync count and comment
+ *
  * Revision 1.9  2009/09/18 19:28:13  luigidifraia
  * Use readttbit to read the trailer (new scanners only atm)
  *
@@ -84,7 +87,7 @@
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
-#define SYNCSEQSIZE	0x09	/* amount of sync bytes */
+#define SYNCSEQSIZE	9	/* amount of sync bytes */
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
@@ -106,7 +109,7 @@ void _108DE0A5_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	/* legacy sync pattern */
+	/* Expected sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
 		0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
 	};
