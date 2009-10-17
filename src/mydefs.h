@@ -262,6 +262,7 @@ extern char extvisipatch;
 extern char incsubdirs;
 extern char sortbycrc;
 extern char exportcyberloaders;
+extern char skewadapt;
 
 struct ldrswt_t		/* Loader -no/-do switches */
 {

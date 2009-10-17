@@ -28,6 +28,7 @@
 #include "mydefs.h"
 #include "crc32.h"
 #include "tap2audio.h"
+#include "skewadapt.h"
 
 #ifdef WIN32
 #include <direct.h>
@@ -56,6 +57,7 @@ char c64			= TRUE;
 char pal			= TRUE;
 char ntsc			= FALSE;
 char exportcyberloaders		= FALSE;
+char skewadapt			= FALSE;
 
 static char preserveloadertable	= TRUE;
 
@@ -567,6 +569,7 @@ static void display_usage(void)
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
+	printf(" -skewadapt     Use skewed pulse adapting bit reader.\n");
 	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10.\n");
 }
 
@@ -664,6 +667,8 @@ static void process_options(int argc, char **argv)
 			sortbycrc = TRUE;
 		if (strcmp(argv[i], "-ec") == 0)
 			exportcyberloaders = TRUE;
+		if (strcmp(argv[i], "-skewadapt") == 0)
+			skewadapt = TRUE;
 
 		/* process all -no<loader> */
 		if (strncmp(argv[i], "-no", 3) == 0) {
@@ -2038,6 +2043,9 @@ int readttbit(int pos, int lp, int sp, int tp)
 {
 	int valid, v, b;
 
+	if (skewadapt_enabled && tp > 0)
+		return skewadapt_readttbit(pos, lp, sp, tp);
+
 	if (pos < 20 || pos > tap.len - 1)	/* return error if out of bounds.. */
 		return -1;
 
@@ -2297,6 +2305,12 @@ int load_tap(char *name)
 	strcpy(tap.path, name);
 	getfilename(tap.name, name);
        
+	/* Enable skew adapting in case the command line option was given.
+	 * Re-enable it if more than one input file was selected for analysis.
+	 */
+	if (skewadapt)
+		skewadapt_enabled = TRUE;
+
 	return 1;		/* 1 = loaded ok */
 }
 

@@ -1,4 +1,7 @@
 
+v0.24
+	Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
+
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
 	Improvement: if they occur in file header Visiload T1 oversized pulses 

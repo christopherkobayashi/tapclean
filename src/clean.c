@@ -31,6 +31,7 @@
 
 #include "main.h"
 #include "mydefs.h"
+#include "skewadapt.h"
 
 
 /*
@@ -449,13 +450,25 @@ void clean_files(void)
 			msgout(lin);
 
 			for (j = s; j < e + 1; j++) {
-				b = tap.tmem[j];
-				if (b > tp && b < lp + limit)
-					tap.tmem[j] = lp;
-				if (b < tp && b > sp - limit)
-					tap.tmem[j] = sp;
+				if (skewadapt_enabled) {
+					int v = skewadapt_readttbit(j, lp, sp, tp);
+					if (v == 0)
+						tap.tmem[j] = sp;
+					else if (v == 1)
+						tap.tmem[j] = lp;
 
-				/* note: pulses that match threshold are unaffected. */
+					/* note: pulses for which skew adapting
+					 * fails are unaffected.
+					 */
+				} else {
+					b = tap.tmem[j];
+					if (b > tp && b < lp + limit)
+						tap.tmem[j] = lp;
+					if (b < tp && b > sp - limit)
+						tap.tmem[j] = sp;
+
+					/* note: pulses that match threshold are unaffected. */
+				}
 			}
 		}
 	}
@@ -473,6 +486,23 @@ void clean_files(void)
 	}
 
 	msgout("\n");
+
+	if (skewadapt_enabled) {
+		/* Disable skewed pulse reader. It's useless from now on,
+		 * because the raw pulses have been cleaned.
+		 */
+		skewadapt_enabled = FALSE;
+
+		/* Analyze tap, now without skewadapt. */
+		analyze();
+
+		/* Reclean files, in case new pulses were included in
+		 * block definitions.
+		 */
+		clean_files();
+		return;
+	}
+
 	analyze();
 }
 
