@@ -97,7 +97,7 @@ inline unsigned int get_packed_file_end_address (void)
 			break;
 	}
 
-	return (LOADADDRFILE3 + x - 1);
+	return (LOADADDRFILE3 + x);
 }
 
 void fftape_search (void)
@@ -128,7 +128,7 @@ void fftape_search (void)
 		msgout("  FF tape");
 
 	ff_index = 1;
-	ff3_e = 0;
+	ff3_e = 0x0001;
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -176,8 +176,9 @@ void fftape_search (void)
 					break;
 				/* We should not get here at all */
 				default:
-					s = 0;
-					e = 0;
+					/* This will make the plausibility check fail */
+					s = 0x0001;
+					e = 0x0001;
 			}
 
 			/* Prevent int wraparound when subtracting 1 from end location 
@@ -234,7 +235,7 @@ void fftape_search (void)
 				if (ff_index > FILESINACHAIN)
 				{
 					ff_index = 1;
-					ff3_e = 0;
+					ff3_e = 0x0001;
 				}
 			}
 			else if (ff_index == 3)
