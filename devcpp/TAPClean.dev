@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=85
+UnitCount=82
 Type=1
 Ver=1
 ObjFiles=
@@ -21,7 +21,7 @@ OverrideOutput=0
 OverrideOutputName=TAPClean.exe
 HostApplication=
 Folders=headers,newscanners,scanners
-CommandLine=
+CommandLine=-t dump0209.tap
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
@@ -830,7 +830,7 @@ BuildCmd=
 [Unit79]
 FileName=..\src\dc2nconv.c
 CompileCpp=0
-Folder=
+Folder=TAPClean
 Compile=1
 Link=1
 Priority=1000
@@ -859,36 +859,6 @@ BuildCmd=
 
 [Unit82]
 FileName=..\src\scanners\fastevil.c
-CompileCpp=0
-Folder=newscanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit83]
-FileName=..\src\skewadapt.c
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit84]
-FileName=..\src\skewadapt.h
-CompileCpp=0
-Folder=headers
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit85]
-FileName=..\src\scanners\fftape.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
