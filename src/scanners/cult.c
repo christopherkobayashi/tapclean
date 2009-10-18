@@ -186,7 +186,7 @@ int cult_describe(int row)
 
 	/* Compute pilot & trailer lengths */
 
-	/* don't forget sync is 9 bits... */
+	/* don't forget sync is 9 bits (1 bit + 1 byte)... */
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 1 - BITSINABYTE);
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 

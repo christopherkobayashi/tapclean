@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.8  2009/10/18 00:55:07  luigidifraia
+ * Expanded comment
+ *
  * Revision 1.7  2009/10/17 20:21:11  luigidifraia
  * Uniformed sync count and comment
  *
@@ -183,7 +186,7 @@ void ar_search (void)
 			/* Point to the first pulse of the last data byte (that's final) */
 			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
 
-			/* Point to the last pulse of the last byte */
+			/* Initially point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
