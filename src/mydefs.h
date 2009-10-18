@@ -55,8 +55,8 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.23 Console - (C) 2006-2009 TC Team"
-#define BUILDER     "bgk"
+#define VERSION_STR "TAPClean v0.23b Console - (C) 2006-2009 TC Team"
+#define BUILDER     "tce"
 
 #define TRUE	1
 #define FALSE	0
@@ -115,13 +115,13 @@ enum {
 	SNAKE50T1, SNAKE50T2, PAL_F1, PAL_F2, ENIGMA, AUDIOGENIC, ALIENSY,
 	ACCOLADE, ALTERWG, RAINBOWARTSF1, RAINBOWARTSF2, TRILOGIC, BURNERVAR,
 	OCNEW4, TDI_F2, BITURBO, _108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO, 
-	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE
+	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL
 };
 
 /*
  * These constants are the loader IDs, used for quick scanning via CRC lookup...
  * see file "loader_id.c"
- * Note: the position of each enum IS relevant for uses in 'knam' array in main file.
+ * see also string array 'knam' in the main file.
  */
 
 enum {
@@ -131,8 +131,8 @@ enum {
 	LID_NOVA, LID_IK, LID_PAV, LID_CYBER, LID_VIRG, LID_HTEC, LID_FLASH,
 	LID_SUPER, LID_OCNEW1T1, LID_OCNEW1T2, LID_ATLAN, LID_SNAKE,
 	LID_OCNEW2, LID_AUDIOGENIC, LID_CULT, LID_ACCOLADE, LID_RAINBOWARTS,
-	LID_BURNERVAR, LID_OCNEW4, LID_108DE0A5, LID_FREE_SLOW, LID_GOFORGOLD,
-	LID_FASTEVIL, LID_FFTAPE
+	LID_BURNERVAR,  LID_OCNEW4, LID_108DE0A5, LID_FREE_SLOW, LID_GOFORGOLD,
+	LID_FASTEVIL
 };
 
 
@@ -262,7 +262,6 @@ extern char extvisipatch;
 extern char incsubdirs;
 extern char sortbycrc;
 extern char exportcyberloaders;
-extern char skewadapt;
 
 struct ldrswt_t		/* Loader -no/-do switches */
 {
@@ -272,7 +271,6 @@ struct ldrswt_t		/* Loader -no/-do switches */
 	char state;	/* Set to TRUE to exclude loader */
 };
 
-/* Note: the position of each enum IS relevant for uses in 'ldrswt' array in main file. */
 enum {
 	noc64 = 0,
 	no108DE0A5,
@@ -294,7 +292,6 @@ enum {
 	nocyber,
 	noenigma,
 	nofastevil,
-	nofftape,
 	nofire,
 	noflash,
 	nofree,
