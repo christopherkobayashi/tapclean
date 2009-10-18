@@ -254,7 +254,6 @@ int fastevil_describe (int row)
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-		
 		if(b != -1) {
 			blk[row]->dd[i] = b;
 		} else {
