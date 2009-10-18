@@ -50,6 +50,14 @@
 
 #define FILESINACHAIN	4	/* 4 files for each CBM boot file */
 
+#define LOADADDRFILE1	0x6000	/* load address of first file */
+#define ENDADDRFILE1	0x7400	/* end address+1 of first file */
+#define LOADADDRFILE2	0x1400	/* load address of second file */
+#define ENDADDRFILE2	0x23E0	/* end address+1 of second file */
+#define LOADADDRFILE3	0x2400	/* load address of third file */
+#define LOADADDRFILE4	0x1400	/* load address of fourth file */
+#define ENDADDRFILE4	0x2400	/* end address+1 of fourth file */
+
 #define PACKTABLEOFFSET	0x0C00	/* unpack table is at $2000, file loads at $1400 */
 #define PACKTABLESIZE	0x200	/* size in bytes */
 #define PACKTABLEENTR	(PACKTABLESIZE / 2 - 1)	/* max entries */
@@ -67,6 +75,29 @@ static unsigned char unpackt[PACKTABLESIZE];	/* Table to unpack blocks */
 inline unsigned int get_packed_address (int offset)
 {
 	return ((unsigned int) unpackt[offset] + (((unsigned int) unpackt[offset+0x0100]) << 8));
+}
+
+inline unsigned int get_packed_file_end_address (void)
+{
+	int i;
+	unsigned int s, e, x;
+
+	s = LOADADDRFILE3;	/* init load address */
+	x = 0;			/* init size */
+
+	for (i = 0; i < PACKTABLEENTR; i += 2)
+	{
+		e = get_packed_address(i);
+		if (e > s)
+		{
+			x += (e - s);
+			s = get_packed_address(i + 1);
+		}
+		else
+			break;
+	}
+
+	return (LOADADDRFILE3 + x - 1);
 }
 
 void fftape_search (void)
@@ -127,22 +158,21 @@ void fftape_search (void)
 				 * worth extracting them from CBM data block
 				 */
 				case 1:
-					s = 0x6000;
-					e = 0x7400;
+					s = LOADADDRFILE1;
+					e = ENDADDRFILE1;
 					break;
-				/* Values for second block in a chain are hardcoded too */
 				case 2:
-					s = 0x1400;
-					e = 0x23E0;
+					s = LOADADDRFILE2;
+					e = ENDADDRFILE2;
 					break;
 				case 3:
-					s = 0x2400;
+					s = LOADADDRFILE3;
 					e = ff3_e;
 					break;
 				/* Values for fourth block in a chain are hardcoded too */
 				case 4:
-					s = 0x1400;
-					e = 0x2400;
+					s = LOADADDRFILE4;
+					e = ENDADDRFILE4;
 					break;
 				/* We should not get here at all */
 				default:
@@ -184,7 +214,7 @@ void fftape_search (void)
 			{
 				i = eof;	/* Search for further files starting from the end of this one */
 
-				/* Save addresses for next 2 blocks (read is quite safe here) */
+				/* Calculate end address for third file (readttbyte is quite safe here) */
 				if (ff_index == 2)
 				{
 					int j;
@@ -193,22 +223,8 @@ void fftape_search (void)
 					for (j = 0; j < PACKTABLESIZE; j++)
 						unpackt[j] = readttbyte(sod + (j + PACKTABLEOFFSET) * BITSINABYTE, lp, sp, tp, en);
 
-					s = 0x2400;		/* init load address locally */
-					x = 0;			/* init size locally */
-
-					for (j = 0; j < PACKTABLEENTR; j += 2)
-					{
-						e = get_packed_address(j);
-						if (e > s)
-						{
-							x += (e - s);
-							s = get_packed_address(j + 1);
-						}
-						else
-							break;
-					}
-
-					ff3_e = 0x2400 + x - 1;
+					/* Calculate end address of packed file */
+					ff3_e = get_packed_file_end_address();
 				}
 
 				/* File can be acknowledged now */
@@ -284,7 +300,7 @@ int fftape_describe(int row)
 
 #if defined(DEBUGFFTABLES) || defined(DEBUGFFTABLESRAW)
 	/* Unpack table - stored inside the second file of each chain */
-	if (blk[row]->cs == 0x1400 && blk[row]->ce + 1 == 0x23E0)
+	if (blk[row]->cs == LOADADDRFILE2 && blk[row]->ce + 1 == ENDADDRFILE2)
 	{
 #ifdef DEBUGFFTABLESRAW
 		strcat(info, "\n - Unpack table (LSBs) :");
@@ -309,7 +325,7 @@ int fftape_describe(int row)
 #else
 		unsigned int ps, pe;
 
-		ps = 0x2400;
+		ps = LOADADDRFILE3;
 
 		strcat(info, "\n - Sub-blocks for next file :");
 		for (i = 0; i < PACKTABLEENTR; i += 2)
