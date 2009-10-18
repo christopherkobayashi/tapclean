@@ -68,7 +68,7 @@
 /* If defined, the contents of the unpack table are decoded and displayed in 
  * the report (only if DEBUGFFTABLESRAW is not defined)
  */
-//#define DEBUGFFTABLES
+#define DEBUGFFTABLES
 
 static unsigned char unpackt[PACKTABLESIZE];	/* Table to unpack blocks */
 
@@ -88,6 +88,8 @@ inline unsigned int get_packed_file_end_address (void)
 	for (i = 0; i < PACKTABLEENTR; i += 2)
 	{
 		e = get_packed_address(i);
+		if (e == 0)
+			e = 0x10000;
 		if (e > s)
 		{
 			x += (e - s);
@@ -332,7 +334,7 @@ int fftape_describe(int row)
 		for (i = 0; i < PACKTABLEENTR; i += 2)
 		{
 			pe = get_packed_address(i);
-			if (pe > ps)
+			if (pe > ps || pe == 0)
 			{
 				sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
 				strcat(info, lin);
