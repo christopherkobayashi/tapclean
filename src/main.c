@@ -1411,6 +1411,8 @@ static void describe_file(int row)
 					break;
 		case GOFORGOLD:		goforgold_describe(row);
 					break;
+		case FASTEVIL:		fastevil_describe(row);
+					break;
 	}
 }
 
