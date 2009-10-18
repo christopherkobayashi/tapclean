@@ -1,11 +1,12 @@
 
 v0.24
 	Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
+	Added "FF Tape" loader (Luigi)
 
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
-	Improvement: if they occur in file header Visiload T1 oversized pulses 
-	  do not cause scanner to stop looking for Visiload blocks (Luigi)
+	Improvement: if occurring in file header Visiload T1 oversized pulses 
+	 do not cause scanner to stop looking for Visiload blocks (Luigi)
 	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
 	Added "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
 	Improvement: Cyberload F4 scanner now recognizes Myth's F4 files (Kevin)

@@ -36,7 +36,7 @@
 
 /*
  * Looks through the crc database for a crc matching the paramater, returns the defined value
- * of the particular loader family if a a match is found, else return 0.
+ * of the particular loader family if a match is found, else return 0.
  * The crc passed should obviously be that of the first CBM program in the TAP.
  */
 
@@ -265,6 +265,8 @@ int idloader(unsigned /*long*/ int crc)
 		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
 
 		{0x958D7E97, LID_FASTEVIL},	/* The Evil Dead (Peepo's & D-ram's) */
+		
+		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
 
 		{0, 0}
 	};

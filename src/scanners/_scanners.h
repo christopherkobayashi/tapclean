@@ -221,3 +221,6 @@ int goforgold_describe(int);
 
 void fastevil_search(void);
 int fastevil_describe(int);
+
+void fftape_search(void);
+int fftape_describe(int);
