@@ -68,7 +68,7 @@
 /* If defined, the contents of the unpack table are decoded and displayed in 
  * the report (only if DEBUGFFTABLESRAW is not defined)
  */
-#define DEBUGFFTABLES
+//#define DEBUGFFTABLES
 
 static unsigned char unpackt[PACKTABLESIZE];	/* Table to unpack blocks */
 
