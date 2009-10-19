@@ -275,7 +275,7 @@ struct fmt_t ft[100] = {
 	{"TDI TAPE F2"		,LSbF, NA,   0x44, NA,  0x65, 0xA0, 0x0A, 50,  NA,    CSYES},
 	{"BITURBO"		,MSbF, 0x21, 0x1B, NA,  0x27, 0x02, 0x10, 400, NA,    CSYES},
 	{"108DE0A5"		,LSbF, 0x1F, 0x1B, NA,  0x30, 0x02, 0x09, 200, NA,    CSYES},
-	{"ACTIONREPLAY_HEADER"  ,LSbF, 0x3A, 0x23, NA,  0x53, 0x01, 0x00, 1500,NA,    CSNO},
+	{"ACTIONREPLAY_HEADER"  ,LSbF, 0x3A, 0x23, NA,  0x53, 1,    0,    1500,NA,    CSNO},
 	{"ACTIONREPLAY_TURBO"   ,LSbF, 0x3A, 0x23, NA,  0x53, NA,   NA,   NA,  NA,    CSYES},
 	{"ACTIONREPLAY_SUPERTURBO"
 				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
@@ -283,7 +283,7 @@ struct fmt_t ft[100] = {
 	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200, NA,    CSYES},
 	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200, NA,    CSNO},
-	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0x00, 0x01, 1500,NA,    CSNO},
+	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -2056,7 +2056,7 @@ int readttbit(int pos, int lp, int sp, int tp)
 {
 	int valid, v, b;
 
-	if (skewadapt_enabled && tp > 0)
+	if (skewadapt_enabled && tp != NA)
 		return skewadapt_readttbit(pos, lp, sp, tp);
 
 	if (pos < 20 || pos > tap.len - 1)	/* return error if out of bounds.. */
@@ -2229,7 +2229,7 @@ int find_pilot(int pos, int fmt)
 		}
 	}
 
-	return 0;		/* never reached. */
+	return 0;
 }
 
 /*
