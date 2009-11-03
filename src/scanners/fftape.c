@@ -72,12 +72,16 @@
 
 static unsigned char unpackt[PACKTABLESIZE];	/* Table to unpack blocks */
 
-inline unsigned int get_packed_address (int offset)
+#ifdef _MSC_VER
+#define inline __inline
+#endif
+
+static inline unsigned int get_packed_address (int offset)
 {
 	return ((unsigned int) unpackt[offset] + (((unsigned int) unpackt[offset+0x0100]) << 8));
 }
 
-inline unsigned int get_packed_file_end_address (void)
+static inline unsigned int get_packed_file_end_address (void)
 {
 	int i;
 	unsigned int s, e, x;
