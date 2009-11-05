@@ -224,14 +224,25 @@ void fftape_search (void)
 				/* Calculate end address for third file (readttbyte is quite safe here) */
 				if (ff_index == 2)
 				{
-					int j;
+					int j, b, rd_err;
+
+					rd_err = 0;
 
 					/* Store unpack table */
 					for (j = 0; j < PACKTABLESIZE; j++)
-						unpackt[j] = readttbyte(sod + (j + PACKTABLEOFFSET) * BITSINABYTE, lp, sp, tp, en);
+					{
+						b = readttbyte(sod + ((j + PACKTABLEOFFSET) * BITSINABYTE), lp, sp, tp, en);
+						if (b == -1)
+							rd_err++; /* Don't break here: during debug we will see how many errors occur */
+						else
+							unpackt[j] = b;
+					}
 
-					/* Calculate end address of packed file */
-					ff3_e = get_packed_file_end_address();
+					/* Calculate end address of packed file only if unpack table is not damaged */
+					if (rd_err == 0)
+						ff3_e = get_packed_file_end_address();
+					else
+						ff3_e = 0x0001;
 				}
 
 				/* File can be acknowledged now */
@@ -334,18 +345,33 @@ int fftape_describe(int row)
 
 		ps = LOADADDRFILE3;
 
-		strcat(info, "\n - Sub-blocks for next file :");
-		for (i = 0; i < PACKTABLEENTR; i += 2)
+		/* Copy the current table into buffer */
+		for (i = 0; i < PACKTABLESIZE; i++)
 		{
-			pe = get_packed_address(i);
-			if (pe > ps || pe == 0)
-			{
-				sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
-				strcat(info, lin);
-				ps = get_packed_address(i + 1);
-			}
+			b = readttbyte(s + ((i + PACKTABLEOFFSET) * BITSINABYTE), lp, sp, tp, en);
+			if (b != -1)
+				unpackt[i] = b;
 			else
 				break;
+		}
+
+		if (i < PACKTABLESIZE)
+			strcat(info, "\n - Unpack table is damaged");
+		else
+		{
+			strcat(info, "\n - Sub-blocks for next file :");
+			for (i = 0; i < PACKTABLEENTR; i += 2)
+			{
+				pe = get_packed_address(i);
+				if (pe > ps || pe == 0)
+				{
+					sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
+					strcat(info, lin);
+					ps = get_packed_address(i + 1);
+				}
+				else
+					break;
+			}
 		}
 #endif
 	}
