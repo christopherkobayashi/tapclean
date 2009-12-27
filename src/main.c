@@ -349,7 +349,8 @@ const char knam[][32] = {
 	{"Freeload Slowload"},
 	{"Go For The Gold"},
 	{"Fast Evil"},
-	{"FF Tape"}
+	{"FF Tape"},
+	{"TES Tape"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
 	 * them all here!
@@ -992,6 +993,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
 				fftape_search();
 
+			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+				testape_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1185,22 +1189,30 @@ static void search_tap(void)
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
-			if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
-				testape_search();
+			/*
+			 * Do not add the following ones because they should only be looked for when 
+			 * their signature is found in CBM Data block.
+			 */
 
-			/* Do not add the following ones until additonal games using this format are found.
-			   For the time being having it active would just slow down testing and
-			   cleaning other tapes. Besides, these are looked for when signature 
-			   is found in CBM Data block*/
+			//if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+			//	testape_search();
+
+			//if (ldrswt[nofftape		].state == FALSE && !dbase_is_full && !aborted)
+			//	fftape_search();
+
+			/*
+			 * Do not add the following ones until additonal games using these formats 
+			 * are found.
+			 * For the time being having these active would just slow down testing and
+			 * cleaning other tapes. Besides, these are looked for when their signature 
+			 * is found in CBM Data block.
+			 */
 
 			//if (ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
 			//	goforgold_search();
 
 			//if (ldrswt[nofastevil		].state == FALSE && !dbase_is_full && !aborted)
 			//	fastevil_search();
-
-			//if (ldrswt[nofftape		].state == FALSE && !dbase_is_full && !aborted)
-			//	fftape_search();
 		}
 
 		sort_blocks();	/* sort the blocks into order of appearance */
