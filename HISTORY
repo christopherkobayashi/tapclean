@@ -2,6 +2,7 @@
 v0.24
 	Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
 	Added "FF Tape" loader (Luigi)
+	Added "TES tape" loader (Luigi)
 
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)

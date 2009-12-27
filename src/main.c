@@ -120,6 +120,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Super Tape"			,"super"	,FALSE},
 	{"TDI F1"			,"tdif1"	,FALSE},
 	{"TDI F2"			,"tdif2"	,FALSE},
+	{"TES Tape"			,"testape"	,FALSE},
 	{"Trilogic"			,"trilogic"	,FALSE},
 	{"Turbotape 250"		,"turbo"	,FALSE},
 	{"Turrican"			,"turr"		,FALSE},
@@ -284,6 +285,7 @@ struct fmt_t ft[100] = {
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200, NA,    CSYES},
 	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200, NA,    CSNO},
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
+	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 200, NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -1183,6 +1185,9 @@ static void search_tap(void)
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
+			if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+				testape_search();
+
 			/* Do not add the following ones until additonal games using this format are found.
 			   For the time being having it active would just slow down testing and
 			   cleaning other tapes. Besides, these are looked for when signature 
@@ -1423,6 +1428,8 @@ static void describe_file(int row)
 		case FASTEVIL:		fastevil_describe(row);
 					break;
 		case FFTAPE:		fftape_describe(row);
+					break;
+		case TESTAPE:		testape_describe(row);
 					break;
 	}
 }

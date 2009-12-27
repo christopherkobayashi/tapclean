@@ -224,3 +224,6 @@ int fastevil_describe(int);
 
 void fftape_search(void);
 int fftape_describe(int);
+
+void testape_search(void);
+int testape_describe(int);
