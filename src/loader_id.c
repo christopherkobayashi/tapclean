@@ -267,6 +267,8 @@ int idloader(unsigned /*long*/ int crc)
 		{0x958D7E97, LID_FASTEVIL},	/* The Evil Dead (Peepo's & D-ram's) */
 		
 		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
+		
+		{0xDB93D097, LID_TESTAPE},	/* Special Program games */
 
 		{0, 0}
 	};
