@@ -55,8 +55,8 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.23 Console - (C) 2006-2009 TC Team"
-#define BUILDER     "bgk"
+#define VERSION_STR "TAPClean v0.23 Console - (C) 2006-2010 TC Team"
+#define BUILDER     "Luigi Di Fraia"
 
 #define TRUE	1
 #define FALSE	0
