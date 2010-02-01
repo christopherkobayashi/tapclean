@@ -512,7 +512,7 @@ void clean_files(void)
 
 void fix_boot_pilot(void)
 {
-	int i, siz, p;
+	int i, siz, p, p1;
 	unsigned char *tmp;
 
 	if (tap.bootable) {
@@ -520,19 +520,21 @@ void fix_boot_pilot(void)
 
 		for (i = 0; blk[i]->lt != CBM_HEAD; i++);
 
+		p1 = blk[i]->p1;                        /* get CBM header pilot offset. */
+
 		p = blk[i]->p2 - (9 * 20);		/* get CBM header 'sync sequence' offset. */
 
-		siz = 20 + 0x6A00 + (tap.len - p);	/* compute length of finished tap */
+		siz = p1 + 0x6A00 + (tap.len - p);	/* compute length of finished tap */
 
 		tmp = (unsigned char*)malloc(siz + 1024);	/* create a buffer for the rewrite. */
 
-		for (i = 0; i < 20; i++)		/* copy the original header.. */
+		for (i = 0; i < p1; i++)		/* copy the original header and all the files before the first CBM_HEAD */
 			tmp[i] = tap.tmem[i];
 
 		for (i = 0; i < 0x6A00; i++)		/* write out perfect CBM pilot.. */
-			tmp[20 + i] = ft[CBM_HEAD].sp;
+			tmp[p1 + i] = ft[CBM_HEAD].sp;
 
-		for (i = 0x6A00 + 20; p < tap.len; p++)	/* and copy remainder of tap.. */
+		for (i = 0x6A00 + p1; p < tap.len; p++)	/* and copy remainder of tap.. */
 			tmp[i++] = tap.tmem[p];
 
 		tap.len = i;
