@@ -4,6 +4,7 @@ v0.24
 	Added "FF Tape" loader (Luigi)
 	Added "TES tape" loader (Luigi)
 	Do not erase tape image contents before the first CBM header block (Luigi)
+	Added Makefile.MAC (bgk)
 
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
