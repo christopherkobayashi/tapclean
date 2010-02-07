@@ -1,6 +1,6 @@
 
 cd src
-Copy either Makefile.win or Makefile.lin to Makefile
+If using MAC OSX, copy Makefile.MAC to Makefile
 Run make
-Copy tapclean or tapclean.exe to a suitable directory
-
+Copy tapclean or tapclean.exe to a suitable directory (it requires write access)
+Make sure the directory is in your system PATH if you want to execute tapclean from any location
