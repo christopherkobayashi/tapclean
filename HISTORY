@@ -1,4 +1,7 @@
 
+v0.25
+	Fixed calculation of end address of "FF Tape" block # 3 (Luigi)
+
 v0.24
 	Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
 	Added "FF Tape" loader (Luigi)
