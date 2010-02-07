@@ -55,6 +55,7 @@
 #define LOADADDRFILE2	0x1400	/* load address of second file */
 #define ENDADDRFILE2	0x23E0	/* end address+1 of second file */
 #define LOADADDRFILE3	0x2400	/* load address of third file */
+#define ENDADDRFILE3	0xFFFE	/* end address of third file (maximum) */
 #define LOADADDRFILE4	0x1400	/* load address of fourth file */
 #define ENDADDRFILE4	0x2400	/* end address+1 of fourth file */
 
@@ -92,11 +93,15 @@ static inline unsigned int get_packed_file_end_address (void)
 	for (i = 0; i < PACKTABLEENTR; i += 2)
 	{
 		e = get_packed_address(i);
-		if (e == 0)
-			e = 0x10000;
+		if (e < LOADADDRFILE3)
+			e = ENDADDRFILE3;
+		if (e > ENDADDRFILE3)
+			e = ENDADDRFILE3;
 		if (e > s)
 		{
 			x += (e - s);
+			if (e == ENDADDRFILE3)
+				break;
 			s = get_packed_address(i + 1);
 		}
 		else
@@ -363,10 +368,16 @@ int fftape_describe(int row)
 			for (i = 0; i < PACKTABLEENTR; i += 2)
 			{
 				pe = get_packed_address(i);
-				if (pe > ps || pe == 0)
+				if (pe < LOADADDRFILE3)
+				        pe = ENDADDRFILE3;
+				if (pe > ENDADDRFILE3)
+				        pe = ENDADDRFILE3;
+				if (pe > ps)
 				{
 					sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
 					strcat(info, lin);
+					if (pe == ENDADDRFILE3)
+					        break;
 					ps = get_packed_address(i + 1);
 				}
 				else
