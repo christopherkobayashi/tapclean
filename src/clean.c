@@ -1142,6 +1142,25 @@ void cut_postdata_gaps(void)
 }
 
 /*
+ * Cut gap of any size <20 that occurs at the beginning of tape
+ */
+
+void cut_leading_gap(void)
+{
+	msgout("\nCutting leading garbage...");
+
+	/* we look for this pattern...    Start of tape, GAP(<20 pulses) */
+	if (blk[0]->lt == GAP && blk[0]->xi < 20)
+	{
+                cut_range(blk[0]->p1, blk[0]->p4);
+		msgout("  Done.");
+		analyze();
+	}
+	else
+		msgout("  None found.");
+}
+
+/*
  * Adds a trailing pause to the (v1) tap file in tap.tmem.
  * the tap should have been previously clipped and converted to v1.
  */
