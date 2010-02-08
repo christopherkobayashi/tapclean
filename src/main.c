@@ -2573,6 +2573,7 @@ void clean(void)
 	standardize_pauses();		/* standardize CBM HEAD -> CBM PROG pauses. */
 	fix_boot_pilot();		/* add new $6A00 pulse pilot on a CBM boot header. */
 	cut_postdata_gaps();		/* cuts post-data gaps <20 pulses. */
+	cut_leading_gap();              /* cuts gap <20 pulses found at beginning of tape. */
 
 	if (noaddpause == FALSE)
 		add_trailpause();	/* add a 5 second trailing pause   */

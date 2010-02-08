@@ -71,6 +71,7 @@ void fix_postpausegaps(void);
 int insert_pauses(void);
 void cut_range(int, int);
 void cut_postdata_gaps(void);
+void cut_leading_gap(void);
 void add_trailpause(void);
 void fill_cbm_tone(void);
 void fix_bleep_pilots(void);
