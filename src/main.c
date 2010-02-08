@@ -1976,7 +1976,8 @@ int main(int argc, char *argv[])
 							printf("\nSaved: %s", tcreportname);
 							if (opnum > 1) {
 								strcpy(cleanedtapname, CLEANED_PREFIX);
-								strcat(cleanedtapname, tap.name); 
+								strcat(cleanedtapname, tap.name);
+								change_file_extention(cleanedtapname, "tap", MAXPATH);
 								save_tap(cleanedtapname);
 								printf("\n\nSaved: %s", cleanedtapname);
 							}
@@ -2802,6 +2803,31 @@ void getfilename(char *dest, char *fullpath)
 	dest[k] = 0;
 
 	return;
+}
+
+/*
+ * Change file extension if any is already in filename
+ */
+char* change_file_extention (char *filename, char *new_extension, int buffer_length)
+{
+        int i, len;
+
+	len = strlen(filename);
+	for (i = len - 1; i > 0 && filename[i] != '.'; i--)
+		;
+
+	if (filename[i] == '.')
+	{
+		int j;
+
+	        i++;
+	        len = strlen(new_extension);
+	        for (j = 0; j < len && i+j < buffer_length - 1; j++)
+	                filename[i+j] = new_extension[j];
+		filename[i+j] = '\0';
+	}
+
+	return filename;
 }
 
 /*
