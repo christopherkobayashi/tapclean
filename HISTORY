@@ -1,169 +1,175 @@
+Entries are of the following types:
+	- Code quality: changes that make the code more readable, portable, or maintainable
+	- Fix: bug fixes
+	- Improvement: where end-user experience has been improved (or frustration minimized)
+	- New: new features, such as support for new loaders
 
 v0.25
-	Fixed calculation of end address of "FF Tape" block # 3 (Luigi)
-	Remove garbage at the beginning of the tape when cleaning (Luigi)
-	Cleaned DMP files have the "tap" extension now (Luigi)
-	Report now shows the cleaned file name after cleaning (Luigi)
+	Fix: proper calculation of end address of "FF Tape" block # 3 (Luigi)
+	Fix: remove garbage at the beginning of the tape when cleaning (Luigi)
+	Fix: Cleaned DMP files have the "tap" extension now (Luigi)
+	Fix: Report now shows the cleaned file name after cleaning (Luigi)
 
 v0.24
-	Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
-	Added "FF Tape" loader (Luigi)
-	Added "TES tape" loader (Luigi)
-	Do not erase tape image contents before the first CBM header block (Luigi)
-	Added Makefile.MAC (bgk)
+	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
+	New: Added support for "FF Tape" loader (Luigi)
+	New: Added support for "TES tape" loader (Luigi)
+	Fix: image contents before the first CBM header block are not erased anymore (Luigi)
+	New: Added Makefile.MAC (bgk)
 
 v0.23
 	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
 	Improvement: if occurring in file header Visiload T1 oversized pulses 
 	 do not cause scanner to stop looking for Visiload blocks (Luigi)
 	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
-	Added "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
-	Improvement: Cyberload F4 scanner now recognizes Myth's F4 files (Kevin)
-	Changed trailer read block to use readttbit in new scanners (Luigi)
-	Added "Fast Evil" loader, found in "The Evil Dead" (Luigi)
+	New: Added support for "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
+	Improvement: "Cyberload F4" scanner now recognizes Myth's F4 files (Kevin)
+	Code quality: changed trailer read block to use readttbit in new scanners (Luigi)
+	New: Added support for "Fast Evil" loader, found in "The Evil Dead" (Luigi)
 
 v0.22
-	Added proper SEQ file support (Luigi)
-	First attempt to make the source 64-bit safe in gcc compiler (Luigi)
-	Removed system calls after suggestion from iAN CooG (Luigi)
-	Moved prg file making from analyze() to report() (Luigi)
-	Integrated Action Replay and Easytape scanners done by iAN CooG (Fabbo)
-	Pavload scanner has been enhanced, but cleaning of tapes won't yet fix
+	Fix: Added proper SEQ file support (Luigi)
+	Code quality: first attempt to make the source 64-bit safe in gcc compiler (Luigi)
+	Code quality: removed system calls after suggestion from iAN CooG (Luigi)
+	Improvement: moved prg file making from analyze() to report() (Luigi)
+	New: Added support for "Action Replay" and "Easytape" loaders, done by iAN CooG (Fabbo)
+	Improvement: "Pavload" scanner improved, but cleaning of tapes won't yet fix
 	 a problem with the last pulse, which is known to be 0x3F if broken and 
 	 no 0x1F preceeds it, otherwise it's 0x1F (Luigi)
-	Compilation fixes for Microsoft Visual C++ (Windows) and DJGPP (MS-DOS)
-	Uniformed code and comments in the new scanners (Luigi)
-	Added read error check for unreadable checkbytes in the new scanners (Luigi)
-	Removed Easytape and substituted Action Replay scanner (Luigi)
-	Fixed "prg" folder access rights upon creation under Linux (Luigi)
-	Added Ash+Dave scanner (Luigi)
-	Fixed pulse disambiguation check in c64tape.c (Fabbo)
-	Added Freeload Slowload scanner (Luigi)
-	Implemented integer wraparound prevention in new scanners (Luigi)
-	Improved recognition of CBM DATA blocks when data starts with 0x01...0x06 
+	Fix: compilation fixes for Microsoft Visual C++ (Windows) and DJGPP (MS-DOS) (Fabbo)
+	Code quality: uniformed code and comments in the new scanners (Luigi)
+	Code quality: added read error check for unreadable checkbytes in the new scanners (Luigi)
+	Code quality: removed "Easytape" and substituted "Action Replay" scanner (Luigi)
+	Fix: fixed "prg" folder access rights upon creation under Linux (Luigi)
+	New: Added support for "Ash+Dave" loader (Luigi)
+	Fix: fixed pulse disambiguation check in c64tape.c (Fabbo)
+	New: Added support for "Freeload Slowload" loader (Luigi)
+	Fix: implemented integer wraparound prevention in new scanners (Luigi)
+	Fix: fixed recognition of CBM DATA blocks when data starts with 0x01...0x06 
 	 by requesting a plausibility check on load and end addresses. Those blocks 
-	 should not be misrecognized as CBM HEADER ones anymore. Maggotmania is now
-	 recognized properly (Luigi)
-	Improved recognition of CBM HEADER blocks in Ping Pong (payload is 294 byte 
+	 should not be misrecognized as CBM HEADER ones anymore. "Maggotmania" is
+	 now recognized properly (Luigi)
+	Fix: fixed recognition of CBM HEADER blocks in "Ping Pong" (payload is 294 byte
 	 long) (Luigi)
 
 v0.21
-	Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
-	Fixed the trailer read code in turbotape.c (Luigi)
-	Tape type now affects CBM loader pulsewidths (Luigi)
-	 (cps is as defined in TAP format)
-	Added new scanner: 108DE0A5 (Luigi)
-	Fixed all compilation warnings (Luigi)
-	Added new scanner: Biturbo (Luigi)
-	Added support for reading DC2N 16-bit 2MHz RAW TAP format (Luigi + bgk)
-	Converted scanners/ikloader.c to new coding style (bgk)
-	Converted scanners/hitload.c to new coding style (bgk)
-	Converted scanners/aces.c to new coding style (bgk)
-	The DC2N to TAP conversion routines were fixed and improved a bit (Luigi)
-	 This fixed the tap time reporting bug
+	Fix: Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
+	Fix: Fixed the trailer read code in turbotape.c (Luigi)
+	Improvement: Tape type now affects CBM loader pulsewidths.
+	 cps is as defined in TAP format (Luigi)
+	New: Added support for "108DE0A5" loader (Luigi)
+	Fix: Fixed all compilation warnings (Luigi)
+	New: Added support for "Biturbo" loader (Luigi)
+	New: Added support for reading DC2N 16-bit 2MHz RAW TAP format (Luigi+bgk)
+	Code quality: converted scanners/ikloader.c to new coding style (bgk)
+	Code quality: converted scanners/hitload.c to new coding style (bgk)
+	Code quality: converted scanners/aces.c to new coding style (bgk)
+	Fix: the DC2N to TAP conversion routines were fixed and improved a bit.
+	 This fixed the tap time reporting bug (Luigi)
 
 v0.20
 	Fixed the eof value for Gauntlet after a successful addblockdef() call (Luigi)
 	Converted scanners/c64tape.c to new coding style (bgk)
 	The Excluded Scanners message now is shown only once (Luigi)
 	Fix some compiler complaints (Luigi)
-	Added Tap time to the report (bgk).
-	Fixed the wav code. Now creating wavs should work (bgk+enthusi).
-	 Thanks to Enthusi for discovering this bug.
+	Added Tap time to the report (bgk)
+	Fixed the wav code. Now creating wavs should work.
+	 Thanks to Enthusi for discovering this bug (bgk+enthusi)
 
 v0.19
-	Fixed off by one for tolerance (bgk).
+	Fixed off by one for tolerance (bgk)
 	 Now S.D.I. cleans 100% (Cyberload) with tol=15
 
 v0.18
-	Fixed bug in Mastertronic Burner Variant. (Luigi?)
+	Fixed bug in "Mastertronic Burner Variant" (Luigi)
 	Peepo/Luigi discovered a pilot size of only 96 bytes (was 192) (Luigi+Peepo)
 
 v0.17
 	Updated loaders: cult, burner_var, oceannew4, accolade, rainbowarts_f1,
 	 rainbowarts_f2, tdi_f2 and trilogic (Luigi)
-	New version of odeload loader (Luigi)
+	New version of "ODEload" loader (Luigi)
 
 v0.16
 	Changed the trailer ack routines for the scanners I created.
-	 I ack pulses up to a max amount, based on experience (Luigi).
+	 I ack pulses up to a max amount, based on experience (Luigi)
 	PARTLY Fixed the c64tape.c trailer read routine.
 	 Trailer is now accounted even if terminated by a spike, not just a pause (Luigi)
-	Moved TDI F2 search before TDI F1.
+	Moved TDI F2 search before TDI F1
 
 v0.15
-	Edited Cult scanner (Luigi).
-	Changed TDI scanner to acknowledge trailer pulses.
-	 All TDI TAP files which were optimized should be re-optimized (Luigi).
-	Added scanner for TDI F2.
-	 The discovery of EOF markers in TDI TAP files was fundamental (Luigi).
+	Edited "Cult" scanner (Luigi)
+	Changed "TDI" scanner to acknowledge trailer pulses
+	 All "TDI" TAP files which were optimized should be re-optimized (Luigi)
+	Added scanner for "TDI F2".
+	 The discovery of EOF markers in "TDI" TAP files was fundamental (Luigi)
 	Display the scanners you've elected to not run (bgk)
 	Display list of scanners and -no<loader> parameters (bgk)
 
 v0.14
-	Added 2 scanners: Burner (Mastertronic Variant) and Ocean New 4 (Luigi).
+	Added 2 scanners: "Burner (Mastertronic Variant)" and "Ocean New 4" (Luigi)
 
 v0.13
-	Added 3 scanners: Rainbow Arts F1, R.A. F2, and Trilogic (Luigi).
+	Added 3 scanners: "Rainbow Arts F1", "R.A. F2", and "Trilogic" (Luigi)
 
 v0.12
-	Added scanner for Alternative World Games (fabbo).
+	Added scanner for "Alternative World Games" (fabbo)
 
 v0.11
-	Additional fix inside audiogenic scanner (Luigi).
-	Fixed bleepload scanner.
-	 The backtracing of pre-pilot pulses was missing a call to is_pause_param(). Mad Nurse now goes to 100% (Luigi).
-	Final revision of the accolade/ea scanner (Luigi).
-	Fixed is_pause_param() function in main.c.
-	 The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager now goes to 100% (Luigi).
-	Some fixes to Alien Syndrome scanner (fabbo).
+	Additional fix inside "Audiogenic" scanner (Luigi)
+	Fixed "Bleepload" scanner. The backtracing of pre-pilot pulses was missing a call to is_pause_param().
+	  Mad Nurse is now 100% recognized after cleaning (Luigi)
+	Final revision of the "Accolade/EA (+clone)" scanner (Luigi)
+	Fixed is_pause_param() function in main.c
+	 The default return value did not work correctly at the very beginning of a TAP file.
+	 Boxing Manager is now 100% recognized after cleaning (Luigi)
+	Some fixes to "Alien Syndrome" scanner (fabbo)
 
 v0.10
-	Fixed audiogenic scanner.
-	 The 0x01 byte after a block is NOT mandatory. This assumption was causing problems with Loopz (Luigi).
-	Fixed the 'trace eof' and 'addblockdef' issues in accolade_search().
-	 The same should be done for all similiar scanners (Luigi).
-	Removed two levels of indentation inside accolade_search() (Luigi).
+	Fixed "Audiogenic" scanner. The 0x01 byte after a block is NOT mandatory.
+	  This assumption was causing problems with "Loopz" (Luigi)
+	Fixed the 'trace eof' and 'addblockdef' issues in accolade_search()
+	 The same should be done for all similiar scanners (Luigi)
+	Removed two levels of indentation inside accolade_search() (Luigi)
 
 v0.09
-	added Accolade/EA (+clone) support (Luigi).
-	Added options for selecting c16, vic20 and c64 tapes.
+	Added "Accolade/EA (+clone)" support (Luigi)
+	Added options for selecting c16, vic20 and c64 tapes
 	 No actual code support for c16 and vic20 YET. (bgk)
 
 v0.08
 	batchscan.c: Removed the "static const char tcbatchreportname[] = "tcbatch.txt";"
-	 for it's already defined in main.c (Luigi).
+	 for it's already defined in main.c (Luigi)
 	database.c/.h: I moved here the prg-related functions (make_prgs() and save_prgs())
-	 from main.c and added reset_prg_database() to remove code duplication in main() and save_prgs() (Luigi).
-	main.c: I changed many variables to static, improved the code within get_exedir() function.
-	 Improved code in main() too: the variables now have the minimum required scope (Luigi).
+	 from main.c and added reset_prg_database() to remove code duplication in main() and save_prgs() (Luigi)
+	main.c: I changed many variables to static, improved the code within get_exedir() function
+	 Improved code in main() too: the variables now have the minimum required scope (Luigi)
 	mydefs.h: this file reflects the above changes and contains the new OSAPI_xxx definitions which avoid
-	 the use of #ifdef WIN32 inside the whole code where system() is called (Luigi).
+	 the use of #ifdef WIN32 inside the whole code where system() is called (Luigi)
 	Expanded main.c:display_usage() (bgk)
-	Added loader_id for Cult and removed for Alien Syndrome (bgk+Luigi)
+	Added loader_id for "Cult" and removed for "Alien Syndrome" (bgk+Luigi)
 
 v0.07
 	Converted scanners/usgold.c to new coding style (bgk)
 	Updated Makefiles (bgk)
-	Added support for Alien Syndrome loader. (fabbo)
+	Added support for "Alien Syndrome" loader. (fabbo)
 	Updated Makefile (fabbo)
 
 v0.06
 	Files changed: batchscan.c, database.c, database.h, main.c, mydefs.h, tap2audio.h, tap2audio.c
 
 	Reinserted "temptcbatchreportname" definition in main.c. It proves to be an useful indicator while the
-	 bach scan is in progress. Declaration is _still_ in mydefs.h, it will be moved at a later time (Luigi).
-	Moved au and wav filename definitions to the tap2audio.c file. Declaration is in tap2audio.h (Luigi).
+	 bach scan is in progress. Declaration is _still_ in mydefs.h, it will be moved at a later time (Luigi)
+	Moved au and wav filename definitions to the tap2audio.c file. Declaration is in tap2audio.h (Luigi)
 	Removed drawwavesquare(), drawwavesine(), and s_out() prototypes from tap2audio.h, since those (PRIVATE)
-	 functions are not used outside the tap2audio.c file, and therefore they were made static there (Luigi).
-	Added 1 level of indentation in main.c/main() for the TAP test (Luigi).
-	Removed duplication of forward declarations of addblockdef(); and sort_blocks(); in main.h (Luigi).
-	Changed many (PRIVATE) functions in main.c to static and commented out the declarations from main.h (Luigi).
-	Added #define HASNOTCHECKSUM -2 to database.h, thus eliminating the hardcoded value (Luigi).
-	Moved function scan_gaps() to the database module (Luigi).
-	Moved function count_rpulses() to the database module (Luigi).
-	Moved function count_good_checksums() to the database module (Luigi).
-	Moved function compute_overall_crc() to the database module (Luigi).
+	 functions are not used outside the tap2audio.c file, and therefore they were made static there (Luigi)
+	Added 1 level of indentation in main.c/main() for the TAP test (Luigi)
+	Removed duplication of forward declarations of addblockdef(); and sort_blocks(); in main.h (Luigi)
+	Changed many (PRIVATE) functions in main.c to static and commented out the declarations from main.h (Luigi)
+	Added #define HASNOTCHECKSUM -2 to database.h, thus eliminating the hardcoded value (Luigi)
+	Moved function scan_gaps() to the database module (Luigi)
+	Moved function count_rpulses() to the database module (Luigi)
+	Moved function count_good_checksums() to the database module (Luigi)
+	Moved function compute_overall_crc() to the database module (Luigi)
 
 v0.05
 	Replace hardcoded values with #defines for read_errors[] (bgk)
@@ -188,46 +194,46 @@ v0.05
 	Some small cleanups in scanners/enigma.c, oceannew1t1.c (bgk)
 	
 v0.04
-	Files changed: batchscan.c, database.c, main.c, mydefs.h.
+	Files changed: batchscan.c, database.c, main.c, mydefs.h
 
-	Converted "opname" in main.c/main() to a char *. No memory usage and no strcpy anymore (Luigi).
-	Fixed "opnames[12][32]" that contains just 11 entries by converting it to "opnames[][32]" (Luigi).
+	Converted "opname" in main.c/main() to a char *. No memory usage and no strcpy anymore (Luigi)
+	Fixed "opnames[12][32]" that contains just 11 entries by converting it to "opnames[][32]" (Luigi)
 	Removed duplicated initialization of "tol" and "debug" inside main.c/main(). They are akready
-	 initialized outside main() (Luigi).
-	Fixed "create_database()" call in main.c/main() which was not checking for the return value (Luigi).
-	Added a freeing of allocated resources in database.c/create_database() in case of malloc() failure (Luigi).
-	Fixed wav_write() call in main.c/main() which was called using the au filename (Luigi).
-	Removed usage of "temptcreportname". Probably just useful in the GUI version of Final Tap (Luigi).
+	 initialized outside main() (Luigi)
+	Fixed "create_database()" call in main.c/main() which was not checking for the return value (Luigi)
+	Added a freeing of allocated resources in database.c/create_database() in case of malloc() failure (Luigi)
+	Fixed wav_write() call in main.c/main() which was called using the au filename (Luigi)
+	Removed usage of "temptcreportname". Probably just useful in the GUI version of Final Tap (Luigi)
 	Converted "tcreportname", "tcbatchreportname", "temptcbatchreportname", "tcinfoname", "auoutname", 
-	 and "wavoutname" in main.c to static const char (Luigi).
-	Converted "cleanedtapname" in main.c to static char (Luigi).
+	 and "wavoutname" in main.c to static const char (Luigi)
+	Converted "cleanedtapname" in main.c to static char (Luigi)
 	Removed "tcreportname", "tcbatchreportname", "temptcbatchreportname", "tcinfoname", "auoutname", 
-	 "wavoutname", and "cleanedtapname" from mydefs.h. Just "exedir" (non-static) was kept (Luigi).
-	Removed duplicated BLKMAX, DBERR, and DBFULL #definitions from mydefs.h (Luigi).
+	 "wavoutname", and "cleanedtapname" from mydefs.h. Just "exedir" (non-static) was kept (Luigi)
+	Removed duplicated BLKMAX, DBERR, and DBFULL #definitions from mydefs.h (Luigi)
 	Added MAXPATH #definition in mydefs.h for strings holding path and some filenames ("exedir",
-	 and "tap_t"/"tap_tr" subfields). Uniform to this definition elsewhere too or use dynamic strings? (Luigi).
+	 and "tap_t"/"tap_tr" subfields). Uniform to this definition elsewhere too or use dynamic strings? (Luigi)
 	Changed strcmp to stricmp in main.c/get_exedir() to avoid issues under Windows when using 
-	 TAB from command line with the -b option (ie. "Tapclean -b" did not work) (Luigi).
-	Changed the '\\', "\\", '/', "/" in main.c/get_exedir() to use the SLASH #definition (Luigi).
+	 TAB from command line with the -b option (ie. "Tapclean -b" did not work) (Luigi)
+	Changed the '\\', "\\", '/', "/" in main.c/get_exedir() to use the SLASH #definition (Luigi)
 	Fixed drag&drop feature in main.c/main(). If you use "tapclean -b", load_tap() doesn't
-	 complain anymore (Luigi).
+	 complain anymore (Luigi)
 	Partly Fixed the getcwd() call in batchscan.c/batchscan() to make room for appending the SLASH 
-	 and '\0'. See the TODO document (Luigi).
-	Fixed the remaining-taps-counter in batchscan.c/batchscan() for batch scanning (Luigi).
+	 and '\0'. See the TODO document (Luigi)
+	Fixed the remaining-taps-counter in batchscan.c/batchscan() for batch scanning (Luigi)
 
 v0.03
-	Split database operations into database.[c|h] (Luigi+bgk).
-	Fixed some off by one errors in main.c (Luigi).
-	Added build info + builder (Luigi+bgk).
-	Some more cleanup (bgk).
+	Split database operations into database.[c|h] (Luigi+bgk)
+	Fixed some off by one errors in main.c (Luigi)
+	Added build info + builder (Luigi+bgk)
+	Some more cleanup (bgk)
 
 v0.02
-	Added ODEload (slc+bgk).
-	Added Cult loader (slc+bgk).
-	Added 'clean.' to start of cleaned tap filename (bgk).
-	Added -doprg parameter (bgk+peepo).
-	Some more cleanups. Most of the scanner/* files remain for now (bgk).
-	Fixed bug in cbm_search (slc).
+	Added "ODEload" (slc+bgk)
+	Added "Cult" loader (slc+bgk)
+	Added 'clean.' to start of cleaned tap filename (bgk)
+	Added -doprg parameter (bgk+peepo)
+	Some more cleanups. Most of the scanner/* files remain for now (bgk)
+	Fixed bug in cbm_search (slc)
 
 v0.01
-	Cleanup of original FinalTAP console source (v2.76) (bgk).
+	Cleanup of original FinalTAP console source (v2.76) (bgk)
