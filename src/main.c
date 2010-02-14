@@ -1972,15 +1972,24 @@ int main(int argc, char *argv[])
 									break;
 							}
 
-							report();
-							printf("\nSaved: %s", tcreportname);
 							if (opnum > 1) {
+								char *tapnamepos;
+
 								strcpy(cleanedtapname, CLEANED_PREFIX);
 								strcat(cleanedtapname, tap.name);
 								change_file_extention(cleanedtapname, "tap", MAXPATH);
 								save_tap(cleanedtapname);
 								printf("\n\nSaved: %s", cleanedtapname);
+
+								/* Change tap.path because the report refers to the cleaned tap */
+								tapnamepos = strstr(tap.path, tap.name);
+								if (tapnamepos)
+									strncpy(tapnamepos, cleanedtapname, MAXPATH);
 							}
+
+							report();
+							printf("\nSaved: %s", tcreportname);
+
 							time(&t2);
 							time2str(t2 - t1, lin);
 							printf("\nOperation completed in %s.", lin);
