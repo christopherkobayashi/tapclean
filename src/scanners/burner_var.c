@@ -312,8 +312,7 @@ int burnervar_describe (int row)
 
 	/* Do NOT increase read errors for this one is not within DATA */
 	if (b != -1) {
-		sprintf(lin, "\n - Marker : ");
-		strcat(info, lin);
+		strcat(info, "\n - Marker : ");
 		strcat(info, b == 0 ? "EOF" : "not EOF");
 	}
 
