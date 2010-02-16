@@ -269,6 +269,8 @@ int idloader(unsigned /*long*/ int crc)
 		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
 		
 		{0xDB93D097, LID_TESTAPE},	/* Special Program games */
+		
+		{0x737CE3A9, LID_TEQUILA},	/* Tequila Sunrise */
 
 		{0, 0}
 	};

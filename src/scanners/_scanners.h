@@ -227,3 +227,6 @@ int fftape_describe(int);
 
 void testape_search(void);
 int testape_describe(int);
+
+void tequila_search(void);
+int tequila_describe(int);

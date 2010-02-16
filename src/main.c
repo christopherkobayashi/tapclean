@@ -120,6 +120,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Super Tape"			,"super"	,FALSE},
 	{"TDI F1"			,"tdif1"	,FALSE},
 	{"TDI F2"			,"tdif2"	,FALSE},
+	{"Tequila Sunrise"		,"tequila"	,FALSE},
 	{"TES Tape"			,"testape"	,FALSE},
 	{"Trilogic"			,"trilogic"	,FALSE},
 	{"Turbotape 250"		,"turbo"	,FALSE},
@@ -286,6 +287,7 @@ struct fmt_t ft[100] = {
 	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200, NA,    CSNO},
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 200, NA,    CSYES},
+	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -350,7 +352,8 @@ const char knam[][32] = {
 	{"Go For The Gold"},
 	{"Fast Evil"},
 	{"FF Tape"},
-	{"TES Tape"}
+	{"TES Tape"},
+	{"Tequila Sunrise"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
 	 * them all here!
@@ -996,6 +999,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
 				testape_search();
 
+			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
+				tequila_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1197,8 +1203,11 @@ static void search_tap(void)
 			//if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
 			//	testape_search();
 
-			//if (ldrswt[nofftape		].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
 			//	fftape_search();
+
+			//if (ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
+			//	tequila_search();
 
 			/*
 			 * Do not add the following ones until additonal games using these formats 
@@ -1442,6 +1451,8 @@ static void describe_file(int row)
 		case FFTAPE:		fftape_describe(row);
 					break;
 		case TESTAPE:		testape_describe(row);
+					break;
+		case TEQUILA:		tequila_describe(row);
 					break;
 	}
 }

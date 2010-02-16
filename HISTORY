@@ -9,6 +9,7 @@ v0.25
 	Fix: remove garbage at the beginning of the tape when cleaning (Luigi)
 	Fix: Cleaned DMP files have the "tap" extension now (Luigi)
 	Fix: Report now shows the cleaned file name after cleaning (Luigi)
+	New: Added support for "Tequila Sunrise" loader (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
