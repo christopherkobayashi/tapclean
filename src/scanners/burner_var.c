@@ -108,6 +108,10 @@ void burnervar_search (void)
 
 	match = BURNERVAR_NOMATCH;
 	
+	/* Basic validation before accessing array elements */
+	if (blk[ib]->cx < V1SYNCOFFSET + 1)
+	        return;
+
 	pv = blk[ib]->dd[V1PILOTOFFSET]  ^ CBMXORDECRYPT;
 	sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;
 	en = blk[ib]->dd[V1ENDIANOFFSET] ^ CBMXORDECRYPT;

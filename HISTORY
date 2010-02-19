@@ -10,6 +10,8 @@ v0.25
 	Fix: Cleaned DMP files have the "tap" extension now (Luigi)
 	Fix: Report now shows the cleaned file name after cleaning (Luigi)
 	New: Added support for "Tequila Sunrise" loader (Luigi)
+	Improvement: Added basic validation of CBM payload size before accessing dd[] array 
+	 in "Cult", "Mastertronic Burner Variant", and "Biturbo" (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)

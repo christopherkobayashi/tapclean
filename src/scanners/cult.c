@@ -81,11 +81,19 @@ void cult_search (void)
 	if (ib == -1)
 		return;		/* failed to locate cbm data. */
 
+	/* Basic validation before accessing array elements */
+	if (blk[ib]->cx < LOADOFFSETH + 1)
+	        return;
+
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8); /* 0x0801 */
 
 	ib = find_decode_block(CBM_HEAD, 1);
 	if (ib == -1)
 		return;		/* failed to locate cbm header. */
+
+	/* Basic validation before accessing array elements */
+	if (blk[ib]->cx < ENDOFFSETH + 1)
+	        return;
 
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 

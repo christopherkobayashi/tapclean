@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.9  2010/02/19 23:59:01  luigidifraia
+ * Added basic validation of CBM payload size before accessing dd[]  array
+ *
  * Revision 1.8  2009/10/17 20:22:17  luigidifraia
  * Uniformed sync count and comment
  *
@@ -187,6 +190,10 @@ void biturbo_search (void)
 					cbm_index--;	/* Make the last checked CBM data instance available to the following Biturbo files, if any */
 					break;
 				}
+
+				/* Basic validation before accessing array elements */
+				if (blk[ib]->cx < LOADOFFSETH + 1)
+				        continue;
 
 				/* Extract load and end locations */
 				s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
