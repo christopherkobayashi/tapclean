@@ -17,4 +17,5 @@ $(BIN): $(OBJ)
 	$(CC) $^ -o $@ $(LIBS) $(CFLAGS)
 
 clean:
+	test -z "tapclean" || rm -f tapclean
 	rm -f *~ *.o scanners/*~ scanners/*.o
