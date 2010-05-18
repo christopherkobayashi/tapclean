@@ -69,7 +69,7 @@ Initial status = 2.
 
 Structure: Bits are lined from left to right. In other words: MSbF. 
 
-AFTER syncronization has been done , you may group bits (by eight) to form valid data bytes. 
+AFTER synchronization has been done, you may group bits (by eight) to form valid data bytes. 
 Since bit encoding was used, it may happen last bit of a byte and first bit of next byte 
 were coded together (eg: .......0 0....... or .......0 1.......). 
 
@@ -89,13 +89,13 @@ Pilot : Sequence of around 2068 Short pulses ending in a Medium pulse.
 Sync bytes : $66,$1B 
 
 1 byte  : Block Number (they begin at 0)
-1 byte  : Sub-block number (they begin at 0)
+1 byte  : Sub-block number (for a PRIMARY sub-block it is always 0)
 2 bytes : Load address (low,high) -Load offset.
-1 byte  : Total data size (high)
-1 byte  : Load offset (== 256-Total file size low byte) add to load address to get real one.
+1 byte  : number of SECONDARY sub-blocks
+1 byte  : Load offset (== 256-size of PRIMARY sub-block) add to load address to get real one.
 1 byte  : Header Checkbyte (addition of previous 6 bytes +6)
-n bytes : Data (n = Total data size & $FF)
-1 byte  : Checksum (0 xor all n data bytes) 
+n bytes : Data (n = size of PRIMARY sub-block)
+1 byte  : Checksum (Addition of all n Data bytes + n)
 
 
 ----------------------
@@ -105,9 +105,9 @@ Pilot : Usually around 40 Short pulses followed by a Medium pulse.
 Sync bytes : $66,$1B 
 
 1 byte    : Block Number (the same for all blocks in any chain)
-1 byte    : Sub-Block Number
+1 byte    : Sub-Block Number (progressive, starting from 1)
 256 bytes : Data
-1 byte    : Checksum (0 XOR all 258 bytes, +2) 
+1 byte    : Checksum (Addition of all 258 bytes +258) 
 ----------------------
 
 The Primary sub-block provides the load address and file size of ALL data contained in all 
@@ -120,9 +120,4 @@ otherwise the first (Primary) block will contain a number of bytes equal to the 
 
 ie. if total_data_size = 1027, the Primary sub-block will contain 3 data bytes. (1027 & 255). 
 
-Secondary sub-blocks (if present) will always contain 256 data bytes. 
-
-
-
-
-
+Secondary sub-blocks (if present) will always contain 256 data bytes.
