@@ -157,22 +157,17 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	olen = TAP_HEADER_SIZE;
 	longpulse = 0;
 
-	if (c64 == TRUE)
-	{
+	if (c64 == TRUE) {
 		if (pal == TRUE)
 		        downsample = downsample_c64_pal;
 		else
 		        downsample = downsample_c64_ntsc;
-	}
-	else if (c20 == TRUE)
-	{
+	} else if (c20 == TRUE) {
 		if (pal == TRUE)
 		        downsample = downsample_vic_pal;
 		else
 		        downsample = downsample_vic_ntsc;
-	}
-	else if (c16 == TRUE)
-	{
+	} else if (c16 == TRUE) {
 		if (pal == TRUE)
 		        downsample = downsample_c16_pal;
 		else
