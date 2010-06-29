@@ -7,6 +7,9 @@
 #include "dc2nconv.h"
 #include "main.h"
 
+extern char c64, c16, c20;
+extern char pal, ntsc;
+
 /*
  * Write a long pulse to the buffer
  *
@@ -42,6 +45,90 @@ static size_t write_long_pulse(unsigned char *output_buffer, unsigned long lp)
 }
 
 /*
+ * Conversion routine to downsample from 2 MHz to TAP,
+ * assuming PAL video standard and Commodore 64
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_c64_pal (unsigned long utime)
+{
+	// Exact PAL freq, 985248 Hz
+	return (utime * 30789UL + 31250UL) / 62500UL; // PAL
+}
+
+/*
+ * Conversion routine to downsample from 2 MHz to TAP
+ * assuming NTSC video standard and Commodore 64
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_c64_ntsc (unsigned long utime)
+{
+	// NTSC freq approximated to 1022720 Hz
+	return (utime * 15980UL + 15625UL) / 31250UL; // NTSC
+}
+
+/*
+ * Conversion routine to downsample from 2 MHz to TAP,
+ * assuming PAL video standard and VIC
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_vic_pal (unsigned long utime)
+{
+	// PAL freq approximated to 1108416 Hz
+	return (utime * 17319UL + 15625UL) / 31250UL; // PAL
+}
+
+/*
+ * Conversion routine to downsample from 2 MHz to TAP
+ * assuming NTSC video standard and VIC
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_vic_ntsc (unsigned long utime)
+{
+	// NTSC freq approximated to 1022720 Hz
+	return (utime * 15980UL + 15625UL) / 31250UL; // NTSC
+}
+
+/*
+ * Conversion routine to downsample from 2 MHz to TAP,
+ * assuming PAL video standard and Commodore 16
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_c16_pal (unsigned long utime)
+{
+	// PAL freq approximated to 886720 Hz
+	return (utime * 27710UL + 31250UL) / 62500UL; // PAL
+}
+
+/*
+ * Conversion routine to downsample from 2 MHz to TAP
+ * assuming NTSC video standard and Commodore 16
+ *
+ * @param utime		DMP data sample
+ *
+ * @return Converted sample
+ */
+unsigned long downsample_c16_ntsc (unsigned long utime)
+{
+	// NTSC freq approximated to 894880 Hz
+	return (utime * 27965UL + 31250UL) / 62500UL; // NTSC
+}
+
+/*
  * Convert DC2N format to TAP v1
  *
  * @param input_buffer	Buffer containing the DC2N dmp file
@@ -58,6 +145,8 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	unsigned long utime, clockcycles, longpulse;
 	unsigned long pulse;
 
+	unsigned long (*downsample)(unsigned long);
+
 	strncpy((char *)output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
 	output_buffer[0x0C] = 0x01;	/* convert to TAP v1 */
 
@@ -68,12 +157,34 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	olen = TAP_HEADER_SIZE;
 	longpulse = 0;
 
+	if (c64 == TRUE)
+	{
+		if (pal == TRUE)
+		        downsample = downsample_c64_pal;
+		else
+		        downsample = downsample_c64_ntsc;
+	}
+	else if (c20 == TRUE)
+	{
+		if (pal == TRUE)
+		        downsample = downsample_vic_pal;
+		else
+		        downsample = downsample_vic_ntsc;
+	}
+	else if (c16 == TRUE)
+	{
+		if (pal == TRUE)
+		        downsample = downsample_c16_pal;
+		else
+		        downsample = downsample_c16_ntsc;
+	}
+
 	for (i = DC2N_HEADER_SIZE; i < flen;) {
 		utime = (unsigned long) input_buffer[i++];
 		utime += 256UL * (unsigned long) input_buffer[i++];
 
 		/* downsample data from 2MHz to C64 PAL frequency */
-		clockcycles = (utime * 30789UL + 31250UL) / 62500UL;
+		clockcycles = downsample(utime);
 
 		/* divide by eight, as requested by TAP V0 format */
 		pulse = (clockcycles + 4) / 8;
