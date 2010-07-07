@@ -10,6 +10,21 @@
 extern char c64, c16, c20;
 extern char pal, ntsc;
 
+#define TAP_FORMAT_VERSION_OFFSET	0x0C
+#ifdef C16_TAPE_RAW_SUPPORT
+#define TAP_FORMAT_PLATFORM_OFFSET	0x0D
+#define TAP_FORMAT_VIDEO_STD_OFFSET	0x0E
+#define TAP_FORMAT_PLATFORM_C64		0x00
+#define TAP_FORMAT_PLATFORM_VIC20	0x01
+#define TAP_FORMAT_PLATFORM_C16		0x02
+#define TAP_FORMAT_VIDEO_PAL		0x00
+#define TAP_FORMAT_VIDEO_NTSC		0x01
+#else
+#define TAP_FORMAT_EXP1_OFFSET		0x0D
+#define TAP_FORMAT_EXP2_OFFSET		0x0E
+#endif
+#define TAP_FORMAT_EXP3_OFFSET		0x0F
+
 /*
  * Write a long pulse to the buffer
  *
@@ -58,6 +73,7 @@ unsigned long downsample_c64_pal (unsigned long utime)
 	return (utime * 30789UL + 31250UL) / 62500UL; // PAL
 }
 
+#ifdef C16_TAPE_RAW_SUPPORT
 /*
  * Conversion routine to downsample from 2 MHz to TAP
  * assuming NTSC video standard and Commodore 64
@@ -127,6 +143,7 @@ unsigned long downsample_c16_ntsc (unsigned long utime)
 	// NTSC freq approximated to 894880 Hz
 	return (utime * 27965UL + 31250UL) / 62500UL; // NTSC
 }
+#endif
 
 /*
  * Convert DC2N format to TAP v1
@@ -147,32 +164,55 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 
 	unsigned long (*downsample)(unsigned long);
 
+#ifdef C16_TAPE_RAW_SUPPORT
+	strncpy((char *)output_buffer, TAP_ID_STRING16, strlen(TAP_ID_STRING));
+#else
 	strncpy((char *)output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
-	output_buffer[0x0C] = 0x01;	/* convert to TAP v1 */
+#endif
 
-	output_buffer[0x0D] = 0x00;	/* initialize exp bytes */
-	output_buffer[0x0E] = 0x00;
-	output_buffer[0x0F] = 0x00;
+	output_buffer[TAP_FORMAT_VERSION_OFFSET] = 0x01;	/* convert to TAP v1 */
+
+#ifdef C16_TAPE_RAW_SUPPORT
+	output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C64;
+	output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_PAL;
+#else
+	output_buffer[TAP_FORMAT_EXP1_OFFSET] = 0x00;	/* initialize exp bytes */
+	output_buffer[TAP_FORMAT_EXP2_OFFSET] = 0x00;
+#endif
+	output_buffer[TAP_FORMAT_EXP3_OFFSET] = 0x00;
 
 	olen = TAP_HEADER_SIZE;
 	longpulse = 0;
 
+#ifdef C16_TAPE_RAW_SUPPORT
 	if (c64 == TRUE) {
+                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C64;
 		if (pal == TRUE)
 		        downsample = downsample_c64_pal;
-		else
+		else {
 		        downsample = downsample_c64_ntsc;
+	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
+		}
 	} else if (c20 == TRUE) {
+                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_VIC20;
 		if (pal == TRUE)
 		        downsample = downsample_vic_pal;
-		else
+		else {
 		        downsample = downsample_vic_ntsc;
+	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
+		}
 	} else if (c16 == TRUE) {
+                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C16;
 		if (pal == TRUE)
 		        downsample = downsample_c16_pal;
-		else
+		else {
 		        downsample = downsample_c16_ntsc;
+	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
+		}
 	}
+#else /* C64-TAP-RAW format */
+	downsample = downsample_c64_pal;
+#endif
 
 	for (i = DC2N_HEADER_SIZE; i < flen;) {
 		utime = (unsigned long) input_buffer[i++];
