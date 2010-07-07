@@ -557,9 +557,9 @@ static void display_usage(void)
 	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
 
-	printf(" -16            Commodore 16 tape.\n");
-	printf(" -20            Commodore VIC 20 tape.\n");
-	printf(" -64            Commodore 64 tape (default).\n");
+	printf(" -16            Force Commodore 16 tape.\n");
+	printf(" -20            Force Commodore VIC 20 tape.\n");
+	printf(" -64            Force Commodore 64 tape (default).\n");
       
 	printf(" -boostclean    Raise cleaning threshold.\n");
 	printf(" -debug         Allows detected files to overlap.\n");
@@ -2316,7 +2316,7 @@ int load_tap(char *name)
 
 	/* Check for DC2N format */
 	if (strncmp(DC2N_ID_STRING, (char *)input_buffer, strlen(DC2N_ID_STRING)) == 0) {
-		msgout("\nDC2N 16-bit TAP format detected. Converting to legacy TAP v1 (assuming 16-bit and 2MHz.)");
+		msgout("\nDC2N format detected. Converting to legacy TAP v1 (assuming 16-bit and 2MHz).");
 
 		output_buffer = (unsigned char*)malloc(flen);
 		if (output_buffer == NULL) {
