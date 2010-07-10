@@ -7,9 +7,6 @@
 #include "dc2nconv.h"
 #include "main.h"
 
-extern char c64, c16, c20;
-extern char pal, ntsc;
-
 #define C16_TAPE_RAW_SUPPORT /* Use Markus' extension as with MTAP */
 
 // TODO: define a structure and some enums, rather than so many defs
@@ -23,6 +20,8 @@ extern char pal, ntsc;
 #define TAP_FORMAT_PLATFORM_C16		0x02
 #define TAP_FORMAT_VIDEO_PAL		0x00
 #define TAP_FORMAT_VIDEO_NTSC		0x01
+#define DC2N_FORMAT_PLATFORM_OFFSET	0x0D
+#define DC2N_FORMAT_VIDEO_STD_OFFSET	0x0E
 #else
 #define TAP_FORMAT_EXP1_OFFSET		0x0D
 #define TAP_FORMAT_EXP2_OFFSET		0x0E
@@ -166,6 +165,9 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	size_t i;
 	unsigned long utime, clockcycles, longpulse;
 	unsigned long pulse;
+#ifdef C16_TAPE_RAW_SUPPORT
+	unsigned char platform, video_standard;
+#endif
 
 	unsigned long (*downsample)(unsigned long);
 
@@ -176,8 +178,8 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	output_buffer[TAP_FORMAT_VERSION_OFFSET] = 0x01;	/* convert to TAP v1 */
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C64;
-	output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_PAL;
+	platform = input_buffer[DC2N_FORMAT_PLATFORM_OFFSET];
+	video_standard = input_buffer[TAP_FORMAT_VIDEO_STD_OFFSET];
 #else
 	output_buffer[TAP_FORMAT_EXP1_OFFSET] = 0x00;	/* initialize exp bytes */
 	output_buffer[TAP_FORMAT_EXP2_OFFSET] = 0x00;
@@ -188,31 +190,30 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	longpulse = 0;
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	if (c64 == TRUE) {
-                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C64;
-		if (pal == TRUE)
-		        downsample = downsample_c64_pal;
-		else {
-		        downsample = downsample_c64_ntsc;
-	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
-		}
-	} else if (c20 == TRUE) {
-                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_VIC20;
-		if (pal == TRUE)
-		        downsample = downsample_vic_pal;
-		else {
-		        downsample = downsample_vic_ntsc;
-	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
-		}
-	} else if (c16 == TRUE) {
-                output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = TAP_FORMAT_PLATFORM_C16;
-		if (pal == TRUE)
-		        downsample = downsample_c16_pal;
-		else {
-		        downsample = downsample_c16_ntsc;
-	                output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = TAP_FORMAT_VIDEO_NTSC;
-		}
+	switch (platform)
+	{
+		case TAP_FORMAT_PLATFORM_C64:
+			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			        downsample = downsample_c64_pal;
+			else
+			        downsample = downsample_c64_ntsc;
+			break;
+		case TAP_FORMAT_PLATFORM_VIC20:
+			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			        downsample = downsample_vic_pal;
+			else
+			        downsample = downsample_vic_ntsc;
+			break;
+		case TAP_FORMAT_PLATFORM_C16:
+			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			        downsample = downsample_c16_pal;
+			else
+			        downsample = downsample_c16_ntsc;
+			break;
 	}
+	output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = platform;
+	output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = video_standard;
+
 #else /* C64-TAP-RAW format */
 	downsample = downsample_c64_pal;
 #endif
