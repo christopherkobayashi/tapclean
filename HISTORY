@@ -5,6 +5,8 @@ Entries are of the following types:
 	- New: new features, such as support for new loaders
 
 v0.25
+	New: Use MTAP conversion and Markus' extended TAP format by default when
+	 converting from DC2N DMP to TAP (Luigi)
 	Fix: proper calculation of end address of "FF Tape" block # 3 (Luigi)
 	Fix: remove garbage at the beginning of the tape when cleaning (Luigi)
 	Fix: Cleaned DMP files have the "tap" extension now (Luigi)

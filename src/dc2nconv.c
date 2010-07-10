@@ -10,7 +10,11 @@
 extern char c64, c16, c20;
 extern char pal, ntsc;
 
+#define C16_TAPE_RAW_SUPPORT /* Use Markus' extension as with MTAP */
+
+// TODO: define a structure and some enums, rather than so many defs
 #define TAP_FORMAT_VERSION_OFFSET	0x0C
+
 #ifdef C16_TAPE_RAW_SUPPORT
 #define TAP_FORMAT_PLATFORM_OFFSET	0x0D
 #define TAP_FORMAT_VIDEO_STD_OFFSET	0x0E
@@ -23,6 +27,7 @@ extern char pal, ntsc;
 #define TAP_FORMAT_EXP1_OFFSET		0x0D
 #define TAP_FORMAT_EXP2_OFFSET		0x0E
 #endif
+
 #define TAP_FORMAT_EXP3_OFFSET		0x0F
 
 /*
@@ -165,8 +170,6 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	unsigned long (*downsample)(unsigned long);
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	strncpy((char *)output_buffer, TAP_ID_STRING16, strlen(TAP_ID_STRING));
-#else
 	strncpy((char *)output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
 #endif
 
