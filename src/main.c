@@ -557,6 +557,16 @@ static void display_usage(void)
 	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
 
+	/*
+	 * These switches should only be used for legacy TAP/DMP files produced 
+	 * as per below:
+	 *
+	 * VIC20 (-20): MTAP < 0.26 (PAL), MTAP < 0.27 (NTSC), dc2nconv < 1.4
+	 * C16   (-16): MTAP < 0.30, dc2nconv < 1.4
+	 *
+	 * Additionally, these switches can be used in case of a TAP/DMP file
+	 * whose contents are intended for more than one platform.
+	 */
 	printf(" -16            Force Commodore 16 tape.\n");
 	printf(" -20            Force Commodore VIC 20 tape.\n");
 	printf(" -64            Force Commodore 64 tape (default).\n");
