@@ -160,8 +160,11 @@ int chr_describe(int row)
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * 8), lp, sp, tp, en);
 		cb ^= b;
-		if (b == -1)
+		if (b == -1) {
 			rd_err++;
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * 8), i);
+			strcat(info, lin);
+		}
 		blk[row]->dd[i] = b;
 	}
 	b = readttbyte(s + (i * 8), lp, sp, tp, en);
