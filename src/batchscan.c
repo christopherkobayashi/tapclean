@@ -351,7 +351,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
            
 		/*  print path/name of batch report to screen.. */
 
-		sprintf(temp, fullpath);
+		strcpy(temp, fullpath);
 		strcat(temp, tcbatchreportname);
 		sprintf(lin, "\n\nSaved : %s", temp);
 		msgout(lin);

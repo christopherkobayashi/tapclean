@@ -2506,25 +2506,25 @@ void report(void)
 		/* include results and general info... */
 
 		print_results(rbuf);
-		fprintf(fp, rbuf);
+		fprintf(fp, "%s", rbuf);
 		fprintf(fp, "\n\n\n\n\n");
 
 		/* include file stats... */
 
 		print_file_stats(rbuf);
-		fprintf(fp, rbuf);
+		fprintf(fp, "%s", rbuf);
 		fprintf(fp, "\n\n\n\n\n");
 
 		/* include database in the file (partially interpreted)... */
 
 		print_database(rbuf);
-		fprintf(fp, rbuf);
+		fprintf(fp, "%s", rbuf);
 		fprintf(fp, "\n\n\n\n\n");
 
 		/* include pulse stats in the file... */
 
 		print_pulse_stats(rbuf);
-		fprintf(fp, rbuf);
+		fprintf(fp, "%s", rbuf);
 		fprintf(fp, "\n\n\n\n\n");
 
 		/* include 'read errors' report in the file... */
@@ -2549,7 +2549,7 @@ void report(void)
 	print_results(rbuf);
    
 	if (!batchmode)
-		fprintf(stdout, rbuf);
+		fprintf(stdout, "%s", rbuf);
 
 	free(rbuf);
 
