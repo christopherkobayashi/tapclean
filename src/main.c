@@ -1994,18 +1994,21 @@ int main(int argc, char *argv[])
 							}
 
 							if (opnum > 1) {
-								char *tapnamepos;
+								char *tapnamepos, *cleanedtapnamefullpath;
 
 								strcpy(cleanedtapname, CLEANED_PREFIX);
 								strcat(cleanedtapname, tap.name);
 								change_file_extention(cleanedtapname, "tap", MAXPATH);
-								save_tap(cleanedtapname);
-								printf("\n\nSaved: %s", cleanedtapname);
+								cleanedtapnamefullpath = cleanedtapname;
 
 								/* Change tap.path because the report refers to the cleaned tap */
 								tapnamepos = strstr(tap.path, tap.name);
-								if (tapnamepos)
+								if (tapnamepos) {
 									strncpy(tapnamepos, cleanedtapname, MAXPATH);
+									cleanedtapnamefullpath = tap.path;
+								}
+								save_tap(cleanedtapnamefullpath);
+								printf("\n\nSaved: %s", cleanedtapnamefullpath);
 							}
 
 							report();
