@@ -1821,7 +1821,7 @@ static void print_database(char *buf)
 		strcat(buf, "\n");
 
 		if (blk[i]->lt != PAUSE) {		/* info for data files only... */
-			get_pulse_stats(blk[i]->p1, blk[i]->p4);
+			get_pulse_stats(blk[i]->p1, blk[i]->p4 + 1);
 			print_pulse_stats(info);
 			strcat(buf, info);	/* add additional text */
 			strcat(buf, "\n");
