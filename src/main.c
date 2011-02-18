@@ -1694,7 +1694,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nTAP Version : %d", tap.version);
 	strcat(buf, lin);
-	sprintf(lin, "\nRecognized  : %d%s", tap.detected_percent, "%%");
+	sprintf(lin, "\nRecognized  : %d%%", tap.detected_percent);
 	strcat(buf, lin);
 	sprintf(lin, "\nData Files  : %d", tap.total_data_files);
 	strcat(buf, lin);
@@ -1739,7 +1739,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", szpass[tap.tst_hd], szok[tap.fsigcheck], szok[tap.fvercheck], szok[tap.fsizcheck]);
 	strcat(buf, lin);
-	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%s]", szpass[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent,"%%");
+	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%%]", szpass[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent);
 	strcat(buf, lin); 
 	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", szpass[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
 	strcat(buf, lin);
