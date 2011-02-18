@@ -58,6 +58,7 @@ char pal			= TRUE;
 char ntsc			= FALSE;
 char exportcyberloaders		= FALSE;
 char skewadapt			= FALSE;
+char fstats			= FALSE;
 
 static char preserveloadertable	= TRUE;
 
@@ -589,6 +590,7 @@ static void display_usage(void)
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -skewadapt     Use skewed pulse adapting bit reader.\n");
+	printf(" -fstats        Pulse stats are per file.\n");
 	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10.\n");
 }
 
@@ -688,6 +690,8 @@ static void process_options(int argc, char **argv)
 			exportcyberloaders = TRUE;
 		if (strcmp(argv[i], "-skewadapt") == 0)
 			skewadapt = TRUE;
+		if (strcmp(argv[i], "-fstats") == 0)
+			fstats = TRUE;
 
 		/* process all -no<loader> */
 		if (strncmp(argv[i], "-no", 3) == 0) {
@@ -1615,9 +1619,9 @@ static float get_duration(int p1, int p2)
  * Note: Also fills tap.pst[256] array with distribution stats.
  */
 
-static void get_pulse_stats(int start, int end)
+static int get_pulse_stats(int start, int end)
 {
-	int i, b;
+	int i, tot, b;
 
 	for(i = 0; i < 256; i++)	/* clear pulse table...  */
 		tap.pst[i] = 0;
@@ -1631,6 +1635,19 @@ static void get_pulse_stats(int start, int end)
 		else
 			tap.pst[b]++;
 	}
+
+	/* add up pulse types... */
+
+	tot = 0;
+
+	/* Note the start at 1 (pauses dont count) */
+
+	for (i = 1; i < 256; i++) {
+		if (tap.pst[i] != 0)
+			tot++;
+	}
+
+	return tot;
 }
 
 /*
@@ -1820,7 +1837,7 @@ static void print_database(char *buf)
 		strcat(buf, info);	/* add additional text */
 		strcat(buf, "\n");
 
-		if (blk[i]->lt != PAUSE) {		/* info for data files only... */
+		if (fstats == TRUE && blk[i]->lt != PAUSE) {		/* info for data files only... */
 			get_pulse_stats(blk[i]->p1, blk[i]->p4 + 1);
 			print_pulse_stats(info);
 			strcat(buf, info);	/* add additional text */
@@ -2049,22 +2066,26 @@ int main(int argc, char *argv[])
 			}
 
 			if (opnum == 9) {		/* flag = batch scan... */
+				char fstats_old = fstats;
+
 				batchmode = TRUE;
 				quiet = TRUE;
 
 				if (argv[i + 1] != NULL) {
 					printf("\n\nBatch Scanning: %s\n", argv[i + 1]);
+					fstats = FALSE;
 					batchscan(argv[i + 1], incsubdirs, 1);
 				} else {
 					printf("\n\nMissing directory name, using current.");
 					printf("\n\nBatch Scanning: %s\n", exedir);
 					batchscan(exedir, incsubdirs, 1);
 				}
-			
+
+				fstats = fstats_old;
 				batchmode = FALSE;
 				quiet = FALSE;
 			}
-                    
+
 			/* flag = generate exe info file */
 
 			if (opnum == 10) {
@@ -2421,6 +2442,8 @@ int analyze(void)
 
 	/* Gather statistics... */
 
+	if (fstats == FALSE)
+		tap.purity = get_pulse_stats(20, tap.len - 1);
 	get_file_stats();
 
 	tap.optimized_files = count_opt_files();
@@ -2515,6 +2538,15 @@ void report(void)
 		/* include database in the file (partially interpreted)... */
 
 		print_database(rbuf);
+
+		if (fstats == FALSE) {
+			fprintf(fp, "%s", rbuf);
+			fprintf(fp, "\n\n\n\n\n");
+
+			/* include pulse stats in the file... */
+
+			print_pulse_stats(rbuf);
+		}
 		fprintf(fp, "%s", rbuf);
 		fprintf(fp, "\n\n\n\n\n");
 
