@@ -19,6 +19,7 @@ v0.25
 	Improvement: pulse stats per file are enabled upon request via -fstats (Luigi)
 	Fix: batch report does not show erroneous pulse stats due to per file 
 	 pulse stats (Luigi)
+	Fix: percent signs are properly displayed now, without duplication (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
