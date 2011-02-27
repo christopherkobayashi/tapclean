@@ -20,6 +20,7 @@ v0.25
 	Fix: batch report does not show erroneous pulse stats due to per file 
 	 pulse stats (Luigi)
 	Fix: percent signs are properly displayed now, without duplication (Luigi)
+	New: Added support for "Alternative Software" loader (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)

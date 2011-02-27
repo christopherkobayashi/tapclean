@@ -75,6 +75,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Ace of Aces"			,"aces"		,FALSE},
 	{"ActionReplay"			,"ar"		,FALSE},
 	{"Alien Syndrome"		,"aliensy"	,FALSE},
+	{"Alternative Software"		,"altersw"	,FALSE},
 	{"Alternative World Games"	,"alterwg"	,FALSE},
 	{"Anirog"			,"anirog"	,FALSE},
 	{"Ash+Dave"			,"ashdave"	,FALSE},
@@ -289,6 +290,7 @@ struct fmt_t ft[100] = {
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 200, NA,    CSYES},
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
+	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 0x1A, 0xBB, 1,   NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -354,7 +356,8 @@ const char knam[][32] = {
 	{"Fast Evil"},
 	{"FF Tape"},
 	{"TES Tape"},
-	{"Tequila Sunrise"}
+	{"Tequila Sunrise"},
+	{"Alternative Software"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
 	 * them all here!
@@ -1016,6 +1019,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
 				tequila_search();
 
+			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].state == FALSE  && !dbase_is_full && !aborted)
+				alternativesw_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1175,6 +1181,9 @@ static void search_tap(void)
 
 			if (ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
+
+			if (ldrswt[noaltersw	].state	== FALSE && !dbase_is_full && !aborted)
+				alternativesw_search();
 
 			if (ldrswt[noalterwg	].state	== FALSE && !dbase_is_full && !aborted)
 				alternativewg_search();
@@ -1467,6 +1476,8 @@ static void describe_file(int row)
 		case TESTAPE:		testape_describe(row);
 					break;
 		case TEQUILA:		tequila_describe(row);
+					break;
+		case ALTERSW:		alternativesw_describe(row);
 					break;
 	}
 }

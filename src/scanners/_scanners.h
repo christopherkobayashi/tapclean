@@ -230,3 +230,6 @@ int testape_describe(int);
 
 void tequila_search(void);
 int tequila_describe(int);
+
+void alternativesw_search(void);
+int alternativesw_describe(int);

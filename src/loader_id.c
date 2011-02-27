@@ -265,12 +265,14 @@ int idloader(unsigned /*long*/ int crc)
 		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
 
 		{0x958D7E97, LID_FASTEVIL},	/* The Evil Dead (Peepo's & D-ram's) */
-		
+
 		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
-		
+
 		{0xDB93D097, LID_TESTAPE},	/* Special Program games */
-		
+
 		{0x737CE3A9, LID_TEQUILA},	/* Tequila Sunrise */
+
+		{0x823DBD1F, LID_ALTERSW},	/* Alternative Software */
 
 		{0, 0}
 	};
