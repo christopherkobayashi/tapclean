@@ -1,7 +1,6 @@
  - Allow partial EOFMARKER (i.e. only 7 valid pulses followed by a single over-
    stretched one) in tdi_f2.c. Last pulse is often corrupted. (Luigi)
     Code written, it is going to be tested.
- - Cleaned dmp files (DC2N files) should be named .tap, not .dmp
  - Review Hi-Tec and Virgin loader. These should really be Hi-Tec/Mastertronic 
    T1, T2, T3, where:
     CBM Data CRC32 0x895DCF44 -> T1 (Threshold 0x015E)
@@ -69,7 +68,7 @@
     Keep to a bare minimum.
     Mostly done.
  - Do some major rewrite of scanners.
-    There are WAY TOO MUCH duplication of code.
+    There is WAY TOO MUCH duplication of code.
  - Unify scanner/loader names/strings
  - Add new header info to all 'old' scanners and check that the code actually
    are doing what the header info says.

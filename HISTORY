@@ -1,7 +1,9 @@
-Entries are of the following types:
-	- Code quality: changes that make the code more readable, portable, or maintainable
+Entries are of the following types (since release 0.21):
+	- Code quality: changes that make the code more readable, portable, or 
+	  maintainable
 	- Fix: bug fixes
-	- Improvement: where end-user experience has been improved (or frustration minimized)
+	- Improvement: where end-user experience has been improved (or 
+	  frustration minimized)
 	- New: new features, such as support for new loaders
 
 v0.25
@@ -13,20 +15,24 @@ v0.25
 	Fix: Report now shows the cleaned file name after cleaning (Luigi)
 	New: Added support for "Tequila Sunrise" loader (Luigi)
 	Improvement: Added basic validation of CBM payload size before accessing 
-	 dd[] array in "Cult", "Mastertronic Burner Variant", and "Biturbo" (Luigi)
+	 dd[] array in "Cult", "Mastertronic Burner Variant", and 
+	 "Biturbo" (Luigi)
 	New: Pulse stats per file (Fabbo)
 	Fix: end address for pulse stats per file is now correct (Luigi)
-	Improvement: pulse stats per file are enabled upon request via -fstats (Luigi)
+	Improvement: pulse stats per file are enabled upon request via 
+	 -fstats (Luigi)
 	Fix: batch report does not show erroneous pulse stats due to per file 
 	 pulse stats (Luigi)
-	Fix: percent signs are properly displayed now, without duplication (Luigi)
+	Fix: percent signs are properly displayed now, without 
+	 duplication (Luigi)
 	New: Added support for "Alternative Software" loader (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
 	New: Added support for "FF Tape" loader (Luigi)
 	New: Added support for "TES tape" loader (Luigi)
-	Fix: image contents before the first CBM header block are not erased anymore (Luigi)
+	Fix: Tape contents before the first CBM header block are not erased 
+	 anymore (Luigi)
 	New: Added Makefile.MAC (bgk)
 
 v0.23
@@ -34,35 +40,45 @@ v0.23
 	Improvement: if occurring in file header Visiload T1 oversized pulses 
 	 do not cause scanner to stop looking for Visiload blocks (Luigi)
 	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
-	New: Added support for "Go for the gold" loader, contributed by Kevin Palberg (Luigi)
-	Improvement: "Cyberload F4" scanner now recognizes Myth's F4 files (Kevin)
-	Code quality: changed trailer read block to use readttbit in new scanners (Luigi)
-	New: Added support for "Fast Evil" loader, found in "The Evil Dead" (Luigi)
+	New: Added support for "Go for the gold" loader, contributed by Kevin 
+	  Palberg (Luigi)
+	Improvement: "Cyberload F4" scanner now recognizes Myth's F4 
+	 files (Kevin)
+	Code quality: changed trailer read block to use readttbit in new 
+	 scanners (Luigi)
+	New: Added support for "Fast Evil" loader, found in "The Evil 
+	 Dead" (Luigi)
 
 v0.22
 	Fix: Added proper SEQ file support (Luigi)
-	Code quality: first attempt to make the source 64-bit safe in gcc compiler (Luigi)
-	Code quality: removed system calls after suggestion from iAN CooG (Luigi)
+	Code quality: first attempt to make the source 64-bit safe in gcc 
+	 compiler (Luigi)
+	Code quality: removed system calls after suggestion from 
+	 iAN CooG (Luigi)
 	Improvement: moved prg file making from analyze() to report() (Luigi)
-	New: Added support for "Action Replay" and "Easytape" loaders, done by iAN CooG (Fabbo)
-	Improvement: "Pavload" scanner improved, but cleaning of tapes won't yet fix
-	 a problem with the last pulse, which is known to be 0x3F if broken and 
-	 no 0x1F preceeds it, otherwise it's 0x1F (Luigi)
-	Fix: compilation fixes for Microsoft Visual C++ (Windows) and DJGPP (MS-DOS) (Fabbo)
+	New: Added support for "Action Replay" and "Easytape" loaders, done by 
+	 iAN CooG (Fabbo)
+	Improvement: "Pavload" scanner improved, but cleaning of tapes won't 
+	 yet fix a problem with the last pulse, which is known to be 0x3F if 
+	 broken and no 0x1F preceeds it, otherwise it's 0x1F (Luigi)
+	Fix: compilation fixes for Microsoft Visual C++ (Windows) and DJGPP 
+	 (MS-DOS) (Fabbo)
 	Code quality: uniformed code and comments in the new scanners (Luigi)
-	Code quality: added read error check for unreadable checkbytes in the new scanners (Luigi)
-	Code quality: removed "Easytape" and substituted "Action Replay" scanner (Luigi)
+	Code quality: added read error check for unreadable checkbytes in the 
+	 new scanners (Luigi)
+	Code quality: removed "Easytape" and substituted "Action Replay" 
+	 scanner (Luigi)
 	Fix: fixed "prg" folder access rights upon creation under Linux (Luigi)
 	New: Added support for "Ash+Dave" loader (Luigi)
 	Fix: fixed pulse disambiguation check in c64tape.c (Fabbo)
 	New: Added support for "Freeload Slowload" loader (Luigi)
 	Fix: implemented integer wraparound prevention in new scanners (Luigi)
-	Fix: fixed recognition of CBM DATA blocks when data starts with 0x01...0x06 
-	 by requesting a plausibility check on load and end addresses. Those blocks 
-	 should not be misrecognized as CBM HEADER ones anymore. "Maggotmania" is
-	 now recognized properly (Luigi)
-	Fix: fixed recognition of CBM HEADER blocks in "Ping Pong" (payload is 294 byte
-	 long) (Luigi)
+	Fix: fixed recognition of CBM DATA blocks when data starts with 
+	 0x01...0x06 by requesting a plausibility check on load and end 
+	 addresses. Those blocks should not be misrecognized as CBM HEADER ones 
+	 anymore. "Maggotmania" is now recognized properly (Luigi)
+	Fix: fixed recognition of CBM HEADER blocks in "Ping Pong" (payload is 
+	 294 byte long) (Luigi)
 
 v0.21
 	Fix: Fixed a compilation warning showing up in gcc 4.1.2 (Luigi)
@@ -72,7 +88,8 @@ v0.21
 	New: Added support for "108DE0A5" loader (Luigi)
 	Fix: Fixed all compilation warnings (Luigi)
 	New: Added support for "Biturbo" loader (Luigi)
-	New: Added support for reading DC2N 16-bit 2MHz RAW TAP format (Luigi+bgk)
+	New: Added support for reading DC2N 16-bit 2MHz RAW TAP 
+	 format (Luigi+bgk)
 	Code quality: converted scanners/ikloader.c to new coding style (bgk)
 	Code quality: converted scanners/hitload.c to new coding style (bgk)
 	Code quality: converted scanners/aces.c to new coding style (bgk)
@@ -80,7 +97,8 @@ v0.21
 	 This fixed the tap time reporting bug (Luigi)
 
 v0.20
-	Fixed the eof value for Gauntlet after a successful addblockdef() call (Luigi)
+	Fixed the eof value for Gauntlet after a successful addblockdef() 
+	 call (Luigi)
 	Converted scanners/c64tape.c to new coding style (bgk)
 	The Excluded Scanners message now is shown only once (Luigi)
 	Fix some compiler complaints (Luigi)
@@ -105,7 +123,8 @@ v0.16
 	Changed the trailer ack routines for the scanners I created.
 	 I ack pulses up to a max amount, based on experience (Luigi)
 	PARTLY Fixed the c64tape.c trailer read routine.
-	 Trailer is now accounted even if terminated by a spike, not just a pause (Luigi)
+	 Trailer is now accounted even if terminated by a spike, not just 
+	 a pause (Luigi)
 	Moved TDI F2 search before TDI F1
 
 v0.15
@@ -128,11 +147,13 @@ v0.12
 
 v0.11
 	Additional fix inside "Audiogenic" scanner (Luigi)
-	Fixed "Bleepload" scanner. The backtracing of pre-pilot pulses was missing a call to is_pause_param().
-	  Mad Nurse is now 100% recognized after cleaning (Luigi)
+	Fixed "Bleepload" scanner. The backtracing of pre-pilot pulses was 
+	 missing a call to is_pause_param().
+	 Mad Nurse is now 100% recognized after cleaning (Luigi)
 	Final revision of the "Accolade/EA (+clone)" scanner (Luigi)
 	Fixed is_pause_param() function in main.c
-	 The default return value did not work correctly at the very beginning of a TAP file.
+	 The default return value did not work correctly at the very beginning 
+	 of a TAP file.
 	 Boxing Manager is now 100% recognized after cleaning (Luigi)
 	Some fixes to "Alien Syndrome" scanner (fabbo)
 
