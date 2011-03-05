@@ -1232,6 +1232,9 @@ static void search_tap(void)
 			//if (ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
 			//	tequila_search();
 
+			//if (ldrswt[noaltersw	].state == FALSE  && !dbase_is_full && !aborted)
+			//	alternativesw_search();
+
 			/*
 			 * Do not add the following ones until additonal games using these formats 
 			 * are found.
