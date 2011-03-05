@@ -290,7 +290,7 @@ struct fmt_t ft[100] = {
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 200, NA,    CSYES},
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
-	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 0x1A, 0xBB, 1,   NA,    CSNO},
+	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 1,    0,    2000,NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}

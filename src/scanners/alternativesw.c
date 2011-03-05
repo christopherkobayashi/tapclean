@@ -26,20 +26,14 @@
 /*
  * Status: Beta
  *
- * Note: Do not copy code from this scanner because it implements a pre-pilot
- *       acknowledgement by using built-in features in a non politically 
- *       correct way, rather than using custom handlers.
- *
  * CBM inspection needed: No
  * Single on tape: No
- * Pre-pilot: Yes
- * Pre-pilot homogeneous: No (mp x 0x9FF, sp x 0x11)
- * Sync: Byte
+ * Sync: Bit + Sequence (bytes)
  * Header: Yes
  * Data: Continuos
  * Checksum: Yes
  * Post-data: No
- * Trailer: Spike
+ * Trailer: No
  * Trailer homogeneous: N/A
  */
 
@@ -50,8 +44,7 @@
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
-#define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+#define SYNCSEQSIZE	4	/* amount of sync bytes */
 
 #define HEADERSIZE	5	/* size of block header */
 
@@ -62,44 +55,44 @@
 #define ENDOFFSETL	3	/* end  location (LSB) offset inside header */
 
 /*
- * Read and acknowledge the pre-pilot sequence (backwards).
- *
- * Note: This routine does not take advantage of the skew adaptation module
+ * Find custom pilot sequence (mp x 0x9FF, sp x 0x1)
  */
-static int alternativesw_prepilot (int pilot_start)
+static int alternativesw_find_pilot (int pos)
 {
-	int i, j;
-	int sp, mp;
-	int stage = 2;
+	int z, sp, mp, tp, pmin;
 
 	sp = ft[THISLOADER].sp;
 	mp = ft[THISLOADER].mp;
+	pmin = ft[THISLOADER].pmin;
 
-	for (i = pilot_start, j = 0; i >= 20 && j <= 0xA10; i--, j++) {
-		int b;
+	tp = (sp + mp) / 2;
 
-		if (is_pause_param(i))
-			break;
+	if (readttbit(pos, mp, sp, tp) == 1) {
+		z = 0;
 
-		b = tap.tmem[i];
-
-		if (b > 0x52 - tol && b < 0x52 + tol)
-		{
-			stage = 1;
-			continue;
+		while (readttbit(pos, mp, sp, tp) == 1 && pos < tap.len) {
+			z++;
+			pos++;
 		}
-		if (stage == 2 && b > sp - tol && b < sp + tol)
-			continue;
-		break;
+
+		if (z == 0)
+			return 0;
+
+		if (z < pmin)
+			return -pos;
+
+		if (z >= pmin)
+			return pos;
 	}
 
-	return j;
+	return 0;
 }
 
 void alternativesw_search (void)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
+	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
@@ -107,7 +100,11 @@ void alternativesw_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int xinfo;			/* extra info used in addblockdef() */
+	/* Expected sync pattern */
+	static int sypat[SYNCSEQSIZE] = {
+		0x00, 0x00, 0x1A, 0xBB
+	};
+	int match;			/* condition variable */
 
 
 	en = ft[THISLOADER].en;
@@ -120,21 +117,37 @@ void alternativesw_search (void)
 		msgout("  Alternative Software");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = find_pilot(i, THISLOADER);
+		eop = alternativesw_find_pilot(i);
 
 		if (eop > 0) {
-			/* Check existence of pre-pilot/gap train */
-			xinfo = alternativesw_prepilot(i-1);
-
 			/* Valid pilot found, mark start of file */
-			sof = i - xinfo;
+			sof = i;
 			i = eop;
 
-			/* Check if there's a valid sync byte for this loader */
-			if (readttbyte(i, lp, sp, tp, en) != sv)
+			/* Check if there's a valid sync bit for this loader */
+			if (readttbit(i, lp, sp, tp) != sv)
 				continue;
 
-			/* Valid sync found, mark start of data */
+			i++; /* Take into account this bit */
+
+			/* Decode a 4 byte sequence (possibly a valid sync train) */
+			for (h = 0; h < SYNCSEQSIZE; h++)
+				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
+
+			/* Note: no need to check if readttbyte is returning -1, for 
+			         the following comparison (DONE ON ALL READ BYTES)
+				 will fail all the same in that case */
+
+			/* Check sync train. We may use the find_seq() facility too */
+			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
+				if (pat[h] != sypat[h])
+					match = 0;
+
+			/* Sync train doesn't match */
+			if (!match)
+				continue;
+
+			/* Valid sync train found, mark start of data */
 			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
 			/* Read header */
@@ -172,7 +185,7 @@ void alternativesw_search (void)
 
 			/* Note: Do to try to read any trailer in */
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -219,17 +232,15 @@ int alternativesw_describe (int row)
 
 	/* Compute pilot & trailer lengths */
 
-	/* pilot is in bytes... remove pre-pilot pulse size */
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - blk[row]->xi) / BITSINABYTE;
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
 
 	/* ... trailer in pulses */
-	/* Note: No trailer has been documented, but we are not pretending it
-	         here, just checking for it is future-proof */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* if there IS pilot then disclude the sync sequence */
+	/* if there IS pilot then disclude the sync sequence (1 bit + 4 bytes) */
 	if (blk[row]->pilot_len > 0) 
-		blk[row]->pilot_len -= SYNCSEQSIZE;
+		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	/* Extract data */
 	rd_err = 0;
