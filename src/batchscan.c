@@ -101,6 +101,8 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 	time(&t1);	/* record current time so we can compute time taken. */
 
+	total_taps = 0;
+      
 	/* build dir & file lists... */
 
 	dl = get_dir_list(fullpath);
@@ -113,18 +115,9 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	clip_list(fl);
 	sort_list(fl);  
    
-	/* chdir(exedir); */
-	/* save_list(fl, "_files.txt"); */
-         
-	free_list(dl);
-   
-	/* copy tap file names to taps[] array... */
-
-	total_taps = 0;
-      
 	/* note: t=fl->link skips the 1st entry "root name". */
 
-	for (t = fl->link, i = 0; t != NULL; i++) {
+	for (t = fl->link, i = 0; t != NULL && i < MAXTAPS; i++) {
 
 		/* copy all tap paths to the database.. */
 
@@ -135,8 +128,33 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
    
 	free_list(fl);
 
+	/* keep DMP files at the very end of the list */
+
+	if (includesubdirs == FALSE)
+		fl = get_file_list("*.dmp", dl, ROOTONLY);
+	else
+		fl = get_file_list("*.dmp", dl, ROOTALL);
+      
+	clip_list(fl);
+	sort_list(fl);  
+   
+	/* note: t=fl->link skips the 1st entry "root name". */
+
+	for (t = fl->link; t != NULL && i < MAXTAPS; i++) {
+
+		/* copy all tap paths to the database.. */
+
+		strcpy(taps[i]->path, t->name);
+		t = t->link;
+		total_taps++;
+	}
+   
+	free_list(fl);
+
+	free_list(dl);
+   
 	if (total_taps == 0) {
-		msgout("\nError: No taps were found.");
+		msgout("\nError: No tape images were found.");
 
 		for (i = 0; i < MAXTAPS; i++)
 			free(taps[i]);
@@ -144,7 +162,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		return total_taps;
 	}
 
-	sprintf(lin, "\n  Found %d TAP files.", total_taps);
+	sprintf(lin, "\n  Found %d TAP/DMP files.", total_taps);
 	msgout(lin);
 
 	if (doscan) {

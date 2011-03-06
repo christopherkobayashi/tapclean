@@ -26,6 +26,7 @@ v0.25
 	Fix: percent signs are properly displayed now, without 
 	 duplication (Luigi)
 	New: Added support for "Alternative Software" loader (Luigi)
+	Improvement: Batch scan now looks for DMP files as well (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
