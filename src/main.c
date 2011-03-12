@@ -577,23 +577,23 @@ static void display_usage(void)
       
 	printf(" -boostclean    Raise cleaning threshold.\n");
 	printf(" -debug         Allows detected files to overlap.\n");
+	printf(" -do<loader>    Scan only for <loader>.\n");
 	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
 	printf(" -doprg         Create PRG files.\n");
 	printf(" -extvisipatch  Extract Visiload loader patch files.\n");
+	printf(" -fstats        Pulse stats are per file.\n");
 	printf(" -incsubdirs    Make batch scan include subdirectories.\n");
 	printf(" -list          List of supported scanners and options used by -no<loader>\n");
+	printf(" -no<loader>    Don't scan for <loader>. Example: -nocyber.\n");
 	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
 	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
-	printf(" -no<loader>    Don't scan for this loader. Example: -nocyber.\n");
-	printf(" -do<loader>    Scan only for this loader.\n");
 	printf(" -ntsc          NTSC timing.\n");
 	printf(" -pal           PAL timing (default).\n");
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
-	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -skewadapt     Use skewed pulse adapting bit reader.\n");
-	printf(" -fstats        Pulse stats are per file.\n");
+	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
 	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10.\n");
 }
 
