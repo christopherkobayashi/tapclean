@@ -113,7 +113,6 @@ int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
          {
             tap.tmem[pos+i] = ft[VISI_T1].lp;
             mb[i]=1;
-            valid++;
          }
          else
          {

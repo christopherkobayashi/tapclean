@@ -75,8 +75,6 @@ void fastevil_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int xinfo;			/* extra info used in addblockdef() */
-
 	/* Expected postdata pattern */
 	static int sypat[POSTDATASIZE] = {
 		0x00,0xFF,0xFE,0xFD,0xFC,0xFB,0xFA,0xF9,0xF8,0xF7,0xF6,0xF5,0xF4,0xF3,0xF2,0xF1,
@@ -185,7 +183,7 @@ void fastevil_search (void)
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
