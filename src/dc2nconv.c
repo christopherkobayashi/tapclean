@@ -7,27 +7,46 @@
 #include "dc2nconv.h"
 #include "main.h"
 
-#define C16_TAPE_RAW_SUPPORT /* Use Markus' extension as with MTAP */
-
-// TODO: define a structure and some enums, rather than so many defs
-#define TAP_FORMAT_VERSION_OFFSET	0x0C
+#define C16_TAPE_RAW_SUPPORT	/* Use Markus' extension as with MTAP */
 
 #ifdef C16_TAPE_RAW_SUPPORT
-#define TAP_FORMAT_PLATFORM_OFFSET	0x0D
-#define TAP_FORMAT_VIDEO_STD_OFFSET	0x0E
-#define TAP_FORMAT_PLATFORM_C64		0x00
-#define TAP_FORMAT_PLATFORM_VIC20	0x01
-#define TAP_FORMAT_PLATFORM_C16		0x02
-#define TAP_FORMAT_VIDEO_PAL		0x00
-#define TAP_FORMAT_VIDEO_NTSC		0x01
-#define DC2N_FORMAT_PLATFORM_OFFSET	0x0D
-#define DC2N_FORMAT_VIDEO_STD_OFFSET	0x0E
-#else
-#define TAP_FORMAT_EXP1_OFFSET		0x0D
-#define TAP_FORMAT_EXP2_OFFSET		0x0E
+enum {
+	TAP_FORMAT_PLATFORM_C64 = 0x00,
+	TAP_FORMAT_PLATFORM_VIC20,
+	TAP_FORMAT_PLATFORM_C16
+};
+
+enum {
+	TAP_FORMAT_VIDEO_PAL = 0x00,
+	TAP_FORMAT_VIDEO_NTSC
+};
 #endif
 
-#define TAP_FORMAT_EXP3_OFFSET		0x0F
+struct _tap_header {
+	char id_string[0x0C];
+
+	unsigned char version;
+#ifdef C16_TAPE_RAW_SUPPORT
+	unsigned char platform;
+	unsigned char video_standard;
+	unsigned char exp;
+#else
+	unsigned char exp[3];
+#endif
+
+	unsigned char data_length[0x04];	/* prevent endiannes worries */
+};
+
+struct _dmp_header {
+	char id_string[0x0C];
+
+	unsigned char version;
+	unsigned char platform;
+	unsigned char video_standard;
+
+	unsigned char counter_resolution;
+	unsigned char counter_rate[0x04];	/* prevent endiannes worries */
+};
 
 /*
  * Write a long pulse to the buffer
@@ -165,54 +184,53 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	size_t i;
 	unsigned long utime, clockcycles, longpulse;
 	unsigned long pulse;
-#ifdef C16_TAPE_RAW_SUPPORT
-	unsigned char platform, video_standard;
-#endif
+	struct _tap_header *th;
+	struct _dmp_header *dh;
 
 	unsigned long (*downsample)(unsigned long);
 
-#ifdef C16_TAPE_RAW_SUPPORT
-	strncpy((char *)output_buffer, TAP_ID_STRING, strlen(TAP_ID_STRING));
-#endif
+	dh = (struct _dmp_header *) input_buffer;
+	th = (struct _tap_header *) output_buffer;
 
-	output_buffer[TAP_FORMAT_VERSION_OFFSET] = 0x01;	/* convert to TAP v1 */
+	strncpy(th->id_string, TAP_ID_STRING, strlen(TAP_ID_STRING));
+
+	th->version = 0x01;	/* convert to TAP v1 */
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	platform = input_buffer[DC2N_FORMAT_PLATFORM_OFFSET];
-	video_standard = input_buffer[TAP_FORMAT_VIDEO_STD_OFFSET];
+	th->platform = dh->platform;
+	th->video_standard = dh->video_standard;
+	th->exp = 0x00;
 #else
-	output_buffer[TAP_FORMAT_EXP1_OFFSET] = 0x00;	/* initialize exp bytes */
-	output_buffer[TAP_FORMAT_EXP2_OFFSET] = 0x00;
+	th->exp[0x00] = 0x00;	/* initialize exp bytes */
+	th->exp[0x01] = 0x00;
+	th->exp[0x02] = 0x00;
 #endif
-	output_buffer[TAP_FORMAT_EXP3_OFFSET] = 0x00;
 
 	olen = TAP_HEADER_SIZE;
 	longpulse = 0;
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	switch (platform)
+	switch (th->platform)
 	{
 		case TAP_FORMAT_PLATFORM_C64:
-			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			if (th->video_standard == TAP_FORMAT_VIDEO_PAL)
 			        downsample = downsample_c64_pal;
 			else
 			        downsample = downsample_c64_ntsc;
 			break;
 		case TAP_FORMAT_PLATFORM_VIC20:
-			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			if (th->video_standard == TAP_FORMAT_VIDEO_PAL)
 			        downsample = downsample_vic_pal;
 			else
 			        downsample = downsample_vic_ntsc;
 			break;
 		case TAP_FORMAT_PLATFORM_C16:
-			if (video_standard == TAP_FORMAT_VIDEO_PAL)
+			if (th->video_standard == TAP_FORMAT_VIDEO_PAL)
 			        downsample = downsample_c16_pal;
 			else
 			        downsample = downsample_c16_ntsc;
 			break;
 	}
-	output_buffer[TAP_FORMAT_PLATFORM_OFFSET] = platform;
-	output_buffer[TAP_FORMAT_VIDEO_STD_OFFSET] = video_standard;
 
 #else /* C64-TAP-RAW format */
 	downsample = downsample_c64_pal;
@@ -253,11 +271,11 @@ size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, s
 	if (longpulse)
 		olen += write_long_pulse(&output_buffer[olen], longpulse);
 
-	/* Fix TAP data size field inside the header */
-	output_buffer[0x10] = (unsigned char) ((olen - 20)  & 0xFF);
-	output_buffer[0x11] = (unsigned char) (((olen - 20) >>8) & 0xFF);
-	output_buffer[0x12] = (unsigned char) (((olen - 20) >>16) & 0xFF);
-	output_buffer[0x13] = (unsigned char) (((olen - 20) >>24) & 0xFF);
+	/* store TAP data size inside header */
+	th->data_length[0x00] = (unsigned char) ((olen - TAP_HEADER_SIZE)  & 0xFF);
+	th->data_length[0x01] = (unsigned char) (((olen - TAP_HEADER_SIZE) >> 8) & 0xFF);
+	th->data_length[0x02] = (unsigned char) (((olen - TAP_HEADER_SIZE) >> 16) & 0xFF);
+	th->data_length[0x03] = (unsigned char) (((olen - TAP_HEADER_SIZE) >> 24) & 0xFF);
 
 	return olen;
 }
