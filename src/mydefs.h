@@ -100,6 +100,14 @@
 #define CSYES	1	/* indicator: A checksum is used. */
 #define CSNO	0	/* indicator: A checksum is not used. */
 
+#ifdef _MSC_VER	/* override POSIX names when using MSVC */
+#define chdir	_chdir
+#define getcwd	_getcwd
+#define mkdir	_mkdir
+#define stricmp	_stricmp
+#define unlink	_unlink
+#endif
+
 /* each of these constants indexes an entry in the "ft[]" fmt_t array... */
 
 enum {
