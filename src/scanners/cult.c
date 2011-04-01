@@ -1,5 +1,5 @@
 /*
- * cult.c (by slc, bgk, and luigi)
+ * cult.c (rewritten from scratch by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
@@ -27,7 +27,7 @@
  * Status: Beta
  *
  * CBM inspection needed: Yes
- * Single on tape: Yes! -> once we acknowledge one, we can return (not done yet)
+ * Single on tape: Yes! -> once we acknowledge one, we can return (see comment below)
  * Sync: Bit + Byte
  * Header: No
  * Data: Continuos
