@@ -2,7 +2,11 @@
 
 CPP  = g++
 CC   = gcc
+ifeq ($(OS), MACOSX)
+INCS = -I/usr/include/malloc
+else
 INCS = 
+endif
 CXXINCS = 
 CFLAGS = $(INCS)  
 CXXFLAGS = $(CXXINCS)  
@@ -14,7 +18,7 @@ OBJ  = main.o clean.o crc32.o batchscan.o database.o dc2nconv.o filesearch.o loa
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) $^ -o $@ $(LIBS) $(CFLAGS)
 
 clean:
 	test -z "$(BIN)" || rm -f $(BIN)
