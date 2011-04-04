@@ -44,8 +44,7 @@
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
-#define SPARESYNCVAL	0xAA	/* value of the spare sync byte */
-#define SPRSYNCSEQSIZE	1	/* amount of spare sync bytes */
+#define EXTRASYNCVAL	0xAA	/* value of the extra sync byte */
 #define MAXTRAILER	2032	/* max amount of trailer pulses read in */
 
 #define LOADOFFSETH	0x0E	/* load location (MSB) offset inside CBM data */
@@ -130,12 +129,12 @@ void cult_search (void)
 
 			i++; /* Take into account this bit */
 
-			/* Check if there's a valid spare sync byte for this loader */
-			if (readttbyte(i, lp, sp, tp, en) != SPARESYNCVAL)
+			/* Check if there's a valid extra sync byte for this loader */
+			if (readttbyte(i, lp, sp, tp, en) != EXTRASYNCVAL)
 				continue;
 
 			/* Valid sync bit + sync byte found, mark start of data */
-			sod = i + BITSINABYTE * SPRSYNCSEQSIZE;
+			sod = i + BITSINABYTE;
 
 			/* Compute size */
 			x = e - s + 1;
