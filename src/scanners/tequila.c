@@ -104,7 +104,7 @@ void tequila_search(void)
 
 			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
-				 will fail all the same in that case */
+			         will fail all the same in that case */
 
 			/* Check sync train. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
@@ -131,7 +131,7 @@ void tequila_search(void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-                        /*
+			/*
 			 * Be aware of blocks that load up to top of RAM and back to the beginning.
 			 *
 			 * FE00-0002 blocks have been found in Bongo, Strip Poker II, and Zodiac.
@@ -139,7 +139,7 @@ void tequila_search(void)
 			 *   "XROM SYSTEM TEQUILA SUNRISE BELGIUM BRUSSELS  1984"
 			 */
 			if (s == 0xFE00 && e == 0x0002)
-			        e += 0x10000;
+				e += 0x10000;
 
 			/* Prevent int wraparound when subtracting 1 from end location
 			   to get the location of the last loaded byte */
@@ -163,7 +163,7 @@ void tequila_search(void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			/* Note: No trailer has been documented, but we are not strictly
-		                 requiring one here, just checking for it is future-proof */
+			         requiring one here, just checking for it is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
@@ -203,7 +203,7 @@ int tequila_describe(int row)
 		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, LSbF);
 
 	/* Endianness is MSbF up to File ID so we decode File ID on its own */
-        hd_id = readttbyte(s, lp, sp, tp, en);
+	hd_id = readttbyte(s, lp, sp, tp, en);
 	sprintf(lin,"\n - File ID : $%02X", hd_id);
 	strcat(info,lin);
 
@@ -268,9 +268,9 @@ int tequila_describe(int row)
 
 		/* Do NOT increase read errors for this one is not within DATA */
 		if (b != -1)
-		        pd[i] = b;
+			pd[i] = b;
 		else
-		        break;
+			break;
 	}
 
 	/* Print execution ptr only if it was read in properly */
@@ -282,7 +282,7 @@ int tequila_describe(int row)
 		strcat(info, lin);
 	}
 	else
-	        strcat(info, "$----");
+		strcat(info, "$----");
 
 
 	blk[row]->rd_err = rd_err;

@@ -98,7 +98,7 @@ void trilogic_search (void)
 
 			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
-				 will fail all the same in that case */
+			         will fail all the same in that case */
 
 			/* Check sync train. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)

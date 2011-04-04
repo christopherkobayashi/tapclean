@@ -110,7 +110,7 @@ void burnervar_search (void)
 
 	/* Basic validation before accessing array elements */
 	if (blk[ib]->cx < V1SYNCOFFSET + 1)
-	        return;
+		return;
 
 	pv = blk[ib]->dd[V1PILOTOFFSET]  ^ CBMXORDECRYPT;
 	sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;

@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.10  2011/04/04 08:39:32  luigidifraia
+ * Uniformed tabulation
+ *
  * Revision 1.9  2011/04/04 08:01:05  luigidifraia
  * Fixed spelling mistake in comments
  *
@@ -143,7 +146,7 @@ void ar_search (void)
 
 			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
-				 will fail all the same in that case */
+			         will fail all the same in that case */
 
 			/* Check sync train. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)

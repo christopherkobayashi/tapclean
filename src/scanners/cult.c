@@ -82,7 +82,7 @@ void cult_search (void)
 
 	/* Basic validation before accessing array elements */
 	if (blk[ib]->cx < LOADOFFSETH + 1)
-	        return;
+		return;
 
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8); /* 0x0801 */
 
@@ -92,7 +92,7 @@ void cult_search (void)
 
 	/* Basic validation before accessing array elements */
 	if (blk[ib]->cx < ENDOFFSETH + 1)
-	        return;
+		return;
 
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 

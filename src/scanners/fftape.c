@@ -369,15 +369,15 @@ int fftape_describe(int row)
 			{
 				pe = get_packed_address(i);
 				if (pe < LOADADDRFILE3)
-				        pe = ENDADDRFILE3;
+					pe = ENDADDRFILE3;
 				if (pe > ENDADDRFILE3)
-				        pe = ENDADDRFILE3;
+					pe = ENDADDRFILE3;
 				if (pe > ps)
 				{
 					sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
 					strcat(info, lin);
 					if (pe == ENDADDRFILE3)
-					        break;
+						break;
 					ps = get_packed_address(i + 1);
 				}
 				else

@@ -160,7 +160,7 @@ void fastevil_search (void)
 
 			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
-				 will fail all the same in that case */
+			         will fail all the same in that case */
 
 			/* Check postdata pattern. We may use the find_seq() facility too */
 			for (match = 1, h = 0; h < POSTDATASIZE; h++)
@@ -176,7 +176,7 @@ void fastevil_search (void)
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			/* Note: No trailer has been documented, but we are not strictly
-		                 requiring one here, just checking for it is future-proof */
+			         requiring one here, just checking for it is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
