@@ -6,18 +6,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -33,6 +33,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.9  2011/04/04 08:01:05  luigidifraia
+ * Fixed spelling mistake in comments
+ *
  * Revision 1.8  2009/10/18 00:55:07  luigidifraia
  * Expanded comment
  *
@@ -60,7 +63,7 @@
  * Single on tape: No
  * Sync: Bit + Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes
@@ -138,7 +141,7 @@ void ar_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -238,7 +241,7 @@ int ar_describe_hdr(int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence (1 bit + 2 bytes) */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	return 0;
@@ -273,7 +276,7 @@ int ar_describe_data(int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence (1 bit + 2 bytes) */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	/* Use the right pulsewidths to read data block */
@@ -301,7 +304,7 @@ int ar_describe_data(int row)
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 		cb ^= b;
-		
+
 		if (b != -1) {
 			blk[row]->dd[i] = b;
 		} else {

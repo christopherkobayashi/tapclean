@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -30,7 +30,7 @@
  * Single on tape: Yes
  * Sync: Byte
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: No
  * Post-data: Yes
  * Trailer: No
@@ -38,8 +38,8 @@
  */
 
 /*
- * Note: Due to loss of precision in the TAP format, the threshold for this 
- *       loader has been set to 0x1D rather than 0x1E. Some bit 1 pulses 
+ * Note: Due to loss of precision in the TAP format, the threshold for this
+ *       loader has been set to 0x1D rather than 0x1E. Some bit 1 pulses
  *       have been found shifted down to 0x1E.
  */
 
@@ -60,7 +60,7 @@
 #define ENDOFFSETH	2	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	3	/* end  location (LSB) offset inside header */
 
-#define POSTDATASIZE	256	/* size in bytes of the MANDATORY information 
+#define POSTDATASIZE	256	/* size in bytes of the MANDATORY information
 				   that is found after file data */
 
 void fastevil_search (void)
@@ -134,7 +134,7 @@ void fastevil_search (void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			/* Prevent int wraparound when subtracting 1 from end location 
+			/* Prevent int wraparound when subtracting 1 from end location
 			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
@@ -158,7 +158,7 @@ void fastevil_search (void)
 			for (h = 0; h < POSTDATASIZE; h++)
 				pat[h] = readttbyte(eof + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -218,7 +218,7 @@ int fastevil_describe (int row)
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-	/* Prevent int wraparound when subtracting 1 from end location 
+	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
 	if (blk[row]->ce == 0)
 		blk[row]->ce = 0xFFFF;
@@ -237,7 +237,7 @@ int fastevil_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync byte */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract data */

@@ -34,7 +34,7 @@
  * Single on tape: No
  * Sync: Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: Yes
  * Trailer: No
@@ -275,7 +275,7 @@ int tequila_describe(int row)
 
 	/* Print execution ptr only if it was read in properly */
 	strcat(info, "\n - Post-data Ptr : ");
-	
+
 	if (i == POSTDATASIZE)
 	{
 		sprintf(lin, "$%04X", (pd[0]<<8) + pd[1] + 1);

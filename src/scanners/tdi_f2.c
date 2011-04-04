@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -30,7 +30,7 @@
  * Single on tape: No
  * Sync: Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: Yes
  * Trailer: Yes
@@ -98,7 +98,7 @@ void tdif2_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -143,7 +143,7 @@ void tdif2_search (void)
 			/* Now TRY to add the largest block and then smaller ones */
 			if (readttbyte(eof + 1 + 4 * BITSINABYTE, lp, sp, tp, en) == EOFMARKER) {
 				eod += 4 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
-				eof += 4 * BITSINABYTE + BITSINABYTE; 
+				eof += 4 * BITSINABYTE + BITSINABYTE;
 
 				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
@@ -159,7 +159,7 @@ void tdif2_search (void)
 			}
 			if (readttbyte(eof + 1 + 2 * BITSINABYTE, lp, sp, tp, en) == EOFMARKER) {
 				eod += 2 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
-				eof += 2 * BITSINABYTE + BITSINABYTE; 
+				eof += 2 * BITSINABYTE + BITSINABYTE;
 
 				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
@@ -175,7 +175,7 @@ void tdif2_search (void)
 			}
 			if (readttbyte(eof + 1 + 1 * BITSINABYTE, lp, sp, tp, en) == EOFMARKER) {
 				eod += 1 * BITSINABYTE + BITSINABYTE; /* account EOF marker too */
-				eof += 1 * BITSINABYTE + BITSINABYTE; 
+				eof += 1 * BITSINABYTE + BITSINABYTE;
 
 				/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 				h = 0;
@@ -216,7 +216,7 @@ int tdif2_describe (int row)
 
 	/* Retrieve the measured filename size to know how long the header is */
 	fnamesz = blk[row]->xi;
-	
+
 	/* Set header size accordingly */
    	hdsz = HEADERSIZE + fnamesz;
 
@@ -228,7 +228,7 @@ int tdif2_describe (int row)
 	for (i = 0; i < fnamesz; i++)
 		bfname[i] = hd[NAMEOFFSET + i];
 	bfname[i] = '\0';
-	
+
 	trim_string(bfname);
 	pet2text(bfnameASCII, bfname);
 
@@ -253,7 +253,7 @@ int tdif2_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract data and test checksum... */
@@ -277,7 +277,7 @@ int tdif2_describe (int row)
 			a = (a + 1) & 0xFF;
 
 			cb ^= b;
-		
+
 			blk[row]->dd[i] = b;
 		} else {
 			blk[row]->dd[i] = 0x69;  /* error code */

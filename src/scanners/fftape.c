@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -30,7 +30,7 @@
  * Single on tape: No (ref. 'The Thriller Pack')
  * Sync: Bit + Byte
  * Header: No
- * Data: Continuos (Note: file #3 is made of non-contiguous-memory blocks)
+ * Data: Continuous (Note: file #3 is made of non-contiguous-memory blocks)
  * Checksum: No
  * Post-data: No
  * Trailer: Yes
@@ -66,7 +66,7 @@
 /* If defined, the contents of the unpack table are displayed in the report */
 //#define DEBUGFFTABLESRAW
 
-/* If defined, the contents of the unpack table are decoded and displayed in 
+/* If defined, the contents of the unpack table are decoded and displayed in
  * the report (only if DEBUGFFTABLESRAW is not defined)
  */
 //#define DEBUGFFTABLES
@@ -164,8 +164,8 @@ void fftape_search (void)
 
 			switch (ff_index)
 			{
-				/* Values for first and second block in a chain are 
-				 * hardcoded and the same for each program, it's not 
+				/* Values for first and second block in a chain are
+				 * hardcoded and the same for each program, it's not
 				 * worth extracting them from CBM data block
 				 */
 				case 1:
@@ -192,7 +192,7 @@ void fftape_search (void)
 					e = 0x0001;
 			}
 
-			/* Prevent int wraparound when subtracting 1 from end location 
+			/* Prevent int wraparound when subtracting 1 from end location
 			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
@@ -252,7 +252,7 @@ void fftape_search (void)
 
 				/* File can be acknowledged now */
 				ff_index++;
-			
+
 				/* Prepare for next chain */
 				if (ff_index > FILESINACHAIN)
 				{

@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -30,7 +30,7 @@
  * Single on tape: No
  * Sync: Bit + Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: No
  * Trailer: No
@@ -134,7 +134,7 @@ void alternativesw_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -163,7 +163,7 @@ void alternativesw_search (void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			/* Prevent int wraparound when subtracting 1 from end location 
+			/* Prevent int wraparound when subtracting 1 from end location
 			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
@@ -220,7 +220,7 @@ int alternativesw_describe (int row)
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-	/* Prevent int wraparound when subtracting 1 from end location 
+	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
 	if (blk[row]->ce == 0)
 		blk[row]->ce = 0xFFFF;
@@ -239,7 +239,7 @@ int alternativesw_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence (1 bit + 4 bytes) */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE * BITSINABYTE + 1;
 
 	/* Extract data */

@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -30,7 +30,7 @@
  * Single on tape: Yes! -> once we acknowledge one, we can return (see comment below)
  * Sync: Bit + Byte
  * Header: No
- * Data: Continuos
+ * Data: Continuous
  * Checksum: No
  * Post-data: No
  * Trailer: Yes
@@ -97,7 +97,7 @@ void cult_search (void)
 
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 
-	/* Prevent int wraparound when subtracting 1 from end location 
+	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
 	if (e == 0)
 		e = 0xFFFF;
@@ -106,13 +106,13 @@ void cult_search (void)
 
 	/* Plausibility checks (here since CULT is always just ONE TURBO file) */
 	/* Note: a plausibility check is on s == 0x0801 because load address
-		 is stored in CBM data, which is the very same file for all 
+		 is stored in CBM data, which is the very same file for all
 		 genuine Cult tapes! */
 	if (e < s || s != 0x0801)
 		return;
 
 	/* Note: we may exit the "for" cycle if addblockdef() doesn't fail,
-	   since CULT is always just ONE turbo file. I didn't do that because 
+	   since CULT is always just ONE turbo file. I didn't do that because
 	   we may have more than one game on the same tape using Cult loader,
 	   but such in a case whe must retrieve CBM information from their
 	   respective CBM parts... Not done actually. */

@@ -1,7 +1,7 @@
 /*
  * tes.c (by Luigi Di Fraia, Dec 2009 - armaeth@libero.it)
  *
- * This loader is used in "Special Program" magazine tapes. The name refers to the 
+ * This loader is used in "Special Program" magazine tapes. The name refers to the
  * fact file names are usually in the form "TES <name>".
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
@@ -32,7 +32,7 @@
  * Single on tape: No
  * Sync: Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes (XOR)
  * Post-data: No
  * Trailer: Yes

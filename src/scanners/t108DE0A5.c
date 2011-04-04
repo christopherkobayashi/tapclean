@@ -29,7 +29,7 @@
  * Single on tape: No
  * Sync: Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes

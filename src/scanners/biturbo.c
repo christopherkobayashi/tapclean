@@ -7,18 +7,18 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -34,6 +34,9 @@
  *        $Author$
  *
  * $Log$
+ * Revision 1.10  2011/04/04 08:01:05  luigidifraia
+ * Fixed spelling mistake in comments
+ *
  * Revision 1.9  2010/02/19 23:59:01  luigidifraia
  * Added basic validation of CBM payload size before accessing dd[]  array
  *
@@ -71,7 +74,7 @@
  * Single on tape: No! -> requires tracking of the right CBM file (done)
  * Sync: Sequence (bytes)
  * Header: Yes
- * Data: Continuos
+ * Data: Continuous
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes
@@ -93,8 +96,8 @@
 #define ENDOFFSETH	0x52	/* end location (MSB) offset inside CBM data */
 #define ENDOFFSETL	0x59	/* end location (LSB) offset inside CBM data */
 
-#define MAXCBMBACKTRACE	0x2A00  /* max amount of pulses between turbo file and the 
-				   'FIRST' instance of its CBM data block. 
+#define MAXCBMBACKTRACE	0x2A00  /* max amount of pulses between turbo file and the
+				   'FIRST' instance of its CBM data block.
 				   The typical value is less than this one */
 
 void biturbo_search (void)
@@ -111,7 +114,7 @@ void biturbo_search (void)
 
 	/* Expected sync pattern */
 	static int sypat[SYNCSEQSIZE] = {
-		0x10, 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 
+		0x10, 0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09,
 		0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,
 		0x00
 	};
@@ -145,7 +148,7 @@ void biturbo_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -161,13 +164,13 @@ void biturbo_search (void)
 			/* Valid sync train found, mark start of data */
 			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
-			/* Now we try to retrieve the Biturbo variables from the corresponding CBM 
+			/* Now we try to retrieve the Biturbo variables from the corresponding CBM
 			   Data block ('FIRST' instance).
-			   We search for the CBM data block whose start offset in the TAP file is not 
+			   We search for the CBM data block whose start offset in the TAP file is not
 			   too much far from where we found the actual Biturbo file */
 
 			/* Note: it could be cbm_index += 2 so we skip the "REPEATED" instances of
-			         CBM data blocks, but in case the "FIRST" instance of any CBM 
+			         CBM data blocks, but in case the "FIRST" instance of any CBM
 			         Data blocks is not recognized, that would cause a misalignment, and
 			         the CBM data block of non Biturbo files could be accidentally used */
 
@@ -178,7 +181,7 @@ void biturbo_search (void)
 				if (ib == -1)
 					return;		/* failed to locate CBM data for this one and any further Biturbo file. */
 
-				/* Plausibility checks. Here since we track the CBM part for each 
+				/* Plausibility checks. Here since we track the CBM part for each
 				   of them, in case of multiple Biturbo files on the same tape:
 				   there may be some programs using Biturbo, some others using another loader,
 				   so that the n-th Biturbo file may not come just after the n-th CBM file. */
@@ -199,7 +202,7 @@ void biturbo_search (void)
 				s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
 				e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 
-				/* Prevent int wraparound when subtracting 1 from end location 
+				/* Prevent int wraparound when subtracting 1 from end location
 				   to get the location of the last loaded byte */
 				if (e == 0)
 					e = 0xFFFF;
@@ -275,7 +278,7 @@ int biturbo_describe(int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract data and test checksum... */
@@ -292,7 +295,7 @@ int biturbo_describe(int row)
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 		cb ^= b;
-		
+
 		if (b != -1) {
 			blk[row]->dd[i] = b;
 		} else {
