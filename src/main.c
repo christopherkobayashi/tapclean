@@ -30,12 +30,6 @@
 #include "tap2audio.h"
 #include "skewadapt.h"
 
-#ifdef WIN32
-#include <direct.h>
-#else
-#include <unistd.h>
-#endif
-
 /* program options... */
 
 static char noaddpause		= FALSE;
@@ -2982,13 +2976,13 @@ void padstring(char *str, int wid)
  * Converts an integer number of seconds to a time string of format HH:MM:SS.
  */
 
-void time2str(int secs, char *buf)
+void time2str(time_t secs, char *buf)
 {
 	int h, m, s;
 
-	h = secs / 3600;
-	m = (secs- (h * 3600)) / 60;
-	s = secs - (h * 3600) - (m * 60);
+	h = (int) (secs / 3600);
+	m = (int) ((secs % 3600) / 60);
+	s = (int) (secs % 60);
 	sprintf(buf, "%02d:%02d:%02d", h, m, s);
 }
 
