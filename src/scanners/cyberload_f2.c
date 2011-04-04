@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------
   cyberload_f2.c
 
-  Part of project "Final TAP". 
-  
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+   This program is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free Software
+   Foundation; either version 2 of the License, or (at your option) any later
    version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
    PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
    St, Fifth Floor, Boston, MA 02110-1301 USA
 
 
@@ -27,7 +27,7 @@
   it is contained in F3's instead!.
 
 ---------------------------------------------------------------------------*/
- 
+
 #include "../mydefs.h"
 #include "../main.h"
 
@@ -127,7 +127,7 @@ void cyberload_f2_search(void)
       {
          pv= buf[i+1];
          sv= buf[i+5];
-                      
+
          cyber_f2_eor1=0xAE;   /* just some defaults, usually overwritten later.. */
          cyber_f2_eor2=0xD2;
 
@@ -150,7 +150,7 @@ void cyberload_f2_search(void)
       if(i!=-1)
       {
          tp= (buf[i+6]<<8) + buf[i+1];  /* +6=high +1=low */
-         ftmp= (float)tp*0.123156;
+         ftmp= (float) (tp*0.123156);
          tp= (int)ftmp;
 
          if(tp>0x39 && tp<0x45)   /* pulse set A... */
@@ -161,7 +161,7 @@ void cyberload_f2_search(void)
          {sp=0x24;lp=0x40;}
          if(tp==0x79)             /* pulse set D {image system & gangster)... */
          {sp=0x55;lp=0xA5;}
- 
+
 
          ft[CYBER_F2].tp= tp;   /* set variables for F2... */
          ft[CYBER_F2].sp= sp;
@@ -227,11 +227,11 @@ void cyberload_f2_search(void)
 
       free(buf);
    }
-   
+
 
    /*------------------------------------------------------------------------
     scan...  */
-   
+
    if(ft[CYBER_F2].sp ==VV)   /* dont scan if variables remain unset. */
       return;
 
@@ -287,7 +287,7 @@ int cyberload_f2_describe(int row)
 {
    int i,s,b,tmp,rd_err=0;
    unsigned char hd[32];
-     
+
    /* decode the first 4... */
    s = blk[row]->p2;
    for(i=0; i<4; i++)
@@ -303,7 +303,7 @@ int cyberload_f2_describe(int row)
    if(blk[row]->dd!=NULL)   /* note : may have been already decoded by a call to "find_decode_block()". */
       free(blk[row]->dd);
    blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
-   
+
    for(i=0; i< blk[row]->cx; i++)
    {
       b = readttbyte(s+(i*8), ft[CYBER_F2].lp, ft[CYBER_F2].sp, ft[CYBER_F2].tp, ft[CYBER_F2].en);
@@ -327,7 +327,7 @@ int cyberload_f2_describe(int row)
    blk[row]->trail_len= 0;
    if(blk[row]->pilot_len > 0)
       blk[row]->pilot_len--;    /* if there IS pilot then disclude the sync byte. */
-   
+
 
    return 0;
 }

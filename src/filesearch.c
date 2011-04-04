@@ -1,29 +1,29 @@
 /*
  * filesearch.c
  *
- * Part of project "Final TAP". 
+ * Part of project "Final TAP".
  *
  * A Commodore 64 tape remastering and data extraction utility.
  *
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  *
  * Notes:
- *  
+ *
  * Compiler: GCC
  *
  * The idea here is to have a program that can seek out and record ALL directory
@@ -71,7 +71,7 @@ struct node *get_dir_list(char *rootdir)
 		msgout("\nError: path does not exist");
 		return NULL;
 	}
-      
+
 	dirs = make_node(rootdir);	/* create root node (root DIR). */
 	c = dirs;			/* current node is initially the root node. */
 	d = dirs;			/* current directory node is initally the root node. */
@@ -88,11 +88,11 @@ struct node *get_dir_list(char *rootdir)
 #if defined WIN32
 		handle = _findfirst("*.*", &ffblk);
 		if (handle != -1) {
-			done = 0;            
+			done = 0;
 			while (done != -1) {
 
-				/* valid directory = a directory and not named '.' or '..' */  
-            
+				/* valid directory = a directory and not named '.' or '..' */
+
 				if (ffblk.attrib & _A_SUBDIR && strcmp(ffblk.name, ".") != 0 && strcmp(ffblk.name, "..") != 0) {
 
 					/* create the name for the new node (CWD+\+DIR name)... */
@@ -104,7 +104,7 @@ struct node *get_dir_list(char *rootdir)
 						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.name);
-                            
+
 					/* create and switch to latest node... */
 
 					c->link = make_node(temp);
@@ -113,14 +113,14 @@ struct node *get_dir_list(char *rootdir)
 					c = c->link;
 				}
 				done = _findnext(handle, &ffblk);
-			}   
+			}
 		}
 		_findclose(handle);
 #elif defined DJGPP
 		if (findfirst("*.*", &ffblk, FA_DIREC) == 0) {
 			do {
-				/* valid directory = a directory and not named '.' or '..' */  
-            
+				/* valid directory = a directory and not named '.' or '..' */
+
 				if (ffblk.ff_attrib & FA_DIREC && strcmp(ffblk.ff_name, ".") != 0 && strcmp(ffblk.ff_name, "..") != 0) {
 
 					/* create the name for the new node (CWD+\+DIR name)... */
@@ -132,7 +132,7 @@ struct node *get_dir_list(char *rootdir)
 						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.ff_name);
-                            
+
 					/* create and switch to latest node... */
 
 					c->link = make_node(temp);
@@ -159,7 +159,7 @@ struct node *get_dir_list(char *rootdir)
 					temp[t + 1] = '\0';
 				}
 				strcat(temp, namelist[i]->d_name);
-                            
+
 				/* create and switch to latest node... */
 
 				c->link = make_node(temp);
@@ -181,7 +181,7 @@ struct node *get_dir_list(char *rootdir)
 			complete = 1;	/* we're finished. */
 
 	} while(!complete);
-  
+
 	return dirs;
 }
 
@@ -216,22 +216,22 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 	files = make_node(dirs->name);
 	f = files;
 	d = dirs;
-   
+
 	/* for each directory in the list... */
 
 	while(d!=NULL) {
 		chdir(d->name);
 #if defined WIN32
 		handle = _findfirst(mask, &ffblk);
-      
+
 		if (handle != -1) {
 			done = 0;
-		
+
 			while (done != -1) {
 
-				/* valid file = NOT a directory! */ 
+				/* valid file = NOT a directory! */
 
-				if ((ffblk.attrib & _A_SUBDIR) == 0) {  
+				if ((ffblk.attrib & _A_SUBDIR) == 0) {
 					strcpy(temp, d->name);
 					t = strlen(temp);
 					if (temp[t - 1] != SLASH) {
@@ -239,7 +239,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.name);
-                        
+
 					f->link = make_node(temp);
 					f = f->link;
 				}
@@ -250,8 +250,8 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 #elif defined DJGPP
 		if (findfirst(mask, &ffblk, FA_DIREC) == 0) {
 			do {
-				/* valid directory = a directory and not named '.' or '..' */  
-            
+				/* valid directory = a directory and not named '.' or '..' */
+
 				if (!(ffblk.ff_attrib & FA_DIREC)) {
 
 					/* create the name for the new node (CWD+\+DIR name)... */
@@ -263,7 +263,7 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 						temp[t + 1] = '\0';
 					}
 					strcat(temp, ffblk.ff_name);
-                            
+
 					/* create and switch to latest node... */
 
 					f->link = make_node(temp);
@@ -308,12 +308,12 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 struct node* make_node(const char *name)
 {
 	struct node *n;
-	
+
 	n = (struct node*)malloc(sizeof(struct node));
 	n->name = (char*)malloc(strlen(name) + 1);
 	strcpy(n->name, name);
 	n->link = NULL;
-	
+
 	return n;
 }
 
@@ -359,7 +359,7 @@ int save_list(struct node *r, char *fname)
 		msgout("\n\nError: save_list(): failed to create file.");
 		return 1;
 	}
-	
+
 	c = r;
 	while(c != NULL) {
 		/* fprintf(fp,"\n%p %p %s", c,c->link,c->name); */
@@ -406,14 +406,14 @@ int sort_list(struct node *r)
 	int swaps;
 	struct node *n, *l1, *l2, *l3;
 	char s1[1024], s2[1024];
-     
+
 #define ND1 n		/* virtual nodes. be sure to affect 'n' (N1) LAST!  */
 #define ND2 n->link
 #define ND3 n->link->link
 
 	if (r->link == NULL)	/* list is empty, do nothing. */
 		return 0;
-   
+
 	do {
 		n = r;
 		swaps = 0;
@@ -422,7 +422,7 @@ int sort_list(struct node *r)
 			strcpy(s2, ND3->name);
 //			strupr(s1);		/* make sort case insensitive... */
 //			strupr(s2);		/* without this 'Zxxx' would appear before 'axxx' */
-                
+
 			if (strcmp(s1, s2) > 0) {
 
 				/* swap N2 and N3...  */
@@ -452,32 +452,31 @@ int sort_list(struct node *r)
 
 void clip_list(struct node *r)
 {
-   
-	int i, k;
+	unsigned int i, k;
 	struct node *n;
 	char s[1024], tmp[1024];
 	char rootname[1024];
 
 	/* clip root paths and mark subdirectoried entries with a preceeding '.' */
-	/* so they sort to the top (done with copies not the original entries). */ 
-       
+	/* so they sort to the top (done with copies not the original entries). */
+
 	/* directory root is held in name of 1st node */
 
 	strcpy(rootname, r->name);
-	k = strlen(rootname);        
-   
+	k = strlen(rootname);
+
 	n = r->link;		/* begin with 2nd node */
-                
+
 	while(n != NULL) {
-		strcpy(s, n->name);    
-    
-		for (i = 0; i < strlen(s); i++)  
-			tmp[i] = s[k + i];     
-		strcpy(s, tmp);   
-      
+		strcpy(s, n->name);
+
+		for (i = 0; i < strlen(s); i++)
+			tmp[i] = s[k + i];
+		strcpy(s, tmp);
+
 		for (i = 0; i < strlen(s); i++) {
 
-			/* if remainder of name s1 contains a \ its a subdir... */ 
+			/* if remainder of name s1 contains a \ its a subdir... */
 
 			if (s[i] == SLASH) {
 
@@ -486,10 +485,10 @@ void clip_list(struct node *r)
 				sprintf(tmp, ".%c%s", SLASH, s);
 				strcpy(s, tmp);
 				break;
-			}    
-		}          
+			}
+		}
 		strcpy(n->name, s);
 		n = n->link;		/* step to next node */
 	}
-}   
+}
 

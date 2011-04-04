@@ -1,7 +1,7 @@
 /*
  * tap2audio.c
  *
- * Part of project "Final TAP". 
+ * Part of project "Final TAP".
  *
  * A Commodore 64 tape remastering and data extraction utility.
  *
@@ -9,17 +9,17 @@
  *
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  *
@@ -112,7 +112,7 @@ static int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long
 {
 	int x, y, off;
 	float deg, inc;
-	float rads = 180 / 3.141592654;
+	float rads = (float) (180. / 3.141592654);
 	int samples = 0;
 
 	if (signd)
@@ -123,7 +123,7 @@ static int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long
 	for (x = 0; x < len; x++) {
 		inc = (float)360 / len;
 		deg = (x * inc);	/* +180 makes the wave peak first */
-		y = amp * sin(deg / rads);
+		y = (int) (amp * sin(deg / rads));
 		samples += s_out(y + off, 0, filep, bp, outbuf);
 	}
 
@@ -150,58 +150,58 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	FILE *fp;
 	unsigned long bpos = 0;
 	char *outbuf;
- 
+
 	/* ".snd", DataOff, DataSize, Format, SampleRate(44khz), Channels */
 
 	char auhd[64] = { 46, 115, 110, 100, 0, 0, 0, 24, 255, 255, 255, 255,
 			  0, 0, 0, 2, 0, 0, 172, 68, 0, 0, 0, 1 };
 
 	tapversion = tap[12];
- 
+
 	fp = fopen(filename, "w+b");		/* create output file... */
 	if (fp == NULL)
 		return -1;
- 
+
 	outbuf = (char*)malloc(BUFSZ);		/* create output buffer... */
 	if (outbuf == NULL)
 		return -1;
- 
+
 	/* write out a dummy header, proper one needs to go in after. */
 
 	for (i = 0; i < AUHDSZ; i++)
 		fputc(0, fp);
- 
+
 	/* write out the waveform data... */
 
 	for (i = 20; i < taplen; i++) {
 		b = tap[i];
- 
+
 		/* write TAP v0 pause... */
 
 		if (b == 0 && tapversion == 0) {
-			lv = floor(20000 * fratio);
+			lv = (long) floor(20000 * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 0, 1, fp, &bpos, outbuf);
 			else
 				totalsamples += drawwavesquare(lv, 0, 1, fp, &bpos, outbuf);
 		}
- 
+
 		/* write TAP v1 pause... */
 
 		if (b == 0 && tapversion == 1) {
 			ccnt = (tap[i + 1]) + (tap[i + 2] << 8)+ (tap[i + 3] << 16);
 			i += 3;
-			lv = floor(ccnt * fratio);
+			lv = (long) floor(ccnt * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 0, 1, fp, &bpos, outbuf);
 			else
 				totalsamples += drawwavesquare(lv, 0, 1, fp, &bpos, outbuf);
 		}
- 
+
 		/* write out non-pause... */
 
 		if (b != 0) {
-			lv = floor((b * 8) * fratio);
+			lv = (long) floor((b * 8) * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 127, 1, fp, &bpos, outbuf);
 			else
@@ -210,25 +210,25 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	}
 
 	totalsamples += s_out(0, 1, fp, &bpos, outbuf);	/* add all valid remaining buffer bytes. */
- 
+
 	dsize = totalsamples;
-	
+
 	/* write data size to header array... */
 
 	for (i = 0; i < 4; i++) {
 		b = (dsize &(0xFF << ((3 - i) * 8))) >> ((3 - i) * 8);
 		auhd[8 + i] = b;
 	}
- 
+
 	/* write out the header and clean up... */
 
 	rewind(fp);
 	for (i = 0; i < AUHDSZ; i++)
 		fputc(auhd[i], fp);
- 
+
 	fclose(fp);
 	free(outbuf);
- 
+
 	return 0;
 }
 
@@ -252,7 +252,7 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 				100, 97, 116, 97, 0, 0, 0, 0 };
 
 	tapversion = tap[12];
- 
+
 	fp = fopen(filename, "w+b");	/* create output file... */
 	if (fp == NULL)
 		return - 1;
@@ -260,43 +260,43 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	outbuf = (char*)malloc(BUFSZ);	/* create output buffer... */
 	if (outbuf == NULL)
 		return - 1;
- 
+
 	/* write out a dummy header, proper one needs to go in after. */
 
 	for (i = 0; i < WAVHDSZ; i++)
 		fputc(0, fp);
- 
+
 	/* write out the waveform data... */
 
 	for(i = 20; i < taplen; i++) {
 		b = tap[i];
- 
+
 		/* write TAP v0 pause... */
 
 		if (b == 0 && tapversion == 0) {
-			lv = floor(20000 * fratio);
+			lv = (long) floor(20000 * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 0, 0, fp, &bpos, outbuf);
 			else
 				totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos, outbuf);
 		}
- 
+
 		/* write TAP v1 pause... */
 
 		if (b == 0 && tapversion == 1) {
 			ccnt = (tap[i + 1]) + (tap[i + 2] << 8) + (tap[i + 3] << 16);
 			i += 3;
-			lv = floor(ccnt * fratio);
+			lv = (long) floor(ccnt * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 0, 0, fp, &bpos, outbuf);
 			else
 				totalsamples += drawwavesquare(lv, 0, 0, fp, &bpos, outbuf);
 		}
- 
+
 		/* write out non-pause... */
 
 		if (b != 0) {
-			lv = floor((b * 8) * fratio);
+			lv = (long) floor((b * 8) * fratio);
 			if (sine)
 				totalsamples += drawwavesine(lv, 127, 0, fp, &bpos, outbuf);
 			else
@@ -305,7 +305,7 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	}
 
 	totalsamples += s_out(0, 1, fp, &bpos, outbuf);	/* add all valid remaining buffer bytes. */
- 
+
 	/* write FileLen-8 to wav header... */
 
 	dsize = totalsamples + WAVHDSZ - 8;
@@ -315,21 +315,21 @@ int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 	}
 
 	/* write DataChunkLen to wav header... */
-  
+
 	dsize = totalsamples;
 	for (i = 0; i < 4; i++) {
 		b = ((dsize & (0xFF << (i * 8)))) >> (i * 8);
 			wavhd[40 + i] = b;
 		}
- 
+
 	/* write header array to file and clean up... */
 
 	rewind(fp);
 	for (i = 0; i < WAVHDSZ; i++)
 		fputc(wavhd[i], fp);
- 
+
 	fclose(fp);
 	free(outbuf);
- 
+
 	return 0;
 }

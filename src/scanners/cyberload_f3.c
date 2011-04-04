@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------
   cyberload_f3.c
 
-  Part of project "Final TAP". 
-  
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+   This program is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free Software
+   Foundation; either version 2 of the License, or (at your option) any later
    version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
    PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
    St, Fifth Floor, Boston, MA 02110-1301 USA
 
 ---------------------------------------------------------------------------*/
@@ -40,7 +40,7 @@ void cyberload_f3_search(void)
    float ftmp;
    char info[2048];
    FILE *fp;
-   
+
    /* loader 2/3/4: set threshold pattern. */
    int set_thres[10]={0xA9,XX,0x8D,0x04,0xDC,0xA9,XX,0x8D,0x05,0xDC};
 
@@ -59,7 +59,7 @@ void cyberload_f3_search(void)
    {
       /* make an 'int' copy of the data... */
       bufsz= blk[t]->cx;
-      buf= (int*)malloc(bufsz*sizeof(int));    
+      buf= (int*)malloc(bufsz*sizeof(int));
       for(i=0; i<bufsz; i++)
          buf[i]= blk[t]->dd[i];
 
@@ -75,7 +75,7 @@ void cyberload_f3_search(void)
       if(done)  /* search was a success, set threshold variables... */
       {
          tp= (buf[location+6]<<8) + buf[location+1];  /* +1=low, +6=high */
-         ftmp= (float)tp*0.123156;
+         ftmp= (float) (tp*0.123156);
          tp= (int)ftmp;
 
          if(tp>0x39 && tp<0x45)   /* pulse set A... */
@@ -148,7 +148,7 @@ void cyberload_f3_search(void)
 
       free(buf);
    }
-   
+
 
 
    /*---------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ void cyberload_f3_search(void)
 
    if(!quiet)
       msgout("  Cyberload F3");
-         
+
 
    for(i=20; i<tap.len-50; i++)
    {
@@ -237,7 +237,7 @@ int cyberload_f3_describe(int row)
    /* Ignore $04 checksum fault?.. */
    if(docyberfault==FALSE && blk[row]->cs_exp == 0x04)
       blk[row]->cs_exp=0x00;
-   
+
    return 0;
 }
 

@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------
   cyberload_f4.c
 
-  Part of project "Final TAP". 
-  
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+   This program is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free Software
+   Foundation; either version 2 of the License, or (at your option) any later
    version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
    PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
    St, Fifth Floor, Boston, MA 02110-1301 USA
 
 
@@ -85,7 +85,7 @@ void cyberload_f4_search(void)
       if(done)  /* search was a success, set threshold variables... */
       {
          tp= (buf[location+6]<<8) + buf[location+1];  /* +1=low, +6=high */
-         ftmp= (float)tp*0.123156;
+         ftmp= (float) (tp*0.123156);
          tp= (int)ftmp;
 
          if(tp>0x39 && tp<0x45)   /* pulse set A... */
@@ -111,7 +111,7 @@ void cyberload_f4_search(void)
       {
          pv= buf[location+1];
          sv= buf[location+5];
-         
+
          ft[CYBER_F4_1].tp= tp;
          ft[CYBER_F4_1].sp= sp;
          ft[CYBER_F4_1].lp= lp;
@@ -151,7 +151,7 @@ void cyberload_f4_search(void)
             fputc(buf[i] & 0xFF, fp);
          fclose(fp);
       }
-    
+
       free(buf);
    }
    /* else..  cyberload loader 4 was not found (ie. no 2nd format 2 file).
@@ -167,8 +167,8 @@ void cyberload_f4_search(void)
 
    if(!quiet)
       msgout("  Cyberload F4 (3 types)");
-         
- 
+
+
    for(i=20; i<tap.len-50; i++)
    {
       if((z=find_pilot(i,CYBER_F4_1))>0)
@@ -242,7 +242,7 @@ void cyberload_f4_search(void)
                   l4_offset_to_filename=1;
                   l4_hsize=25;
                }
-            
+
                /* get data size; */
                dx = hd[l4_offset_to_filename+18]+(hd[l4_offset_to_filename+19]<<8);
 
@@ -351,7 +351,7 @@ int cyberload_f4_describe(int row)
       sprintf(lin,"\n - Deciphered Threshold: $%02X%02X",thrhi,thrlo);
       strcat(info,lin);
    }
-    
+
    tmp = (blk[row]->cx)>>8;
    if((blk[row]->cx)%256!=0)
       tmp++;

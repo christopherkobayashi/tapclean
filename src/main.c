@@ -1729,7 +1729,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nMagic CRC32 : %08X", tap.crc);
 	strcat(buf, lin);
-	min = tap.taptime / 60;
+	min = (int) tap.taptime / 60;
 	sec = tap.taptime - min * 60;
 	sprintf(lin, "\nTAP Time    : %d:%.2f", min, sec);
 	strcat(buf, lin);
@@ -2462,7 +2462,7 @@ int analyze(void)
 	/* compute % recognised... */
 
 	per = ((double)tap.detected / ((double)tap.len - 20)) * 100;
-	tap.detected_percent = floor(per);
+	tap.detected_percent = (int) floor(per);
 
 	/* Compute & store quality checks... */
 

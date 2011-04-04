@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------
   turbotape.c
-  
-  Part of project "Final TAP". 
-  
+
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+   This program is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free Software
+   Foundation; either version 2 of the License, or (at your option) any later
    version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
    PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
    St, Fifth Floor, Boston, MA 02110-1301 USA
 
 
   Notes:-
-  
+
   9/12/2001 - added trailer tracing, only 1 tap i found so far actually has trailers.
             - pilot/trailer length calc is 100%.
 
@@ -61,7 +61,7 @@ void turbotape_search(void)
 
    if(!quiet)
       msgout("  Turbotape 250 (+clones)");
-         
+
 
    for(i=20; i<tap.len-8; i++)
    {
@@ -104,7 +104,7 @@ void turbotape_search(void)
                      eod = sod+(zcnt*8)-8;
                      eof = eod+7;  /* prepare for poss override. */
 
-                     hsize = (float)((eod+1) - sod)/8;
+                     hsize = (int) ((float)((eod+1) - sod)/8);
                      addblockdef(TT_HEAD, sof,sod,eod,eof, hsize);
                      i = sod+(zcnt*8);  /* optimize search */
 
@@ -141,8 +141,8 @@ void turbotape_search(void)
                               eof=eod+7;
 
                               /* now trace to end of trailer (if exists)... */
-                              while (eof < tap.len - 1 && 
-                                    tap.tmem[eof + 1] > ft[TT_HEAD].sp - tol && 
+                              while (eof < tap.len - 1 &&
+                                    tap.tmem[eof + 1] > ft[TT_HEAD].sp - tol &&
                                     tap.tmem[eof + 1] < ft[TT_HEAD].sp + tol)
                                  eof++;
 
@@ -215,7 +215,7 @@ int turbotape_describe(int row)
       if(blk[row]->fn!=NULL)
          free(blk[row]->fn);
       blk[row]->fn = (char*)malloc(strlen(str)+1);
-      
+
       strcpy(blk[row]->fn, str);
 
       sprintf(lin,"\n - Header size: %d bytes", blk[row]->xi);
@@ -235,7 +235,7 @@ int turbotape_describe(int row)
    /* get pilot trailer lengths... */
    blk[row]->pilot_len= blk[row]->p2- blk[row]->p1 -80;
    blk[row]->trail_len= blk[row]->p4- blk[row]->p3 -7;
-   
+
    /* extract data and test checksum... */
    rd_err=0;
    cb=0;

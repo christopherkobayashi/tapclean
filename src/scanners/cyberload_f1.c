@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------
   cyberload_f1.c
 
-  Part of project "Final TAP". 
-  
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+   This program is free software; you can redistribute it and/or modify it under
+   the terms of the GNU General Public License as published by the Free Software
+   Foundation; either version 2 of the License, or (at your option) any later
    version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
    PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
    St, Fifth Floor, Boston, MA 02110-1301 USA
 
 
@@ -51,7 +51,7 @@ void cyberload_f1_search(void)
    FILE *fp;
 
    /* First I must find out LOADER1 variables from the CBM HEADER... */
-   
+
    strcpy(info,"");  /* all loader findings go to 'info[]'. */
 
    t= find_decode_block(CBM_HEAD,1);
@@ -60,7 +60,7 @@ void cyberload_f1_search(void)
    {
       /* make an 'int' copy of the 1st CBM header file... */
       bufsz= blk[t]->cx;
-      buf= (int*)malloc(bufsz*sizeof(int));  
+      buf= (int*)malloc(bufsz*sizeof(int));
       for(i=0; i<bufsz; i++)
          buf[i]= blk[t]->dd[i];
 
@@ -90,7 +90,7 @@ void cyberload_f1_search(void)
       /* now we can read our needed variables from the deciphered Loader 1... */
 
       tp= (buf[33]<<8) + buf[28];
-      ftmp= (float)tp * 0.123156;
+      ftmp= (float) (tp * 0.123156);
       tp= (int)ftmp;
       pv= buf[47];
       sv= buf[58];
@@ -104,7 +104,7 @@ void cyberload_f1_search(void)
       {sp=0x24;lp=0x40;}
       if(tp==0x79)             /* pulse set D {image system & gangster)... */
       {sp=0x55;lp=0xA5;}
- 
+
 
       ft[CYBER_F1].tp= tp;   /* set variables for F1... */
       ft[CYBER_F1].sp= sp;
@@ -166,14 +166,14 @@ void cyberload_f1_search(void)
       free(buf);
    }
 
-      
+
    /*----------------------------------------------------------------------*/
    if(ft[CYBER_F1].sp==VV)   /* dont scan if variables remain unset. */
       return;
 
    if(!quiet)
       msgout("  Cyberload F1");
-    
+
    for(i=20; i<tap.len-50; i++)      /* find all format 1 files... */
    {
       if((z=find_pilot(i,CYBER_F1))>0)
@@ -213,7 +213,7 @@ void cyberload_f1_search(void)
                      eof+=8;
 
                   addblockdef(CYBER_F1, sof,sod,eod,eof, zpload);
-                  
+
                   /* if next bit is set then another block follows... */
                   if(tap.tmem[eof]>lp-tol && tap.tmem[eof]<lp+tol)
                   {
@@ -243,7 +243,7 @@ int cyberload_f1_describe(int row)
 {
    int i,s,b,tmp,rd_err=0;
    unsigned char hd[32];
-   
+
    hd[0]= readttbyte(blk[row]->p2, ft[CYBER_F1].lp, ft[CYBER_F1].sp, NA, ft[CYBER_F1].en);
 
    blk[row]->cs= blk[row]->xi;
@@ -284,7 +284,7 @@ int cyberload_f1_describe(int row)
    blk[row]->trail_len= 0;
    if(blk[row]->pilot_len > 0)
       blk[row]->pilot_len--;    /* if there IS pilot then disclude the sync byte. */
-   
+
    return 0;
 }
 
