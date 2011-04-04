@@ -11,19 +11,19 @@
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
- * 
+ *
  */
 
 
@@ -122,7 +122,7 @@ enum {
 	JET, FLASH, TDI_F1, OCNEW1T1, OCNEW1T2, OCNEW2, ATLAN, SNAKE51,
 	SNAKE50T1, SNAKE50T2, PAL_F1, PAL_F2, ENIGMA, AUDIOGENIC, ALIENSY,
 	ACCOLADE, ALTERWG, RAINBOWARTSF1, RAINBOWARTSF2, TRILOGIC, BURNERVAR,
-	OCNEW4, TDI_F2, BITURBO, _108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO, 
+	OCNEW4, TDI_F2, BITURBO, T108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO,
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
 	TESTAPE, TEQUILA, ALTERSW
 };
@@ -276,7 +276,7 @@ extern char skewadapt;
 struct ldrswt_t		/* Loader -no/-do switches */
 {
 	char desc[24];	/* Human readable description of loader */
-	char par[12];	/* Whatever can follow the "-do" and "-no" prefixes 
+	char par[12];	/* Whatever can follow the "-do" and "-no" prefixes
 			   to include or exclude a loader */
 	char state;	/* Set to TRUE to exclude loader */
 };

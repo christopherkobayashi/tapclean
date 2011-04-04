@@ -1,68 +1,24 @@
 /*
- * 108DE0A5.c (by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
+ * t108DE0A5.c (by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
- *
- */
-
-/*
- * $Id$
- *
- *        $Source$
- *       $RCSfile$
- *         $State$
- *      $Revision$
- *          $Date$
- *        $Author$
- *
- * $Log$
- * Revision 1.10  2009/10/17 20:20:23  luigidifraia
- * Uniformed sync count and comment
- *
- * Revision 1.9  2009/09/18 19:28:13  luigidifraia
- * Use readttbit to read the trailer (new scanners only atm)
- *
- * Revision 1.8  2008/12/14 11:49:07  luigidifraia
- * Updated int wraparound prevention
- *
- * Revision 1.7  2008/05/18 23:25:17  luigidifraia
- * Implemented integer wraparound prevention in new scanners
- *
- * Revision 1.6  2008/05/10 23:09:08  luigidifraia
- * Removed wrong comment
- *
- * Revision 1.5  2008/03/02 11:16:32  luigidifraia
- * Reinserted increment on read errors upon failed checksum reads
- *
- * Revision 1.4  2008/02/28 22:03:04  luigidifraia
- * Uniformed all new scanners as much as possible
- *
- * Revision 1.3  2008/02/27 20:38:04  luigidifraia
- * Removed an extra comma
- *
- * Revision 1.2  2008/01/11 00:22:20  luigidifraia
- * Uniformed code and comments in the new scanners.
- * Added read error check for unreadable checkbytes.
- *
- * Revision 1.1  2007/08/07 17:47:32  luigidifraia
- * Initial revision
  *
  */
 
@@ -79,11 +35,11 @@
  * Trailer: Yes
  * Trailer homogeneous: No
  */
- 
+
 #include "../mydefs.h"
 #include "../main.h"
 
-#define THISLOADER	_108DE0A5
+#define THISLOADER	T108DE0A5
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -97,7 +53,7 @@
 #define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
-void _108DE0A5_search (void)
+void t108DE0A5_search (void)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -137,7 +93,7 @@ void _108DE0A5_search (void)
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-			/* Note: no need to check if readttbyte is returning -1, for 
+			/* Note: no need to check if readttbyte is returning -1, for
 			         the following comparison (DONE ON ALL READ BYTES)
 				 will fail all the same in that case */
 
@@ -166,7 +122,7 @@ void _108DE0A5_search (void)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			/* Prevent int wraparound when subtracting 1 from end location 
+			/* Prevent int wraparound when subtracting 1 from end location
 			   to get the location of the last loaded byte */
 			if (e == 0)
 				e = 0xFFFF;
@@ -203,7 +159,7 @@ void _108DE0A5_search (void)
 	}
 }
 
-int _108DE0A5_describe(int row)
+int t108DE0A5_describe(int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];
@@ -229,7 +185,7 @@ int _108DE0A5_describe(int row)
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-	/* Prevent int wraparound when subtracting 1 from end location 
+	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
 	if (blk[row]->ce == 0)
 		blk[row]->ce = 0xFFFF;
@@ -248,7 +204,7 @@ int _108DE0A5_describe(int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract data and test checksum... */
@@ -265,7 +221,7 @@ int _108DE0A5_describe(int row)
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 		cb += b;
-		
+
 		if (b != -1) {
 			blk[row]->dd[i] = b;
 		} else {

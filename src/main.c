@@ -8,19 +8,19 @@
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
- * 
+ *
  */
 
 
@@ -297,8 +297,8 @@ struct fmt_t ft[100] = {
 	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 };
 
-/* 
- * The following strings are used to describe which loader signature has been 
+/*
+ * The following strings are used to describe which loader signature has been
  * found in CBM data file.
  *
  * See enum for this table in mydefs.h: these must be kept in sync.
@@ -306,7 +306,7 @@ struct fmt_t ft[100] = {
 
 const char knam[][32] = {
 	/*
-	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
+	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
 	 */
 	{"n/a"},
@@ -359,7 +359,7 @@ const char knam[][32] = {
 	{"Tequila Sunrise"},
 	{"Alternative Software"}
 	/*
-	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list 
+	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
 	 */
 };
@@ -403,7 +403,7 @@ static void unload_tap(void)
 		tap.pst[i] = 0;
 		tap.fst[i] = 0;
 	}
-	
+
 	tap.fsigcheck = 0;
 	tap.fvercheck = 0;
 	tap.fsizcheck = 0;
@@ -475,9 +475,9 @@ static int get_exedir(char *argv0)
 		/* Clip to leave path only */
 		for (i = strlen(exedir) - 1; i > 0 && exedir[i] != SLASH; i--)
 			;
-	
+
 		if (exedir[i] == SLASH)
-			exedir[i + 1] = '\0';   
+			exedir[i + 1] = '\0';
 
 		return TRUE;
 	}
@@ -562,7 +562,7 @@ static void display_usage(void)
 	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
 
 	/*
-	 * These switches should only be used for legacy TAP/DMP files produced 
+	 * These switches should only be used for legacy TAP/DMP files produced
 	 * as per below:
 	 *
 	 * VIC20 (-20): MTAP < 0.26 (PAL), MTAP < 0.27 (NTSC), dc2nconv < 1.4
@@ -574,7 +574,7 @@ static void display_usage(void)
 	printf(" -16            Force Commodore 16 tape.\n");
 	printf(" -20            Force Commodore VIC 20 tape.\n");
 	printf(" -64            Force Commodore 64 tape (default).\n");
-      
+
 	printf(" -boostclean    Raise cleaning threshold.\n");
 	printf(" -debug         Allows detected files to overlap.\n");
 	printf(" -do<loader>    Scan only for <loader>.\n");
@@ -821,7 +821,7 @@ static void search_tap(void)
 
 	dbase_is_full = FALSE;	/* enable the "database full" warning. */
 				/* note: addblockdef sets it 1 when full. */
- 
+
 	msgout("\nScanning...");
 
 	if (tap.changed) {
@@ -999,7 +999,7 @@ static void search_tap(void)
 				oceannew4_search();
 
 			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
-				_108DE0A5_search();
+				t108DE0A5_search();
 
 			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
@@ -1028,7 +1028,7 @@ static void search_tap(void)
 			 * todo : JETLOAD
 			 * todo : TENGEN
 			 */
-		}      
+		}
 
 		/* Scan the lot.. (if shortcuts are disabled or no loader ID was found) */
 
@@ -1207,7 +1207,7 @@ static void search_tap(void)
 				biturbo_search();
 
 			if (ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
-				_108DE0A5_search();
+				t108DE0A5_search();
 
 			if (ldrswt[noar		].state == FALSE && !dbase_is_full && !aborted)
 				ar_search();
@@ -1219,7 +1219,7 @@ static void search_tap(void)
 				freeslow_search();
 
 			/*
-			 * Do not add the following ones because they should only be looked for when 
+			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
 			 */
 
@@ -1236,10 +1236,10 @@ static void search_tap(void)
 			//	alternativesw_search();
 
 			/*
-			 * Do not add the following ones until additonal games using these formats 
+			 * Do not add the following ones until additonal games using these formats
 			 * are found.
 			 * For the time being having these active would just slow down testing and
-			 * cleaning other tapes. Besides, these are looked for when their signature 
+			 * cleaning other tapes. Besides, these are looked for when their signature
 			 * is found in CBM Data block.
 			 */
 
@@ -1458,7 +1458,7 @@ static void describe_file(int row)
 					break;
 		case BITURBO:		biturbo_describe(row);
 					break;
-		case _108DE0A5:		_108DE0A5_describe(row);
+		case T108DE0A5:		t108DE0A5_describe(row);
 					break;
 		case ACTIONREPLAY_HDR:	ar_describe_hdr(row);
 					break;
@@ -1717,7 +1717,7 @@ static void print_results(char *buf)
 	float sec;
 
 	sprintf(buf, "\n\n\nGENERAL INFO AND TEST RESULTS\n");
-   
+
 	sprintf(lin, "\nTAP Name    : %s", tap.path);
 	strcat(buf, lin);
 
@@ -1771,7 +1771,7 @@ static void print_results(char *buf)
 	sprintf(lin, "\nHeader test       : %s [Sig: %s] [Ver: %s] [Siz: %s]", szpass[tap.tst_hd], szok[tap.fsigcheck], szok[tap.fvercheck], szok[tap.fsizcheck]);
 	strcat(buf, lin);
 	sprintf(lin, "\nRecognition test  : %s [%d of %d bytes accounted for] [%d%%]", szpass[tap.tst_rc], tap.detected, tap.len - 20, tap.detected_percent);
-	strcat(buf, lin); 
+	strcat(buf, lin);
 	sprintf(lin, "\nChecksum test     : %s [%d of %d checksummed files OK]", szpass[tap.tst_cs], tap.total_checksums_good, tap.total_checksums);
 	strcat(buf, lin);
 	sprintf(lin, "\nRead test         : %s [%d Errors]", szpass[tap.tst_rd], tap.total_read_errors);
@@ -1871,7 +1871,7 @@ static void print_file_stats(char *buf)
 	int i;
 
 	sprintf(buf, "\nFILE FREQUENCY TABLE\n");
- 
+
 	for (i = 0; ft[i].sp != 666; i++) {	/* for each file format in ft[]...  */
 		if (tap.fst[i] != 0) {		/* list all found files and their frequency...  */
 			sprintf(lin, "\n%s (%d)", ft[i].name, tap.fst[i]);
@@ -1889,15 +1889,15 @@ int main(int argc, char *argv[])
 {
 	int opnum;
 	time_t t1, t2;
-	
+
 	char *opname;		/*!< a pointer to one of the following opnames */
 	char opnames[][32] = {
 		"No operation",
-		"Testing", 
+		"Testing",
 		"Optimizing",
 		"Converting to v0",
-		"Converting to v1", 
-		"Fixing header size", 
+		"Converting to v1",
+		"Fixing header size",
 		"Optimizing pauses",
 		"Converting to au file",
 		"Converting to wav file",
@@ -1907,7 +1907,7 @@ int main(int argc, char *argv[])
 
 	/* Delete report and info files */
 	deleteworkfiles();
-         
+
 	/* Get exe path from argv[0] */
 	if (!get_exedir(argv[0]))
 		return -1;
@@ -1928,7 +1928,7 @@ int main(int argc, char *argv[])
 	printf("----------------------------------------------------------------------\n");
 
 	/* Note: options should be processed before actions! */
-   
+
 	if (argc == 1) {
 		display_usage();
 		printf("\n\n");
@@ -1938,11 +1938,11 @@ int main(int argc, char *argv[])
 
 	process_options(argc, argv);
 	handle_cps();
-      
+
 	/* PROCESS ACTIONS... */
 
-	/** 
-	 *	Just test a tap if no option is present, just a filename. 
+	/**
+	 *	Just test a tap if no option is present, just a filename.
 	 *
 	 * 	This allows for drag and drop in (Microsoft) explorer.
 	 * 	First make sure the argument is not the -b option without
@@ -1968,29 +1968,29 @@ int main(int argc, char *argv[])
 		for (i = 0; i < argc; i++) {
 			opnum = 0;
 			if (strcmp(argv[i], "-t") == 0)
-				opnum = 1;	/* test */ 
+				opnum = 1;	/* test */
 			if (strcmp(argv[i], "-o") == 0)
 				opnum = 2;	/* optimize */
 			if (strcmp(argv[i], "-ct0") == 0)
 				opnum = 3;	/* convert to v0 */
 			if (strcmp(argv[i], "-ct1") == 0)
-				opnum = 4;	/* convert to v1 */         
+				opnum = 4;	/* convert to v1 */
 			if (strcmp(argv[i], "-rs") == 0)
 				opnum = 5;	/* fix header size */
 			if (strcmp(argv[i], "-po") == 0)
 				opnum = 6;	/* pause optimize */
-            
+
 			if (strcmp(argv[i], "-au") == 0)
 				opnum = 7;	/* convert to au */
 			if (strcmp(argv[i], "-wav") == 0)
 				opnum = 8;	/* convert to wav */
 			if (strcmp(argv[i], "-b") == 0)
-				opnum = 9;	/* batch scan */  
+				opnum = 9;	/* batch scan */
 			if (strcmp(argv[i], "-info") == 0)
 				opnum = 10;	/* create info file */
-                  
+
 			opname = opnames[opnum];
-            
+
 			/* This handles testing + any op that takes a tap, affects it and saves it... */
 
 			if (opnum > 0 && opnum < 7) {
@@ -1999,7 +1999,7 @@ int main(int argc, char *argv[])
 						time(&t1);
 						printf("\n\nLoaded: %s", tap.name);
 						printf("\n%s...\n", opname);
-                    
+
 						if (analyze()) {
 							switch(opnum) {
 								case 2:	clean();
@@ -2007,14 +2007,14 @@ int main(int argc, char *argv[])
 								case 3:	convert_to_v0();
 									break;
 								case 4:	convert_to_v1();
-									break; 
-								case 5:	fix_header_size(); 
+									break;
+								case 5:	fix_header_size();
 									analyze();
-									break; 
-								case 6:	convert_to_v0(); 
-									clip_ends(); 
+									break;
+								case 6:	convert_to_v0();
+									clip_ends();
 									unify_pauses();
-									convert_to_v1();   
+									convert_to_v1();
 									add_trailpause();
 									break;
 							}
@@ -2046,7 +2046,7 @@ int main(int argc, char *argv[])
 						}
 					}
 				} else
-					printf("\n\nMissing file name."); 
+					printf("\n\nMissing file name.");
 			}
 
 			if (opnum == 7) {	/* flag = convert to au */
@@ -2063,7 +2063,7 @@ int main(int argc, char *argv[])
 				} else
 					printf("\n\nMissing file name.");
 			}
- 
+
 			if (opnum == 8) {		/* flag = convert to wav */
 				if (argv[i + 1] != NULL) {
 					if (load_tap(argv[i + 1])) {
@@ -2107,7 +2107,7 @@ int main(int argc, char *argv[])
 
 				fp = fopen(tcinfoname, "w+t");
 				if (fp != NULL) {
-					printf("\n%s...\n", opname); 
+					printf("\n%s...\n", opname);
 					fprintf(fp, "%s", VERSION_STR);
 					fclose(fp);
 				}
@@ -2400,7 +2400,7 @@ int load_tap(char *name)
 	/* Set the 'tap' structure file path and name subfields */
 	strcpy(tap.path, name);
 	getfilename(tap.name, name);
-       
+
 	/* Enable skew adapting in case the command line option was given.
 	 * Re-enable it if more than one input file was selected for analysis.
 	 */
@@ -2439,9 +2439,9 @@ int analyze(void)
 
 	tap.taptime = get_duration(20, tap.len);
 
-	/* While cleaning, analyze() is called very often: the same 
+	/* While cleaning, analyze() is called very often: the same
 	   information is appended to the 'info' buffer continuously.
-	   This may lead to buffer overflow (Super Man, Visiload T1) so 
+	   This may lead to buffer overflow (Super Man, Visiload T1) so
 	   that we empty the buffer here for it's not used anyway */
 	strcpy(info, "");	/* clear 'info' ready to receive new text */
 
@@ -2531,7 +2531,7 @@ void report(void)
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (tcreportname);
-	}     
+	}
 
 	fp = fopen(temptcreportname, "w+t");	/* create new report file... */
 
@@ -2580,11 +2580,11 @@ void report(void)
 		rename (temptcreportname, tcreportname);
 	} else
 		msgout("\nError: failed to create report file.");
-       
+
 	/* show results and general info onscreen... */
 
 	print_results(rbuf);
-   
+
 	if (!batchmode)
 		fprintf(stdout, "%s", rbuf);
 
@@ -2690,7 +2690,7 @@ int is_pause_param(int p)
 
 	if (tap.version == 0)		/* previous 'if' would have dealt with v0. the rest is v1 only */
 		return 0;
-   
+
 	if (p < 24) {			/* test very beginning of TAP file, ensures no rewind into header! */
 		if (tap.tmem[20] == 0)
 			return 1;
@@ -2709,14 +2709,14 @@ int is_pause_param(int p)
 		if (z != 0)
 			pos--;
 	} while(z != 0 && pos > 19);
- 
+
 
 	if (z == 0) {			/* if TRUE, we found the first 4 containing no zeroes (behind p) */
 		pos += 4;		/* pos now points to first v1 pause (a zero)  */
 
 		/* ie.          xxxxxxxxxxx 0xx0 00xx 0x0x x 0x0x 00xx */
 		/*			    ^=pos          ^ = p */
- 
+
 		for (i = pos; i < tap.len - 4 ; i++) {
 			if (tap.tmem[i] == 0)	/* skip over v1 pauses */
 				i += 3;
@@ -2935,7 +2935,7 @@ char* pet2text(char *dest, char *src)
 			if (lwr) {		/* lowercase?, do some conversion... */
 				if (ch > 64 && ch < 91)
 					ch += 32;
-				else if (ch > 96 && ch < 123)     
+				else if (ch > 96 && ch < 123)
 					ch -= 32;
 			}
 
@@ -2954,7 +2954,7 @@ char* pet2text(char *dest, char *src)
 void trim_string(char *str)
 {
 	int i, len;
-   
+
 	len = strlen(str);
 	if (len > 0) {
 		for (i = len - 1; str[i] == 32 && i > 0; i--)	/* nullify trailing spaces.  */
@@ -2963,7 +2963,7 @@ void trim_string(char *str)
 }
 
 /*
- * Pads the string 'str' with spaces so the resulting string is 'wid' chars long. 
+ * Pads the string 'str' with spaces so the resulting string is 'wid' chars long.
  */
 
 void padstring(char *str, int wid)
@@ -2993,44 +2993,44 @@ void time2str(int secs, char *buf)
 }
 
 /*
- * Remove all/any existing work files. 
+ * Remove all/any existing work files.
  */
 
 void deleteworkfiles(void)
 {
 	FILE *fp;
-      
+
 	/* delete existing work files... */
-	/* note: the fopen tests avoid getting any console error output. */   
- 
-	fp = fopen(temptcreportname, "r");    
+	/* note: the fopen tests avoid getting any console error output. */
+
+	fp = fopen(temptcreportname, "r");
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (temptcreportname);
 	}
 
-	fp = fopen(tcreportname, "r");     
+	fp = fopen(tcreportname, "r");
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (tcreportname);
 	}
 
-	fp = fopen(temptcbatchreportname, "r");      
+	fp = fopen(temptcbatchreportname, "r");
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (temptcbatchreportname);
 	}
 
-	fp = fopen(tcbatchreportname, "r");    
+	fp = fopen(tcbatchreportname, "r");
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (tcbatchreportname);
 	}
 
-	fp = fopen(tcinfoname, "r");   
+	fp = fopen(tcinfoname, "r");
 	if (fp != NULL) {
 		fclose(fp);
 		unlink (tcinfoname);
-	}  
-}  
+	}
+}
 
