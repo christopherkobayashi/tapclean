@@ -28,6 +28,7 @@
 #else
 #include <unistd.h>
 #endif
+#include <time.h>
 
 /* in main.c... */
 
