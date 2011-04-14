@@ -1,24 +1,24 @@
 /*
  * c64tape.c (C64 ROM Tape)
  *
- * Part of project "Final TAP". 
- * 
+ * Part of project "Final TAP".
+ *
  * A Commodore 64 tape remastering and data extraction utility.
  *
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
- *  
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -85,7 +85,7 @@ static int cbm_readbit(int pos)
 		b2 = LP;
 		b2amb += 4;
 	}
-   
+
 	/* Has b1 ambiguity between S and M pulse? */
 
 	if (b1amb == 3) {
@@ -203,7 +203,7 @@ static int cbm_readbyte(int pos)
 	}
 
 	bit = cbm_readbit(pos + tcnt);	/* read checkbit */
-      
+
 	if (bit != check) {	/* parity checkbit failed?.. */
 		add_read_error(pos + tcnt);	/* read error, cbm checkbit failed */
 		return -1;
@@ -222,14 +222,14 @@ void cbm_search(void)
 
 	if (!quiet)
 		msgout("  C64 ROM tape");
-   
+
 	/* clear global header and data buffers... */
 
 	for (i = 0; i < 192; i++)
 		cbm_header[i] = 0;
 	for (i = 0; i < 65536; i++)
 		cbm_program[i] = 0;
- 
+
 	for (i = 20; i < tap.len - PULSESINABYTE; i++) {
 		b = cbm_readbyte(i);
 
@@ -243,22 +243,22 @@ void cbm_search(void)
 			valid=0;
 
 			if (pat[0] == 0x09 && pat[1] == 0x08 &&
-			    pat[2] == 0x07 && pat[3] == 0x06 &&
-			    pat[4] == 0x05 && pat[5] == 0x04 &&
-			    pat[6] == 0x03 && pat[7] == 0x02 &&
-			    pat[8] == 0x01) {
+					pat[2] == 0x07 && pat[3] == 0x06 &&
+					pat[4] == 0x05 && pat[5] == 0x04 &&
+					pat[6] == 0x03 && pat[7] == 0x02 &&
+					pat[8] == 0x01) {
 				valid = 1;
 				cbmid = REPEAT;
 				sod = i + (9 * PULSESINABYTE);	/* record first byte of actual data */
 			}
 
 			if (pat[0] == 0x89 && pat[1] == 0x88 &&
-			    pat[2] == 0x87 && pat[3] == 0x86 &&
-			    pat[4] == 0x85 && pat[5] == 0x84 &&
-			    pat[6] == 0x83 && pat[7] == 0x82 &&
-			    pat[8] == 0x81 ) {
+					pat[2] == 0x87 && pat[3] == 0x86 &&
+					pat[4] == 0x85 && pat[5] == 0x84 &&
+					pat[6] == 0x83 && pat[7] == 0x82 &&
+					pat[8] == 0x81 ) {
 				valid = 1;
-				cbmid = FIRST;   
+				cbmid = FIRST;
 				sod = i + (9 * PULSESINABYTE);	/* record first byte of actual data */
 			}
 
@@ -282,17 +282,15 @@ void cbm_search(void)
 				/* trace back to the start of the leader...  */
 
 				while (tap.tmem[sof - 1] > (ft[CBM_HEAD].sp - tol) &&
-				       tap.tmem[sof - 1] < (ft[CBM_HEAD].sp + tol) &&
-				       (!is_pause_param(sof - 1)) && (sof - 1) > 19)
-
+						tap.tmem[sof - 1] < (ft[CBM_HEAD].sp + tol) &&
+						(!is_pause_param(sof - 1)) && (sof - 1) > 19)
 					sof--;
 
 				/* if we traced back to an L pulse we have to adjust... */
 
 				if (!is_pause_param(sof - 1) &&
-				    tap.tmem[sof - 1] > ft[CBM_HEAD].lp - tol &&
-				    tap.tmem[sof - 1] < ft[CBM_HEAD].lp + tol)
-
+						tap.tmem[sof - 1] > ft[CBM_HEAD].lp - tol &&
+						tap.tmem[sof - 1] < ft[CBM_HEAD].lp + tol)
 					sof += 1;
 
 				/* find the last data byte of the block...
@@ -305,19 +303,19 @@ void cbm_search(void)
 				/* Expect EOF markers?... */
 
 				if (!noc64eof) {
-                    for(eod = i; i <= tap.len - 2; i+=2) {
-                        int bitres = cbm_readbit(i);
-                        if (bitres == -1)
-                            break;
-                        if (bitres == 2)
-                            eod = i - PULSESINABYTE;
-                        if (bitres == 3) {
-                            eod = i - PULSESINABYTE;
-                            i++;
-                            break;
-                        }
-                    }
-                    eof = i;	/* overwrite below... */
+					for(eod = i; i <= tap.len - 2; i+=2) {
+						int bitres = cbm_readbit(i);
+						if (bitres == -1)
+							break;
+						if (bitres == 2)
+							eod = i - PULSESINABYTE;
+						if (bitres == 3) {
+							eod = i - PULSESINABYTE;
+							i++;
+							break;
+						}
+					}
+					eof = i;	/* overwrite below... */
 				}
 
 				/* Not expecting EOF's?...
@@ -346,20 +344,17 @@ void cbm_search(void)
 				/* while we have an S pulse... */
 
 				while (tap.tmem[cnt2] > ft[CBM_HEAD].sp - tol &&
-				       tap.tmem[cnt2] < ft[CBM_HEAD].sp + tol &&
-				       cnt2 < tap.len)
-
+						tap.tmem[cnt2] < ft[CBM_HEAD].sp + tol &&
+						cnt2 < tap.len)
 					cnt2++;
 
 				/* if it ends with a pause... (allowing for up to 2 pre-pause spikes) */
 
 				if (tap.tmem[cnt2] == 0 || tap.tmem[cnt2 + 1] == 0 ||
-				    tap.tmem[cnt2 + 2] == 0)
-
+						tap.tmem[cnt2 + 2] == 0)
 					eof = cnt2 - 1;		/* ...put eof there. */
-
 				else if (cnt2 - eof <= 79)	/* partly fixed: not just a pause but also a spike is ok (luigi) */
-  				eof = cnt2 - 1;
+					eof = cnt2 - 1;
 
 				/*
 				 * location is complete.....
@@ -379,7 +374,7 @@ void cbm_search(void)
 				if (is_a_header) {
 					addblockdef(CBM_HEAD, sof, sod, eod, eof, cbmid);
 					i = eof;	/* optimize search  */
-               
+
 					/* decode it to 'cbm_header[192]' (only *1st* occurrence) */
 
 					if (cbm_decoded == 0) {
@@ -522,7 +517,7 @@ int cbm_describe(int row)
 		blk[row]->cs= 0x033C;
 		blk[row]->cx= ((blk[row]->p3 - blk[row]->p2) /PULSESINABYTE);
 		blk[row]->ce= blk[row]->cs + blk[row]->cx -1;
- 
+
 		/* now extract info about the related DATA block... */
 
 		b = hd[0];
@@ -568,7 +563,7 @@ int cbm_describe(int row)
 			_dfs = startadr;
 			_dfe = _dfs + _dfx;
 		}
-      
+
 		/* extract file name... */
 
 		for (i = 0, j = 0; i < 16; i++) {
@@ -582,7 +577,7 @@ int cbm_describe(int row)
 			strcpy(tap.cbmname, fn);
 
 		pet2text(str, fn);		/* record filename */
-      
+
 		if (blk[row]->fn != NULL)
 			free(blk[row]->fn);
 		blk[row]->fn = (char*)malloc(strlen(str) + 1);
@@ -598,7 +593,7 @@ int cbm_describe(int row)
 			sprintf(lin, "\n - File ID : FIRST");
 			strcat(info, lin);
 		}
-      
+
 		blk[row]->cs = _dfs;
 		blk[row]->ce = _dfe - 1;
 		blk[row]->cx = ((blk[row]->p3 - blk[row]->p2) / PULSESINABYTE);
