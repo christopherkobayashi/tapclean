@@ -250,7 +250,7 @@ int alternativesw_describe (int row)
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
 
-   	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
@@ -264,7 +264,7 @@ int alternativesw_describe (int row)
 			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
 			strcat(info, lin);
 		}
-   	}
+	}
 
 	blk[row]->rd_err = rd_err;
 

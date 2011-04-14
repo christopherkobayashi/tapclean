@@ -90,7 +90,7 @@ void tequila_search(void)
 	if (!quiet)
 		msgout("  Tequila Sunrise");
 
-       	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
 
 		if (eop > 0) {

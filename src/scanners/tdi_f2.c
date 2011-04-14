@@ -218,7 +218,7 @@ int tdif2_describe (int row)
 	fnamesz = blk[row]->xi;
 
 	/* Set header size accordingly */
-   	hdsz = HEADERSIZE + fnamesz;
+	hdsz = HEADERSIZE + fnamesz;
 
 	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < hdsz; i++)
