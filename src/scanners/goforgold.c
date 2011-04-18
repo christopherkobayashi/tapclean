@@ -212,7 +212,7 @@ int goforgold_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3;
 
 	/* if there IS pilot then disclude the sync byte */
-	if(blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0) 
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Read data and compute checksum */
@@ -229,7 +229,7 @@ int goforgold_describe (int row)
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-		if(b != -1) {
+		if (b != -1) {
 			cb ^= b;
 			blk[row]->dd[i] = b;
 		} else {

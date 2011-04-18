@@ -23,43 +23,6 @@
  */
 
 /*
- * $Id$
- *
- *        $Source$
- *       $RCSfile$
- *         $State$
- *      $Revision$
- *          $Date$
- *        $Author$
- *
- * $Log$
- * Revision 1.10  2011/04/04 08:39:32  luigidifraia
- * Uniformed tabulation
- *
- * Revision 1.9  2011/04/04 08:01:05  luigidifraia
- * Fixed spelling mistake in comments
- *
- * Revision 1.8  2009/10/18 00:55:07  luigidifraia
- * Expanded comment
- *
- * Revision 1.7  2009/10/17 20:21:11  luigidifraia
- * Uniformed sync count and comment
- *
- * Revision 1.6  2009/09/18 19:28:13  luigidifraia
- * Use readttbit to read the trailer (new scanners only atm)
- *
- * Revision 1.5  2008/02/28 22:03:04  luigidifraia
- * Uniformed all new scanners as much as possible
- *
- * Revision 1.4  2008/02/27 23:37:59  luigidifraia
- * Subtract number of sync pulses from pilot instead of bytes
- *
- * Revision 1.3  2008/02/27 20:41:03  luigidifraia
- * Removed Easytape and rewritten Action Replay scanner from scratch
- *
- */
-
-/*
  * Status: Beta
  *
  * CBM inspection needed: No

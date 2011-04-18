@@ -206,7 +206,7 @@ int accolade_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync byte */
-	if(blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0) 
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Test the header checkbyte */
@@ -273,7 +273,7 @@ int accolade_describe (int row)
 
 	for (i = 0, tot = 0; tot < blk[row]->cx;) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-		if(b != -1) {
+		if (b != -1) {
 			blk[row]->dd[tot] = b;
 		} else {
 			blk[row]->dd[tot] = 0x69;  /* error code */
@@ -286,7 +286,7 @@ int accolade_describe (int row)
 		tot++;
 		i++;
 
-		if(i == SBLOCKSIZE) {
+		if (i == SBLOCKSIZE) {
 			i = 0;
 			s += ((SBLOCKSIZE + 1) * BITSINABYTE); /* jump to next sub-block */
 		}

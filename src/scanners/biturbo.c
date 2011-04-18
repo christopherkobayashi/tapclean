@@ -24,53 +24,6 @@
  */
 
 /*
- * $Id$
- *
- *        $Source$
- *       $RCSfile$
- *         $State$
- *      $Revision$
- *          $Date$
- *        $Author$
- *
- * $Log$
- * Revision 1.11  2011/04/04 08:39:32  luigidifraia
- * Uniformed tabulation
- *
- * Revision 1.10  2011/04/04 08:01:05  luigidifraia
- * Fixed spelling mistake in comments
- *
- * Revision 1.9  2010/02/19 23:59:01  luigidifraia
- * Added basic validation of CBM payload size before accessing dd[]  array
- *
- * Revision 1.8  2009/10/17 20:22:17  luigidifraia
- * Uniformed sync count and comment
- *
- * Revision 1.7  2009/09/18 19:28:13  luigidifraia
- * Use readttbit to read the trailer (new scanners only atm)
- *
- * Revision 1.6  2008/12/14 11:49:07  luigidifraia
- * Updated int wraparound prevention
- *
- * Revision 1.5  2008/05/18 23:25:17  luigidifraia
- * Implemented integer wraparound prevention in new scanners
- *
- * Revision 1.4  2008/03/02 11:16:32  luigidifraia
- * Reinserted increment on read errors upon failed checksum reads
- *
- * Revision 1.3  2008/02/28 22:03:04  luigidifraia
- * Uniformed all new scanners as much as possible
- *
- * Revision 1.2  2008/01/11 00:22:20  luigidifraia
- * Uniformed code and comments in the new scanners.
- * Added read error check for unreadable checkbytes.
- *
- * Revision 1.1  2007/08/06 18:32:03  luigidifraia
- * Initial revision
- *
- */
-
-/*
  * Status: Beta
  *
  * CBM inspection needed: Yes
