@@ -214,7 +214,7 @@ static int cbm_readbyte(int pos)
 
 void cbm_search(void)
 {
-	int i, sof, sod, eod, eof;
+	int i, sof, sod, eod, eof, eof_previous = 0;
 	int cnt2, di, len, crc;
 	int cbmid, valid, j, is_a_header;
 	unsigned char b, pat[32], crcdone = 0;
@@ -283,7 +283,8 @@ void cbm_search(void)
 
 				while (tap.tmem[sof - 1] > (ft[CBM_HEAD].sp - tol) &&
 						tap.tmem[sof - 1] < (ft[CBM_HEAD].sp + tol) &&
-						(!is_pause_param(sof - 1)) && (sof - 1) > 19)
+						(!is_pause_param(sof - 1)) && (sof - 1) > 19 &&
+						(sof - 1) > eof_previous /* Don't step on previous block when there's no gap in between */)
 					sof--;
 
 				/* if we traced back to an L pulse we have to adjust... */
@@ -372,7 +373,9 @@ void cbm_search(void)
 								/* add: 'Ping Pong' headers are 294 bytes.      */
 
 				if (is_a_header) {
-					addblockdef(CBM_HEAD, sof, sod, eod, eof, cbmid);
+					if (addblockdef(CBM_HEAD, sof, sod, eod, eof, cbmid) >= 0)
+						eof_previous = eof;
+
 					i = eof;	/* optimize search  */
 
 					/* decode it to 'cbm_header[192]' (only *1st* occurrence) */
@@ -383,7 +386,9 @@ void cbm_search(void)
 						cbm_decoded++;
 					}
 				} else {
-					addblockdef(CBM_DATA, sof, sod, eod, eof, cbmid);
+					if (addblockdef(CBM_DATA, sof, sod, eod, eof, cbmid))
+						eof_previous = eof;
+
 					i = eof;	/* optimize search */
 
 					/*
