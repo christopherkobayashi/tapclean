@@ -33,6 +33,7 @@ v0.25
 	 duplication (Luigi)
 	New: Added support for "Alternative Software" loader (Luigi)
 	Improvement: Batch scan now looks for DMP files as well (Luigi)
+	Code quality: Single Makefile for all architectures (Luigi)
 
 v0.24
 	New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
