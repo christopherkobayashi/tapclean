@@ -80,6 +80,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Burner"			,"burner"	,FALSE},
 	{"Burner Variant"		,"burnervar"	,FALSE},
 	{"CHR"				,"chr"		,FALSE},
+	{"Chuckie Egg"			,"chuckie"	,FALSE},
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
@@ -285,6 +286,7 @@ struct fmt_t ft[100] = {
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 200, NA,    CSYES},
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
 	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 1,    0,    2000,NA,    CSNO},
+	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,  0x44, 0xFF, 0x00, 25,  NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -351,7 +353,8 @@ const char knam[][32] = {
 	{"FF Tape"},
 	{"TES Tape"},
 	{"Tequila Sunrise"},
-	{"Alternative Software"}
+	{"Alternative Software"},
+	{"Chuckie Egg"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1016,6 +1019,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].state == FALSE  && !dbase_is_full && !aborted)
 				alternativesw_search();
 
+			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].state == FALSE && !dbase_is_full && !aborted)
+				chuckieegg_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1475,6 +1481,8 @@ static void describe_file(int row)
 		case TEQUILA:		tequila_describe(row);
 					break;
 		case ALTERSW:		alternativesw_describe(row);
+					break;
+		case CHUCKIEEGG:	chuckieegg_describe(row);
 					break;
 	}
 }
@@ -2304,6 +2312,45 @@ int find_pilot(int pos, int fmt)
 			if (z >= pmin && z <= pmax)	/* enough pilots?, return position. */
 				return pos;
 		}
+	}
+
+	return 0;
+}
+
+int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsinabyte)
+{
+	int z, sp, lp, tp, en, pv, sv, pmin, pmax;
+
+	if (pos < 20)
+		return 0;
+
+	sp = ft[fmt].sp;
+	lp = ft[fmt].lp;
+	tp = ft[fmt].tp;
+	en = ft[fmt].en;
+	pv = ft[fmt].pv;
+	sv = ft[fmt].sv;
+	pmin = ft[fmt].pmin;
+	pmax = ft[fmt].pmax;
+
+	if (pmax == NA)
+		pmax = 200000;		/* set some crazy limit if pmax is NA (NA=0) */
+
+	if ((readbyte_usr)(pos, lp, sp, tp, en) == pv) {	/* got pilot byte? */
+		z = 0;
+		while((readbyte_usr)(pos, lp, sp, tp, en) == pv && pos < tap.len) {	/* skip all pilot bytes.. */
+			z++;
+			pos += bitsinabyte;
+		}
+
+		if (z == 0)
+			return 0;
+
+		if (z < pmin || z > pmax)	/* too few/many pilots?, return position as negative. */
+			return -pos;
+
+		if (z >= pmin && z <= pmax)	/* enough pilots?, return position. */
+			return pos;
 	}
 
 	return 0;

@@ -11,6 +11,7 @@ v0.26
 	 acknowledged files (Luigi)
 	New: Preview releases are now named v0.x-pre-y; the corresponding CVS tag
 	 is v0_x_pre_y (Luigi)
+	New: Added support for "Chuckie Egg" loader (Luigi)
 
 v0.25
 	New: Use MTAP conversion and Markus' extended TAP format by default when

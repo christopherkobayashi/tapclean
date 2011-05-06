@@ -442,6 +442,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\chuckie_egg.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\cult.c"
 					>
 				</File>

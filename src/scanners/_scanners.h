@@ -233,3 +233,6 @@ int tequila_describe(int);
 
 void alternativesw_search(void);
 int alternativesw_describe(int);
+
+void chuckieegg_search(void);
+int chuckieegg_describe(int);
