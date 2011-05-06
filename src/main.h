@@ -30,11 +30,14 @@
 #endif
 #include <time.h>
 
+typedef int (*readbyteproc_t)(int, int, int, int, int);
+
 /* in main.c... */
 
 int readttbit(int, int, int, int);
 int readttbyte(int, int, int, int, int);
 int find_pilot(int, int);
+int find_pilot_bytes_ex(int, int, readbyteproc_t, int);
 int load_tap(char *);
 int analyze(void);
 void report(void);
