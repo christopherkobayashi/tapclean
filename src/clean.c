@@ -987,12 +987,13 @@ int insert_pauses(void)
 			pin[pi++] = blk[i + 1]->p4 + 1;
 
 		if ((t1 == CBM_HEAD && t2 == CBM_DATA) ||
-			(t1 == CBM_DATA && t2 == CBM_HEAD) ||
-			(t1 == BLEEP && t2 == BLEEP) ||
-			(t1 == BLEEP && (t2 == GAP && blk[i + 1]->xi == 8) && t3 == BLEEP) ||
-			(t1 == CYBER_F3 && t2 == CYBER_F3) ||
-			(t1 == CYBER_F3 && t2 == GAP && blk[i + 1]->xi == 8 && t3 == CYBER_F3))
-
+				(t1 == CBM_DATA && t2 == CBM_HEAD) ||
+				(t1 == BLEEP && t2 == BLEEP) ||
+				(t1 == BLEEP && (t2 == GAP && blk[i + 1]->xi == 8) && t3 == BLEEP) ||
+				(t1 == CYBER_F3 && t2 == CYBER_F3) ||
+				(t1 == CYBER_F3 && t2 == GAP && blk[i + 1]->xi == 8 && t3 == CYBER_F3) ||
+				(t1 == ALTERDK_T1 && (t2 == GAP && blk[i + 1]->xi == 1) && t3 == ALTERDK_T1) ||
+				(t1 == ALTERDK_T2 && (t2 == GAP && blk[i + 1]->xi == 1) && t3 == ALTERDK_T2) )
 			pin[pi++] = blk[i + 0]->p4 + 1;
 	}
 

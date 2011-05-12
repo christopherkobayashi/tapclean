@@ -276,6 +276,8 @@ int idloader(unsigned /*long*/ int crc)
 
 		{0xD7483CDA, LID_CHUCKIEEGG},
 
+		{0x057A87A2, LID_ALTERDK},	/* Early Alternative Software loader */
+
 		{0, 0}
 	};
 
