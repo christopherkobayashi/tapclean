@@ -1,0 +1,258 @@
+/*
+ * alternativedk.c (by Luigi Di Fraia, May 2011 - armaeth@libero.it)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Based on alternativesw.c and chr.c.
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
+
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: 3 bits whose value is irrelevant
+ * Header: Yes
+ * Data: Continuous
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: Yes
+ * Trailer homogeneous: No
+ */
+
+#include "../mydefs.h"
+#include "../main.h"
+
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZEBITS	3	/* amount of sync bits */
+#define MAXTRAILER	16	/* max amount of trailer pulses read in */
+
+/*
+ * Find custom pilot sequence (lp x 0x1F, mp x 0x01)
+ */
+static int alternativedk_find_pilot (int variant, int pos)
+{
+	int z, lp, mp, tp, pmin;
+
+	lp = ft[variant].lp;
+	mp = ft[variant].mp;
+	pmin = ft[variant].pmin;
+
+	tp = (mp + lp) / 2;
+
+	if (readttbit(pos, lp, mp, tp) == 1) {
+		z = 0;
+
+		while (readttbit(pos, lp, mp, tp) == 1 && pos < tap.len) {
+			z++;
+			pos++;
+		}
+
+		if (z == 0)
+			return 0;
+
+		if (z < pmin)
+			return -pos;
+
+		if (z >= pmin)
+			return pos;
+	}
+
+	return 0;
+}
+
+void alternativedk_search (void)
+{
+	int i, h;			/* counters */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+
+	int en, tp, sp, mp, sv;		/* encoding parameters */
+
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
+
+	int pass, variant;
+
+	int xinfo;			/* extra info used in addblockdef() */
+
+	for (pass = 1; pass <= 2; pass++) {
+		switch (pass) {
+			case 1:
+				variant = ALTERDK_T1;
+				break;
+			case 2:
+				variant = ALTERDK_T2;
+				break;
+		}
+		
+		en = ft[variant].en;
+		tp = ft[variant].tp;
+		sp = ft[variant].sp;
+		mp = ft[variant].mp;
+		sv = ft[variant].sv;
+
+		if (!quiet)
+		{
+			sprintf(lin, "  Alternative SW (DK) T%d", pass);
+			msgout(lin);
+		}
+
+		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+
+			eop = alternativedk_find_pilot(variant, i);
+
+			if (eop > 0) {
+				/* Valid pilot found, mark start of file */
+				sof = i;
+				i = eop;
+
+				/* Check if there's a valid sync bit for this loader */
+				if (readttbit(i, mp, sp, tp) != sv)
+					continue;
+
+				/* Check for 2 valid bits to finish off the sync sequence */
+				if (readttbit(i, mp, sp, tp) < 0)
+					continue;
+
+				if (readttbit(i, mp, sp, tp) < 0)
+					continue;
+
+				/* Take into account sync bits */
+				i += SYNCSEQSIZEBITS;
+
+				/* Valid sync train found, mark start of data */
+				sod = i;
+
+				/* Read load address MSB */
+				s = readttbyte(sod, mp, sp, tp, en);
+				if (s == -1)
+					continue;
+
+				/* Set end location */
+				e = s + 0x100 - 1;
+
+				/* Set size */
+				x = 0x100;
+
+				/* Point to the first pulse of the checkbyte (that's final) */
+				eod = sod + x * BITSINABYTE;
+
+				/* Initially point to the last pulse of the last byte */
+				eof = eod + BITSINABYTE - 1;
+
+				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+				h = 0;
+				while (eof < tap.len - 1 &&
+						h++ < MAXTRAILER &&
+						readttbit(eof + 1, mp, sp, tp) >= 0)
+					eof++;
+
+				/* Store the load address MSB as extra-info */
+				xinfo = (int) s;
+
+				if (addblockdef(variant, sof, sod, eod, eof, xinfo) >= 0)
+					i = eof;	/* Search for further files starting from the end of this one */
+
+			} else {
+				if (eop < 0)
+					i = (-eop);
+			}
+		}
+	}
+}
+
+int alternativedk_describe (int row)
+{
+	int i, s;
+	int en, tp, sp, mp;
+	int cb;
+
+	int b, rd_err;
+
+	int variant = blk[row]->lt;
+
+	en = ft[variant].en;
+	tp = ft[variant].tp;
+	sp = ft[variant].sp;
+	mp = ft[variant].mp;
+
+	/* Retrieve C64 memory location for load address from extra-info */
+	blk[row]->cs = blk[row]->xi << 8;
+	blk[row]->ce = blk[row]->cs + 0x100 - 1;
+	blk[row]->cx = 0x100;
+
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+	/* ... trailer in pulses */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence (3 bits) */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= SYNCSEQSIZEBITS;
+
+	/* Extract data */
+	rd_err = 0;
+	cb = 0;
+
+	s = blk[row]->p2 + BITSINABYTE;
+
+	if (blk[row]->dd != NULL)
+		free(blk[row]->dd);
+
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+	for (i = 0; i < blk[row]->cx; i++) {
+		b = readttbyte(s + (i * BITSINABYTE), mp, sp, tp, en);
+		cb ^= b;
+
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
+			strcat(info, lin);
+		}
+	}
+
+	b = readttbyte(s + (i * BITSINABYTE), mp, sp, tp, en);
+	if (b == -1)
+	{
+		/* Even if not within data, we cannot validate data reliably if
+		   checksum is unreadable, so that increase read errors */
+		rd_err++;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
+
+	blk[row]->cs_exp = cb & 0xFF;
+	blk[row]->cs_act = b  & 0xFF;
+	blk[row]->rd_err = rd_err;
+
+	return(rd_err);
+}
