@@ -1,3 +1,7 @@
+ - Make sure the sof, sod, eod, eof values have a consistent meaning for all
+   scanners. eod: it should include postdata and/or checkbyte. (Luigi)
+ - Trailer count: make sure postdata and/or checkbyte are consistently 
+   subtracted (or not subtracted) from the count in all new scanners. (Luigi)
  - Allow partial EOFMARKER (i.e. only 7 valid pulses followed by a single over-
    stretched one) in tdi_f2.c. Last pulse is often corrupted. (Luigi)
     Code written, it is going to be tested.
