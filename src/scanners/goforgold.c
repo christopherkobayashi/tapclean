@@ -36,7 +36,7 @@
  * Checksum: Yes
  * Post-data: No
  * Trailer: Yes
- * Trailer homogeneous: Yes
+ * Trailer homogeneous: Yes (bit 0 pulses)
  */
 
 /*
@@ -54,15 +54,15 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER	8	/* amount of trailer pulses */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define MAXNAMESIZE	11	/* maximum filename size (arbitrary) */
 #define HEADERSIZE	4	/* size of block header excluding file name */
 
 #define LOADOFFSETH	1	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	0	/* load location (LSB) offset inside header */
-#define ENDOFFSETH	3	/* data end (MSB) offset inside header */
-#define ENDOFFSETL	2	/* data end (LSB) offset inside header */
+#define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
+#define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
 void goforgold_search (void)
 {
@@ -72,8 +72,8 @@ void goforgold_search (void)
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
-	unsigned int s, e;		/* data locations referring to C64 memory */
-	unsigned int x;			/* data size */
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
 
 
 	en = ft[THISLOADER].en;
@@ -127,19 +127,20 @@ void goforgold_search (void)
 
 			/* Extract load location and end */
 			s = hd[nl + LOADOFFSETL] + (hd[nl + LOADOFFSETH] << 8);
-			e = hd[nl + ENDOFFSETL] + (hd[nl + ENDOFFSETH] << 8);
+			e = hd[nl + ENDOFFSETL]  + (hd[nl + ENDOFFSETH] << 8);
 
 			/* Plausibility check */
 			if (e <= s)
 				continue;
 
+			/* Compute size */
 			x = e - s;
 
-			/* Point to the last pulse of the checkbyte */
-			eod = sod + (nl + HEADERSIZE + x + 1) * BITSINABYTE - 1;
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (nl + HEADERSIZE + x) * BITSINABYTE;
 
 			/* Initially point to the last pulse of the checkbyte */
-			eof = eod;
+			eof = eod + BITSINABYTE - 1;
 
 			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
@@ -161,13 +162,12 @@ void goforgold_search (void)
 
 int goforgold_describe (int row)
 {
-	int i, nl;
+	int i, s, nl;
 	int hd[MAXNAMESIZE + HEADERSIZE];
 	int en, tp, sp, lp;
 	int cb;
 	char bfname[MAXNAMESIZE + 1], bfnameASCII[MAXNAMESIZE + 1];
 
-	int s;
 	int b, rd_err;
 
 
@@ -200,7 +200,16 @@ int goforgold_describe (int row)
 	/* Read C64 memory location for load/end address, and compute data size */
 	blk[row]->cs = hd[nl + LOADOFFSETL] + (hd[nl + LOADOFFSETH] << 8);
 	/* C64 memory location of the _LAST loaded byte_ */
-	blk[row]->ce = hd[nl + ENDOFFSETL] + (hd[nl + ENDOFFSETH] << 8) - 1;
+	blk[row]->ce = hd[nl + ENDOFFSETL]  + (hd[nl + ENDOFFSETH] << 8);
+
+	/* Prevent int wraparound when subtracting 1 from end location
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
+
+	/* Compute size */
 	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
 	/* Compute pilot & trailer lengths */
@@ -209,18 +218,17 @@ int goforgold_describe (int row)
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
 
 	/* ... trailer in pulses */
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3;
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync byte */
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
-	/* Read data and compute checksum */
-
+	/* Extract data and test checksum... */
 	rd_err = 0;
+	cb = 0;
 
 	s = blk[row]->p2 + ((nl + HEADERSIZE) * BITSINABYTE);
-	cb = 0;
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
@@ -229,8 +237,9 @@ int goforgold_describe (int row)
 
 	for (i = 0; i < blk[row]->cx; i++) {
 		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		cb ^= b;
+
 		if (b != -1) {
-			cb ^= b;
 			blk[row]->dd[i] = b;
 		} else {
 			blk[row]->dd[i] = 0x69;  /* error code */
@@ -253,8 +262,8 @@ int goforgold_describe (int row)
 		strcat(info, lin);
 	}
 
-	blk[row]->cs_exp = cb;
-	blk[row]->cs_act = b;
+	blk[row]->cs_exp = cb & 0xFF;
+	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
 
 	return(rd_err);
