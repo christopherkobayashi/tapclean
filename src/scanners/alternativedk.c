@@ -198,6 +198,25 @@ int alternativedk_describe (int row)
 	blk[row]->ce = blk[row]->cs + 0x100 - 1;
 	blk[row]->cx = 0x100;
 
+	/* Give extra info if this is a marker block */
+	if (blk[row]->xi <= 2)
+	{
+		strcat(info,"\n - Marker block");
+		strcat(info,"\n - Type: ");
+
+		switch (blk[row]->xi) {
+			case 0x00:
+				strcat(info,"End of load");
+				break;
+			case 0x01:
+				strcat(info,"End of file");
+				break;
+			case 0x02:
+				strcat(info,"End of tape");
+				break;
+		}
+	}
+
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in pulses... */
