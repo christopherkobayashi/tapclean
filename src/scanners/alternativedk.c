@@ -154,7 +154,7 @@ void alternativedk_search (void)
 				/* Point to the first pulse of the checkbyte (that's final) */
 				eod = sod + x * BITSINABYTE;
 
-				/* Initially point to the last pulse of the last byte */
+				/* Initially point to the last pulse of the checkbyte */
 				eof = eod + BITSINABYTE - 1;
 
 				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
