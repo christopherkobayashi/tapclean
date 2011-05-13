@@ -9,18 +9,18 @@
  *   Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *  
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -128,7 +128,7 @@ void goforgold_search (void)
 			/* Extract load location and end */
 			s = hd[nl + LOADOFFSETL] + (hd[nl + LOADOFFSETH] << 8);
 			e = hd[nl + ENDOFFSETL] + (hd[nl + ENDOFFSETH] << 8);
-			
+
 			/* Plausibility check */
 			if (e <= s)
 				continue;
@@ -188,7 +188,7 @@ int goforgold_describe (int row)
 	for (i = 0; i < nl; i++)
 		bfname[i] = hd[i];
 	bfname[i] = '\0';
-	
+
 	trim_string(bfname);
 	pet2text(bfnameASCII, bfname);
 
@@ -212,7 +212,7 @@ int goforgold_describe (int row)
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3;
 
 	/* if there IS pilot then disclude the sync byte */
-	if (blk[row]->pilot_len > 0) 
+	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Read data and compute checksum */
@@ -243,11 +243,18 @@ int goforgold_describe (int row)
 	}
 
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-	if (b == -1)
+	if (b == -1) {
+		/* Even if not within data, we cannot validate data reliably if
+		   checksum is unreadable, so that increase read errors */
 		rd_err++;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
+
 	blk[row]->cs_exp = cb;
 	blk[row]->cs_act = b;
-
 	blk[row]->rd_err = rd_err;
 
 	return(rd_err);

@@ -102,15 +102,14 @@ void alternativedk_search (void)
 				variant = ALTERDK_T2;
 				break;
 		}
-		
+
 		en = ft[variant].en;
 		tp = ft[variant].tp;
 		sp = ft[variant].sp;
 		mp = ft[variant].mp;
 		sv = ft[variant].sv;
 
-		if (!quiet)
-		{
+		if (!quiet) {
 			sprintf(lin, "  Alternative SW (DK) T%d", pass);
 			msgout(lin);
 		}
@@ -239,8 +238,7 @@ int alternativedk_describe (int row)
 	}
 
 	b = readttbyte(s + (i * BITSINABYTE), mp, sp, tp, en);
-	if (b == -1)
-	{
+	if (b == -1) {
 		/* Even if not within data, we cannot validate data reliably if
 		   checksum is unreadable, so that increase read errors */
 		rd_err++;

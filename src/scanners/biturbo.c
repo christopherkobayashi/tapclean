@@ -265,8 +265,7 @@ int biturbo_describe(int row)
 	}
 
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-	if (b == -1)
-	{
+	if (b == -1) {
 		/* Even if not within data, we cannot validate data reliably if
 		   checksum is unreadable, so that increase read errors */
 		rd_err++;
