@@ -86,7 +86,7 @@ void alternativedk_search (void)
 
 	int en, tp, sp, mp, sv;		/* encoding parameters */
 
-	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int s;			/* block location referred to C64 memory */
 	unsigned int x; 		/* block size */
 
 	int pass, variant;
@@ -144,9 +144,6 @@ void alternativedk_search (void)
 				s = readttbyte(sod, mp, sp, tp, en);
 				if (s == -1)
 					continue;
-
-				/* Set end location */
-				e = s + 0x100 - 1;
 
 				/* Set size */
 				x = 0x100;
