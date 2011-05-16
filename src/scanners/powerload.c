@@ -46,7 +46,7 @@
 
 #define SYNCSEQSIZE	10	/* amount of sync bytes */
 #define MAXTRAILER	2040	/* max amount of trailer pulses read in */
-#define MAXPOSTDATASIZE	(BITSINABYTE * 0x1C10)	/* Max amount of post-data pulses) */
+#define MAXPOSTDATASIZE	(BITSINABYTE * 0x01D0)	/* Max amount of post-data pulses */
 
 #define LOADOFFSETH	0x03	/* load location (MSB) offset inside CBM data */
 #define LOADOFFSETL	0x01	/* load location (LSB) offset inside CBM data */
@@ -151,18 +151,19 @@ void powerload_search (void)
 				eof++;
 
 			/* Trace back to the checkbyte position */
-			post = eof - (eof - eod) % BITSINABYTE;
+			post = eof - (eof - eod) % BITSINABYTE;	/* Byte boundary */
+
 			while (post > eod + BITSINABYTE &&
-					readttbit(post - BITSINABYTE, lp, sp, tp) == 0)
+					readttbyte(post - BITSINABYTE, lp, sp, tp, en) == 0)
 				post -= BITSINABYTE;
 
 			/* Extend data block to include post-data */
-			e += (post - eod) / BITSINABYTE;
+			e += (post - eod) / BITSINABYTE - 2;
 			if (e < s)
 				continue;
 
 			/* Extend block info too (point to first pulse of the checkbyte) */
-			eod = post;
+			eod = post - BITSINABYTE;
 
 			/* Store the info read from CBM part as extra-info */
 			xinfo = s + (e << 16);
