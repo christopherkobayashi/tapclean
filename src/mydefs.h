@@ -55,7 +55,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.26-pre-3 - (C)2006-11 TC Team"
+#define VERSION_STR "TAPClean v0.26-pre-4 - (C)2006-11 TC Team"
 #define BUILDER     "ldf"
 
 #define TRUE	1
@@ -124,7 +124,8 @@ enum {
 	ACCOLADE, ALTERWG, RAINBOWARTSF1, RAINBOWARTSF2, TRILOGIC, BURNERVAR,
 	OCNEW4, TDI_F2, BITURBO, T108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO,
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
-	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2
+	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2,
+	POWERLOAD
 };
 
 /*
@@ -142,7 +143,7 @@ enum {
 	LID_OCNEW2, LID_AUDIOGENIC, LID_CULT, LID_ACCOLADE, LID_RAINBOWARTS,
 	LID_BURNERVAR, LID_OCNEW4, LID_108DE0A5, LID_FREE_SLOW, LID_GOFORGOLD,
 	LID_FASTEVIL, LID_FFTAPE, LID_TESTAPE, LID_TEQUILA, LID_ALTERSW,
-	LID_CHUCKIEEGG, LID_ALTERDK
+	LID_CHUCKIEEGG, LID_ALTERDK, LID_POWERLOAD
 };
 
 
@@ -227,7 +228,7 @@ struct fmt_t
 	int pmax;		/* maximum pilots that should be present. */
 	int has_cs;		/* flag, provides checksums, 1=yes, 0=no. */
 };
-extern struct fmt_t ft[100];
+extern struct fmt_t ft[120];
 
 extern unsigned char cbm_header[192];		/* some formats must have their loader... */
 extern unsigned char cbm_program[65536];	/* interrogated. */
@@ -328,6 +329,7 @@ enum {
 	nopalacef1,
 	nopalacef2,
 	nopav,
+	nopowerload,
 	norackit,
 	norainbowf1,
 	norainbowf2,

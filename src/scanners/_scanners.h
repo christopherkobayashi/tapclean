@@ -239,3 +239,6 @@ int chuckieegg_describe(int);
 
 void alternativedk_search(void);
 int alternativedk_describe(int);
+
+void powerload_search(void);
+int powerload_describe(int);

@@ -107,6 +107,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Palace F1"			,"palacef1"	,FALSE},
 	{"Palace F2"			,"palacef2"	,FALSE},
 	{"Pavloda"			,"pav"		,FALSE},
+	{"Power Load"			,"powerload"	,FALSE},
 	{"Rack-It"			,"rackit"	,FALSE},
 	{"Rainbow Arts F1"		,"rainbowf1"	,FALSE},
 	{"Rainbow Arts F2"		,"rainbowf2"	,FALSE},
@@ -186,8 +187,8 @@ long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
  * has_cs = flag, provides checksums, 1=yes, 0=no.
  */
 
-struct fmt_t ft_org[100];	/* a backup copy of the following... */
-struct fmt_t ft[100] = {
+struct fmt_t ft_org[120];	/* a backup copy of the following... */
+struct fmt_t ft[120] = {
 	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 
 	{""			,NA,   NA,   NA,   NA,  NA,   NA,   NA,   NA,  NA,    NA},
@@ -290,6 +291,7 @@ struct fmt_t ft[100] = {
 	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,  0x44, 0xFF, 0x00, 25,  NA,    CSYES},
 	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64,0xB5, 0,    1,    5,   NA,    CSYES},
 	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36,0xA5, 0,    1,    5,   NA,    CSYES},
+	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400, NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -358,7 +360,8 @@ const char knam[][32] = {
 	{"Tequila Sunrise"},
 	{"Alternative Software"},
 	{"Chuckie Egg"},
-	{"Alternative SW (DK)"}
+	{"Alternative SW (DK)"},
+	{"Power Load"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1029,6 +1032,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
 				alternativedk_search();
 
+			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopowerload	].state == FALSE  && !dbase_is_full && !aborted)
+				powerload_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1247,6 +1253,9 @@ static void search_tap(void)
 
 			//if (ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
 			//	alternativedk_search();
+
+			//if (ldrswt[nopowerload].state == FALSE  && !dbase_is_full && !aborted)
+			//	powerload_search();
 
 			/*
 			 * Do not add the following ones until additonal games using these formats
@@ -1503,6 +1512,8 @@ static void describe_file(int row)
 		case ALTERDK_T1:	alternativedk_describe(row);
 					break;
 		case ALTERDK_T2:	alternativedk_describe(row);
+					break;
+		case POWERLOAD:		powerload_describe(row);
 					break;
 	}
 }

@@ -14,6 +14,7 @@ v0.26
 	 is v0_x_pre_y (Luigi)
 	New: Added support for "Chuckie Egg" loader (Luigi)
 	New: Added support for "Alternative Software (DK)" T1 and T2 loaders (Luigi)
+	New: Added support for "Power Load" (Luigi)
 
 v0.25
 	New: Use MTAP conversion and Markus' extended TAP format by default when

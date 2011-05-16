@@ -478,6 +478,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\powerload.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\rainbowarts_f1.c"
 					>
 				</File>
