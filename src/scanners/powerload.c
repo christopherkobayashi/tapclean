@@ -45,7 +45,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	10	/* amount of sync bytes */
-#define MAXTRAILER	2040	/* max amount of trailer pulses read in */
+#define MAXTRAILER	2048	/* max amount of trailer pulses read in */
 #define MAXPOSTDATASIZE	(BITSINABYTE * 0x01D0)	/* Max amount of post-data pulses */
 
 #define LOADOFFSETH	0x03	/* load location (MSB) offset inside CBM data */
@@ -154,6 +154,7 @@ void powerload_search (void)
 			post = eof - (eof - eod) % BITSINABYTE;	/* Byte boundary */
 
 			while (post > eod + BITSINABYTE &&
+					post > eof - MAXTRAILER + BITSINABYTE &&
 					readttbyte(post - BITSINABYTE, lp, sp, tp, en) == 0)
 				post -= BITSINABYTE;
 
