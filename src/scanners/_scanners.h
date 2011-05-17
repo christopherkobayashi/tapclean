@@ -242,3 +242,6 @@ int alternativedk_describe(int);
 
 void powerload_search(void);
 int powerload_describe(int);
+
+void gremlinf2_search(void);
+int gremlinf2_describe(int);
