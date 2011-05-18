@@ -78,7 +78,7 @@ void cult_search (void)
 	/* First we retrieve the Cult variables from the CBM header and data */
 	ib = find_decode_block(CBM_DATA, 1);
 	if (ib == -1)
-		return;		/* failed to locate cbm data. */
+		return;		/* failed to locate CBM data. */
 
 	/* Basic validation before accessing array elements */
 	if (blk[ib]->cx < LOADOFFSETH + 1)
