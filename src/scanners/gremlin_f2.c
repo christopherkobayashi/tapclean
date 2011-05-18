@@ -178,8 +178,17 @@ void gremlinf2_search (void)
 			} while (current_id > 1);
 
 			/* Check if we had a premature exit */
-			if (current_id != 1)
+			if (current_id != 1) {
+				if (!quiet) {
+		                        sprintf(lin,"\nFATAL : read error in Gremlin F2 header!");
+                		        msgout(lin);
+		                        sprintf(lin,"\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
+                		        msgout(lin);
+		                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of Gremlin F2 files. ");
+                		        msgout(lin);
+				}
 				continue;
+			}
 
 			/* Point to the first pulse of the checkbyte (that's final) */
 			eod += 3 * BITSINABYTE;
@@ -310,15 +319,13 @@ int gremlinf2_describe (int row)
 
 	/* Read execution address */
 	b = readttbyte(s, lp, sp, tp, en);
-	if (b != -1)
-	{
+	if (b != -1) {
 		unsigned int exec;
 
 		exec = b;
 
 		b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
-		if (b != -1)
-		{
+		if (b != -1) {
 			exec |= (b << 8);
 			sprintf(lin, "\n - Execution address: $%04X", exec);
 			strcat(info, lin);
