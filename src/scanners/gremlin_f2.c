@@ -115,41 +115,51 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
+/*
+ * First we check if this is the genuine format/a known variant.
+ * We use CBM DATA index # 3 to check as we assume the tape image contains 
+ * a single game.
+ * For compilations we should search and find the relevant file using the 
+ * search code found e.g. in Biturbo.
+ */
 static int gremlinf2_find_variant (void)
 {
-	int ib;				/* condition variable */
-	int variant;
+	static int variant = 0;		/* Only check CBM data once */
 
-	ib = find_decode_block(CBM_DATA, 3);
-	if (ib != -1) {
-		unsigned int crc;
+	if (variant == 0) {
+		int ib;			/* condition variable */
 
-		/*
-		 * At this stage the describe functions have not been invoked 
-		 * yet, therefore we have to compute the CRC-32 on the fly.
-		 */
-		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+		ib = find_decode_block(CBM_DATA, 3);
+		if (ib != -1) {
+			unsigned int crc;
 
-		switch (crc) {
-			case 0x550B8259:
-				variant = 1;
-				break;
-			case 0x9841607A:
-				/* 
-				 * For variant #2 we should dynamically find 
-				 * the info by decrypting the 2nd CBM data file.
-				 */
-				dblock2[2] = 0x33;
-				dblock2[4] = 0x08;
-				variant = 2;
-				break;
-			case 0x118C939A:
-				dblock2[2] = 0x00;
-				dblock2[4] = 0x0A;
-				variant = 2;
-				break;
-			default:
-				variant = -1;
+			/*
+			 * At this stage the describe functions have not been invoked 
+			 * yet, therefore we have to compute the CRC-32 on the fly.
+			 */
+			crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+
+			switch (crc) {
+				case 0x550B8259:
+					variant = 1;
+					break;
+				case 0x9841607A:
+					/* 
+					 * For variant #2 we should dynamically find 
+					 * the info by decrypting the 2nd CBM data file.
+					 */
+					dblock2[2] = 0x33;
+					dblock2[4] = 0x08;
+					variant = 2;
+					break;
+				case 0x118C939A:
+					dblock2[2] = 0x00;
+					dblock2[4] = 0x0A;
+					variant = 2;
+					break;
+				default:
+					variant = -1;
+			}
 		}
 	}
 
@@ -185,13 +195,7 @@ void gremlinf2_search (void)
 	if (!quiet)
 		msgout("  Gremlin F2");
 
-	/*
-	 * First we check if this is the genuine format or a variant.
-	 * We use CBM DATA index # 3 as we assume the tape image contains 
-	 * a single game.
-	 * For compilations we should search and find the relevant file 
-	 * using the search code found e.g. in Biturbo.
-	 */
+	/* Check for genuine/known variant */
 	variant = gremlinf2_find_variant();
 	if (variant == -1)
 		return;
@@ -298,7 +302,7 @@ void gremlinf2_search (void)
 			e = s + x - 1;
 
 			/* Store the overall load/end addresses as extra-info */
-			xinfo = s + (e << 16);
+			xinfo = s + (e << 16);	/* Sadly we can't pack variant into xinfo */
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
@@ -391,11 +395,11 @@ int gremlinf2_describe (int row)
 
 #ifdef DEBUG
 		sprintf(lin,"\n - Block Number : $%02X", current_id);
-		strcat(info,lin);
+		strcat(info, lin);
 		sprintf(lin,"\n - Load address : $%04X", current_s);
-		strcat(info,lin);
+		strcat(info, lin);
 		sprintf(lin,"\n - Block size (bytes) : $%02X\n", current_x);
-		strcat(info,lin);
+		strcat(info, lin);
 #endif
 
 		/* Advance to current sub-block payload */
