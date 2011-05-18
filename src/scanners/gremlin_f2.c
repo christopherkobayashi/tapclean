@@ -289,6 +289,14 @@ void gremlinf2_search (void)
 					eof += 3 * BITSINABYTE;
 
 					break;
+				case 2:
+					/* Point to the first pulse of the checkbyte (that's final) */
+					eod += BITSINABYTE;
+
+					/* Initially point to the last pulse of the checkbyte (that's final) */
+					eof += BITSINABYTE;
+
+					break;
 			}
 
 			/* Trace 'eof' to end of trailer (bit 1 pulses only) */
