@@ -101,7 +101,13 @@ void burnervar_search (void)
 	if (!quiet)
 		msgout("  Burner (Mastertronic Variant)");
 
-	/* First we retrieve the burner variables from the CBM header */
+	/*
+	 * First we retrieve the burner variables from the CBM header.
+	 * We use CBM HEAD index # 1 as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file 
+	 * using the search code found e.g. in Biturbo.
+	 */
 	ib = find_decode_block(CBM_HEAD, 1);
 	if (ib == -1)
 		return;    /* failed to locate cbm header. */

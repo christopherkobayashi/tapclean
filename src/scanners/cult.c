@@ -75,7 +75,13 @@ void cult_search (void)
 	if (!quiet)
 		msgout("  Cult tape");
 
-	/* First we retrieve the Cult variables from the CBM header and data */
+	/*
+	 * First we retrieve the Cult variables from the CBM header and data.
+	 * We use CBM DATA index # 1 as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file 
+	 * using the search code found e.g. in Biturbo.
+	 */
 	ib = find_decode_block(CBM_DATA, 1);
 	if (ib == -1)
 		return;		/* failed to locate CBM data. */
@@ -86,6 +92,12 @@ void cult_search (void)
 
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8); /* 0x0801 */
 
+	/*
+	 * We use CBM HEAD index # 1 as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file 
+	 * using the search code found e.g. in Biturbo.
+	 */
 	ib = find_decode_block(CBM_HEAD, 1);
 	if (ib == -1)
 		return;		/* failed to locate cbm header. */
