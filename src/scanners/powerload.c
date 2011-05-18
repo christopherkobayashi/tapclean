@@ -83,10 +83,16 @@ void powerload_search (void)
 	if (!quiet)
 		msgout("  Power Load");
 
-	/* First we retrieve the Power Load variables from the CBM data */
+	/*
+	 * First we retrieve the Power Load variables from the CBM data.
+	 * We use CBM DATA index # 3 as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file 
+	 * using the search code found e.g. in Biturbo.
+	 */
 	ib = find_decode_block(CBM_DATA, 3);
 	if (ib == -1)
-		return;		/* failed to locate cbm data. */
+		return;		/* failed to locate CBM data. */
 
 	/* Basic validation before accessing array elements */
 	if (blk[ib]->cx < ENDOFFSETH + 1)
