@@ -58,6 +58,7 @@ static int doffset;
 
 static int gremlinf2_decrypt (int byte, unsigned int dest_addr)
 {
+	/* Krakout and Bulldog */
 	static unsigned char dblock[] = {
 		0x78, 0xA9, 0xD1, 0x8D, 0xFA, 0xFF, 0x8D, 0xFE, 0xFF, 0xA9, 0x00, 0x8D, 0xFB, 0xFF, 0x8D, 0xFF,
 		0xFF, 0xA9, 0x7F, 0x8D, 0x0D, 0xDC, 0x8D, 0x0D, 0xDD, 0xAD, 0x0D, 0xDC, 0xAD, 0x0D, 0xDD, 0xA9,
@@ -88,6 +89,7 @@ void gremlinf2_search (void)
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
+	int ib;				/* condition variable */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
@@ -109,6 +111,26 @@ void gremlinf2_search (void)
 
 	if (!quiet)
 		msgout("  Gremlin F2");
+
+	/*
+	 * First we check if this is the genuine format or a variant.
+	 * We use CBM DATA index # 3 as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file 
+	 * using the search code found e.g. in Biturbo.
+	 */
+	ib = find_decode_block(CBM_DATA, 3);
+	if (ib != -1) {
+		unsigned int crc;
+
+		/*
+		 * At this stage the describe functions have not been invoked 
+		 * yet, therefore we have to compute the CRC-32 on the fly.
+		 */
+		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+		if (crc != 0x550B8259)
+			return;
+	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
