@@ -286,20 +286,20 @@ int gremlinf2_describe (int row)
 		s += HEADERSIZE * BITSINABYTE;
 
 		/* Do sub-block */
-		for (i = 0; i < current_x; i++) {
+		for (i = 0; i < current_x; i++, x++) {
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 			
 			if (b != -1) {
 				b = gremlinf2_decrypt(b, current_s + i);
-				blk[row]->dd[x++] = (unsigned char) b;
+				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;
 			} else {
-				blk[row]->dd[x++] = 0x69;  /* error code */
+				blk[row]->dd[x] = 0x69;  /* error code */
 				rd_err++;
 
 				/* for experts only */
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X - overall: $%04X)", s + (i * BITSINABYTE), i, x);
 				strcat(info, lin);
 			}
 		}
@@ -307,6 +307,23 @@ int gremlinf2_describe (int row)
 		/* Advance to next sub-block header */
 		s += current_x * BITSINABYTE;
 	} while (current_id > 1);
+
+	/* Read execution address */
+	b = readttbyte(s, lp, sp, tp, en);
+	if (b != -1)
+	{
+		unsigned int exec;
+
+		exec = b;
+
+		b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
+		if (b != -1)
+		{
+			exec |= (b << 8);
+			sprintf(lin, "\n - Execution address: $%04X", exec);
+			strcat(info, lin);
+		}
+	}
 
 	/* Read checksum that's after execution address */
 	b = readttbyte(s + (2 * BITSINABYTE), lp, sp, tp, en);
