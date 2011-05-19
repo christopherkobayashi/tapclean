@@ -92,6 +92,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Freeload"			,"free"		,FALSE},
 	{"Freeload Slowload"		,"frslow"	,FALSE},
 	{"Go For The Gold"		,"goforgold"	,FALSE},
+	{"Gremlin F1"			,"gremlinf1"	,FALSE},
 	{"Gremlin F2"			,"gremlinf2"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
@@ -293,6 +294,7 @@ struct fmt_t ft[120] = {
 	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64,0xB5, 0,    1,    5,   NA,    CSYES},
 	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36,0xA5, 0,    1,    5,   NA,    CSYES},
 	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400, NA,    CSYES},
+	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
 	{"GREMLIN F2"		,LSbF, 0x2C, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
 
 	/* Closing record */
@@ -364,7 +366,7 @@ const char knam[][32] = {
 	{"Chuckie Egg"},
 	{"Alternative SW (DK)"},
 	{"Power Load"},
-	{"Gremlin F2"}
+	{"Gremlin (F1/F2)"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1038,7 +1040,11 @@ static void search_tap(void)
 			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopowerload	].state == FALSE  && !dbase_is_full && !aborted)
 				powerload_search();
 
-			if (tap.cbmid == LID_GREMLINF2	&& ldrswt[nogremlinf2	].state == FALSE  && !dbase_is_full && !aborted)
+			/* Keep the order of Gremlin scanners to F1 first and then F2 */
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].state == FALSE  && !dbase_is_full && !aborted)
+				gremlinf1_search();
+
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].state == FALSE  && !dbase_is_full && !aborted)
 				gremlinf2_search();
 
 			/*
@@ -1262,6 +1268,9 @@ static void search_tap(void)
 
 			//if (ldrswt[nopowerload].state == FALSE  && !dbase_is_full && !aborted)
 			//	powerload_search();
+
+			//if (ldrswt[nogremlinf1].state == FALSE  && !dbase_is_full && !aborted)
+			//	gremlinf1_search();
 
 			//if (ldrswt[nogremlinf2].state == FALSE  && !dbase_is_full && !aborted)
 			//	gremlinf2_search();
@@ -1523,6 +1532,8 @@ static void describe_file(int row)
 		case ALTERDK_T2:	alternativedk_describe(row);
 					break;
 		case POWERLOAD:		powerload_describe(row);
+					break;
+		case GREMLINF1:		gremlinf1_describe(row);
 					break;
 		case GREMLINF2:		gremlinf2_describe(row);
 					break;

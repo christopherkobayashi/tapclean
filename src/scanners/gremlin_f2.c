@@ -1,5 +1,5 @@
 /*
- * gremlin2.c (by Luigi Di Fraia, May 2011 - armaeth@libero.it)
+ * gremlin_f2.c (by Luigi Di Fraia, May 2011 - armaeth@libero.it)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
@@ -7,16 +7,16 @@
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- *  
+ *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
  * Foundation; either version 2 of the License, or (at your option) any later 
  * version.
- *  
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License along with 
  * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
  * St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -56,9 +56,7 @@
 
 static int doffset;
 
-typedef int (*gremlinf2decryptproc_t)(int, unsigned int);
-
-static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
+static int gremlinf2_decrypt (int byte, unsigned int dest_addr)
 {
 	/* Krakout and Bulldog */
 	static unsigned char dblock[] = {
@@ -86,91 +84,12 @@ static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-/* Avenger, FOTY */
-static unsigned char dblock2[] = {
-	0x40, 0x3C, 0x33, 0x00, 0x08, 0xA2, 0x08, 0x20, 0x14, 0x00, 0x66, 0xFC, 0xCA, 0xD0, 0xF8, 0xA5,
-	0xFC, 0x60, 0xA9, 0x10, 0x2C, 0x0D, 0xDC, 0xF0, 0xFB, 0x4E, 0x0D, 0xDD, 0xA9, 0x19, 0x8D, 0x0E,
-	0xDD, 0xEE, 0x20, 0xD0, 0x60, 0x20, 0x14, 0x00, 0x66, 0xFC, 0xA5, 0xFC, 0xC9, 0xE3, 0xD0, 0xF5,
-	0x20, 0x07, 0x00, 0xC9, 0xE3, 0xF0, 0xF9, 0xC9, 0xED, 0xD0, 0xEA, 0x20, 0x07, 0x00, 0x85, 0xFA,
-	0x20, 0x07, 0x00, 0x85, 0xFD, 0x20, 0x07, 0x00, 0x85, 0xFE, 0x20, 0x07, 0x00, 0x85, 0xFB, 0xA0,
-	0x00, 0x20, 0x07, 0x00, 0xC6, 0x01, 0xA6, 0xF8, 0x55, 0x02, 0xE8, 0xE0, 0xD6, 0xD0, 0x02, 0xA2,
-	0x00, 0x86, 0xF8, 0x45, 0xFE, 0x45, 0xFD, 0x91, 0xFD, 0x45, 0xFF, 0x85, 0xFF, 0xE6, 0x01, 0xE6,
-	0xFD, 0xD0, 0x02, 0xE6, 0xFE, 0xC6, 0xFB, 0xD0, 0xD6, 0xC6, 0xFA, 0xD0, 0xBE, 0x20, 0x07, 0x00,
-	0xC5, 0xFF, 0xD0, 0x03, 0x4C, 0xCD, 0x00, 0xEE, 0x20, 0xD0, 0x4C, 0x89, 0x00, 0x78, 0xA9, 0x02,
-	0x8D, 0xFA, 0xFF, 0x8D, 0xFE, 0xFF, 0xA9, 0x00, 0x8D, 0xFB, 0xFF, 0x8D, 0xFF, 0xFF, 0xA9, 0x7F,
-	0x8D, 0x0D, 0xDC, 0x8D, 0x0D, 0xDD, 0xAD, 0x0D, 0xDC, 0xAD, 0x0D, 0xDD, 0xA9, 0x80, 0x8D, 0x04,
-	0xDD, 0xA9, 0x01, 0x8D, 0x05, 0xDD, 0x4A, 0x8D, 0x20, 0xD0, 0x8D, 0x20, 0xD0, 0x85, 0xFF, 0x85,
-	0xF9, 0x85, 0xF8, 0xA9, 0x19, 0x8D, 0x0E, 0xDD, 0x4C, 0x27, 0x00, 0xE6, 0xF9, 0xA6, 0xF9, 0xB5,
-	0x05, 0x48, 0xB5, 0x03, 0x48, 0x60
-};
-	
-static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
-{
-	byte ^= dblock2[doffset++];
-	doffset %= sizeof (dblock2) / sizeof (dblock2[0]);
-
-	byte ^= (dest_addr >> 8);
-	byte ^= (dest_addr & 0xff);
-
-	return byte;
-}
-
-/*
- * First we check if this is the genuine format/a known variant.
- * We use CBM DATA index # 3 to check as we assume the tape image contains 
- * a single game.
- * For compilations we should search and find the relevant file using the 
- * search code found e.g. in Biturbo.
- */
-static int gremlinf2_find_variant (void)
-{
-	static int variant = 0;		/* Only check CBM data once */
-
-	if (variant == 0) {
-		int ib;			/* condition variable */
-
-		ib = find_decode_block(CBM_DATA, 3);
-		if (ib != -1) {
-			unsigned int crc;
-
-			/*
-			 * At this stage the describe functions have not been invoked 
-			 * yet, therefore we have to compute the CRC-32 on the fly.
-			 */
-			crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
-
-			switch (crc) {
-				case 0x550B8259:
-					variant = 1;
-					break;
-				case 0x9841607A:
-					/* 
-					 * For variant #2 we should dynamically find 
-					 * the info by decrypting the 2nd CBM data file.
-					 */
-					dblock2[2] = 0x33;
-					dblock2[4] = 0x08;
-					variant = 2;
-					break;
-				case 0x118C939A:
-					dblock2[2] = 0x00;
-					dblock2[4] = 0x0A;
-					variant = 2;
-					break;
-				default:
-					variant = -1;
-			}
-		}
-	}
-
-	return variant;
-}
-
 void gremlinf2_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
+	int ib;				/* condition variable */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
@@ -180,8 +99,6 @@ void gremlinf2_search (void)
 	int current_sod;		/* for current sub-block */
 	unsigned int current_s, current_x;
 	int current_id;
-
-	int variant;
 
 	int xinfo;			/* extra info used in addblockdef() */
 
@@ -195,10 +112,22 @@ void gremlinf2_search (void)
 	if (!quiet)
 		msgout("  Gremlin F2");
 
-	/* Check for genuine/known variant */
-	variant = gremlinf2_find_variant();
-	if (variant == -1)
-		return;
+	/*
+	 * First we check if this is the genuine format/a known variant.
+	 * We use CBM DATA index # 3 to check as we assume the tape image contains 
+	 * a single game.
+	 * For compilations we should search and find the relevant file using the 
+	 * search code found e.g. in Biturbo.
+	 */
+	ib = find_decode_block(CBM_DATA, 3);
+	if (ib != -1) {
+		unsigned int crc;
+
+		/* At this stage the CRC-32s were not computed yet */
+		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+		if (crc != 0x550B8259)
+			return; /* Might be F1 or other variant */
+	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -280,24 +209,11 @@ void gremlinf2_search (void)
 				continue;
 			}
 
-			switch (variant) {
-				case 1:
-					/* Point to the first pulse of the checkbyte (that's final) */
-					eod += 3 * BITSINABYTE;
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod += 3 * BITSINABYTE;
 
-					/* Initially point to the last pulse of the checkbyte (that's final) */
-					eof += 3 * BITSINABYTE;
-
-					break;
-				case 2:
-					/* Point to the first pulse of the checkbyte (that's final) */
-					eod += BITSINABYTE;
-
-					/* Initially point to the last pulse of the checkbyte (that's final) */
-					eof += BITSINABYTE;
-
-					break;
-			}
+			/* Initially point to the last pulse of the checkbyte (that's final) */
+			eof += 3 * BITSINABYTE;
 
 			/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 			h = 0;
@@ -310,7 +226,7 @@ void gremlinf2_search (void)
 			e = s + x - 1;
 
 			/* Store the overall load/end addresses as extra-info */
-			xinfo = s + (e << 16);	/* Sadly we can't pack variant into xinfo */
+			xinfo = s + (e << 16);
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
@@ -331,30 +247,14 @@ int gremlinf2_describe (int row)
 
 	int b, rd_err;
 
-	int variant;
-
 	unsigned int current_s, current_x;
 	int current_id;
-
-	gremlinf2decryptproc_t gremlinf2_decrypt;
 
 
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
-
-	variant = gremlinf2_find_variant();
-
-	/* Hook the relevant decrypt function */
-	switch (variant) {
-		case 1:
-			gremlinf2_decrypt = gremlinf2_decrypt_v1;
-			break;
-		case 2:
-			gremlinf2_decrypt = gremlinf2_decrypt_v2;
-			break;
-	}
 
 	/* Retrieve C64 memory location for overall load/end address from extra-info */
 	blk[row]->cs = blk[row]->xi & 0xFFFF;
@@ -416,9 +316,9 @@ int gremlinf2_describe (int row)
 		/* Do sub-block */
 		for (i = 0; i < current_x; i++, x++) {
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
-			
+
 			if (b != -1) {
-				b = (gremlinf2_decrypt)(b, current_s + i);
+				b = gremlinf2_decrypt(b, current_s + i);
 				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;
@@ -436,34 +336,23 @@ int gremlinf2_describe (int row)
 		s += current_x * BITSINABYTE;
 	} while (current_id > 1);
 
-	switch (variant) {
-		case 1:
-			/* Read execution address */
-			b = readttbyte(s, lp, sp, tp, en);
-			if (b != -1) {
-				unsigned int exec;
+	/* Read execution address */
+	b = readttbyte(s, lp, sp, tp, en);
+	if (b != -1) {
+		unsigned int exec;
 
-				exec = b;
+		exec = b;
 
-				b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
-				if (b != -1) {
-					exec |= (b << 8);
-					sprintf(lin, "\n - Execution address: $%04X", exec);
-					strcat(info, lin);
-				}
-			}
-
-			/* Read checksum that's after execution address */
-			b = readttbyte(s + (2 * BITSINABYTE), lp, sp, tp, en);
-
-			break;
-		case 2:
-			/* Read checksum that's after data */
-			b = readttbyte(s , lp, sp, tp, en);
-
-			break;
+		b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
+		if (b != -1) {
+			exec |= (b << 8);
+			sprintf(lin, "\n - Execution address: $%04X", exec);
+			strcat(info, lin);
+		}
 	}
 
+	/* Read checksum that's after execution address */
+	b = readttbyte(s + (2 * BITSINABYTE), lp, sp, tp, en);
 	if (b == -1) {
 		/* Even if not within data, we cannot validate data reliably if
 		   checksum is unreadable, so that increase read errors */
