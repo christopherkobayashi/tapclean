@@ -16,6 +16,7 @@ v0.26
 	New: Added support for "Alternative Software (DK)" T1 and T2 loaders (Luigi)
 	New: Added support for "Power Load" (Luigi)
 	New: Added support for "Gremlin F2" (Luigi)
+	New: Added support for "Gremlin F1" (Luigi)
 
 v0.25
 	New: Use MTAP conversion and Markus' extended TAP format by default when
