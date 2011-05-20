@@ -364,6 +364,9 @@ int gremlinf1_describe (int row)
 		strcat(info, lin);
 	}
 
+	sprintf(lin, "\n - Execution address (in CBM data): $%04X", dblock[2] + (dblock[4] <<8));
+	strcat(info, lin);
+
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
