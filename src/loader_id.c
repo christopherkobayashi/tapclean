@@ -281,6 +281,7 @@ int idloader(unsigned /*long*/ int crc)
 		{0xD407EAA3, LID_POWERLOAD},	/* Power Load */
 
 		{0xAD9ABE1C, LID_GREMLIN},	/* Gremlin tape F1 and F2 */
+		{0xC721D847, LID_GREMLIN},
 
 		{0, 0}
 	};

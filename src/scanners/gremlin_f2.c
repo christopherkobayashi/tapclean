@@ -56,7 +56,9 @@
 
 static int doffset;
 
-static int gremlinf2_decrypt (int byte, unsigned int dest_addr)
+typedef int (*gremlinf2decryptproc_t)(int, unsigned int);
+
+static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
 {
 	/* Krakout and Bulldog */
 	static unsigned char dblock[] = {
@@ -84,12 +86,80 @@ static int gremlinf2_decrypt (int byte, unsigned int dest_addr)
 	return byte;
 }
 
+static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
+{
+	/* Auf Wiedersehen Monty */
+	static unsigned char dblock[] = {
+		0x78, 0xA9, 0xE7, 0x8D, 0xFA, 0xFF, 0x8D, 0xFE, 0xFF, 0xA9, 0x00, 0x8D, 0xFB, 0xFF, 0x8D, 0xFF,
+		0xFF, 0xA2, 0x43, 0x9A, 0xAD, 0xFD, 0xFF, 0x48, 0xA2, 0xFF, 0x9A, 0xA9, 0x7F, 0x8D, 0x0D, 0xDC,
+		0x8D, 0x0D, 0xDD, 0xAD, 0x0D, 0xDC, 0xAD, 0x0D, 0xDD, 0xA9, 0x60, 0x8D, 0x04, 0xDD, 0xA9, 0x01,
+		0x8D, 0x05, 0xDD, 0xA9, 0x00, 0x8D, 0x20, 0xD0, 0x8D, 0x11, 0xD0, 0x85, 0x0A, 0x85, 0x02, 0xA9,
+		0x19, 0x8D, 0x0E, 0xDD, 0x20, 0xD7, 0x00, 0x66, 0x07, 0xA5, 0x07, 0xC9, 0xE3, 0xD0, 0xF5, 0x20,
+		0xCA, 0x00, 0xC9, 0xE3, 0xF0, 0xF9, 0xC9, 0xED, 0xD0, 0xEA, 0x20, 0xCA, 0x00, 0x85, 0x05, 0x20,
+		0xCA, 0x00, 0x85, 0x08, 0x20, 0xCA, 0x00, 0x85, 0x09, 0x20, 0xCA, 0x00, 0x85, 0x06, 0xA0, 0x00,
+		0x20, 0xCA, 0x00, 0xA6, 0x02, 0x55, 0x0B, 0xE8, 0xE0, 0xDC, 0xD0, 0x02, 0xA2, 0x00, 0x86, 0x02,
+		0x45, 0x09, 0x45, 0x08, 0xC6, 0x01, 0x91, 0x08, 0xE6, 0x01, 0x8D, 0x20, 0xD0, 0x45, 0x0A, 0x85,
+		0x0A, 0xE6, 0x08, 0xD0, 0x02, 0xE6, 0x09, 0xC6, 0x06, 0xD0, 0xD3, 0xC6, 0x05, 0xD0, 0xBB, 0x20,
+		0xCA, 0x00, 0x85, 0x03, 0x20, 0xCA, 0x00, 0x85, 0x04, 0x20, 0xCA, 0x00, 0xC5, 0x0A, 0xD0, 0x03,
+		0x6C, 0x03, 0x00, 0xAD, 0x20, 0xD0, 0x18, 0x69, 0x04, 0x8D, 0x20, 0xD0, 0x4C, 0xBE, 0x00, 0xA2,
+		0x08, 0x20, 0xD7, 0x00, 0x66, 0x07, 0xCA, 0xD0, 0xF8, 0xA5, 0x07, 0x60, 0xA9, 0x10, 0x2C, 0x0D,
+		0xDC, 0xF0, 0xFB, 0x4E, 0x0D, 0xDD, 0xA9, 0x19, 0x8D, 0x0E, 0xDD, 0x60
+	};
+	
+	byte ^= dblock[doffset++];
+	doffset %= sizeof (dblock) / sizeof (dblock[0]);
+
+	byte ^= (dest_addr >> 8);
+	byte ^= (dest_addr & 0xff);
+
+	return byte;
+}
+
+/*
+ * First we check if this is the genuine format/a known variant.
+ * We use CBM DATA index # 3 to check as we assume the tape image contains 
+ * a single game.
+ * For compilations we should search and find the relevant file using the 
+ * search code found e.g. in Biturbo.
+ */
+static int gremlinf2_find_variant (void)
+{
+	static int variant = 0;		/* Only check CBM data once */
+
+	if (variant == 0) {
+		int ib;			/* condition variable */
+
+		ib = find_decode_block(CBM_DATA, 3);
+		if (ib != -1) {
+			unsigned int crc;
+
+			/*
+			 * At this stage the describe functions have not been invoked 
+			 * yet, therefore we have to compute the CRC-32 on the fly.
+			 */
+			crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+
+			switch (crc) {
+				case 0x550B8259:
+					variant = 1;
+					break;
+				case 0x18D695E3:
+					variant = 2;
+					break;
+				default:
+					variant = -1;
+			}
+		}
+	}
+
+	return variant;
+}
+
 void gremlinf2_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
-	int ib;				/* condition variable */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
@@ -99,6 +169,8 @@ void gremlinf2_search (void)
 	int current_sod;		/* for current sub-block */
 	unsigned int current_s, current_x;
 	int current_id;
+
+	int variant;
 
 	int xinfo;			/* extra info used in addblockdef() */
 
@@ -112,22 +184,10 @@ void gremlinf2_search (void)
 	if (!quiet)
 		msgout("  Gremlin F2");
 
-	/*
-	 * First we check if this is the genuine format/a known variant.
-	 * We use CBM DATA index # 3 to check as we assume the tape image contains 
-	 * a single game.
-	 * For compilations we should search and find the relevant file using the 
-	 * search code found e.g. in Biturbo.
-	 */
-	ib = find_decode_block(CBM_DATA, 3);
-	if (ib != -1) {
-		unsigned int crc;
-
-		/* At this stage the CRC-32s were not computed yet */
-		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
-		if (crc != 0x550B8259)
-			return; /* Might be F1 or other variant */
-	}
+	/* Check for genuine/known variant */
+	variant = gremlinf2_find_variant();
+	if (variant == -1)
+		return;
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -247,14 +307,30 @@ int gremlinf2_describe (int row)
 
 	int b, rd_err;
 
+	int variant;
+
 	unsigned int current_s, current_x;
 	int current_id;
+
+	gremlinf2decryptproc_t gremlinf2_decrypt;
 
 
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
+
+	variant = gremlinf2_find_variant();
+
+	/* Hook the relevant decrypt function */
+	switch (variant) {
+		case 1:
+			gremlinf2_decrypt = gremlinf2_decrypt_v1;
+			break;
+		case 2:
+			gremlinf2_decrypt = gremlinf2_decrypt_v2;
+			break;
+	}
 
 	/* Retrieve C64 memory location for overall load/end address from extra-info */
 	blk[row]->cs = blk[row]->xi & 0xFFFF;
@@ -318,7 +394,7 @@ int gremlinf2_describe (int row)
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {
-				b = gremlinf2_decrypt(b, current_s + i);
+				b = (gremlinf2_decrypt)(b, current_s + i);
 				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;
