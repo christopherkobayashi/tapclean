@@ -6,6 +6,10 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.27
+	New: boot address of Power Load titles is shown inside the report 
+	 by using the new meta information mechanism (Luigi)
+
 v0.26
 	Improvement: pilot backtrace in c64tape.c does not step on previously
 	 acknowledged files. World Cup 90's CBM repeated blocks are now
