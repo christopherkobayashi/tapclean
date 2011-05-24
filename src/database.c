@@ -60,6 +60,7 @@ void reset_database(void)
 		blk[i]->p3 = 0;
 		blk[i]->p4 = 0;
 		blk[i]->xi = 0;
+		blk[i]->meta1 = 0;
 		blk[i]->cs = 0;
 		blk[i]->ce = 0;
 		blk[i]->cx = 0;
@@ -94,14 +95,15 @@ void reset_database(void)
  *	@param sod start of data offset
  *	@param eod end of data offset
  *	@param eof end of block offset
- *	@param xi extra info offset
+ *	@param xi extra info
+ *	@param meta1 meta info 1
  *	
  *	@return Slot number the block went to (value is >= 0)
- *	@return DBERR on invalid block definition
+ *	@return DBERR on invalid block definition (due to overlap)
  *	@return DBFULL on database full
  */
  
-int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
+int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 {
 	int i, slot, e1, e2;
 
@@ -145,6 +147,7 @@ int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
 			blk[slot]->p3 = eod;
 			blk[slot]->p4 = eof;
 			blk[slot]->xi = xi;
+			blk[slot]->meta1 = meta1;
 
 			/* just clear out the remaining fields... */
 
@@ -165,6 +168,29 @@ int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
 		return DBERR;
 
 	return slot;	/* ok, entry added successfully.   */
+}
+
+/**
+ *	Add a block definition (file details) to the database (blk)
+ *
+ *	Only sof & eof must be assigned (legal) values for the block,
+ *	the others can be 0.
+ *
+ *	@param lt loader id
+ *	@param sof start of block offset
+ *	@param sod start of data offset
+ *	@param eod end of data offset
+ *	@param eof end of block offset
+ *	@param xi extra info
+ *	
+ *	@return Slot number the block went to (value is >= 0)
+ *	@return DBERR on invalid block definition (due to overlap)
+ *	@return DBFULL on database full
+ */
+ 
+int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
+{
+	return addblockdefex(lt, sof, sod, eod, eof, xi, 0);
 }
 
 /**
@@ -572,7 +598,7 @@ int save_prgs(void)
 
 	for (i = 0; prg[i].lt != 0; i++) {
 		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
-		if (prg[i].errors != 0)		/* append error indicator if necessary) */
+		if (prg[i].errors != 0)		/* append error indicator (if necessary) */
 			strcat(lin, " BAD");
 		strcat(lin, ".prg");
 
