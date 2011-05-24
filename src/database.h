@@ -31,6 +31,7 @@ struct blk_t
 	int p3;			/*!< last data pulse offset (should be long) */
 	int p4;			/*!< last pulse offset (should be long) */
 	int xi;			/*!< extra info (should be long) */
+	int meta1;		/*!< meta info 1 (should be long) */
 
 	int cs;			/*!< c64 RAM start pos (16 bit value) */
 	int ce;			/*!< c64 RAM end pos (16 bit value) */
@@ -92,11 +93,12 @@ extern int dbase_is_full;
 /* File Database */
 int create_database(void);
 void reset_database(void);
+int addblockdefex(int, int, int, int, int, int, int);
 int addblockdef(int, int, int, int, int, int);
 void sort_blocks(void);
 void scan_gaps(void);
 int count_bootparts(void);
-int count_unopt_pulses(int slot);
+int count_unopt_pulses(int);
 int count_opt_files(void);
 int count_pauses(void);
 int count_rpulses(void);
