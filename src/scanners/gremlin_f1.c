@@ -101,7 +101,7 @@ void gremlinf1_search (void)
 	unsigned int current_s, current_x;
 	int current_id;
 
-	int xinfo;			/* extra info used in addblockdef() */
+	int xinfo, meta1;		/* extra info used in addblockdef() */
 
 
 	en = ft[THISLOADER].en;
@@ -135,10 +135,12 @@ void gremlinf1_search (void)
 			case 0x9841607A:
 				dblock[2] = 0x33;
 				dblock[4] = 0x08;
+				meta1 = 0x0833;
 				break;
 			case 0x118C939A:
 				dblock[2] = 0x00;
 				dblock[4] = 0x0A;
+				meta1 = 0x0A00;
 				break;
 			default:
 				return;
@@ -244,7 +246,7 @@ void gremlinf1_search (void)
 			/* Store the overall load/end addresses as extra-info */
 			xinfo = s + (e << 16);
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -364,7 +366,7 @@ int gremlinf1_describe (int row)
 		strcat(info, lin);
 	}
 
-	sprintf(lin, "\n - Execution address (in CBM data): $%04X", dblock[2] + (dblock[4] <<8));
+	sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1);
 	strcat(info, lin);
 
 	blk[row]->cs_exp = cb & 0xFF;
