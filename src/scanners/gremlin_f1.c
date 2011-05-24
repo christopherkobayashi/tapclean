@@ -8,13 +8,13 @@
  *
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
@@ -115,9 +115,9 @@ void gremlinf1_search (void)
 
 	/*
 	 * First we check if this is the genuine format/a known variant.
-	 * We use CBM DATA index # 3 to check as we assume the tape image contains 
+	 * We use CBM DATA index # 3 to check as we assume the tape image contains
 	 * a single game.
-	 * For compilations we should search and find the relevant file using the 
+	 * For compilations we should search and find the relevant file using the
 	 * search code found e.g. in Biturbo.
 	 */
 	ib = find_decode_block(CBM_DATA, 3);
@@ -128,7 +128,7 @@ void gremlinf1_search (void)
 		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
 
 		/*
-		 * TODO: we should dynamically find the info by 
+		 * TODO: we should dynamically find the info by
 		 * decrypting the 2nd CBM data file.
 		 */
 		switch (crc) {
@@ -330,7 +330,7 @@ int gremlinf1_describe (int row)
 		s += HEADERSIZE * BITSINABYTE;
 
 		/* Do sub-block */
-		for (i = 0; i < current_x; i++, x++) {
+		for (i = 0; i < (int) current_x; i++, x++) {
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {

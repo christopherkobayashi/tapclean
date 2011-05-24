@@ -8,17 +8,17 @@
  *
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -76,7 +76,7 @@ static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
 		0x08, 0x20, 0xBE, 0x00, 0x66, 0xFC, 0xCA, 0xD0, 0xF8, 0xA5, 0xFC, 0x60, 0xA9, 0x10, 0x2C, 0x0D,
 		0xDC, 0xF0, 0xFB, 0x4E, 0x0D, 0xDD, 0xA9, 0x19, 0x8D, 0x0E, 0xDD, 0xEE, 0x20, 0xD0, 0x60
 	};
-	
+
 	byte ^= dblock[doffset++];
 	doffset %= sizeof (dblock) / sizeof (dblock[0]);
 
@@ -105,7 +105,7 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 		0x08, 0x20, 0xD7, 0x00, 0x66, 0x07, 0xCA, 0xD0, 0xF8, 0xA5, 0x07, 0x60, 0xA9, 0x10, 0x2C, 0x0D,
 		0xDC, 0xF0, 0xFB, 0x4E, 0x0D, 0xDD, 0xA9, 0x19, 0x8D, 0x0E, 0xDD, 0x60
 	};
-	
+
 	byte ^= dblock[doffset++];
 	doffset %= sizeof (dblock) / sizeof (dblock[0]);
 
@@ -117,9 +117,9 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 
 /*
  * First we check if this is the genuine format/a known variant.
- * We use CBM DATA index # 3 to check as we assume the tape image contains 
+ * We use CBM DATA index # 3 to check as we assume the tape image contains
  * a single game.
- * For compilations we should search and find the relevant file using the 
+ * For compilations we should search and find the relevant file using the
  * search code found e.g. in Biturbo.
  */
 static int gremlinf2_find_variant (void)
@@ -134,7 +134,7 @@ static int gremlinf2_find_variant (void)
 			unsigned int crc;
 
 			/*
-			 * At this stage the describe functions have not been invoked 
+			 * At this stage the describe functions have not been invoked
 			 * yet, therefore we have to compute the CRC-32 on the fly.
 			 */
 			crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
@@ -390,7 +390,7 @@ int gremlinf2_describe (int row)
 		s += HEADERSIZE * BITSINABYTE;
 
 		/* Do sub-block */
-		for (i = 0; i < current_x; i++, x++) {
+		for (i = 0; i < (int) current_x; i++, x++) {
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {
