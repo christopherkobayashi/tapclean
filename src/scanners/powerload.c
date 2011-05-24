@@ -52,6 +52,8 @@
 #define LOADOFFSETL	0x01	/* load location (LSB) offset inside CBM data */
 #define ENDOFFSETH	0x0B	/* end location (MSB) offset inside CBM data */
 #define ENDOFFSETL	0x09	/* end location (LSB) offset inside CBM data */
+#define EXECOFFSETL	0xC0	/* execution address (LSB) offset inside CBM data */
+#define EXECOFFSETH	0xC1	/* execution address (MSB) offset inside CBM data */
 
 void powerload_search (void)
 {
@@ -71,7 +73,7 @@ void powerload_search (void)
 	};
 	int match;			/* condition variable */
 
-	int xinfo;			/* extra info used in addblockdef() */
+	int xinfo, meta1;		/* extra info used in addblockdef() */
 
 
 	en = ft[THISLOADER].en;
@@ -95,11 +97,12 @@ void powerload_search (void)
 		return;		/* failed to locate CBM data. */
 
 	/* Basic validation before accessing array elements */
-	if (blk[ib]->cx < ENDOFFSETH + 1)
+	if (blk[ib]->cx < EXECOFFSETH + 1)
 		return;
 
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+	meta1 = blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
 
 	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
@@ -175,7 +178,7 @@ void powerload_search (void)
 			/* Store the info read from CBM part as extra-info */
 			xinfo = s + (e << 16);
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -253,6 +256,9 @@ int powerload_describe(int row)
 		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
 		strcat(info, lin);
 	}
+
+	sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1);
+	strcat(info, lin);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b  & 0xFF;
