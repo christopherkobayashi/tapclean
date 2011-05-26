@@ -27,7 +27,7 @@
  * Status: Beta
  *
  * CBM inspection needed: Yes
- * Single on tape:  Yes! -> once we acknowledge one, we can return
+ * Single on tape: Commonly yes, but not necessarily (e.g. Rocket Roger)
  * Sync: Sequence (bytes)
  * Header: No
  * Data: Continuous
@@ -102,7 +102,12 @@ void powerload_search (void)
 
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
-	meta1 = blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
+
+	/* Look for a jump to the execution address */
+	if (blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
+		meta1 = blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
+	else
+		meta1 = -1;
 
 	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
@@ -257,8 +262,10 @@ int powerload_describe(int row)
 		strcat(info, lin);
 	}
 
-	sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1);
-	strcat(info, lin);
+	if (blk[row]->meta1 != -1) {
+		sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1);
+		strcat(info, lin);
+	}
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b  & 0xFF;
