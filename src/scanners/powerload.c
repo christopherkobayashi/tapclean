@@ -103,11 +103,12 @@ void powerload_search (void)
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
 	e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
 
+	/* Save the real end address for later display */
+	meta1 = e << 16;
+
 	/* Look for a jump to the execution address */
 	if (blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
-		meta1 = blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
-	else
-		meta1 = -1;
+		meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
 
 	/* Prevent int wraparound when subtracting 1 from end location
 	   to get the location of the last loaded byte */
@@ -183,8 +184,75 @@ void powerload_search (void)
 			/* Store the info read from CBM part as extra-info */
 			xinfo = s + (e << 16);
 
-			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0)
+			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0) {
 				i = eof;	/* Search for further files starting from the end of this one */
+
+				/* Non-genuine Power Loader (e.g. Rocket Roger) */
+				if ((meta1 & 0xFFFF) == 0) {
+					int *buf, bufsz;
+
+					bufsz = blk[ib]->cx;
+
+					buf = (int *) malloc (bufsz * sizeof(int));
+					if (buf != NULL) {
+						int seq_load_lsb[] = {0xA9, XX, 0x8D, 0x48, 0xCE};
+						int seq_load_msb[] = {0xA9, XX, 0x8D, 0x4A, 0xCE};
+						int seq_end_lsb[] = {0xA9, XX, 0x8D, 0x50, 0xCE};
+						int seq_end_msb[] = {0xA9, XX, 0x8D, 0x52, 0xCE};
+						int seq_exec[] = {0x09, 0x20, 0x85, 0x01, 0x4C, XX, XX};
+
+						int index, offset;
+
+						unsigned int next_s, next_e, next_meta1;
+
+						/* Make an 'int' copy for use in find_seq() */
+						for (index = 0; index < bufsz; index++)
+							buf[index] = blk[ib]->dd[index];
+
+						index = 0;
+
+						offset = find_seq (buf, bufsz, seq_load_lsb, sizeof(seq_load_lsb) / sizeof(seq_load_lsb[0]));
+						if (offset != -1) {
+							index++;
+							next_s = buf[offset + 1];
+						}
+	
+						offset = find_seq (buf, bufsz, seq_load_msb, sizeof(seq_load_msb) / sizeof(seq_load_msb[0]));
+						if (offset != -1) {
+							index++;
+							next_s |= buf[offset + 1] << 8;
+						}
+	
+						offset = find_seq (buf, bufsz, seq_end_lsb, sizeof(seq_end_lsb) / sizeof(seq_end_lsb[0]));
+						if (offset != -1) {
+							index++;
+							next_e = buf[offset + 1];
+						}
+	
+						offset = find_seq (buf, bufsz, seq_end_msb, sizeof(seq_end_msb) / sizeof(seq_end_msb[0]));
+						if (offset != -1) {
+							index++;
+							next_e |= buf[offset + 1] << 8;
+						}
+
+						offset = find_seq (buf, bufsz, seq_exec, sizeof(seq_exec) / sizeof(seq_exec[0]));
+						if (offset != -1) {
+							index++;
+							next_meta1 = (next_e << 16) | buf[offset + 5] | (buf[offset + 6] << 8);
+						}
+	
+						if (index >= 4) {
+							s = next_s;
+							e = next_e;
+						}
+
+						if (index == 5)
+							meta1 = next_meta1;
+
+						free (buf);
+					}
+				}
+			}
 
 		} else {
 			if (eop < 0)
@@ -262,8 +330,11 @@ int powerload_describe(int row)
 		strcat(info, lin);
 	}
 
-	if (blk[row]->meta1 != -1) {
-		sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1);
+	sprintf(lin, "\n - Real end address + 1: $%04X", (blk[row]->meta1 >> 16) & 0xFFFF);
+	strcat(info, lin);
+
+	if ((blk[row]->meta1 & 0xFFFF) != 0) {
+		sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1 & 0xFFFF);
 		strcat(info, lin);
 	}
 

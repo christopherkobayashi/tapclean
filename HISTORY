@@ -9,21 +9,26 @@ Entries are of the following types (since release 0.21):
 v0.27
 	New: boot address of Power Load titles is shown inside the report 
 	 by using the new meta information mechanism (Luigi)
+	New: Added support for "Power Load" variant found in Rocket 
+	 Roger (Luigi)
+	Improvement: Real end address for "Power Load" blocks is shown inside 
+	 the report (Luigi)
 
 v0.26
-	Improvement: pilot backtrace in c64tape.c does not step on previously
-	 acknowledged files. World Cup 90's CBM repeated blocks are now
+	Improvement: pilot backtrace in c64tape.c does not step on previously 
+	 acknowledged files. World Cup 90's CBM repeated blocks are now 
 	 recognized properly after cleaning (Luigi)
-	New: Preview releases are now named v0.x-pre-y; the corresponding CVS tag
-	 is v0_x_pre_y (Luigi)
+	New: Preview releases are now named v0.x-pre-y; the corresponding CVS 
+	 tag is v0_x_pre_y (Luigi)
 	New: Added support for "Chuckie Egg" loader (Luigi)
-	New: Added support for "Alternative Software (DK)" T1 and T2 loaders (Luigi)
+	New: Added support for "Alternative Software (DK)" T1 and T2 
+	 loaders (Luigi)
 	New: Added support for "Power Load" (Luigi)
 	New: Added support for "Gremlin F2" (Luigi)
 	New: Added support for "Gremlin F1" (Luigi)
 
 v0.25
-	New: Use MTAP conversion and Markus' extended TAP format by default when
+	New: Use MTAP conversion and Markus' extended TAP format by default when 
 	 converting from DC2N DMP to TAP (Luigi)
 	Fix: proper calculation of end address of "FF Tape" block # 3 (Luigi)
 	Fix: remove garbage at the beginning of the tape when cleaning (Luigi)
