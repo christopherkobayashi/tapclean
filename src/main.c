@@ -1939,23 +1939,7 @@ static void print_file_stats(char *buf)
 
 int main(int argc, char *argv[])
 {
-	int opnum;
 	time_t t1, t2;
-
-	char *opname;		/*!< a pointer to one of the following opnames */
-	char opnames[][32] = {
-		"No operation",
-		"Testing",
-		"Optimizing",
-		"Converting to v0",
-		"Converting to v1",
-		"Fixing header size",
-		"Optimizing pauses",
-		"Converting to au file",
-		"Converting to wav file",
-		"Batch scanning",
-		"Creating info file"
-	};
 
 	/* Delete report and info files */
 	deleteworkfiles();
@@ -1968,10 +1952,10 @@ int main(int argc, char *argv[])
 	if (!create_database())
 		return -1;
 
-	/* TBA */
+	/* Make a copy of the loader table */
 	copy_loader_table();
 
-	/* TBA */
+	/* Pre-calculate CRC table */
 	build_crc_table();
 
 	printf("\n----------------------------------------------------------------------\n");
@@ -2017,10 +2001,27 @@ int main(int argc, char *argv[])
 	} else {
 		int i;
 
+		char *opname;		/*!< a pointer to one of the following opnames */
+		char opnames[][32] = {
+			"No operation",
+			"Testing",
+			"Optimizing",
+			"Converting to v0",
+			"Converting to v1",
+			"Fixing header size",
+			"Optimizing pauses",
+			"Converting to au file",
+			"Converting to wav file",
+			"Batch scanning",
+			"Creating info file"
+		};
+
 		for (i = 0; i < argc; i++) {
-			opnum = OP_NONE;
+			int opnum = OP_NONE;
+
 			if (strcmp(argv[i], "-t") == 0)
 				opnum = OP_TEST;	/* test */
+
 			if (strcmp(argv[i], "-o") == 0)
 				opnum = OP_OPTIMIZE;	/* optimize */
 			if (strcmp(argv[i], "-ct0") == 0)
@@ -2040,6 +2041,7 @@ int main(int argc, char *argv[])
 
 			if (strcmp(argv[i], "-b") == 0)
 				opnum = OP_BATCH_SCAN;	/* batch scan */
+
 			if (strcmp(argv[i], "-info") == 0)
 				opnum = OP_CREATE_INFO;	/* create info file */
 
