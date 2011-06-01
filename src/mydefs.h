@@ -63,7 +63,6 @@
 
 #define MAXPATH	512
 #define NUM_READ_ERRORS 100
-#define NUM_CRC 1000
 
 #define CLEANED_PREFIX	"clean."
 
