@@ -33,6 +33,9 @@
 
 /*---------------------------------------------------------------------------
 */
+int cyber_f2_eor1 = 0xAE;	/* default XOR codes for cyberload f2.. */
+int cyber_f2_eor2 = 0xD2;
+
 void cyberload_f2_search(void)
 {
    int i,z, sof,sod,eod,eof;

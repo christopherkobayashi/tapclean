@@ -249,9 +249,6 @@ extern int quiet;
 
 extern int visi_type;		/* default visiload type.  */
 
-extern int cyber_f2_eor1;
-extern int cyber_f2_eor2;
-
 extern int batchmode;
 
 /* These are defined in main.c (move to main.h and include main.h here) */

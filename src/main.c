@@ -150,9 +150,6 @@ int aborted = FALSE;		/* general 'operation aborted by user' flag. */
 
 int visi_type = VISI_T2;	/* default visiload type, overidden when loader ID'd. */
 
-int cyber_f2_eor1 = 0xAE;	/* default XOR codes for cyberload f2.. */
-int cyber_f2_eor2 = 0xD2;
-
 int batchmode = FALSE;		/* set to 1 when "batch analysis" is performed. */
 				/* set to 0 when the user Opens an individual tap. */
 
