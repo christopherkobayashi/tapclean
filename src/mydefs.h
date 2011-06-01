@@ -352,4 +352,17 @@ enum {
 
 extern int dbase_is_full;
 
+enum {
+	OP_NONE = 0,
+	OP_TEST,
+	OP_OPTIMIZE,
+	OP_CONVERT_V0,
+	OP_CONVERT_V1,
+	OP_FIX_HEADER_SIZE,
+	OP_PAUSE_OPTIMIZE,
+	OP_CONVERT_AU,
+	OP_CONVERT_WAV,
+	OP_BATCH_SCAN,
+	OP_CREATE_INFO
+};
 #endif

@@ -2018,34 +2018,36 @@ int main(int argc, char *argv[])
 		int i;
 
 		for (i = 0; i < argc; i++) {
-			opnum = 0;
+			opnum = OP_NONE;
 			if (strcmp(argv[i], "-t") == 0)
-				opnum = 1;	/* test */
+				opnum = OP_TEST;	/* test */
 			if (strcmp(argv[i], "-o") == 0)
-				opnum = 2;	/* optimize */
+				opnum = OP_OPTIMIZE;	/* optimize */
 			if (strcmp(argv[i], "-ct0") == 0)
-				opnum = 3;	/* convert to v0 */
+				opnum = OP_CONVERT_V0;	/* convert to v0 */
 			if (strcmp(argv[i], "-ct1") == 0)
-				opnum = 4;	/* convert to v1 */
+				opnum = OP_CONVERT_V1;	/* convert to v1 */
+
 			if (strcmp(argv[i], "-rs") == 0)
-				opnum = 5;	/* fix header size */
+				opnum = OP_FIX_HEADER_SIZE;	/* fix header size */
 			if (strcmp(argv[i], "-po") == 0)
-				opnum = 6;	/* pause optimize */
+				opnum = OP_PAUSE_OPTIMIZE;	/* pause optimize */
 
 			if (strcmp(argv[i], "-au") == 0)
-				opnum = 7;	/* convert to au */
+				opnum = OP_CONVERT_AU;	/* convert to au */
 			if (strcmp(argv[i], "-wav") == 0)
-				opnum = 8;	/* convert to wav */
+				opnum = OP_CONVERT_WAV;	/* convert to wav */
+
 			if (strcmp(argv[i], "-b") == 0)
-				opnum = 9;	/* batch scan */
+				opnum = OP_BATCH_SCAN;	/* batch scan */
 			if (strcmp(argv[i], "-info") == 0)
-				opnum = 10;	/* create info file */
+				opnum = OP_CREATE_INFO;	/* create info file */
 
 			opname = opnames[opnum];
 
 			/* This handles testing + any op that takes a tap, affects it and saves it... */
 
-			if (opnum > 0 && opnum < 7) {
+			if (opnum >= OP_TEST && opnum <= OP_PAUSE_OPTIMIZE) {
 				if (argv[i + 1] != NULL) {
 					if (load_tap(argv[i + 1])) {
 						time(&t1);
@@ -2054,16 +2056,21 @@ int main(int argc, char *argv[])
 
 						if (analyze()) {
 							switch(opnum) {
-								case 2:	clean();
+								case OP_OPTIMIZE:
+									clean();
 									break;
-								case 3:	convert_to_v0();
+								case OP_CONVERT_V0:
+									convert_to_v0();
 									break;
-								case 4:	convert_to_v1();
+								case OP_CONVERT_V1:
+									convert_to_v1();
 									break;
-								case 5:	fix_header_size();
+								case OP_FIX_HEADER_SIZE:
+									fix_header_size();
 									analyze();
 									break;
-								case 6:	convert_to_v0();
+								case OP_PAUSE_OPTIMIZE:
+									convert_to_v0();
 									clip_ends();
 									unify_pauses();
 									convert_to_v1();
@@ -2071,7 +2078,7 @@ int main(int argc, char *argv[])
 									break;
 							}
 
-							if (opnum > 1) {
+							if (opnum >= OP_OPTIMIZE) {
 								char *tapnamepos, *cleanedtapnamefullpath;
 
 								strcpy(cleanedtapname, CLEANED_PREFIX);
@@ -2101,7 +2108,7 @@ int main(int argc, char *argv[])
 					printf("\n\nMissing file name.");
 			}
 
-			if (opnum == 7) {	/* flag = convert to au */
+			if (opnum == OP_CONVERT_AU) {	/* flag = convert to au */
 				if (argv[i + 1] != NULL) {
 					if (load_tap(argv[i + 1])) {
 						if (analyze()) {
@@ -2116,7 +2123,7 @@ int main(int argc, char *argv[])
 					printf("\n\nMissing file name.");
 			}
 
-			if (opnum == 8) {		/* flag = convert to wav */
+			if (opnum == OP_CONVERT_WAV) {		/* flag = convert to wav */
 				if (argv[i + 1] != NULL) {
 					if (load_tap(argv[i + 1])) {
 						if (analyze()) {
@@ -2131,7 +2138,7 @@ int main(int argc, char *argv[])
 					printf("\n\nMissing file name.");
 			}
 
-			if (opnum == 9) {		/* flag = batch scan... */
+			if (opnum == OP_BATCH_SCAN) {		/* flag = batch scan... */
 				char fstats_old = fstats;
 
 				batchmode = TRUE;
@@ -2154,7 +2161,7 @@ int main(int argc, char *argv[])
 
 			/* flag = generate exe info file */
 
-			if (opnum == 10) {
+			if (opnum == OP_CREATE_INFO) {
 				FILE *fp;
 
 				fp = fopen(tcinfoname, "w+t");
