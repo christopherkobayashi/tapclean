@@ -87,9 +87,9 @@ void powerload_search (void)
 
 	/*
 	 * First we retrieve the Power Load variables from the CBM data.
-	 * We use CBM DATA index # 3 as we assume the tape image contains 
+	 * We use CBM DATA index # 3 as we assume the tape image contains
 	 * a single game.
-	 * For compilations we should search and find the relevant file 
+	 * For compilations we should search and find the relevant file
 	 * using the search code found e.g. in Biturbo.
 	 */
 	ib = find_decode_block(CBM_DATA, 3);
@@ -213,40 +213,42 @@ void powerload_search (void)
 
 						offset = find_seq (buf, bufsz, seq_load_lsb, sizeof(seq_load_lsb) / sizeof(seq_load_lsb[0]));
 						if (offset != -1) {
-							index++;
+							index |= 1;
 							next_s = buf[offset + 1];
 						}
-	
+
 						offset = find_seq (buf, bufsz, seq_load_msb, sizeof(seq_load_msb) / sizeof(seq_load_msb[0]));
 						if (offset != -1) {
-							index++;
+							index |= 2;
 							next_s |= buf[offset + 1] << 8;
 						}
-	
+
 						offset = find_seq (buf, bufsz, seq_end_lsb, sizeof(seq_end_lsb) / sizeof(seq_end_lsb[0]));
 						if (offset != -1) {
-							index++;
+							index |= 4;
 							next_e = buf[offset + 1];
 						}
-	
+
 						offset = find_seq (buf, bufsz, seq_end_msb, sizeof(seq_end_msb) / sizeof(seq_end_msb[0]));
 						if (offset != -1) {
-							index++;
+							index |= 8;
 							next_e |= buf[offset + 1] << 8;
 						}
 
 						offset = find_seq (buf, bufsz, seq_exec, sizeof(seq_exec) / sizeof(seq_exec[0]));
 						if (offset != -1) {
-							index++;
+							index |= 16;
 							next_meta1 = (next_e << 16) | buf[offset + 5] | (buf[offset + 6] << 8);
 						}
-	
-						if (index >= 4) {
+
+						/* Update s and e for next block if info was found */
+						if ((index & 15) == 15) {
 							s = next_s;
 							e = next_e;
 						}
 
-						if (index == 5)
+						/* Set execution address for next block if info was found */
+						if ((index & 16) == 16)
 							meta1 = next_meta1;
 
 						free (buf);
