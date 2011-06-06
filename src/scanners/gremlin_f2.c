@@ -115,7 +115,14 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-/* Check for genuine/known variant */
+/*
+ * Check for genuine/known variant
+ *
+ * Returns:
+ *  - 0  if CBM Data block was not found at index cbm_index
+ *  - -1 if CBM data does not contain a known variant
+ *  - variant number (> 0)
+ */
 static int gremlinf2_find_variant (int cbm_index)
 {
 	int variant = 0;
@@ -188,7 +195,7 @@ void gremlinf2_search (void)
 	cbm_index = 3;
 
 	variant = gremlinf2_find_variant(cbm_index);
-	if (variant == -1)
+	if (variant <= 0)
 		return;
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
