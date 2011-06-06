@@ -115,40 +115,32 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-/*
- * First we check if this is the genuine format/a known variant.
- * We use CBM DATA index # 3 to check as we assume the tape image contains
- * a single game.
- * For compilations we should search and find the relevant file using the
- * search code found e.g. in Biturbo.
- */
-static int gremlinf2_find_variant (void)
+/* Check for genuine/known variant */
+static int gremlinf2_find_variant (int cbm_index)
 {
-	static int variant = 0;		/* Only check CBM data once */
+	int variant = 0;
 
-	if (variant == 0) {
-		int ib;			/* condition variable */
+	int ib;			/* condition variable */
 
-		ib = find_decode_block(CBM_DATA, 3);
-		if (ib != -1) {
-			unsigned int crc;
+	ib = find_decode_block(CBM_DATA, cbm_index);
+	if (ib != -1) {
+		unsigned int crc;
 
-			/*
-			 * At this stage the describe functions have not been invoked
-			 * yet, therefore we have to compute the CRC-32 on the fly.
-			 */
-			crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+		/*
+		 * At this stage the describe functions have not been invoked
+		 * yet, therefore we have to compute the CRC-32 on the fly.
+		 */
+		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
 
-			switch (crc) {
-				case 0x550B8259:
-					variant = 1;
-					break;
-				case 0x18D695E3:
-					variant = 2;
-					break;
-				default:
-					variant = -1;
-			}
+		switch (crc) {
+			case 0x550B8259:
+				variant = 1;
+				break;
+			case 0x18D695E3:
+				variant = 2;
+				break;
+			default:
+				variant = -1;
 		}
 	}
 
@@ -170,6 +162,8 @@ void gremlinf2_search (void)
 	unsigned int current_s, current_x;
 	int current_id;
 
+	int cbm_index;			/* Index of the CBM data block to get info from */
+
 	int variant;
 
 	int xinfo;			/* extra info used in addblockdef() */
@@ -184,8 +178,16 @@ void gremlinf2_search (void)
 	if (!quiet)
 		msgout("  Gremlin F2");
 
-	/* Check for genuine/known variant */
-	variant = gremlinf2_find_variant();
+	/*
+	 * First we check if this is the genuine format/a known variant.
+	 * We use CBM DATA index # 3 to check as we assume the tape image contains
+	 * a single game.
+	 * For compilations we should search and find the relevant file using the
+	 * search code found e.g. in Biturbo.
+	 */
+	cbm_index = 3;
+
+	variant = gremlinf2_find_variant(cbm_index);
 	if (variant == -1)
 		return;
 
@@ -259,12 +261,12 @@ void gremlinf2_search (void)
 			/* Check if we had a premature exit */
 			if (current_id != 1) {
 				if (!quiet) {
-		                        sprintf(lin,"\nFATAL : read error in Gremlin F2 header!");
-                		        msgout(lin);
-		                        sprintf(lin,"\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
-                		        msgout(lin);
-		                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of Gremlin F2 files. ");
-                		        msgout(lin);
+					sprintf(lin,"\nFATAL : read error in Gremlin F2 header!");
+					msgout(lin);
+					sprintf(lin,"\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
+					msgout(lin);
+					sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of Gremlin F2 files. ");
+					msgout(lin);
 				}
 				continue;
 			}
@@ -288,7 +290,7 @@ void gremlinf2_search (void)
 			/* Store the overall load/end addresses as extra-info */
 			xinfo = s + (e << 16);
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, variant) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -320,9 +322,9 @@ int gremlinf2_describe (int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	variant = gremlinf2_find_variant();
-
 	/* Hook the relevant decrypt function */
+	variant = blk[row]->meta1;
+
 	switch (variant) {
 		case 1:
 			gremlinf2_decrypt = gremlinf2_decrypt_v1;
