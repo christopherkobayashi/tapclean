@@ -165,7 +165,7 @@ void powerload_search (void)
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
-			/* Trace back to the checkbyte position */
+			/* Trace back to find the checkbyte position */
 			post = eof - (eof - eod) % BITSINABYTE;	/* Byte boundary */
 
 			while (post > eod + BITSINABYTE &&
@@ -173,8 +173,15 @@ void powerload_search (void)
 					readttbyte(post - BITSINABYTE, lp, sp, tp, en) == 0)
 				post -= BITSINABYTE;
 
-			/* Extend data block to include post-data */
-			e += (post - eod) / BITSINABYTE - 2;
+			/*
+			 * Extend data block to include post-data (Note: eod
+			 * points to the first pulse of last data byte and we
+			 * need to exclude the checksum too, hence "- 2")
+			 */
+			if (post - eod > 2 * BITSINABYTE)
+				e = (e + (post - eod) / BITSINABYTE - 2) & 0xFFFF;
+
+			/* Plausibility check */
 			if (e < s)
 				continue;
 
