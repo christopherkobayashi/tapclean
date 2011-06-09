@@ -167,6 +167,13 @@ static int gremlinf2_find_variant (int cbm_index)
 		 */
 		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
 
+		/*
+		 * TODO: we should dynamically find the decrypt key by
+		 * decrypting the 2nd CBM data file.
+		 * However, as long as only a few different keys were used,
+		 * this approach still makes sense and saves pattern search
+		 * and decrypt.
+		 */
 		switch (crc) {
 			case 0x550B8259:
 				variant = 1;

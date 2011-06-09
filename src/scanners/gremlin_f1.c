@@ -124,12 +124,18 @@ void gremlinf1_search (void)
 	if (ib != -1) {
 		unsigned int crc;
 
-		/* At this stage the CRC-32s were not computed yet */
+		/*
+		 * At this stage the describe functions have not been invoked
+		 * yet, therefore we have to compute the CRC-32 on the fly.
+		 */
 		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
 
 		/*
-		 * TODO: we should dynamically find the info by
+		 * TODO: we should dynamically find the decrypt key by
 		 * decrypting the 2nd CBM data file.
+		 * However, as long as only a few different keys were used,
+		 * this approach still makes sense and saves pattern search
+		 * and decrypt.
 		 */
 		switch (crc) {
 			case 0x9841607A:
