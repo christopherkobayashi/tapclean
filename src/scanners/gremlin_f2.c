@@ -60,7 +60,7 @@ typedef int (*gremlinf2decryptproc_t)(int, unsigned int);
 
 static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
 {
-	/* Krakout and Bulldog */
+	/* Bulldog, Krakout, Pool, Snooker, and Westbank */
 	static unsigned char dblock[] = {
 		0x78, 0xA9, 0xD1, 0x8D, 0xFA, 0xFF, 0x8D, 0xFE, 0xFF, 0xA9, 0x00, 0x8D, 0xFB, 0xFF, 0x8D, 0xFF,
 		0xFF, 0xA9, 0x7F, 0x8D, 0x0D, 0xDC, 0x8D, 0x0D, 0xDD, 0xAD, 0x0D, 0xDC, 0xAD, 0x0D, 0xDD, 0xA9,
@@ -472,7 +472,7 @@ int gremlinf2_describe (int row)
 		b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
 		if (b != -1) {
 			exec |= (b << 8);
-			sprintf(lin, "\n - Execution address: $%04X", exec);
+			sprintf(lin, "\n - Execution address: $%04X (SYS %d)", exec, exec);
 			strcat(info, lin);
 		}
 	}
