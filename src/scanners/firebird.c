@@ -30,6 +30,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #define SYNC2 0x42
 #define HDSZ 4
 

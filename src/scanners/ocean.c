@@ -38,6 +38,8 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
+
 /*---------------------------------------------------------------------------
 */
 void ocean_search(void)

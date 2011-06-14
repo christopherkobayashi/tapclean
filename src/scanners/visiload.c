@@ -72,6 +72,10 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 #include "../main.h" 
 #include "../mydefs.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define HDSZ 4
 
 /* As found in first header byte of T1 modifier at the end of a chain */

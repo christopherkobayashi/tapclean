@@ -56,6 +56,7 @@ const char wavoutname[] =	"out.wav";
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static int s_out(unsigned char amp, int finished, FILE *filep, unsigned long *bp, char *outbuf)
 {

@@ -27,6 +27,8 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
+
 #define SYNC 0x33
 #define HDSZ 4
 

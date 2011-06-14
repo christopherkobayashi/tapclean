@@ -39,6 +39,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define THISLOADER	CHUCKIEEGG
 
 #define BITSINABYTE	9	/* a byte is made up of 9 bits here */

@@ -28,8 +28,11 @@
 #include "../mydefs.h"
 #include "../main.h"
 
-#define HDSZ 8
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+#define HDSZ 8
 
 void hitec_search(void)
 {

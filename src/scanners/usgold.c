@@ -27,6 +27,9 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 #define HDSZ 20
 
 #define BLK_GENUINE          0

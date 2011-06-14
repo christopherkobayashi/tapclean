@@ -34,6 +34,11 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /*---------------------------------------------------------------------------
 */
 void nova_search(void)
@@ -42,7 +47,7 @@ void nova_search(void)
    int sof,sod,eod,eof,z;
    int len,total_blocks;
    int b1,b2,hd[256];
-   float ftmp;
+   double ftmp;
 
    if(!quiet)
       msgout("  Novaload");
@@ -90,7 +95,7 @@ void nova_search(void)
                if(x!=(e-s))  /* this calculation IS correct. */
                   x=(e-s);
 
-               ftmp= ceil((float)x/256);  /* compute total no. blocks  (inc. any <256 bytes!) */
+               ftmp= ceil((double)x/256);  /* compute total no. blocks  (inc. any <256 bytes!) */
                total_blocks= (int)ftmp;    /* this count is needed to compute the EOF */
 
                if(total_blocks>0)   /* jetsons side 2 revealed a negative value here causing a lockup (fixed by this). */
@@ -124,7 +129,7 @@ int nova_describe(int row)
    int s,i,tmp,blen,cnt;
    int b,rd_err,hd[256], cb;  /* novaload headers can be ANY size! */
    int fnlen,subs,full;
-   float ftmp;
+   double ftmp;
    char fn[256];
    char str[2000];
 
@@ -158,9 +163,9 @@ int nova_describe(int row)
       strcat(info,lin);
    }
 
-   ftmp= ceil((float)blk[row]->cx/256);  /* compute total no. blocks  (inc. any <256 bytes) */
+   ftmp= ceil((double)blk[row]->cx/256);  /* compute total no. blocks  (inc. any <256 bytes) */
    subs= (int)ftmp;
-   ftmp= floor((float)blk[row]->cx/256); /* compute total no. blocks (!inc. any <256 bytes) */
+   ftmp= floor((double)blk[row]->cx/256); /* compute total no. blocks (!inc. any <256 bytes) */
    full= (int)ftmp;
    sprintf(lin,"\n - Sub-blocks: %d (%d full)",subs,full);
    strcat(info,lin);
@@ -200,8 +205,8 @@ int nova_describe(int row)
 
    tmp= (int)hd[0];               /* get length of filename... */
    blen= blk[row]->cx;            /* get total length... */
-   ftmp= ceil((float)blen/256);   /* compute total no. blocks  (inc. any <256 bytes!) */
-   blen+= (ftmp+tmp+7);           /* add in the extra byte (checksum) for each sub block  + main header. */
+   ftmp= ceil((double)blen/256);   /* compute total no. blocks  (inc. any <256 bytes!) */
+   blen+= ((int)ftmp+tmp+7);           /* add in the extra byte (checksum) for each sub block  + main header. */
    cb= 0;
 
    for(i=0; i<blen; i++)

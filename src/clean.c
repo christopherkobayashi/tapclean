@@ -33,6 +33,10 @@
 #include "mydefs.h"
 #include "skewadapt.h"
 
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 /*
  * Make the current TAP header size == tap.len - 20

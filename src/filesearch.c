@@ -39,8 +39,23 @@
  *
  */
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#if (defined WIN32)
+#include <io.h>
+#include <direct.h>
+#elif defined DJGPP
+#include <dir.h>
+#else
+#include <dirent.h>
+#include <unistd.h>
+#endif
+
 #include "filesearch.h"
 #include "main.h"
+#include "mydefs.h"
 
 /*
  * builds a linked-list of all directory names available under 'rootdir'...

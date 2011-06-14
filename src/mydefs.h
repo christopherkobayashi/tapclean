@@ -26,22 +26,6 @@
  *
  */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <ctype.h>
-#include <malloc.h>
-#include <time.h>
-#ifdef WIN32
-#include <direct.h>
-#include <io.h>
-#else
-#include <unistd.h>
-#include <dirent.h>
-#endif
-
 #include "database.h"
 #include "scanners/_scanners.h"
 #include "crc32.h"

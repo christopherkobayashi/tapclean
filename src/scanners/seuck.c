@@ -31,6 +31,8 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
+
 #define GAME_SYNC 0xAC
 #define GAME_SIZE 63226
 

@@ -36,6 +36,10 @@ Hammerfist    |  $0F   | $99  | $AA
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /*---------------------------------------------------------------------------
 */
 void cyberload_f4_search(void)

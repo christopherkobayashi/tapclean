@@ -24,6 +24,11 @@
  */
 
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
 #include "main.h"
 #include "mydefs.h"
 #include "crc32.h"
@@ -2468,7 +2473,7 @@ int load_tap(char *name)
 			return 0;
 		}
 
-		tap.len = convert_dc2n(input_buffer, output_buffer, flen);
+		tap.len = convert_dc2n(input_buffer, output_buffer, (int)flen);
 		tap.tmem = output_buffer;
 		free (input_buffer);
 	} else {

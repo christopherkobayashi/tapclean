@@ -5,6 +5,17 @@
  *	Details here.
  */
 
+#ifdef WIN32
+#include <io.h>
+#include <direct.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "mydefs.h"
 #include "database.h"
 #include "main.h"

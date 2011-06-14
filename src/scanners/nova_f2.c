@@ -27,6 +27,8 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
+
 /*---------------------------------------------------------------------------
 */
 void nova_spc_search(void)

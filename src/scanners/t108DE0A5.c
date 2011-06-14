@@ -39,6 +39,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define THISLOADER	T108DE0A5
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */

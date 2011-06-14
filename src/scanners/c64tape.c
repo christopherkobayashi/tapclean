@@ -27,6 +27,10 @@
 #include "../main.h"
 #include "../mydefs.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #define FIRST 0
 #define REPEAT 1
 

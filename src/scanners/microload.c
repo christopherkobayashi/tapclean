@@ -28,6 +28,7 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
 
 #define HDSZ 4
 

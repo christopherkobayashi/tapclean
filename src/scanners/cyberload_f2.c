@@ -31,6 +31,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /*---------------------------------------------------------------------------
 */
 int cyber_f2_eor1 = 0xAE;	/* default XOR codes for cyberload f2.. */

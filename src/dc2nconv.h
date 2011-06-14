@@ -12,6 +12,6 @@
 #ifndef __DC2NCONV_H__
 #define __DC2NCONV_H__
 
-size_t convert_dc2n(unsigned char *, unsigned char *, size_t);
+int convert_dc2n(unsigned char *, unsigned char *, int);
 
 #endif

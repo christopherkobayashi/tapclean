@@ -26,8 +26,6 @@
 #ifndef __TAP2AUDIO_H__
 #define __TAP2AUDIO_H__
 
-#include <stdio.h>
-
 #define BUFSZ	1048576	/* buffer size = 1 MB */
 #define FREQ	44100
 #define AUHDSZ	24	/*!< Size of .AU file header. */

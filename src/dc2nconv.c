@@ -7,6 +7,8 @@
 #include "dc2nconv.h"
 #include "main.h"
 
+#include <string.h>
+
 #define C16_TAPE_RAW_SUPPORT	/* Use Markus' extension as with MTAP */
 
 #ifdef C16_TAPE_RAW_SUPPORT
@@ -57,7 +59,7 @@ struct _dmp_header {
  * @return Amount of bytes written to output buffer
  */
 
-static size_t write_long_pulse(unsigned char *output_buffer, unsigned long lp)
+static int write_long_pulse(unsigned char *output_buffer, unsigned long lp)
 {
 	unsigned int zerot;
 	int wbytes = 0;
@@ -178,10 +180,10 @@ unsigned long downsample_c16_ntsc (unsigned long utime)
  * @return Amount of useful bytes in the output buffer
  */
 
-size_t convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, size_t flen)
+int convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, int flen)
 {
-	size_t olen;
-	size_t i;
+	int olen;
+	int i;
 	unsigned long utime, clockcycles, longpulse;
 	unsigned long pulse;
 	struct _tap_header *th;

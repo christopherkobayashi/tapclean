@@ -28,6 +28,8 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
 
 void pause_search(void)
 {

@@ -40,6 +40,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #define THISLOADER	GREMLINF2
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */

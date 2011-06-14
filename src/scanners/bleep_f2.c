@@ -32,7 +32,11 @@
 
 #include "../mydefs.h"
 #include "../main.h"
-    
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /*---------------------------------------------------------------------------*/
 void bleep_spc_search(void)
 {

@@ -37,6 +37,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 /*---------------------------------------------------------------------------
 */
 void cyberload_f1_search(void)

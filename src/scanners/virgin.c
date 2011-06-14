@@ -27,6 +27,10 @@
 #include "../main.h"
 #include "../mydefs.h"
   
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define HDSZ 8
 
 /*---------------------------------------------------------------------------

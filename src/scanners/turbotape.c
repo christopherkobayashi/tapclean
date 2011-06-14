@@ -48,6 +48,10 @@ further notes:-
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define LEAD 0x02
 #define SYNC 0x09
 #define HDSZ 21

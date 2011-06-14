@@ -27,6 +27,7 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <stdlib.h>
 
 void enigma_search(void)
 {

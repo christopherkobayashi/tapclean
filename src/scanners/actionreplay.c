@@ -39,6 +39,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define THISLOADER	ACTIONREPLAY_HDR
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */

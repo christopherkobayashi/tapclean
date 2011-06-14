@@ -33,6 +33,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #define PREPILOTVALUE	0x20
 #define HDSZ 10
 

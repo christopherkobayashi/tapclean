@@ -1,9 +1,6 @@
 
 /* crc32.h */
 
-#include <stdio.h>
-#include <malloc.h>
-
 #define CRC32_POLYNOMIAL	0xEDB88320L
 
 int build_crc_table(void);

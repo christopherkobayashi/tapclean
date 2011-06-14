@@ -27,6 +27,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 /*---------------------------------------------------------------------------
 */
 void palacef1_search(void)

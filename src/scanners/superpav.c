@@ -30,6 +30,10 @@
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 /*---------------------------------------------------------------------------
  note: set mode==1 to reset (no read performed)
 */
