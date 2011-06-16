@@ -311,7 +311,7 @@ enum {
 	nopalacef1,
 	nopalacef2,
 	nopav,
-	nopowerload,
+	nopower,
 	norackit,
 	norainbowf1,
 	norainbowf2,

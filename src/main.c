@@ -114,7 +114,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Palace F1"			,"palacef1"	,FALSE},
 	{"Palace F2"			,"palacef2"	,FALSE},
 	{"Pavloda"			,"pav"		,FALSE},
-	{"Power Load"			,"powerload"	,FALSE},
+	{"Power Load"			,"power"	,FALSE},
 	{"Rack-It"			,"rackit"	,FALSE},
 	{"Rainbow Arts F1"		,"rainbowf1"	,FALSE},
 	{"Rainbow Arts F2"		,"rainbowf2"	,FALSE},
@@ -1039,7 +1039,7 @@ static void search_tap(void)
 			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
 				alternativedk_search();
 
-			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopowerload	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].state == FALSE  && !dbase_is_full && !aborted)
 				powerload_search();
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
@@ -1268,7 +1268,7 @@ static void search_tap(void)
 			//if (ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
 			//	alternativedk_search();
 
-			//if (ldrswt[nopowerload].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[nopower	].state == FALSE  && !dbase_is_full && !aborted)
 			//	powerload_search();
 
 			//if (ldrswt[nogremlinf1].state == FALSE  && !dbase_is_full && !aborted)
