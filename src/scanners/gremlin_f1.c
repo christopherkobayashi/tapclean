@@ -227,12 +227,12 @@ void gremlinf1_search (void)
 			/* Check if we had a premature exit */
 			if (current_id != 1) {
 				if (!quiet) {
-		                        sprintf(lin,"\nFATAL : read error in Gremlin F1 header!");
-                		        msgout(lin);
-		                        sprintf(lin,"\nGremlin F1 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
-                		        msgout(lin);
-		                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of Gremlin F1 files. ");
-                		        msgout(lin);
+					sprintf(lin,"\nFATAL : read error in Gremlin F1 header!");
+					msgout(lin);
+					sprintf(lin,"\nGremlin F1 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
+					msgout(lin);
+					sprintf(lin,"\nIncreasing read tolerance should allow detection of Gremlin F1 files. ");
+					msgout(lin);
 				}
 				continue;
 			}

@@ -314,7 +314,7 @@ void gremlinf2_search (void)
 					msgout(lin);
 					sprintf(lin,"\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
 					msgout(lin);
-					sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of Gremlin F2 files. ");
+					sprintf(lin,"\nIncreasing read tolerance should allow detection of Gremlin F2 files. ");
 					msgout(lin);
 				}
 				continue;
