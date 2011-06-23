@@ -15,6 +15,8 @@ v0.27
 	 the report (Luigi)
 	New: Added support for "Gremlin F2" variant found in one version of 
 	 Footballer Of The Year (Luigi)
+	Fix: file search now works properly under Linux/Unix too during batch 
+	 scan (Luigi)
 
 v0.26
 	Improvement: pilot backtrace in c64tape.c does not step on previously 

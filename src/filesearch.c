@@ -57,6 +57,35 @@
 #include "main.h"
 #include "mydefs.h"
 
+#if !defined (WIN32) && !defined (DJGPP)
+/* We can't pass this one to the select function as argument */
+static char *module_mask = NULL;
+
+/*
+ * Very simple file select function for extension-like filters
+ */
+int file_select (const struct dirent * entry)
+{
+	char *ptr_entry, *ptr_mask;
+
+	ptr_entry = strrchr(entry->d_name, '.');
+	ptr_mask = strrchr(module_mask, '.');
+
+	/* The mask is not filtering on extension, select entry then */
+	if (ptr_mask == NULL)
+		return 1;
+
+	/* The entry does not contain an extension at all, skip it */
+	if (ptr_entry == NULL)
+		return 0;
+
+	if (strcasecmp(ptr_entry, ptr_mask))
+		return 0;
+
+	return 1;
+}
+#endif
+
 /*
  * builds a linked-list of all directory names available under 'rootdir'...
  * returns a pointer to the linked-list of path names (root node).
@@ -287,7 +316,8 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 			} while (findnext(&ffblk)==0);
 		}
 #else
-		n = scandir(".", &namelist, NULL, NULL);
+		module_mask = mask;
+		n = scandir(".", &namelist, file_select, NULL);
 
 		for (i = 0; i < n; i++) {
 			if (namelist[i]->d_type == DT_REG) {
