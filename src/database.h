@@ -52,7 +52,7 @@ struct blk_t
 	int trail_len;		/*!< length of trail tone (in bytes or pulses) 
 				     (should be long) */
 
-	char *fn;		/*!< pointer to file name (if applicable) */
+	char *fn;		/*!< pointer to ASCII file name (if applicable) */
 	int ok;			/*!< file ok indicator, 1=ok. */ 
 };
 
@@ -65,6 +65,8 @@ struct blk_t
 
 struct prg_t
 {
+	int blkidstart;		/*!< database block where PRG contents start */
+
 	int lt;			/*!< loader type (required for block 
 				     unification) */
 
@@ -72,6 +74,7 @@ struct prg_t
 	int ce;			/*!< c64 RAM end pos (16 bit value) */
 	int cx;			/*!< c64 RAM len (16 bit value) */
 
+	char *fn;		/*!< pointer to ASCII file name (if applicable) */
 	unsigned char *dd;	/*!< pointer to decoded data block */
 
 	int errors;		/*!< number of read errors in the file (should 

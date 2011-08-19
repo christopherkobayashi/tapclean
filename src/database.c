@@ -247,7 +247,7 @@ void scan_gaps(void)
 {
 	int i, p1, p2, sz;
 
-	p1 = 20;			/* choose start of TAP and 1st blocks first pulse  */
+	p1 = 20;			/* choose start of TAP and 1st block's first pulse  */
 	p2 = blk[0]->p1;
 
 	if (p1 < p2) {
@@ -473,8 +473,8 @@ void destroy_database(void)
 /*
  * Create a table of exportable PRGs in the prg[] array based on the current
  * data extractions available in the blk[] array.
- * Note: if 'joinprgneighbours' is not 0, then any neigbouring files will be
- * connected as a single PRG. (neighbour = data addresses run consecutively).
+ * Note: if 'prgunite' is not 0, then any neigbouring files will be connected
+ * as a single PRG. (neighbour = data addresses run consecutively).
  */
 
 void make_prgs(void)
@@ -508,6 +508,10 @@ void make_prgs(void)
 			s = blk[pt[i]]->cs;	/* keep 1st start address. */
 			errors = 0;		/* this will count the errors found in each blk */
 						/* entry used to create the final data prg in tmp. */
+
+			prg[j].blkidstart = pt[i];
+			prg[j].fn = blk[pt[i]]->fn; /* No need to make a copy here */
+
 			do {
 				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
 							/* note: where files are united, the type will */
@@ -608,7 +612,12 @@ int save_prgs(void)
 	}
 
 	for (i = 0; prg[i].lt != 0; i++) {
-		sprintf(lin, "%03d (%04X-%04X)", i + 1, prg[i].cs, prg[i].ce);
+		sprintf(lin, "%03d (%04X-%04X)", prg[i].blkidstart + 1, prg[i].cs, prg[i].ce);
+		if (prg[i].fn != NULL)
+		{
+			strcat(lin, " ");
+			strcat(lin, prg[i].fn);
+		}
 		if (prg[i].errors != 0)		/* append error indicator (if necessary) */
 			strcat(lin, " BAD");
 		strcat(lin, ".prg");
