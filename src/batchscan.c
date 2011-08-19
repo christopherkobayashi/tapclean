@@ -225,7 +225,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 				taps[i]->crc = tap.crc;
 				taps[i]->cbmcrc = tap.cbmcrc;
 				taps[i]->cbmid = tap.cbmid;
-				strcpy(taps[i]->cbmname, tap.cbmname);
+				strcpy(taps[i]->cbmname, tap.cbmname); /* ASCII */
 				taps[i]->tst_hd = tap.tst_hd;
 				taps[i]->tst_rc = tap.tst_rc;
 				taps[i]->tst_op = tap.tst_op;

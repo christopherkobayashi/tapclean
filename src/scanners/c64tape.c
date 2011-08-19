@@ -580,17 +580,17 @@ int cbm_describe(int row)
 			fn[j++] = hd[i + 5];
 		}
 		fn[j] = 0;
+
 		trim_string(fn);
-
-		if (strcmp(tap.cbmname, "") == 0)	/* record the 1st found CBM name in 'tap.cbmname' */
-			strcpy(tap.cbmname, fn);
-
-		pet2text(str, fn);		/* record filename */
+		pet2text(str, fn);
 
 		if (blk[row]->fn != NULL)
 			free(blk[row]->fn);
 		blk[row]->fn = (char*)malloc(strlen(str) + 1);
 		strcpy(blk[row]->fn, str);
+
+		if (strcmp(tap.cbmname, "") == 0)	/* record the 1st found CBM name in 'tap.cbmname' */
+			strcpy(tap.cbmname, str);
 	}
 
 	if (blk[row]->lt == CBM_DATA) {

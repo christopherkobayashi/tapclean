@@ -1799,9 +1799,9 @@ static void print_results(char *buf)
 
 	if (tap.bootable) {
 		if (tap.bootable == 1)
-			sprintf(lin, "\nBootable    : YES (1 part, name: %s)", pet2text(tmp, tap.cbmname));
+			sprintf(lin, "\nBootable    : YES (1 part, name: %s)", tap.cbmname);
 		else
-			sprintf(lin, "\nBootable    : YES (%d parts, 1st name: %s)", tap.bootable, pet2text(tmp, tap.cbmname));
+			sprintf(lin, "\nBootable    : YES (%d parts, 1st name: %s)", tap.bootable, tap.cbmname);
 		strcat(buf, lin);
 	} else {
 		sprintf(lin, "\nBootable    : NO");
