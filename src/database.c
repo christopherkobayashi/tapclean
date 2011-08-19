@@ -615,8 +615,9 @@ int save_prgs(void)
 		sprintf(lin, "%03d (%04X-%04X)", prg[i].blkidstart + 1, prg[i].cs, prg[i].ce);
 		if (prg[i].fn != NULL)
 		{
-			strcat(lin, " ");
+			strcat(lin, " [");
 			strcat(lin, prg[i].fn);
+			strcat(lin, "]");
 		}
 		if (prg[i].errors != 0)		/* append error indicator (if necessary) */
 			strcat(lin, " BAD");
