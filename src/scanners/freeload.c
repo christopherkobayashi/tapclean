@@ -63,7 +63,11 @@ void freeload_search(void)
 
 				s = hd[0] + (hd[1] << 8);	/* get start address */
 				e = hd[2] + (hd[3] << 8);	/* get end address */
-				if (e > s) {
+				if (hd[0] >=0
+				 && hd[1] >=0
+				 && hd[2] >=0
+				 && hd[3] >=0
+				 && e > s) {
 					x = e - s;
 					eod = sod + ((x + HDSZ) * 8);
 					eof = eod + 7;
