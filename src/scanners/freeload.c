@@ -58,16 +58,19 @@ void freeload_search(void)
 
 				/* decode the header so we can validate the addresses... */
 
-				for (h = 0; h < HDSZ; h++)
+				for (h = 0; h < HDSZ; h++) {
 					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;
+				}
+
+				if (h != HDSZ)
+					continue;
 
 				s = hd[0] + (hd[1] << 8);	/* get start address */
 				e = hd[2] + (hd[3] << 8);	/* get end address */
-				if (hd[0] >=0
-				 && hd[1] >=0
-				 && hd[2] >=0
-				 && hd[3] >=0
-				 && e > s) {
+
+				if (e > s) {
 					x = e - s;
 					eod = sod + ((x + HDSZ) * 8);
 					eof = eod + 7;
