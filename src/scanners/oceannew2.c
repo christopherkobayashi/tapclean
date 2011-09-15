@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------
-	oceannew2.c (Ocean New Format 2)
+  oceannew2.c (Ocean New Format 2)
 
-	Part of project "Final TAP". 
+  Part of project "Final TAP". 
 	
-	A Commodore 64 tape remastering and data extraction utility.
+  A Commodore 64 tape remastering and data extraction utility.
 
-	(C) 2001-2006 Stewart Wilson, Subchrist Software.
+  (C) 2001-2006 Stewart Wilson, Subchrist Software.
 	 
 	
 	 
-	 This program is free software; you can redistribute it and/or modify it under 
-	 the terms of the GNU General Public License as published by the Free Software 
-	 Foundation; either version 2 of the License, or (at your option) any later 
-	 version.
+   This program is free software; you can redistribute it and/or modify it under 
+   the terms of the GNU General Public License as published by the Free Software 
+   Foundation; either version 2 of the License, or (at your option) any later 
+   version.
 	 
-	 This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-	 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-	 PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	 
-	 You should have received a copy of the GNU General Public License along with 
-	 this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
-	 St, Fifth Floor, Boston, MA 02110-1301 USA
+   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+   PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along with 
+   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+   St, Fifth Floor, Boston, MA 02110-1301 USA
 
 ---------------------------------------------------------------------------*/
 
@@ -56,28 +56,33 @@ void oceannew2_search(void)
 				sod=i+8;
 				/* decode the header so we can validate the addresses... */
 				for(h=0; h<HDSZ; h++)
+				{
 					hd[h] = readttbyte(sod+(h*8), ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en);
-					s=hd[0]+(hd[1]<<8);	 /* get start address */
-					e=hd[2]+(hd[3]<<8);	 /* get end address */
-					if (hd[0] >=0
-					 && hd[1] >=0
-					 && hd[2] >=0
-					 && hd[3] >=0
-					 && e>s)
-					{
-						x=e-s;
-						eod=sod+((x+HDSZ)*8);
-						eof=eod+7;
-						addblockdef(OCNEW2, sof,sod,eod,eof, 0);
-						i=eof;	/* optimize search */
-					}
+					if (hd[h] == -1)
+						break;
+				}
+
+				if (h != HDSZ)
+					continue;
+
+				s=hd[0]+(hd[1]<<8);	 /* get start address */
+				e=hd[2]+(hd[3]<<8);	 /* get end address */
+
+				if (e>s)
+				{
+					x=e-s;
+					eod=sod+((x+HDSZ)*8);
+					eof=eod+7;
+					addblockdef(OCNEW2, sof,sod,eod,eof, 0);
+					i=eof;	/* optimize search */
 				}
 			}
-			else
-			{
-				if(z<0)		/* find_pilot failed (too few/many), set i to failure point. */
+		}
+		else
+		{
+			if(z<0)		/* find_pilot failed (too few/many), set i to failure point. */
 				i=(-z);
-			}
+		}
 	 }
 }
 
