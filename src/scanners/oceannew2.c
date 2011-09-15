@@ -122,7 +122,7 @@ int oceannew2_describe(int row)
 		cb^= b;
 		if(b==-1)
 			blk[row]->rd_err++;
-			blk[row]->dd[i]= b;
+		blk[row]->dd[i]= b;
 	}
 	b= readttbyte(s+(i*8), ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en); /* read actual checkbyte. */
 
