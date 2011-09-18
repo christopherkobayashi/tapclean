@@ -1,3 +1,5 @@
+ - the block header validation recently (0.27) added to Freeload and Ocean New 
+   scanners by fabbo should be added to old scanners, wherever appropriate.
  - describe_file(i) is used in analyze() (via describe_blocks() in order to 
    calculate the overall CRC-32 value that is displayed in the summary) and in 
    report() (via print_database()) thus producing an unnecessary overhead (PRG 
