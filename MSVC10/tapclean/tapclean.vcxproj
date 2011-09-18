@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2A726374-46BC-427C-B1EA-882B4C95389B}</ProjectGuid>
+    <RootNamespace>tapclean</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\batchscan.c" />
+    <ClCompile Include="..\..\src\clean.c" />
+    <ClCompile Include="..\..\src\crc32.c" />
+    <ClCompile Include="..\..\src\database.c" />
+    <ClCompile Include="..\..\src\dc2nconv.c" />
+    <ClCompile Include="..\..\src\filesearch.c" />
+    <ClCompile Include="..\..\src\loader_id.c" />
+    <ClCompile Include="..\..\src\main.c" />
+    <ClCompile Include="..\..\src\skewadapt.c" />
+    <ClCompile Include="..\..\src\tap2audio.c" />
+    <ClCompile Include="..\..\src\scanners\aces.c" />
+    <ClCompile Include="..\..\src\scanners\aliensyndrome.c" />
+    <ClCompile Include="..\..\src\scanners\alternativewg.c" />
+    <ClCompile Include="..\..\src\scanners\anirog.c" />
+    <ClCompile Include="..\..\src\scanners\atlantis.c" />
+    <ClCompile Include="..\..\src\scanners\audiogenic.c" />
+    <ClCompile Include="..\..\src\scanners\bleep_f1.c" />
+    <ClCompile Include="..\..\src\scanners\bleep_f2.c" />
+    <ClCompile Include="..\..\src\scanners\burner.c" />
+    <ClCompile Include="..\..\src\scanners\c64tape.c" />
+    <ClCompile Include="..\..\src\scanners\chr.c" />
+    <ClCompile Include="..\..\src\scanners\cyberload_f1.c" />
+    <ClCompile Include="..\..\src\scanners\cyberload_f2.c" />
+    <ClCompile Include="..\..\src\scanners\cyberload_f3.c" />
+    <ClCompile Include="..\..\src\scanners\cyberload_f4.c" />
+    <ClCompile Include="..\..\src\scanners\enigma.c" />
+    <ClCompile Include="..\..\src\scanners\firebird.c" />
+    <ClCompile Include="..\..\src\scanners\flashload.c" />
+    <ClCompile Include="..\..\src\scanners\freeload.c" />
+    <ClCompile Include="..\..\src\scanners\hitec.c" />
+    <ClCompile Include="..\..\src\scanners\hitload.c" />
+    <ClCompile Include="..\..\src\scanners\ikloader.c" />
+    <ClCompile Include="..\..\src\scanners\jetload.c" />
+    <ClCompile Include="..\..\src\scanners\microload.c" />
+    <ClCompile Include="..\..\src\scanners\nova_f1.c" />
+    <ClCompile Include="..\..\src\scanners\nova_f2.c" />
+    <ClCompile Include="..\..\src\scanners\ocean.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew1t1.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew1t2.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew2.c" />
+    <ClCompile Include="..\..\src\scanners\palace_f1.c" />
+    <ClCompile Include="..\..\src\scanners\palace_f2.c" />
+    <ClCompile Include="..\..\src\scanners\pause.c" />
+    <ClCompile Include="..\..\src\scanners\pavloda.c" />
+    <ClCompile Include="..\..\src\scanners\rackit.c" />
+    <ClCompile Include="..\..\src\scanners\rasterload.c" />
+    <ClCompile Include="..\..\src\scanners\seuck.c" />
+    <ClCompile Include="..\..\src\scanners\snakeload50t1.c" />
+    <ClCompile Include="..\..\src\scanners\snakeload50t2.c" />
+    <ClCompile Include="..\..\src\scanners\snakeload51.c" />
+    <ClCompile Include="..\..\src\scanners\superpav.c" />
+    <ClCompile Include="..\..\src\scanners\supertape.c" />
+    <ClCompile Include="..\..\src\scanners\tdi.c" />
+    <ClCompile Include="..\..\src\scanners\turbotape.c" />
+    <ClCompile Include="..\..\src\scanners\turrican.c" />
+    <ClCompile Include="..\..\src\scanners\usgold.c" />
+    <ClCompile Include="..\..\src\scanners\virgin.c" />
+    <ClCompile Include="..\..\src\scanners\visiload.c" />
+    <ClCompile Include="..\..\src\scanners\wildload.c" />
+    <ClCompile Include="..\..\src\scanners\t108DE0A5.c" />
+    <ClCompile Include="..\..\src\scanners\accolade.c" />
+    <ClCompile Include="..\..\src\scanners\actionreplay.c" />
+    <ClCompile Include="..\..\src\scanners\alternativedk.c" />
+    <ClCompile Include="..\..\src\scanners\alternativesw.c" />
+    <ClCompile Include="..\..\src\scanners\ashdave.c" />
+    <ClCompile Include="..\..\src\scanners\biturbo.c" />
+    <ClCompile Include="..\..\src\scanners\burner_var.c" />
+    <ClCompile Include="..\..\src\scanners\chuckie_egg.c" />
+    <ClCompile Include="..\..\src\scanners\cult.c" />
+    <ClCompile Include="..\..\src\scanners\fastevil.c" />
+    <ClCompile Include="..\..\src\scanners\fftape.c" />
+    <ClCompile Include="..\..\src\scanners\freeslow.c" />
+    <ClCompile Include="..\..\src\scanners\goforgold.c" />
+    <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
+    <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew4.c" />
+    <ClCompile Include="..\..\src\scanners\odeload.c" />
+    <ClCompile Include="..\..\src\scanners\powerload.c" />
+    <ClCompile Include="..\..\src\scanners\rainbowarts_f1.c" />
+    <ClCompile Include="..\..\src\scanners\rainbowarts_f2.c" />
+    <ClCompile Include="..\..\src\scanners\tdi_f2.c" />
+    <ClCompile Include="..\..\src\scanners\tequila.c" />
+    <ClCompile Include="..\..\src\scanners\tes.c" />
+    <ClCompile Include="..\..\src\scanners\trilogic.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\scanners\_scanners.h" />
+    <ClInclude Include="..\..\src\crc32.h" />
+    <ClInclude Include="..\..\src\database.h" />
+    <ClInclude Include="..\..\src\dc2nconv.h" />
+    <ClInclude Include="..\..\src\filesearch.h" />
+    <ClInclude Include="..\..\src\main.h" />
+    <ClInclude Include="..\..\src\mydefs.h" />
+    <ClInclude Include="..\..\src\skewadapt.h" />
+    <ClInclude Include="..\..\src\tap2audio.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\scanners">
+      <UniqueIdentifier>{da4e2bb9-b7bf-4ea2-a1cc-1a034f42659b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\newscanners">
+      <UniqueIdentifier>{909d8e06-0a9e-4bf2-826d-750ebcacd207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\batchscan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\clean.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\database.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dc2nconv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\filesearch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\loader_id.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\skewadapt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tap2audio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\aces.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\aliensyndrome.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\alternativewg.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\anirog.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\atlantis.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\audiogenic.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\bleep_f1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\bleep_f2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\burner.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\c64tape.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\chr.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\cyberload_f1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\cyberload_f2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\cyberload_f3.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\cyberload_f4.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\enigma.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\firebird.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\flashload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\freeload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\hitec.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\hitload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\ikloader.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\jetload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\microload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\nova_f1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\nova_f2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\ocean.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\oceannew1t1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\oceannew1t2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\oceannew2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\palace_f1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\palace_f2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\pause.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\pavloda.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\rackit.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\rasterload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\seuck.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\snakeload50t1.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\snakeload50t2.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\snakeload51.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\superpav.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\supertape.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\tdi.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\turbotape.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\turrican.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\usgold.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\virgin.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\visiload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\wildload.c">
+      <Filter>Source Files\scanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\t108DE0A5.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\accolade.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\actionreplay.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\alternativedk.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\alternativesw.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\ashdave.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\biturbo.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\burner_var.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\chuckie_egg.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\cult.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\fastevil.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\fftape.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\freeslow.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\goforgold.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\gremlin_f1.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\oceannew4.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\odeload.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\powerload.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\rainbowarts_f1.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\rainbowarts_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\tdi_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\tequila.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\tes.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\trilogic.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\scanners\_scanners.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\crc32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dc2nconv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\filesearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mydefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\skewadapt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tap2audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
