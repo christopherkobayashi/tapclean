@@ -320,9 +320,6 @@ void visiload_search(void)
 
                i= j;     /* optimize search (theres usually only 1 chain though). */
                 
-               sof= j;   /* set these ready for next block */
-               sod= j;
-
                /* set formatting parameters for next block... */
                if(start==0x034B)
                   ab= db1-8;   /* first data byte holds no.of bits per byte for next block */
@@ -337,7 +334,51 @@ void visiload_search(void)
                      en= LSbF;
                }
                if(start==0x03BB) /* Next block WILL have PILOT tone before it (ANY number , can be 1 !) */
+               {
                   pt=1;
+
+                  /* Narco Police requires loader parameter reset every so often */
+                  if (end == 0x03DB)
+                  {
+                     #define NARCO_POLICE_MODIFIER_SZ 0x20
+
+                     int data_offset;
+                     unsigned char modifier_block[NARCO_POLICE_MODIFIER_SZ];
+                     int m_index;
+                     unsigned int crc;
+
+                     data_offset = sod+(ah+HDSZ)*(8+ab);
+
+                     /* We have to extract data here and check it; no other option possible */
+                     for (m_index = 0; m_index < NARCO_POLICE_MODIFIER_SZ; m_index++)
+                     {
+                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
+#ifdef DEBUG
+                        if (m_index % 16 ==0)
+                           printf ("\n%06X: ", data_offset);
+                        printf ("%02X ", modifier_block[m_index]);
+#endif
+                     }
+
+                     crc = compute_crc32(modifier_block, NARCO_POLICE_MODIFIER_SZ);
+
+                     switch (crc)
+                     {
+                        case 0x22CA1A6A:  /* Loads the title screen */
+                        case 0x7DF3B6CE:  /* Loads the menu */
+                        case 0x50D31A06:
+                        case 0x0AD70202:
+
+                           en= MSbF;      /* Reset loader to use MSbF... */
+                           ab= 1;         /* ... 1 extra bit per byte... */
+                           ah= 0;         /* ... and no extra header bytes... */
+                           break;
+                     }
+                  }
+               }
+
+               sof= j;   /* set these ready for next block */
+               sod= j;
             }
             while(j<tap.len-100);
 
