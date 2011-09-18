@@ -19,10 +19,10 @@ v0.27
 	 scan (Luigi)
 	Improvement: PRG filename now contains block index for quick cross-
 	 reference (Luigi)
-	Fix: Block header validation added for Freeload and Ocean New 2 in order 
+	Fix: Added block header validation for Freeload and Ocean New 2 in order 
 	 to prevent infinite loops (fabbo)
-	Improvement: support loader parameter reset in Narco Police (Visiload): 
-	 it now cleans 100% (Luigi)
+	Improvement: Added support for loader parameter reset in Narco Police 
+	 (Visiload): it now cleans 100% (Luigi)
 
 v0.26
 	Improvement: pilot backtrace in c64tape.c does not step on previously 
