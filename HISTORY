@@ -23,6 +23,10 @@ v0.27
 	 to prevent infinite loops (fabbo)
 	Improvement: Added support for loader parameter reset in Narco Police 
 	 (Visiload): it now cleans 100% (Luigi)
+	Fix: Added block header validation for aces, anirog, atlantis, burner, 
+    chr, firebird, flashload, hitec, hitload, ikloader, jetload, microload, 
+    oceannew1t1, oceannew1t2, rasterload, snakeload50t1, snakeload50t2, 
+    snakeload51, tdi, turbotape, turrican, usgold, virgin, visiload (Luigi)
 
 v0.26
 	Improvement: pilot backtrace in c64tape.c does not step on previously 
