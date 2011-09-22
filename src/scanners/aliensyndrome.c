@@ -61,17 +61,13 @@ void aliensyndrome_search(void)
 
 				/* decode the header so we can validate the addresses... */
 
-				for (h = 0; h < HDSZ; h++)
-				{
+				for (h = 0; h < HDSZ; h++) {
 					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
 					if (hd[h] == -1) /* fail in case of byte read error */
 						break;
 				}
-				if (h < HDSZ)
-				{
-					printf("i is %u\n",i);
+				if (h != HDSZ)
 					continue;
-				}
 
 				s = hd[4] + (hd[3] << 8);	/* get start address */
 				e = hd[2] + (hd[1] << 8);	/* get end address */
