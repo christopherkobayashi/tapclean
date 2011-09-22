@@ -36,7 +36,7 @@
 #define GAME_SYNC 0xAC
 #define GAME_SIZE 63226
 
-#define HDSZ 196
+#define L2_DATASIZE 196
 
 /*---------------------------------------------------------------------------
 */
@@ -62,7 +62,7 @@ void seuck1_search(void)
             if(byt==0xA2)   /* its the loader2 file... */
             {
                sod = i+8;
-               eod = sod+ (196*8);
+               eod = sod+ (L2_DATASIZE*8);
                eof = eod+7;
                addblockdef(SEUCK_L2, sof,sod,eod,eof, 0);
                i = eof;  /* optimize search */
@@ -117,7 +117,7 @@ int seuck1_describe(int row)
    {
       blk[row]->cs = 0x000A;
       blk[row]->ce = 0x00CD;
-      blk[row]->cx = 196;
+      blk[row]->cx = L2_DATASIZE;
       skip=0;
    }
    if(blk[row]->lt== SEUCK_DATA)
