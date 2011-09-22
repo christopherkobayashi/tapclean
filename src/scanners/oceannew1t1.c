@@ -61,8 +61,14 @@ void oceannew1t1_search(void)
 
 				/* decode the header so we can validate the addresses... */
 
-				for (h = 0; h < HDSZ; h++)
+				for (h = 0; h < HDSZ; h++) {
 					hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;
+				}
+				if (h != HDSZ)
+					continue;
+
 				s = hd[1] + (hd[2] << 8);	/* get start address */
 				e = hd[3] + (hd[4] << 8);	/* get end address */
 

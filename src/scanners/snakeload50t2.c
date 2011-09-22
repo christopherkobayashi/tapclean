@@ -55,7 +55,13 @@ void snakeload50t2_search(void)
             sod=i;
             /* decode the header so we can validate the addresses... */
             for(h=0; h<HDSZ; h++)
+            {
                hd[h] = readttbyte(sod+(h*8), ft[SNAKE50T2].lp, ft[SNAKE50T2].sp, ft[SNAKE50T2].tp, ft[SNAKE50T2].en);
+               if (hd[h] == -1)
+                  break;
+            }
+            if (h != HDSZ)
+               continue;
 
             /* check for identifier string "eilyk"... */
             if(hd[0]==0x65 && hd[1]==0x69 && hd[2]==0x6C && hd[3]==0x79 && hd[4]==0x4B)

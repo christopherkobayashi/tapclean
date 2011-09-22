@@ -88,8 +88,13 @@ void chr_search(void)
 
 						/* to find the last pulse, we look in the header for the start/end addresses... */
 
-						for (j = 0; j < HDSZ; j++)	/* decode the header...  */
+						for (j = 0; j < HDSZ; j++) {	/* decode the header...  */
 							hd[j] = readttbyte(sod + (j * 8), lp, sp, tp, en);
+							if (hd[j] == -1)
+								break;
+						}
+						if (j != HDSZ)
+							continue;
 
 						/* find block length */
 

@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define HDSZ 3 /* At least */
+
 /*---------------------------------------------------------------------------
 */
 void tdi_search(void)
@@ -63,8 +65,14 @@ void tdi_search(void)
             hdsz=3;     /* this is larger for multiload filetype. */
 
             /* decode header (note : could be either type)... */
-            for(j=0; j<3; j++)
+            for(j=0; j<HDSZ; j++)
+            {
                hd[j]= readttbyte(sod+(j*8), ft[TDI_F1].lp, ft[TDI_F1].sp, ft[TDI_F1].tp, ft[TDI_F1].en);
+               if (hd[j] == -1)
+                  break;
+            }
+            if (j != HDSZ)
+               continue;
 
             x= hd[0]+(hd[1]<<8);   /* decode data length */
 

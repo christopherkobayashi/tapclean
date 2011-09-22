@@ -57,8 +57,13 @@ void ik_search(void)
 					sod = i;
 
 					/* decode the header, so we can validate the addresses... */
-					for (j = 0; j < HDSZ; j++)
+					for (j = 0; j < HDSZ; j++) {
 						hd[j] = readttbyte(sod + (j * 8), ft[IK].lp, ft[IK].sp, ft[IK].tp, ft[IK].en);
+						if (hd[j] == -1)
+							break;
+					}
+					if (j != HDSZ)
+						continue;
 
 					s = hd[1] + (hd[2] << 8);	/* get start address */
 					e = hd[3] + (hd[4] << 8);	/* get end address */

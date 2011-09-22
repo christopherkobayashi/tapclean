@@ -53,8 +53,13 @@ void usgold_search(void)
 
 				/* decode the header, so we can validate the addresses */
 
-				for (tcnt = 0; tcnt < HDSZ; tcnt++)
+				for (tcnt = 0; tcnt < HDSZ; tcnt++) {
 					hd[tcnt] = readttbyte(sod + (tcnt * 8), ft[USGOLD].lp, ft[USGOLD].sp, ft[USGOLD].tp, ft[USGOLD].en);
+					if (hd[tcnt] == -1)
+						break;
+				}
+				if (tcnt != HDSZ)
+					continue;
 
 				x = (hd[18] + (hd[19] << 8)) - (hd[16] + (hd[17] << 8));
 

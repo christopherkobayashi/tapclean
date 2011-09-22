@@ -52,7 +52,13 @@ void atlantis_search(void)
             sod=i+8 +8;  /* extra +8 skips sync2 ($42)  */
             /* decode the header so we can validate the addresses...  */
             for(h=0; h<HDSZ; h++)
+            {
                hd[h] = readttbyte(sod+(h*8), ft[ATLAN].lp, ft[ATLAN].sp, ft[ATLAN].tp, ft[ATLAN].en);
+               if (hd[h] == -1)
+                  break;
+            }
+            if (h != HDSZ)
+               continue;
 
             s=hd[5]+(hd[4]<<8);   /* get start address */
             e=hd[3]+(hd[2]<<8);   /* get end address   */

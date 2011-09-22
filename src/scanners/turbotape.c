@@ -61,7 +61,8 @@ further notes:-
 void turbotape_search(void)
 {
    int i,cnt2,sof,sod,eod,eof,zcnt,z,hsize,psize;
-   unsigned char byt,pat[32],hd[HDSZ];
+   unsigned char byt,pat[32];
+   int hd[HDSZ];
 
    if(!quiet)
       msgout("  Turbotape 250 (+clones)");
@@ -90,7 +91,14 @@ void turbotape_search(void)
                {
                   /* decode first few so we can get the program size (needed later)... */
                   for(cnt2=0; cnt2<8; cnt2++)
+                  {
                      hd[cnt2] = readttbyte(sod+(cnt2*8), ft[TT_HEAD].lp, ft[TT_HEAD].sp, ft[TT_HEAD].tp, MSbF);
+                     if (hd[cnt2] == -1)
+                        break;
+                  }
+                  if (cnt2 != 8)
+                     continue;
+
                   psize = (hd[3]+(hd[4]<<8)) - (hd[1]+(hd[2]<<8)) +1; /*  end addr - start addr. */
 
                   /* now scan through any 0x20's after the used header bytes... (to find its end) */

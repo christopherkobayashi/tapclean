@@ -75,7 +75,13 @@ void turrican_search(void)
 
                   /* extract and save the addresses... */
                   for(j=0; j<5; j++)
+                  {
                      hd[j] = readttbyte(sod+(j*8), ft[TURR_HEAD].lp, ft[TURR_HEAD].sp, ft[TURR_HEAD].tp, ft[TURR_HEAD].en);
+                     if (hd[j] == -1)
+                        break;
+                  }
+                  if (j != 5)
+                     continue;
 
                   _dfs = hd[1]+(hd[2]<<8);
                   _dfe = hd[3]+(hd[4]<<8);

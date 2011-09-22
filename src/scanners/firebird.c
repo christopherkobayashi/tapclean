@@ -105,7 +105,13 @@ void firebird_search(void)
 
                /* decode the header, so we can validate the addresses... */
                for(j=0; j<HDSZ; j++)
+               {
                   hd[j] = readttbyte(sod+(j*8),lp,sp,tp, ft[ld].en);
+                  if (hd[j] == -1)
+                     break;
+               }
+               if (j != HDSZ)
+                  continue;
 
                s= hd[0]+ (hd[1]<<8);   /* get start address */
                e= hd[2]+ (hd[3]<<8);   /* get end address */

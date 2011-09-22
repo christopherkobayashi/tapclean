@@ -59,8 +59,13 @@ void hitec_search(void)
 
 				/* decode the header, so we can validate the addresses */
 
-				for (tcnt = 0; tcnt < HDSZ; tcnt++)
+				for (tcnt = 0; tcnt < HDSZ; tcnt++) {
 					hd[tcnt] = readttbyte(sod + (tcnt * 8), lp, sp, tp, en);
+					if (hd[tcnt] == -1)
+						break;
+				}
+				if (tcnt != HDSZ)
+					continue;
 
 				s = hd[2] + (hd[3] << 8);
 				e = hd[4] + (hd[5] << 8);

@@ -78,7 +78,13 @@ void burner_search(void)
 
             /* decode the header, so we can validate the addresses */
             for(j=0; j<HDSZ; j++)
+            {
                hd[j] = readttbyte(sod+(j*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en);
+               if (hd[j] == -1)
+                  break;
+            }
+            if (j != HDSZ)
+               continue;
 
             x= (hd[2]+(hd[3]<<8)) - (hd[0]+ (hd[1]<<8));  /* get data length */
             if(x>0)

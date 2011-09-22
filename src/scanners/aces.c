@@ -49,9 +49,15 @@ void aces_search(void)
 			if (readttbyte(i, ft[ACES].lp, ft[ACES].sp, ft[ACES].tp, ft[ACES].en) == ft[ACES].sv) {
 				sod = i + 8;
 
-				/* decode first few to read the block size */
-				for (j = 0; j < HDSZ; j++)
+				/* decode the header to calculate the block size */
+				for (j = 0; j < HDSZ; j++) {
 					hd[j] = readttbyte(sod + (j * 8), ft[ACES].lp, ft[ACES].sp, ft[ACES].tp, ft[ACES].en);
+					if (hd[j] == -1)
+						break;
+				}
+				if (j != HDSZ)
+					continue;
+
 				psize = (hd[2] + (hd[3] << 8)) - (hd[0] + (hd[1] << 8));
 
 				if (psize > 0) {

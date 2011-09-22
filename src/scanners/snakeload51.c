@@ -55,7 +55,13 @@ void snakeload51_search(void)
             sod=i;
             /* decode the header so we can validate the addresses... */
             for(h=0; h<HDSZ; h++)
+            {
                hd[h] = readttbyte(sod+(h*8), ft[SNAKE51].lp, ft[SNAKE51].sp, ft[SNAKE51].tp, ft[SNAKE51].en);
+               if (hd[h] == -1)
+                  break;
+            }
+            if (h != HDSZ)
+               continue;
 
             /* check for known identifier string... */
             if((hd[0]==0xB2 && hd[1]==0xB4 && hd[2]==0xB2 && hd[3]==0xD4) ||

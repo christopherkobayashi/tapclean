@@ -54,8 +54,13 @@ void hitload_search(void)
 				sod = i + 8;
 
 				/* decode the header, so we can validate the addresses */
-				for (tcnt = 0; tcnt < HDSZ; tcnt++)
+				for (tcnt = 0; tcnt < HDSZ; tcnt++) {
 					hd[tcnt] = readttbyte(sod + (tcnt * 8), ft[HITLOAD].lp, ft[HITLOAD].sp, ft[HITLOAD].tp, ft[HITLOAD].en);
+					if (hd[tcnt] == -1)
+						break;
+				}
+				if (tcnt != HDSZ)
+					continue;
 
 				lstart = hd[0] + (hd[1] << 8);	/* get start address */
 				lend = hd[2] + (hd[3] << 8);	/* get end address */

@@ -53,7 +53,14 @@ void raster_search(void)
             sod=i+8;
             /* decode the header, so we can validate the addresses */
             for(tcnt=0; tcnt<HDSZ; tcnt++)
+            {
                hd[tcnt] = readttbyte(sod+(tcnt*8), ft[RASTER].lp, ft[RASTER].sp, ft[RASTER].tp, ft[RASTER].en);
+               if (hd[tcnt] == -1)
+                  break;
+            }
+            if (tcnt != HDSZ)
+               continue;
+
             x = (hd[2]+(hd[3]<<8)) - (hd[0]+(hd[1]<<8))+1;   /* compute length */
             if(x>0)
             {

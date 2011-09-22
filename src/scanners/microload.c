@@ -37,7 +37,7 @@ void micro_search(void)
 {
 	int i, sof, sod, eod, eof;
 	int en, tp, sp, lp, sv;
-	int x, z, hd[HDSZ];
+	int x, z, h, hd[HDSZ];
 
 	en = ft[MICROLOAD].en;	/* set endian according to table in main.c */
 	tp = ft[MICROLOAD].tp;	/* set threshold */
@@ -61,8 +61,13 @@ void micro_search(void)
 
 					/* decode the header... */
 
-					for (i = 0; i < HDSZ; i++)
-						hd[i] = readttbyte(sod + (i * 8), lp, sp, tp, en);
+					for (h = 0; h < HDSZ; h++) {
+						hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
+						if (hd[h] == -1)
+							break;
+					}
+					if (h != HDSZ)
+						continue;
 
 					x = ((hd[2] + (hd[3] << 8)) ^ 0xFFFF) + 1;	/* get length */
                
