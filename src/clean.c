@@ -334,7 +334,7 @@ void clean_files(void)
    
 	/* look at each block type and clean it accordingly...  */
 
-	for (i = 0; blk[i]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE; i++) {
 		t = blk[i]->lt;		/* get block type and ideal pulses... */
 		sp = ft[t].sp;
 		mp = ft[t].mp;
@@ -482,7 +482,7 @@ void clean_files(void)
 	/* Flatten novaload trailers.. ie. gaps following NOVA blocks... */
 	/* this works nicely...  but should move it elsewhere sometime. */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 		if (blk[i]->lt == NOVA && blk[i + 1]->lt == GAP) {
 			for (j = blk[i + 1]->p1; j < (blk[i + 1]->p4) + 1; j++)
 				tap.tmem[j] = ft[NOVA].sp;
@@ -730,7 +730,7 @@ void standardize_pauses(void)
 
 	msgout("\nStandardizing pauses between 'C64 ROM tape' files...");
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0 && blk[i + 2]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE && blk[i + 2]->lt != LT_NONE; i++) {
 		b1 = blk[i]->lt;		/* look at next 3 block types in database..  */
 		b2 = blk[i + 1]->lt;
 		b3 = blk[i + 2]->lt;
@@ -791,7 +791,7 @@ void fix_pilots(void)
 
 		/* create table of broken pilot offsets... */
 		
-		for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+		for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 			b1 = blk[i]->lt;
 			b2 = blk[i + 1]->lt;
 
@@ -905,7 +905,7 @@ void fix_prepausegaps(void)
    
 	/* look for this pattern... GAP(<5 pulses),PAUSE */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 		if (blk[i]->lt == GAP && blk[i]->xi < 5) {	/* gap <5 pulses? */
 			if (blk[i + 1]->lt == PAUSE) {
 				cuts[ci][0] = blk[i]->p1;	/* add this gap to the cut list */
@@ -941,7 +941,7 @@ void fix_postpausegaps(void)
 
 	/* we look for this pattern... PAUSE, GAP(<5 pulses)  */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 		if (blk[i]->lt == PAUSE) {
 			if(blk[i + 1]->lt == GAP && blk[i + 1]->xi < 5) {
 				cuts[ci][0] = blk[i + 1]->p1;	/* add this gap to the cut list */
@@ -982,7 +982,7 @@ int insert_pauses(void)
 
 	/* create table of insertion points... */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0 && blk[i + 2]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE && blk[i + 2]->lt != LT_NONE; i++) {
 		t1 = blk[i + 0]->lt;
 		t2 = blk[i + 1]->lt;
 		t3 = blk[i + 2]->lt;
@@ -1106,12 +1106,12 @@ void cut_postdata_gaps(void)
 
 	/* we look for this pattern...    DATAFILE, GAP(<20 pulses)  !SUPERTAPE */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 
 		/* gap <20 pulses? */
 
 		if (blk[i + 1]->lt == GAP && blk[i + 1]->xi < 20) {
-			if (blk[i]->lt > 2) {
+			if (blk[i]->lt > PAUSE) {
 
 				/* add this gap to the cut list */
 
@@ -1209,7 +1209,7 @@ void fill_cbm_tone(void)
 	 * CBM_DATA, GAP (80ish), PAUSE, fill the gap with ft[CBM_HEAD].sp.
 	 */
 
-	for (i = 0; blk[i + 0]->lt != 0 &&  blk[i + 1]->lt != 0 &&  blk[i + 2]->lt != 0; i++) {
+	for (i = 0; blk[i + 0]->lt != LT_NONE &&  blk[i + 1]->lt != LT_NONE &&  blk[i + 2]->lt != LT_NONE; i++) {
 		t1 = blk[i+0]->lt;
 		t2 = blk[i+1]->lt;
 		t3 = blk[i+2]->lt;
@@ -1252,7 +1252,7 @@ void fix_bleep_pilots(void)
 	/* we look for this pattern... GAP(x pulses), BLEEPLOAD(n pilot bytes) */
 	/* we can fix where (x/8)+n == 256 or near. */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 		if (blk[i]->lt == GAP) {
 			if (blk[i + 1]->lt == BLEEP || blk[i + 1]->lt == BLEEP_SPC) {
 

@@ -20,10 +20,11 @@
 #include "database.h"
 #include "main.h"
 
-struct blk_t *blk[BLKMAX];	/*!< Database of all found entities. */
+struct blk_t *blk[BLKMAX];	/*!< Database of all found entities */
 struct prg_t prg[BLKMAX];	/*!< Database of all extracted files (prg's) */
 int dbase_is_full = FALSE;	/*!< Flag that indicates database capacity 
 				     reached */
+
 /**
  *	Allocate ram to file database and initialize array pointers.
  *
@@ -65,7 +66,7 @@ void reset_database(void)
 	int i;
 
 	for (i = 0 ; i < BLKMAX; i++) {		/*!< clear database... */
-		blk[i]->lt = 0;
+		blk[i]->lt = LT_NONE;
 		blk[i]->p1 = 0;
 		blk[i]->p2 = 0;
 		blk[i]->p3 = 0;
@@ -122,7 +123,7 @@ int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 
 		/* check that the block does not conflict with any existing blocks... */
 
-		for (i = 0; blk[i]->lt != 0; i++) {
+		for (i = 0; blk[i]->lt != LT_NONE; i++) {
 			e1 = blk[i]->p1;	/* get existing block start pos  */
 			e2 = blk[i]->p4;	/* get existing block end pos   */
 
@@ -138,7 +139,7 @@ int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 		/* note: slot blk[BLKMAX-1] is reserved for the list terminator. */
 		/* the last usable slot is therefore BLKMAX-2. */
 
-		for (i = 0; blk[i]->lt != 0; i++);
+		for (i = 0; blk[i]->lt != LT_NONE; i++);
 			slot = i;
 
 		if (slot == BLKMAX-1) {	/* only clear slot is the last one? (the terminator) */
@@ -217,7 +218,7 @@ void sort_blocks(void)
 	int i, swaps,size;
 	struct blk_t *tmp;
 
-	for (i = 0; blk[i]->lt != 0 && i < BLKMAX; i++);
+	for (i = 0; blk[i]->lt != LT_NONE && i < BLKMAX; i++);
 
 	size = i;	/* store current size of database */
    
@@ -258,7 +259,7 @@ void scan_gaps(void)
 
 	/* double dragon sticks in this loop */
 
-	for (i = 0; blk[i]->lt != 0 && blk[i + 1]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 		p1 = blk[i]->p4;		/* get end of this block */
 		p2 = blk[i + 1]->p1;		/* and start of next  */
 		if (p1 < (p2 - 1)) {
@@ -292,8 +293,8 @@ int count_bootparts(void)
   
 	/* make a block list (types only) without gaps/pauses included.. */
 
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
-		if (blk[i]->lt > 2)
+	for (i = 0,j = 0; blk[i]->lt != LT_NONE; i++) {
+		if (blk[i]->lt > PAUSE)
 			tblk[j++] = blk[i]->lt;
 	}
 
@@ -357,7 +358,7 @@ int count_opt_files(void)
 {
 	int i, n;
 
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+	for (n = 0, i = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->lt > PAUSE) {
 			if (count_unopt_pulses(i) == 0)
 				n++;
@@ -377,7 +378,7 @@ int count_pauses(void)
 {
 	int i, n;
 
-	for (n = 0, i = 0; blk[i]->lt != 0; i++) {
+	for (n = 0, i = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->lt == PAUSE) {
 			n++;
 			if (tap.version == 1) {		/* consecutive v1 pauses count as 1 pause.. */
@@ -402,7 +403,7 @@ int count_rpulses(void)
 
 	/* for each block entry in blk */
 
-	for (i = 0, tot = 0; blk[i]->lt != 0; i++) {
+	for (i = 0, tot = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->lt != GAP) {
 
 			/* start and end addresses both present?  */
@@ -423,7 +424,7 @@ int count_good_checksums(void)
 {
 	int i, c;
 
-	for (i = 0,c = 0; blk[i]->lt != 0; i++) {
+	for (i = 0,c = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->cs_exp != HASNOTCHECKSUM) {
 			if (blk[i]->cs_exp == blk[i]->cs_act)
 				c++;
@@ -441,7 +442,7 @@ int compute_overall_crc(void)
 {
 	int i, tot = 0;
 
-	for (i = 0; blk[i]->lt != 0; i++)
+	for (i = 0; blk[i]->lt != LT_NONE; i++)
 		tot += blk[i]->crc;
 
 	return tot;
@@ -486,7 +487,7 @@ void make_prgs(void)
 	 * It is used to check if next file is a neighbour without having
 	 * to scan ahead for next blk with data in it
 	 */
-	for (i = 0,j = 0; blk[i]->lt != 0; i++) {
+	for (i = 0,j = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->dd != NULL)
 			pt[j++] = i;
 	}

@@ -1554,7 +1554,7 @@ static void describe_blocks(void)
 
 	tap.total_read_errors = 0;
 
-	for (i = 0; blk[i]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE; i++) {
 		t = blk[i]->lt;
 
 		describe_file(i);
@@ -1735,7 +1735,7 @@ static void get_file_stats(void)
 
 	/* count all contained filetype occurences... */
 
-	for (i = 0; blk[i]->lt != 0; i++)
+	for (i = 0; blk[i]->lt != LT_NONE; i++)
 		tap.fst[blk[i]->lt]++;
 
 	tap.total_data_files = 0;
@@ -1869,7 +1869,7 @@ static void print_database(char *buf)
 
 	sprintf(buf, "\nFILE DATABASE\n");
 
-	for (i = 0; blk[i]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE; i++) {
 		sprintf(lin, "\n---------------------------------");
 		strcat(buf, lin);
 		sprintf(lin, "\nFile Type: %s", ft[blk[i]->lt].name);
@@ -2767,7 +2767,7 @@ int is_accounted(int x)
 {
 	int i;
 
-	for (i = 0; blk[i]->lt != 0; i++) {
+	for (i = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->lt != GAP) {
 			if ((x >= blk[i]->p1) && (x <= blk[i]->p4))
 				return 1;
