@@ -94,6 +94,9 @@
 /* each of these constants indexes an entry in the "ft[]" fmt_t array... */
 
 enum {
+	/* Loader type that marks an empty slot in the "lt" field of the "blk[]" blk_t array... */
+	LT_NONE=0,
+
 	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
 	CULT, USGOLD, ACES, WILD,WILD_STOP,NOVA, NOVA_SPC, OCEAN_F1, OCEAN_F2,
 	OCEAN_F3, CHR_T1, CHR_T2, CHR_T3, RASTER, CYBER_F1, CYBER_F2, CYBER_F3,
