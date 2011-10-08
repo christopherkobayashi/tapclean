@@ -71,6 +71,10 @@
 #define V2SYNCOFFSET	0x94	/* offset to s.v. inside CBM header */
 #define V2ENDIANOFFSET	0x84	/* offset to ROR/ROL OPC inside CBM header */
 
+#define LEGPILOTOFFSET	0x88	/* offset to p.v. inside CBM header */
+#define LEGSYNCOFFSET	0x93	/* offset to s.v. inside CBM header */
+#define LEGENDIANOFFSET	0x83	/* offset to ROR/ROL OPC inside CBM header */
+
 #define OPC_ROL		0x26	/* 65xx ROL OPCode */
 #define OPC_ROR		0x66	/* 65xx ROR OPCode */
 
@@ -126,27 +130,35 @@ void burnervar_search (void)
 	sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;
 	en = blk[ib]->dd[V1ENDIANOFFSET] ^ CBMXORDECRYPT;
 
-	/* MSbF rol ($26) or.. LSbF ror($66)  */
+	/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
 	if (en == OPC_ROL || en == OPC_ROR)
 		match = BURNERVAR_FIRST;
 
 	/* Legacy Burner support */
-/*	if (match == BURNERVAR_NOMATCH) {
-		pv = blk[ib]->dd[0x88] ^ 0xCBMXORDECRYPT;
-		sv = blk[ib]->dd[0x93] ^ 0xCBMXORDECRYPT;
-		en = blk[ib]->dd[0x83] ^ 0xCBMXORDECRYPT;
+//	if (match == BURNERVAR_NOMATCH) {
+		/* Basic validation before accessing array elements */
+/*		if (blk[ib]->cx < LEGSYNCOFFSET + 1)
+			return;
+
+		pv = blk[ib]->dd[LEGPILOTOFFSET] ^ 0xCBMXORDECRYPT;
+		sv = blk[ib]->dd[LEGSYNCOFFSET] ^ 0xCBMXORDECRYPT;
+		en = blk[ib]->dd[LEGENDIANOFFSET] ^ 0xCBMXORDECRYPT;
 */
-		/* MSbF rol ($26) or.. LSbF ror($66)  */
+		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
 /*		if(en == OPC_ROL || en == OPC_ROR)
 			match = BURNERVAR_LEGACY;
 	}
 */
 	if (match == BURNERVAR_NOMATCH) {
+		/* Basic validation before accessing array elements */
+		if (blk[ib]->cx < V2SYNCOFFSET + 1)
+			return;
+
 		pv = blk[ib]->dd[V2PILOTOFFSET] ^ CBMXORDECRYPT;
 		sv = blk[ib]->dd[V2SYNCOFFSET] ^ CBMXORDECRYPT;
 		en = blk[ib]->dd[V2ENDIANOFFSET] ^ CBMXORDECRYPT;
 
-		/* MSbF rol ($26) or.. LSbF ror($66)  */
+		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
 		if(en == OPC_ROL || en == OPC_ROR)
 			match = BURNERVAR_SECOND;
 	}
