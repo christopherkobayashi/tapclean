@@ -48,7 +48,8 @@ void burner_search(void)
 	ib = find_decode_block(CBM_HEAD, 1);
 	if(ib==-1)
 		return;	 /* failed to locate cbm header. */
-	if (blk[ib]->cx < 0x93)
+
+	if (blk[ib]->cx <= 0x93)
 		return;	 /* not enough bytes in cbm header. */
 
 	ft[BURNER].pv= blk[ib]->dd[0x88] ^ 0x59;
