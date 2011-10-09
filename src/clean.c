@@ -1,24 +1,24 @@
 /*
  * clean.c (Tape conversion, repairing and cleaning)
  *
- * Part of project "Final TAP". 
+ * Part of project "Final TAP".
  *
  * A Commodore 64 tape remastering and data extraction utility.
  *
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  *
@@ -103,7 +103,7 @@ void clip_ends(void)
 	}
 
 	sp = i;
-    
+
 	/* Find clip point from end of tap... */
 
 	for (i = tap.len - 100; i > 20; i--) {
@@ -124,7 +124,7 @@ void clip_ends(void)
 		sp = 20;			/* note: this doesnt cause any cutting, it preserves everything */
 		ep = tap.len;			/* but the v1 converter will create a 17 sec pause 00,FF,FF,FF */
 	}					/* in place of a great many 00's anyhow. */
-      
+
 	s1 = sp - 20;
 	s2 = tap.len - ep;
 	if (s1 == 0 && s2 == 0) {
@@ -178,7 +178,7 @@ void unify_pauses(void)
 		tmp = (unsigned char*)malloc(tap.len + 1024);
 		for (i = 0; i < 20; i++)
 			tmp[i] = tap.tmem[i];
-     
+
 		for (i = 20, c = 20; i < tap.len; i++) {	/* c steps thru the 2nd buffer */
 			if (tap.tmem[i] != 0)			/* directly copy non pause bytes to the buffer. */
 				tmp[c++] = tap.tmem[i];
@@ -331,7 +331,7 @@ void clean_files(void)
 	int limit, b, k, sp, mp, lp, tp, owned;
 
 	analyze();
-   
+
 	/* look at each block type and clean it accordingly...  */
 
 	for (i = 0; blk[i]->lt != LT_NONE; i++) {
@@ -428,7 +428,7 @@ void clean_files(void)
 			int spt, lpt, tpt;
 			
 			st = blk[i]->p3 + 8;		/* get trailer start */
-			et = blk[i]->p4; 
+			et = blk[i]->p4;
 
 			spt = ft[ACTIONREPLAY_TURBO].sp;
 			lpt = ft[ACTIONREPLAY_TURBO].lp;
@@ -524,7 +524,7 @@ void fix_boot_pilot(void)
 
 		for (i = 0; blk[i]->lt != CBM_HEAD; i++);
 
-		p1 = blk[i]->p1;                        /* get CBM header pilot offset. */
+		p1 = blk[i]->p1;			/* get CBM header pilot offset. */
 
 		p = blk[i]->p2 - (9 * 20);		/* get CBM header 'sync sequence' offset. */
 
@@ -575,7 +575,7 @@ void convert_to_v1(void)
 				tap.tmem[i] = 0;
 		}
 	}
-   
+
 	buf = (unsigned char*)malloc(tap.len + 8192);	/* create buffer for rewrite. (+8k security) */
 
 	for (i = 0; i < 20; i++)	/* copy the original header.. */
@@ -586,7 +586,7 @@ void convert_to_v1(void)
 		if (b != 0)
 			buf[j++] = b;		/* non zero bytes go straight into out buffer */
 
-		else {  
+		else {
 			/* we found a zero... */
 			/* now count the zeroes... */
 
@@ -758,7 +758,7 @@ void standardize_pauses(void)
 
 	sprintf(lin,"  Changed %d.", zcnt);
 	msgout(lin);
-   
+
 	/*  Note : re-scan is unnecessary, tap structure will be unchanged. */
 }
 
@@ -818,7 +818,7 @@ void fix_pilots(void)
 
 						if (b2 == VISI_T1 || b2 == VISI_T2 || b2 == VISI_T3 || b2 == VISI_T4)
 							m[mi][2] = 8 + (blk[i + 1]->xi & 7);
-                                    
+
 						/* over-ride 'repair' width for supertape (just cut!) */
 
 						if (b2 == SUPERTAPE_HEAD || b2 == SUPERTAPE_DATA)
@@ -877,7 +877,7 @@ void fix_pilots(void)
 
 			tap.len = d - 1;
 			free(tap.tmem);
-			tap.tmem = tmp;   
+			tap.tmem = tmp;
 			fix_header_size();
 			tap.changed = 1;
 
@@ -902,7 +902,7 @@ void fix_prepausegaps(void)
 		return;
 
 	msgout("\nCutting small pre-pause gaps...");
-   
+
 	/* look for this pattern... GAP(<5 pulses),PAUSE */
 
 	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
@@ -1064,7 +1064,7 @@ void cut_range(int from, int upto)
 	
 	if (from > upto)
 		return;
- 
+
 	/* checking done. both offsets are inside the tap, 'from' */
 	/* is either less than or equal to 'upto'. */
 
@@ -1157,7 +1157,7 @@ void cut_leading_gap(void)
 	/* we look for this pattern...    Start of tape, GAP(<20 pulses) */
 	if (blk[0]->lt == GAP && blk[0]->xi < 20)
 	{
-                cut_range(blk[0]->p1, blk[0]->p4);
+		cut_range(blk[0]->p1, blk[0]->p4);
 		msgout("  Done.");
 		analyze();
 	}
@@ -1197,7 +1197,7 @@ void add_trailpause(void)
 	tap.changed = 1;
 
 	msgout("  Done.");
-  
+
 	analyze();
 }
 
@@ -1287,7 +1287,7 @@ void fix_bleep_pilots(void)
 		tap.changed = 1;
 		sprintf(lin,"\n   Found %d damaged bleepload pre-pilots and fixed them all.",pi);
 		msgout(lin);
-      
+
 		analyze();
 	} else
 		msgout("\n  None found.");
