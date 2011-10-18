@@ -295,6 +295,7 @@ int burnervar_describe (int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];
+	int pd[POSTDATASIZE];
 
 	int pv, sv;
 	int en, tp, sp, lp;
@@ -373,16 +374,35 @@ int burnervar_describe (int row)
 	}
 
 #ifndef ENABLE_LEGACY_BURNER_SUPPORT
-	/* EOF marker */
-	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+	/* Read post-data */
+	for (i = 0; i < POSTDATASIZE; i++) {
+		b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, en);
 
-	/* Do NOT increase read errors for this one is not within DATA */
-	if (b != -1) {
-		strcat(info, "\n - Marker : ");
-		strcat(info, b == 0 ? "EOF" : "not EOF");
+		/* Do NOT increase read errors for this one is not within DATA */
+		if (b != -1)
+			pd[i] = b;
+		else
+			break;
 	}
 
-	/* Suggestion: maybe also print the execution ptr */
+	/* Print EOF marker only if it was read in properly */
+	strcat(info, "\n - Marker : ");
+
+	if (i > 0)
+		strcat(info, b == 0 ? "EOF" : "not EOF");
+	else
+		strcat(info, "---");
+
+	/* Print execution ptr only if it was read in properly */
+	strcat(info, "\n - Execution Ptr : ");
+
+	if (i == POSTDATASIZE)
+	{
+		sprintf(lin, "$%04X", (pd[2]<<8) + pd[1]);
+		strcat(info, lin);
+	}
+	else
+		strcat(info, "$----");
 #endif
 
 	blk[row]->rd_err = rd_err;
