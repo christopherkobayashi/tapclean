@@ -208,7 +208,11 @@ void burnervar_search (void)
 	ft[THISLOADER].en = en; /* needed by find_pilot() */
 
 	if(!quiet) {
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
+		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%d", pv, sv, en);
+#else
 		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%d", pv, sv, en);
+#endif
 		msgout(lin);
 	}
 
@@ -368,6 +372,7 @@ int burnervar_describe (int row)
 		}
 	}
 
+#ifndef ENABLE_LEGACY_BURNER_SUPPORT
 	/* EOF marker */
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
@@ -378,6 +383,7 @@ int burnervar_describe (int row)
 	}
 
 	/* Suggestion: maybe also print the execution ptr */
+#endif
 
 	blk[row]->rd_err = rd_err;
 
