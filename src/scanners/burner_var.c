@@ -373,7 +373,7 @@ int burnervar_describe (int row)
 		}
 	}
 
-#ifndef ENABLE_LEGACY_BURNER_SUPPORT
+#if !defined(ENABLE_LEGACY_BURNER_SUPPORT)
 	/* Read post-data */
 	for (i = 0; i < POSTDATASIZE; i++) {
 		b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, en);
