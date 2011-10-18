@@ -392,7 +392,7 @@ int burnervar_describe (int row)
 		strcat(info, "\n - Marker : ");
 
 		if (i > 0)
-			strcat(info, b == 0 ? "EOF" : "not EOF");
+			strcat(info, b == 0 ? "not EOF" : "EOF");
 		else
 			strcat(info, "---");
 
