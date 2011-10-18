@@ -280,13 +280,12 @@ int tequila_describe(int row)
 	/* Print execution ptr only if it was read in properly */
 	strcat(info, "\n - Post-data Ptr : ");
 
-	if (i == POSTDATASIZE)
-	{
+	if (i == POSTDATASIZE) {
 		sprintf(lin, "$%04X", (pd[0]<<8) + pd[1] + 1);
 		strcat(info, lin);
-	}
-	else
+	} else {
 		strcat(info, "$----");
+	}
 
 
 	blk[row]->rd_err = rd_err;
