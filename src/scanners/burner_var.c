@@ -130,9 +130,9 @@ static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
 		if (blk[ib]->cx < LEGSYNCOFFSET + 1)
 			return variant;
 
-		*pv = blk[ib]->dd[LEGPILOTOFFSET] ^ 0xCBMXORDECRYPT;
-		*sv = blk[ib]->dd[LEGSYNCOFFSET] ^ 0xCBMXORDECRYPT;
-		*en = blk[ib]->dd[LEGENDIANOFFSET] ^ 0xCBMXORDECRYPT;
+		*pv = blk[ib]->dd[LEGPILOTOFFSET] ^ CBMXORDECRYPT;
+		*sv = blk[ib]->dd[LEGSYNCOFFSET] ^ CBMXORDECRYPT;
+		*en = blk[ib]->dd[LEGENDIANOFFSET] ^ CBMXORDECRYPT;
 
 		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
 		if(*en == OPC_ROL || *en == OPC_ROR)
@@ -265,7 +265,7 @@ void burnervar_search (void)
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
 			/* Legacy Burner support */
 			else
-				eod = sod + (HEADERSIZE + x) * BITSINABYTE;*/
+				eod = sod + (HEADERSIZE + x) * BITSINABYTE;
 #endif
 
 			/* Point to the last pulse of the exe ptr MSB/last data byte for Burner legacy */
@@ -281,7 +281,7 @@ void burnervar_search (void)
 			/* Store the discovered values in the extra-info field  */
 			xinfo = pv + (sv<<8)+ (en<<16);
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, variant) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -373,36 +373,41 @@ int burnervar_describe (int row)
 		}
 	}
 
-#if !defined(ENABLE_LEGACY_BURNER_SUPPORT)
-	/* Read post-data */
-	for (i = 0; i < POSTDATASIZE; i++) {
-		b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, en);
-
-		/* Do NOT increase read errors for this one is not within DATA */
-		if (b != -1)
-			pd[i] = b;
-		else
-			break;
-	}
-
-	/* Print EOF marker only if it was read in properly */
-	strcat(info, "\n - Marker : ");
-
-	if (i > 0)
-		strcat(info, b == 0 ? "EOF" : "not EOF");
-	else
-		strcat(info, "---");
-
-	/* Print execution ptr only if it was read in properly */
-	strcat(info, "\n - Execution Ptr : ");
-
-	if (i == POSTDATASIZE)
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
+	if (blk[row]->meta1 != BURNERVAR_LEGACY)
 	{
-		sprintf(lin, "$%04X", (pd[2]<<8) + pd[1]);
-		strcat(info, lin);
+#endif
+		/* Read post-data */
+		for (i = 0; i < POSTDATASIZE; i++) {
+			b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, en);
+
+			/* Do NOT increase read errors for this one is not within DATA */
+			if (b != -1)
+				pd[i] = b;
+			else
+				break;
+		}
+
+		/* Print EOF marker only if it was read in properly */
+		strcat(info, "\n - Marker : ");
+
+		if (i > 0)
+			strcat(info, b == 0 ? "EOF" : "not EOF");
+		else
+			strcat(info, "---");
+
+		/* Print execution ptr only if it was read in properly */
+		strcat(info, "\n - Execution Ptr : ");
+
+		if (i == POSTDATASIZE) {
+			sprintf(lin, "$%04X", (pd[2]<<8) + pd[1]);
+			strcat(info, lin);
+		} else {
+			strcat(info, "$----");
+		}
+
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
 	}
-	else
-		strcat(info, "$----");
 #endif
 
 	blk[row]->rd_err = rd_err;
