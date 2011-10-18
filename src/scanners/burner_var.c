@@ -78,13 +78,85 @@
 #define OPC_ROL		0x26	/* 65xx ROL OPCode */
 #define OPC_ROR		0x66	/* 65xx ROR OPCode */
 
+//#define ENABLE_LEGACY_BURNER_SUPPORT
+
 enum {
-	BURNERVAR_NOMATCH=0,
+	BURNERVAR_NOMATCH=-1,
+	BURNERVAR_NOTFOUND=0,
+	/* Keep the above order */
 	BURNERVAR_FIRST,
 	BURNERVAR_SECOND,
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
 	BURNERVAR_LEGACY
+#endif
 };
 
+/*
+ * Check for genuine/known variant
+ *
+ * Returns:
+ *  - BURNERVAR_NOTFOUND if CBM Data block was not found at index cbm_index
+ *  - BURNERVAR_NOMATCH  if CBM data does not contain a known variant
+ *  - <variant number> (see enum definition)
+ */
+static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
+{
+	int variant = BURNERVAR_NOTFOUND;	
+
+	int ib;			/* condition variable */
+
+	ib = find_decode_block(CBM_HEAD, cbm_index);
+	if (ib == -1)
+		return variant;    /* failed to locate cbm header. */
+
+	variant = BURNERVAR_NOMATCH;
+
+	/* Basic validation before accessing array elements */
+	if (blk[ib]->cx < V1SYNCOFFSET + 1)
+		return variant;
+
+	*pv = blk[ib]->dd[V1PILOTOFFSET]  ^ CBMXORDECRYPT;
+	*sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;
+	*en = blk[ib]->dd[V1ENDIANOFFSET] ^ CBMXORDECRYPT;
+
+	/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
+	if (*en == OPC_ROL || *en == OPC_ROR)
+		variant = BURNERVAR_FIRST;
+
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
+	/* Legacy Burner support */
+	if (variant == BURNERVAR_NOMATCH) {
+		/* Basic validation before accessing array elements */
+		if (blk[ib]->cx < LEGSYNCOFFSET + 1)
+			return variant;
+
+		*pv = blk[ib]->dd[LEGPILOTOFFSET] ^ 0xCBMXORDECRYPT;
+		*sv = blk[ib]->dd[LEGSYNCOFFSET] ^ 0xCBMXORDECRYPT;
+		*en = blk[ib]->dd[LEGENDIANOFFSET] ^ 0xCBMXORDECRYPT;
+
+		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
+		if(*en == OPC_ROL || *en == OPC_ROR)
+			variant = BURNERVAR_LEGACY;
+	}
+#endif
+
+	if (variant == BURNERVAR_NOMATCH) {
+		/* Basic validation before accessing array elements */
+		if (blk[ib]->cx < V2SYNCOFFSET + 1)
+			return variant;
+
+		*pv = blk[ib]->dd[V2PILOTOFFSET] ^ CBMXORDECRYPT;
+		*sv = blk[ib]->dd[V2SYNCOFFSET] ^ CBMXORDECRYPT;
+		*en = blk[ib]->dd[V2ENDIANOFFSET] ^ CBMXORDECRYPT;
+
+		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
+		if(*en == OPC_ROL || *en == OPC_ROR)
+			variant = BURNERVAR_SECOND;
+	}
+
+	return variant;
+}
+		
 void burnervar_search (void)
 {
 	int i, h;			/* counters */
@@ -97,9 +169,11 @@ void burnervar_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int xinfo;			/* extra info used in addblockdef() */
+	int cbm_index;			/* Index of the CBM data block to get info from */
 
-	int ib, match;			/* condition variables */
+	int variant;
+
+	int xinfo;			/* extra info used in addblockdef() */
 
 
 	tp = ft[THISLOADER].tp;
@@ -107,7 +181,11 @@ void burnervar_search (void)
 	lp = ft[THISLOADER].lp;
 
 	if (!quiet)
-		msgout("  Burner (Mastertronic Variant)");
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
+		msgout("  Burner (+Mastertronic Variants)");
+#else
+		msgout("  Burner (Mastertronic Variants)");
+#endif
 
 	/*
 	 * First we retrieve the burner variables from the CBM header.
@@ -116,55 +194,10 @@ void burnervar_search (void)
 	 * For compilations we should search and find the relevant file 
 	 * using the search code found e.g. in Biturbo.
 	 */
-	ib = find_decode_block(CBM_HEAD, 1);
-	if (ib == -1)
-		return;    /* failed to locate cbm header. */
+	cbm_index = 1;
 
-	match = BURNERVAR_NOMATCH;
-
-	/* Basic validation before accessing array elements */
-	if (blk[ib]->cx < V1SYNCOFFSET + 1)
-		return;
-
-	pv = blk[ib]->dd[V1PILOTOFFSET]  ^ CBMXORDECRYPT;
-	sv = blk[ib]->dd[V1SYNCOFFSET]   ^ CBMXORDECRYPT;
-	en = blk[ib]->dd[V1ENDIANOFFSET] ^ CBMXORDECRYPT;
-
-	/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
-	if (en == OPC_ROL || en == OPC_ROR)
-		match = BURNERVAR_FIRST;
-
-	/* Legacy Burner support */
-//	if (match == BURNERVAR_NOMATCH) {
-		/* Basic validation before accessing array elements */
-/*		if (blk[ib]->cx < LEGSYNCOFFSET + 1)
-			return;
-
-		pv = blk[ib]->dd[LEGPILOTOFFSET] ^ 0xCBMXORDECRYPT;
-		sv = blk[ib]->dd[LEGSYNCOFFSET] ^ 0xCBMXORDECRYPT;
-		en = blk[ib]->dd[LEGENDIANOFFSET] ^ 0xCBMXORDECRYPT;
-*/
-		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
-/*		if(en == OPC_ROL || en == OPC_ROR)
-			match = BURNERVAR_LEGACY;
-	}
-*/
-	if (match == BURNERVAR_NOMATCH) {
-		/* Basic validation before accessing array elements */
-		if (blk[ib]->cx < V2SYNCOFFSET + 1)
-			return;
-
-		pv = blk[ib]->dd[V2PILOTOFFSET] ^ CBMXORDECRYPT;
-		sv = blk[ib]->dd[V2SYNCOFFSET] ^ CBMXORDECRYPT;
-		en = blk[ib]->dd[V2ENDIANOFFSET] ^ CBMXORDECRYPT;
-
-		/* MSbF => ROL ($26) or.. LSbF => ROR ($66)  */
-		if(en == OPC_ROL || en == OPC_ROR)
-			match = BURNERVAR_SECOND;
-	}
-
-	/* Nothing to do, definitely not a Burner variant */
-	if (match == BURNERVAR_NOMATCH)
+	variant = burnervar_find_variant (cbm_index, &pv, &sv, &en);
+	if (variant <= BURNERVAR_NOTFOUND)
 		return;
 
 	/* Convert en from the OPCode to any of the internally used values */
@@ -223,11 +256,13 @@ void burnervar_search (void)
 
 			/* Point to the first pulse of the exe ptr, MSB */
 			/* Note: + POSTDATASIZE because there's a EOF marker and an exe ptr in v1 and v2 */
-			if (match == BURNERVAR_FIRST || match == BURNERVAR_SECOND)
+			if (variant == BURNERVAR_FIRST || variant == BURNERVAR_SECOND)
 				eod = sod + (HEADERSIZE + x + POSTDATASIZE - 1) * BITSINABYTE;
+#ifdef ENABLE_LEGACY_BURNER_SUPPORT
 			/* Legacy Burner support */
-/*			else
+			else
 				eod = sod + (HEADERSIZE + x) * BITSINABYTE;*/
+#endif
 
 			/* Point to the last pulse of the exe ptr MSB/last data byte for Burner legacy */
 			eof = eod + BITSINABYTE - 1;
