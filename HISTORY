@@ -6,6 +6,9 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.28
+	Code quality: rewritten aces.c (Luigi)
+
 v0.27
 	New: boot address of Power Load titles is shown inside the report 
 	 by using the new meta information mechanism (Luigi)
