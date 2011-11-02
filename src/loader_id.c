@@ -155,11 +155,14 @@ int idloader(unsigned /*long*/ int crc)
 		{0x178977C3, LID_MIC},
 		{0x29DCB0D1, LID_MIC},
 
-		{0x58EEE22A, LID_ACE},
+		{0x58EEE22A, LID_ACE},		/* Ace of Aces */
 		{0x915280DA, LID_ACE},
-		{0x6A333F1D, LID_ACE},
-		{0x292409A7, LID_ACE},
-		{0xF4CF55C8, LID_ACE},
+		{0x6A333F1D, LID_ACE},		/* Express Raider */
+		{0x292409A7, LID_ACE},		/* Way of the Tiger */
+		{0xF4CF55C8, LID_ACE},		/* Future Knight and Xevious */
+		{0x4FC4C91C, LID_ACE},		/* Knight Games */
+		{0xF1AB258B, LID_ACE},		/* Questprobe */
+		{0xA3172F65, LID_ACE},		/* Leviathan */
 
 		{0x60BCE3A3, LID_T250},
 		{0x2D7372C2, LID_T250},
