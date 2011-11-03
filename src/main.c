@@ -647,7 +647,7 @@ static void process_options(int argc, char **argv)
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
 			if (argv[i + 1] != NULL) {
 				tol = atoi(argv[i + 1]) + 1;	/* 1 = zero tolerance (-tol 0) */
-				if (tol < 0 || tol > MAXTOL) {
+				if (tol < 1 || tol > MAXTOL) {
 					tol = DEFTOL;
 					printf("\n\nTolerance parameter out of range, using default (= 10).");
 				}
