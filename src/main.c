@@ -652,7 +652,7 @@ static void process_options(int argc, char **argv)
 					printf("\n\nTolerance parameter out of range, using default (= 10).");
 				}
 			} else
-				printf("\n\nTolerance parameter missing, using default (= %d).", DEFTOL);
+				printf("\n\nTolerance parameter missing, using default (= %d).", DEFTOL - 1);
 		}
 
 		if (strcmp(argv[i], "-debug") == 0)
