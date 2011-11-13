@@ -1,5 +1,5 @@
- - Rewrite: aces.c, anirog.c, atlantis.c, burner.c (requires some decrypting),
-   chr.c, firebird.c, flashload.c, freeload.c, hitec.c, hitload.c, ikloader.c, 
+ - Rewrite: atlantis.c, burner.c (requires some decrypting), chr.c, 
+   firebird.c, flashload.c, freeload.c, hitec.c, hitload.c, ikloader.c, 
    jetload.c, microload.c, oceannew1t*.c, oceannew2.c, rasterload.c, snake*.c, 
    turbotape.c, usgold.c, virgin.c (check size of pilots/trailers as well on 
    tapes using each of these) (Luigi)
