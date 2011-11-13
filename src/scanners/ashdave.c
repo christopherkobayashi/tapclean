@@ -254,7 +254,7 @@ int ashdave_describe (int row)
 
 	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
 
-	if (blk[row]->dd!=NULL)
+	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
 
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
