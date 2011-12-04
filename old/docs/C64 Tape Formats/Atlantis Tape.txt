@@ -25,8 +25,7 @@ Sync : $52,$42
 
 Then...
 
-1 byte  : always $03 (ignored) 
-1 byte  : always $6F (ignored) 
+2 bytes : Execution address (MSBF) - $036F means return from custom Load RAM
 2 bytes : End Address (MSBF) 
 2 bytes : Load Address (MSBF) 
 n bytes : Data. 
@@ -35,11 +34,4 @@ n bytes : Data.
 
 Note: End Address is +1 (not written to).
 
-
-
-
-
-
-
-
-
+Trailer: 7 Bit 0 pulses.
