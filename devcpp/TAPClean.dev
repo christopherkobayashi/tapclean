@@ -162,7 +162,7 @@ BuildCmd=
 [Unit14]
 FileName=..\src\scanners\atlantis.c
 CompileCpp=0
-Folder=scanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000
