@@ -20,7 +20,7 @@ ObjectOutput=
 OverrideOutput=0
 OverrideOutputName=TAPClean.exe
 HostApplication=
-Folders=headers,newscanners,scanners
+Folders=headers,newscanners,rewritten,scanners
 CommandLine=
 UseCustomMakefile=0
 CustomMakefile=
@@ -132,7 +132,7 @@ BuildCmd=
 [Unit11]
 FileName=..\src\scanners\aces.c
 CompileCpp=0
-Folder=newscanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000
@@ -152,7 +152,7 @@ BuildCmd=
 [Unit13]
 FileName=..\src\scanners\anirog.c
 CompileCpp=0
-Folder=newscanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000
