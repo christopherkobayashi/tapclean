@@ -1,3 +1,6 @@
+ - Make a consistent choice about the post-data patterns (in most cases these 
+   are described as part of the trailer, whose size is therefore augumented)
+   (Luigi)
  - Rewrite: atlantis.c, burner.c (requires some decrypting), chr.c, 
    firebird.c, flashload.c, freeload.c, hitec.c, hitload.c, ikloader.c, 
    jetload.c, microload.c, oceannew1t*.c, oceannew2.c, rasterload.c, snake*.c, 
