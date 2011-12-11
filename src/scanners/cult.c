@@ -209,9 +209,15 @@ int cult_describe(int row)
 
 	/* Compute pilot & trailer lengths */
 
-	/* don't forget sync is 9 bits (1 bit + 1 byte)... */
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 - 1 - BITSINABYTE);
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+	/* ... trailer in pulses */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence (9 bits) */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= 1 + BITSINABYTE;
 
 	/* Extract data */
 	rd_err = 0;
