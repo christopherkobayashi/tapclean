@@ -1,129 +1,221 @@
-/*---------------------------------------------------------------------------
-  flashload.c
+/*
+ * flashload.c (rewritten by Luigi Di Fraia, Dec 2011 - armaeth@libero.it)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
-  Part of project "Final TAP". 
-  
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
-   version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-   PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
-   St, Fifth Floor, Boston, MA 02110-1301 USA
-
----------------------------------------------------------------------------*/
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Bit + Byte
+ * Header: Yes
+ * Data: Continuous
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: No
+ * Trailer homogeneous: N/A
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
 
+#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-#define SYNC 0x33
-#define HDSZ 4
+#define THISLOADER	FLASH
 
-/*---------------------------------------------------------------------------
-*/
-void flashload_search(void)
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define EXTRASYNCVAL	0x33	/* value of the extra sync byte */
+
+#define HEADERSIZE	4	/* size of block header */
+
+#define LOADOFFSETH	1	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	0	/* load location (LSB) offset inside header */
+#define ENDOFFSETH	3	/* end  location (MSB) offset inside header (NOT past last byte) */
+#define ENDOFFSETL	2	/* end  location (LSB) offset inside header (NOT past last byte) */
+
+void flashload_search (void)
 {
-   int i,sof,sod,eod,eof;
-   int z,lstart,lend,tmp,tcnt,hd[HDSZ];
+	int i, h;			/* counters */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-   if(!quiet)
-      msgout("  Flashload");
-         
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
-   for(i=20; i<tap.len-8; i++)
-   {
-      if((z=find_pilot(i,FLASH))>0) 
-      {
-         sof=i;
-         i=z;
-         if(readttbit(i,ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp)==ft[FLASH].sv) /* got sync bit? */
-         {
-            i++; /* jump sync bit. */
-            if(readttbyte(i, ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp, MSbF)==SYNC)  /* got sync byte?. */
-            {
-               sod=i+8;
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
 
-               /* decode the header, so we can validate the addresses */
-               for(tcnt=0; tcnt<HDSZ; tcnt++)
-               {
-                  hd[tcnt] = readttbyte(sod+(tcnt*8), ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp, MSbF);
-                  if (hd[tcnt] == -1)
-                     break;
-               }
-               if (tcnt != HDSZ)
-                  continue;
 
-               lstart= hd[0]+ (hd[1]<<8);   /* get start address */
-               lend= hd[2]+ (hd[3]<<8);     /* get end address */
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+	sv = ft[THISLOADER].sv;
 
-               if(lend>lstart)
-               {
-                  tmp= lend-lstart;    /* calculate last pulse from these addresses */
-                  tmp*=8;
-                  eod= sod+tmp+(HDSZ*8)+8;
-                  eof=eod+7;
-                  addblockdef(FLASH, sof,sod,eod,eof, 0);
-                  i=eof;  /* optimize search */
-               }
-            }
-         }
-      }
-   }
+	if (!quiet)
+		msgout("  Flashload");
+
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, THISLOADER);
+
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
+
+			/* Check if there's a valid sync bit for this loader */
+			if (readttbit(i, lp, sp, tp) != sv)
+				continue;
+
+			i++; /* Take into account this bit */
+
+			/* Check if there's a valid extra sync byte for this loader */
+			if (readttbyte(i, lp, sp, tp, en) != EXTRASYNCVAL)
+				continue;
+
+			/* Valid sync bit + sync byte found, mark start of data */
+			sod = i + BITSINABYTE;
+
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
+
+			/* Extract load and end locations (Note end is actually not past last byte) */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			/* Plausibility check */
+			if (e < s)
+				continue;
+
+			/* Compute size */
+			x = e - s + 1;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+
+			/* Point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
+		} else {
+			if (eop < 0)
+				i = (-eop);
+		}
+	}
 }
-/*---------------------------------------------------------------------------
-*/
+
 int flashload_describe(int row)
 {
-   int i,s,b,cb,hd[HDSZ],rd_err;
+	int i, s;
+	int hd[HEADERSIZE];
+	int en, tp, sp, lp;
+	int cb;
 
-   s= blk[row]->p2;    /* decode the header... */
-   for(i=0; i<HDSZ; i++)
-      hd[i] = readttbyte(s+(i*8), ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp, MSbF);
+	int b, rd_err;
 
-   blk[row]->cs= hd[0]+ (hd[1]<<8);
-   blk[row]->ce= hd[2]+ (hd[3]<<8);
-   blk[row]->cx= (blk[row]->ce - blk[row]->cs)+1;
 
-   /* get pilot & trailer lengths */
-   blk[row]->pilot_len= (blk[row]->p2 - blk[row]->p1 -8)-1;
-   blk[row]->trail_len=0;
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
 
-   /* extract data and test checksum... */
-   rd_err=0;
-   cb=0;
-   s= (blk[row]->p2)+(HDSZ*8);
+	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	s = blk[row] -> p2;
 
-   if(blk[row]->dd!=NULL)
-      free(blk[row]->dd);
-   blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
-   
-   for(i=0; i<blk[row]->cx; i++)
-   {
-      b= readttbyte(s+(i*8), ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp, MSbF);
-      cb^= b;
-      if(b==-1)
-         rd_err++;
-      blk[row]->dd[i]= b;
-   }
-   b= readttbyte(s+(i*8), ft[FLASH].lp, ft[FLASH].sp, ft[FLASH].tp, MSbF); /* read checksum */
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+	for (i = 0; i < HEADERSIZE; i++)
+		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-   blk[row]->cs_exp= cb &0xFF;
-   blk[row]->cs_act= b;
-   blk[row]->rd_err= rd_err;
-   return 0;
+	/* Extract load and end locations */
+	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+	/* Compute size */
+	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+	/* ... trailer in pulses */
+	blk[row]->trail_len = 0;
+
+	/* if there IS pilot then disclude the sync sequence (9 bits) */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= 1 + BITSINABYTE;
+
+	/* Extract data and test checksum... */
+	rd_err = 0;
+	cb = 0;
+
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
+
+	if (blk[row]->dd != NULL)
+		free(blk[row]->dd);
+
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+	for (i = 0; i < blk[row]->cx; i++) {
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		cb ^= b;
+
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
+			strcat(info, lin);
+		}
+	}
+
+	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+	if (b == -1) {
+		/* Even if not within data, we cannot validate data reliably if
+		   checksum is unreadable, so that increase read errors */
+		rd_err++;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
+
+	blk[row]->cs_exp = cb & 0xFF;
+	blk[row]->cs_act = b  & 0xFF;
+	blk[row]->rd_err = rd_err;
+
+	return(rd_err);
 }
-
- 
