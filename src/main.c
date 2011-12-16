@@ -2429,6 +2429,8 @@ int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsi
  * @return 0 on error.
  */
 
+static void getfilename(char *, char *);
+
 int load_tap(char *name)
 {
 	FILE *fp;
@@ -2961,20 +2963,20 @@ int find_seq(int *buf, int bufsz, int *seq, int seqsz)
 
 void getfilename(char *dest, char *fullpath)
 {
-	int i, j, k;
-
-	i = strlen(fullpath);
-	for (j = i; j > 0 && fullpath[j] != SLASH; j--);
-
-	/* rewind j to 0 or first slash.. */
-
-	if (fullpath[j] == SLASH)
-		j++;		/* skip over the slash */
-	for (k = 0; j < i; j++)
-		dest[k++] = fullpath[j];
-	dest[k] = 0;
-
-	return;
+#ifdef WIN32
+	char drive[_MAX_DRIVE];
+	char dir[_MAX_DIR];
+	char fname[_MAX_FNAME];
+	char ext[_MAX_EXT];
+   
+	_splitpath(fullpath, drive, dir, fname, ext);
+   
+	strcpy(dest, fname);
+	if(strlen(ext)>0)
+		strcat(dest,ext);
+#else
+	strcpy(dest,basename(fullpath));
+#endif
 }
 
 /*
