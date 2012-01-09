@@ -23,7 +23,9 @@
  *
  */
 
-
+#ifdef linux
+#define _GNU_SOURCE
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -2975,7 +2977,7 @@ void getfilename(char *dest, char *fullpath)
 	if(strlen(ext)>0)
 		strcat(dest,ext);
 #else
-	strcpy(dest,basename(fullpath));
+	strcpy(dest, basename(fullpath));
 #endif
 }
 
