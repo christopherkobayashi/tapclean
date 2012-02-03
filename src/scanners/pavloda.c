@@ -170,17 +170,17 @@ void pav_search(void)
                xtr=0;
                byt= pav_readbyte(sod+off, FALSE);
 
-               if(byt==-1 && !quiet)
+               if(byt==-1)
                {
-                  sprintf(lin,"\n * Read error in PAVLODA header ($%04X), search abandoned.",sod+off);
-                  msgout(lin);
-                  return;
+                   if(!quiet)
+                   {
+                       sprintf(lin,"\n * Read error in PAVLODA header ($%04X), search abandoned.",sod+off);
+                       msgout(lin);
+				   }
+                   return;
                }
-               if(byt!=-1)
-               {
-                  xtr = (byt&0xFF00)>>8;
-                  hd[tcnt] = byt&0xFF;
-               }
+               xtr = (byt&0xFF00)>>8;
+               hd[tcnt] = byt&0xFF;
                off+=(8+xtr);
             }
 
