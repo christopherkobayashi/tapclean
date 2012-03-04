@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.28-pre-1 - (C) 2006-11 TC Team"
+#define VERSION_STR "TAPClean v0.28-pre-2 - (C) 2006-11 TC Team"
 #define BUILDER     "ldf"
 
 #define TRUE	1
@@ -111,7 +111,7 @@ enum {
 	OCNEW4, TDI_F2, BITURBO, T108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO,
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
 	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2,
-	POWERLOAD, GREMLINF1, GREMLINF2
+	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION
 };
 
 /*
@@ -277,6 +277,7 @@ enum {
 	noaltersw,
 	noalterdk,
 	noalterwg,
+	noamaction,
 	noanirog,
 	noashdave,
 	noatlantis,

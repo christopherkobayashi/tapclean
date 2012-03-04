@@ -213,6 +213,9 @@
     <ClCompile Include="..\..\src\scanners\alternativesw.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\amaction.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\ashdave.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>

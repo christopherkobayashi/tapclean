@@ -248,3 +248,6 @@ int gremlinf1_describe(int);
 
 void gremlinf2_search(void);
 int gremlinf2_describe(int);
+
+void amaction_search(void);
+int amaction_describe(int);

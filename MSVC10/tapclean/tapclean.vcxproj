@@ -147,6 +147,7 @@
     <ClCompile Include="..\..\src\scanners\actionreplay.c" />
     <ClCompile Include="..\..\src\scanners\alternativedk.c" />
     <ClCompile Include="..\..\src\scanners\alternativesw.c" />
+    <ClCompile Include="..\..\src\scanners\amaction.c" />
     <ClCompile Include="..\..\src\scanners\ashdave.c" />
     <ClCompile Include="..\..\src\scanners\biturbo.c" />
     <ClCompile Include="..\..\src\scanners\burner_var.c" />

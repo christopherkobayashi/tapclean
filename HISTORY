@@ -7,7 +7,9 @@ Entries are of the following types (since release 0.21):
 	- New: new features, such as support for new loaders
 
 v0.28
-	Code quality: rewritten aces.c (Luigi)
+	Code quality: rewritten aces.c, anirog.c, atlantis.c, and 
+	 flashload.c (Luigi)
+	New: Added support for "American Action" loader (Luigi)
 
 v0.27
 	New: boot address of Power Load titles is shown inside the report 

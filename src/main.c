@@ -79,6 +79,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Alternative Software"		,"altersw"	,FALSE},
 	{"Alternative SW (DK)"		,"alterdk"	,FALSE},
 	{"Alternative World Games"	,"alterwg"	,FALSE},
+	{"American Action"		,"amaction"	,FALSE},
 	{"Anirog"			,"anirog"	,FALSE},
 	{"Ash+Dave"			,"ashdave"	,FALSE},
 	{"Atlantis"			,"atlantis"	,FALSE},
@@ -300,6 +301,7 @@ struct fmt_t ft[120] = {
 	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400, NA,    CSYES},
 	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
 	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,  0x3C, 0xE3, 0xED, 64,  NA,    CSYES},
+	{"AMERICAN ACTION"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -1250,6 +1252,9 @@ static void search_tap(void)
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
+			if (ldrswt[noamaction	].state == FALSE && !dbase_is_full && !aborted)
+				amaction_search();
+
 			/*
 			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
@@ -1540,6 +1545,8 @@ static void describe_file(int row)
 		case GREMLINF1:		gremlinf1_describe(row);
 					break;
 		case GREMLINF2:		gremlinf2_describe(row);
+					break;
+		case AMACTION:		amaction_describe(row);
 					break;
 	}
 }
