@@ -90,6 +90,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Burner Variant"		,"burnervar"	,FALSE},
 	{"CHR"				,"chr"		,FALSE},
 	{"Chuckie Egg"			,"chuckie"	,FALSE},
+	{"Creatures"			,"creatures"	,FALSE},
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
@@ -302,6 +303,12 @@ struct fmt_t ft[120] = {
 	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
 	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,  0x3C, 0xE3, 0xED, 64,  NA,    CSYES},
 	{"AMERICAN ACTION"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
+	/*
+	 * Creatures loader uses inverted bit pulses hence pv and sv are real values ^ 0xFF.
+	 * Also, the loader does not use checksums but these were calculated using a healthy
+	 * version (to the best of our knowledge).
+	 */
+	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,  0x4C, 0xF0, 0x47, 64,  NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -439,6 +446,7 @@ static void unload_tap(void)
 	tap.crc = 0;
 	tap.cbmcrc = 0;
 	tap.cbmdatalen = 0;
+	tap.cbmhcrc = 0;
 	tap.cbmid = 0;
 	tap.tst_hd = 0;
 	tap.tst_rc = 0;
@@ -1253,8 +1261,18 @@ static void search_tap(void)
 			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
 				freeslow_search();
 
+			/*
+			 * Find a mechanism that enables the following scans just upon detecting
+			 * the very few titles using these formats. We don't really want to slow
+			 * down scanning due to rare formats, but we need to be able to understand
+			 * where these are in use. Hence the scans are here for the time being. 
+			 */
+
 			if (ldrswt[noamaction	].state == FALSE && !dbase_is_full && !aborted)
 				amaction_search();
+
+			if (ldrswt[nocreatures	].state == FALSE && !dbase_is_full && !aborted)
+				creatures_search();
 
 			/*
 			 * Do not add the following ones because they should only be looked for when
@@ -1548,6 +1566,8 @@ static void describe_file(int row)
 		case GREMLINF2:		gremlinf2_describe(row);
 					break;
 		case AMACTION:		amaction_describe(row);
+					break;
+		case CREATURES:		creatures_describe(row);
 					break;
 	}
 }

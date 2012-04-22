@@ -251,3 +251,6 @@ int gremlinf2_describe(int);
 
 void amaction_search(void);
 int amaction_describe(int);
+
+void creatures_search(void);
+int creatures_describe(int);

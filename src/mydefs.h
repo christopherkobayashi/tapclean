@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.28-pre-2 - (C) 2006-11 TC Team"
+#define VERSION_STR "TAPClean v0.28-pre-3 - (C) 2006-12 TC Team"
 #define BUILDER     "ldf"
 
 #define TRUE	1
@@ -98,7 +98,7 @@ enum {
 	LT_NONE=0,
 
 	GAP=1, PAUSE, CBM_HEAD, CBM_DATA, TT_HEAD, TT_DATA, FREE, ODELOAD,
-	CULT, USGOLD, ACES, WILD,WILD_STOP,NOVA, NOVA_SPC, OCEAN_F1, OCEAN_F2,
+	CULT, USGOLD, ACES, WILD, WILD_STOP, NOVA, NOVA_SPC, OCEAN_F1, OCEAN_F2,
 	OCEAN_F3, CHR_T1, CHR_T2, CHR_T3, RASTER, CYBER_F1, CYBER_F2, CYBER_F3,
 	CYBER_F4_1, CYBER_F4_2, CYBER_F4_3, BLEEP, BLEEP_TRIG, BLEEP_SPC,
 	HITLOAD, MICROLOAD, BURNER, RACKIT, SPAV1_HD, SPAV1, SPAV2_HD, SPAV2,
@@ -111,12 +111,12 @@ enum {
 	OCNEW4, TDI_F2, BITURBO, T108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO,
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
 	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2,
-	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION
+	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION, CREATURES
 };
 
 /*
- * These constants are the loader IDs, used for quick scanning via CRC lookup...
- * see file "loader_id.c"
+ * These constants are the loader IDs, used for quick scanning via CRC lookup or 
+ * program data pattern lookup... See file "loader_id.c"
  * Note: the position of each enum IS relevant for uses in 'knam' array in main file.
  */
 
@@ -130,6 +130,14 @@ enum {
 	LID_BURNERVAR, LID_OCNEW4, LID_108DE0A5, LID_FREE_SLOW, LID_GOFORGOLD,
 	LID_FASTEVIL, LID_FFTAPE, LID_TESTAPE, LID_TEQUILA, LID_ALTERSW,
 	LID_CHUCKIEEGG, LID_ALTERDK, LID_POWERLOAD, LID_GREMLIN
+};
+
+/*
+ * These constants are loader IDs for extra one-off loaders, used for quick 
+ * scanning via header pattern lookup... See file "loader_id.c"
+ */
+enum {
+	LIDEX_NONE=0, LIDEX_CREATURES
 };
 
 
@@ -162,6 +170,7 @@ struct tap_t
 	int changed;		/* flags that the tap has been altered (+ needs rescan) */
 	unsigned /*long*/ int crc;	/* overall (data extraction) crc32 for this tap */
 	unsigned /*long*/ int cbmcrc;	/* crc32 of the 1st CBM program found */
+	unsigned /*long*/ int cbmhcrc;	/* crc32 of the 1st CBM header found */
 	int cbmdatalen;		/* length of the 1st CBM program whose crc32 is stored in cbmcrc */
 	int cbmid;		/* loader id, see enums in mydefs.h (-1 = N/A) */
 	char cbmname[20];	/* filename for first CBM file (if exists). */
@@ -289,6 +298,7 @@ enum {
 	noburnervar,
 	nochr,
 	nochuckie,
+	nocreatures,
 	nocult,
 	nocyber,
 	noenigma,
