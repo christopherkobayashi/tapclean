@@ -37,12 +37,13 @@
 /*
  * Looks through the crc database for a crc matching the paramater, returns the defined value
  * of the particular loader family if a match is found, else return 0.
- * The crc passed should obviously be that of the first CBM program in the TAP.
+ * The crc passed should obviously be that of the first CBM program in the TAP, whose length
+ * must be passed through len.
  */
 
-int idloader(unsigned /*long*/ int crc)
+int idloader(unsigned /*long*/ int crc, int len)
 {
-	int i, id, len;
+	int i, id;
 
 	unsigned /*long*/ int kcrc[][2] = {
 		{0x261DBA0E, LID_FREE},
@@ -301,8 +302,9 @@ int idloader(unsigned /*long*/ int crc)
 	/* crc search failed?... do a search in 'cbm_program[]' for loader ID strings... */
 
 	if (id == 0) {
-		len = 200;		/* TEMP DEBUG!!!! */
-		for (i = 0; i < len ; i++) {
+		#define MAXBLOCKLOOKAHEAD 4 /* Max displacement of the array element that is read below */
+
+		for (i = 0; i < len - MAXBLOCKLOOKAHEAD; i++) {
 
 			/* look for N... OVA */
 

@@ -88,7 +88,7 @@ void fix_bleep_pilots(void);
 
 /* in loader_id.c...  really an extension of main.c so no separate header */
 
-int idloader(unsigned /*long*/ int);
+int idloader(unsigned /*long*/ int, int);
 
 /* in batchscan.c... really an extension of main.c so no separate header */
 

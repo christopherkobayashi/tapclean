@@ -438,6 +438,7 @@ static void unload_tap(void)
 	tap.changed = 0;
 	tap.crc = 0;
 	tap.cbmcrc = 0;
+	tap.cbmdatalen = 0;
 	tap.cbmid = 0;
 	tap.tst_hd = 0;
 	tap.tst_rc = 0;
@@ -860,7 +861,7 @@ static void search_tap(void)
 
 		/* try and id any loader stored in cbm_program[]... */
 
-		tap.cbmid = idloader(tap.cbmcrc);
+		tap.cbmid = idloader(tap.cbmcrc, tap.cbmdatalen);
 
 		if (!quiet) {
 			sprintf(lin, "\n  Loader ID: %s.\n", knam[tap.cbmid]);
