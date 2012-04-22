@@ -219,7 +219,7 @@ static int cbm_readbyte(int pos)
 void cbm_search(void)
 {
 	int i, sof, sod, eod, eof, eof_previous = 0;
-	int cnt2, di, len, crc;
+	int cnt2, di, len;
 	int cbmid, valid, j, is_a_header;
 	unsigned char b, pat[32], crcdone = 0;
 	int s, e, x;
@@ -387,6 +387,9 @@ void cbm_search(void)
 					if (cbm_decoded == 0) {
 						for (j = 0; j < 192; j++)
 							cbm_header[j] = cbm_readbyte(sod + (j * PULSESINABYTE));
+
+						tap.cbmhcrc = compute_crc32(cbm_header, 192);
+
 						cbm_decoded++;
 					}
 				} else {
@@ -408,8 +411,10 @@ void cbm_search(void)
 						for (di = sod, cnt2 = 0; di < eod; di += PULSESINABYTE)
 							cbm_program[cnt2++] = cbm_readbyte(di);
 						len = (eod - sod) / PULSESINABYTE;
-						crc = compute_crc32(cbm_program, len);
-						tap.cbmcrc = crc;	/* store it globally too */
+
+						tap.cbmcrc = compute_crc32(cbm_program, len);	/* store program crc globally */
+						tap.cbmdatalen = len;
+
 						crcdone = 1;
 					}
 				}
