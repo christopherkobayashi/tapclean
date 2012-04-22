@@ -162,6 +162,7 @@ struct tap_t
 	int changed;		/* flags that the tap has been altered (+ needs rescan) */
 	unsigned /*long*/ int crc;	/* overall (data extraction) crc32 for this tap */
 	unsigned /*long*/ int cbmcrc;	/* crc32 of the 1st CBM program found */
+	int cbmdatalen;		/* length of the 1st CBM program whose crc32 is stored in cbmcrc */
 	int cbmid;		/* loader id, see enums in mydefs.h (-1 = N/A) */
 	char cbmname[20];	/* filename for first CBM file (if exists). */
 	int tst_hd;
