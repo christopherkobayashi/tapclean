@@ -66,7 +66,26 @@ struct creatures_level_table_s {
 	int checkbyte;		/* pre-calculated XOR checkbytes (not part of the game/loader) */
 };
 
+/*
+ * Table for level files. Larger blocks at top so that upon a failure of 
+ * addblockdef, the next smaller block is attempted.
+ */
 struct creatures_level_table_s creatures_level_table[] = {
+	/* Torture Trouble - Creatures 2 */
+	{0x31 ^ 0xFF, 0x5800, 0xB000, 0xBD},
+	{0x32 ^ 0xFF, 0x5800, 0xB000, 0xC8},
+	{0x33 ^ 0xFF, 0x5800, 0xB000, 0x21},
+	{0x34 ^ 0xFF, 0x5800, 0xB000, 0x42},
+	{0x35 ^ 0xFF, 0x5800, 0xB000, 0x55},
+	{0x36 ^ 0xFF, 0x5800, 0xB000, 0xFA},
+	{0x37 ^ 0xFF, 0x5800, 0xB000, 0xF4},
+	{0x38 ^ 0xFF, 0x5800, 0xB000, 0x63},
+	{0x39 ^ 0xFF, 0x5800, 0xB000, 0xCB},
+	{0x41 ^ 0xFF, 0x5800, 0xB000, 0x78},
+	{0x42 ^ 0xFF, 0x5800, 0xB000, 0xDE},
+	{0x43 ^ 0xFF, 0x5800, 0xB000, 0x41},
+
+	/* Creatures */
 	{0x54 ^ 0xFF, 0x5800, 0x6A00, 0xA7},
 	{0x31 ^ 0xFF, 0x5800, 0xAC00, 0x28},
 	{0x32 ^ 0xFF, 0x8700, 0xAC00, 0x96},
@@ -84,7 +103,7 @@ struct creatures_level_table_s creatures_level_table[] = {
 
 void creatures_search (void)
 {
-	int i, h;			/* counters */
+	int i, h, j;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
@@ -130,46 +149,41 @@ void creatures_search (void)
 				continue;
 
 			/* Lookup load and end addresses from level table by matching ID */
-			s = 0;
-			for (h = 0; h < CREATURES_TABLE_SIZE; h++) {
-				if (hd[FILEIDOFFSET] == creatures_level_table[h].id) {
-					s = creatures_level_table[h].s;
-					e = creatures_level_table[h].e;
+			for (j = 0; j < CREATURES_TABLE_SIZE; j++) {
+				if (hd[FILEIDOFFSET] == creatures_level_table[j].id) {
+					s = creatures_level_table[j].s;
+					e = creatures_level_table[j].e;
 
 					/* Save file id offset for describe stage */
-					xinfo = h;
+					xinfo = j;
 
-					break;
+					/* Prevent int wraparound when subtracting 1 from end location
+					   to get the location of the last loaded byte */
+					if (e == 0)
+						e = 0xFFFF;
+					else
+						e--;
+
+					/* Compute size */
+					x = e - s + 1;
+
+					/* Point to the first pulse of the last data byte (that's final) */
+					eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+
+					/* Initially point to the last pulse of the last byte */
+					eof = eod + BITSINABYTE - 1;
+
+					/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+					h = 0;
+					while (eof < tap.len - 1 &&
+							h++ < MAXTRAILER &&
+							readttbit(eof + 1, lp, sp, tp) >= 0)
+						eof++;
+
+					if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+						i = eof;	/* Search for further files starting from the end of this one */
 				}
 			}
-			if (s == 0)
-				continue;
-
-			/* Prevent int wraparound when subtracting 1 from end location
-			   to get the location of the last loaded byte */
-			if (e == 0)
-				e = 0xFFFF;
-			else
-				e--;
-
-			/* Compute size */
-			x = e - s + 1;
-
-			/* Point to the first pulse of the last data byte (that's final) */
-			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
-
-			/* Initially point to the last pulse of the last byte */
-			eof = eod + BITSINABYTE - 1;
-
-			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-			h = 0;
-			while (eof < tap.len - 1 &&
-					h++ < MAXTRAILER &&
-					readttbit(eof + 1, lp, sp, tp) >= 0)
-				eof++;
-
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
-				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
 			if (eop < 0)

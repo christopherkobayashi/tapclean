@@ -10,7 +10,7 @@ v0.28
 	Code quality: rewritten aces.c, anirog.c, atlantis.c, and 
 	 flashload.c (Luigi)
 	New: Added support for "American Action" loader (Luigi)
-	New: Added support for "Creatures" level files (Luigi)
+	New: Added support for "Creatures" and "Creatures 2" level files (Luigi)
 
 v0.27
 	New: boot address of Power Load titles is shown inside the report 
