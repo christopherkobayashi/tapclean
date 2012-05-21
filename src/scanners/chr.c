@@ -148,8 +148,8 @@ int chr_describe(int row)
 	hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
 	blk[row]->cs = hd[0] + (hd[1] << 8);
-	blk[row]->ce = hd[2] + (hd[3] << 8);
-	blk[row]->cx = blk[row]->ce - blk[row]->cs;
+	blk[row]->ce = hd[2] + (hd[3] << 8) - 1;
+	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
 	/* get pilot & trailer lengths */
 

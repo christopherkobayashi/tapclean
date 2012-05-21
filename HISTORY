@@ -11,6 +11,7 @@ v0.28
 	 flashload.c (Luigi)
 	New: Added support for "American Action" loader (Luigi)
 	New: Added support for "Creatures" and "Creatures 2" level files (Luigi)
+	Fix: Report end address inclusive for CHR, as with other formats (Luigi)
 
 v0.27
 	New: boot address of Power Load titles is shown inside the report 
