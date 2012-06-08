@@ -45,7 +45,9 @@
 #define TRUE	1
 #define FALSE	0
 
+#ifndef MAXPATH
 #define MAXPATH	512
+#endif
 #define NUM_READ_ERRORS 100
 
 #define CLEANED_PREFIX	"clean."
