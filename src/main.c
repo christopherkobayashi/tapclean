@@ -2991,22 +2991,15 @@ int find_seq(int *buf, int bufsz, int *seq, int seqsz)
  * Isolate the filename part of a full path+filename and store it in buffer *dest.
  */
 
-void getfilename(char *dest, char *fullpath)
+void getfilename (char *dest, char *fullpath)
 {
-#ifdef WIN32
-	char drive[_MAX_DRIVE];
-	char dir[_MAX_DIR];
-	char fname[_MAX_FNAME];
-	char ext[_MAX_EXT];
-   
-	_splitpath(fullpath, drive, dir, fname, ext);
-   
-	strcpy(dest, fname);
-	if(strlen(ext)>0)
-		strcat(dest,ext);
-#else
-	strcpy(dest, basename(fullpath));
-#endif
+	char *pch;
+
+	pch = strrchr(fullpath, '/');
+	if (pch == NULL)
+		pch = strrchr(fullpath, '\\');
+
+  strcpy (dest, pch ? pch+1 : fullpath);
 }
 
 /*
