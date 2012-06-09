@@ -2813,7 +2813,7 @@ int is_accounted(int x)
  * Checks whether location 'p' is inside a pause. (harder than it sounds!)
  * Return 1 if it is, 0 if not.
  * Returns -1 if index is out-of-bounds
-*/
+ */
 
 int is_pause_param(int p)
 {
@@ -2999,15 +2999,16 @@ void getfilename (char *dest, char *fullpath)
 	if (pch == NULL)
 		pch = strrchr(fullpath, '\\');
 
-  strcpy (dest, pch ? pch+1 : fullpath);
+	strcpy (dest, pch ? pch+1 : fullpath);
 }
 
 /*
  * Change file extension if any is already in filename
  */
+
 char* change_file_extention (char *filename, char *new_extension, int buffer_length)
 {
-        int i, len;
+	int i, len;
 
 	len = strlen(filename);
 	for (i = len - 1; i > 0 && filename[i] != '.'; i--)
