@@ -457,7 +457,7 @@ int gremlinf2_describe (int row)
 				rd_err++;
 
 				/* for experts only */
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X - overall: $%04X)", s + (i * BITSINABYTE), i, x);
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X - overall: $%04X)", s + (i * BITSINABYTE), i + 2, x + 2);
 				strcat(info, lin);
 			}
 		}

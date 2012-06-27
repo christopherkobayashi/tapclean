@@ -171,7 +171,7 @@ int chr_describe(int row)
 		cb ^= b;
 		if (b == -1) {
 			rd_err++;
-			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * 8), i);
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * 8), i + 2);
 			strcat(info, lin);
 		}
 		blk[row]->dd[i] = b;

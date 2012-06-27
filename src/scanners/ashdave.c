@@ -268,7 +268,7 @@ int ashdave_describe (int row)
 			rd_err++;
 
 			/* for experts only */
-			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i);
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
 			strcat(info, lin);
 		}
 	}
