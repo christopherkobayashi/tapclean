@@ -2991,7 +2991,7 @@ int find_seq(int *buf, int bufsz, int *seq, int seqsz)
  * Isolate the filename part of a full path+filename and store it in buffer *dest.
  */
 
-void getfilename (char *dest, char *fullpath)
+void getfilename(char *dest, char *fullpath)
 {
 	char *pch;
 
@@ -3006,7 +3006,7 @@ void getfilename (char *dest, char *fullpath)
  * Change file extension if any is already in filename
  */
 
-char* change_file_extention (char *filename, char *new_extension, int buffer_length)
+char* change_file_extention(char *filename, char *new_extension, int buffer_length)
 {
 	int i, len;
 
@@ -3088,8 +3088,8 @@ void trim_string(char *str)
 
 	len = strlen(str);
 	if (len > 0) {
-		for (i = len - 1; str[i] == 32 && i > 0; i--)	/* nullify trailing spaces.  */
-		str[i] = 0;
+		for (i = len - 1; str[i] == 32 && i > 0; i--)
+  		str[i] = 0;	/* nullify trailing spaces.  */
 	}
 }
 
