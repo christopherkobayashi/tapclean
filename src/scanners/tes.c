@@ -154,7 +154,7 @@ void testape_search (void)
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
 					readttbit(eof + 1, lp, sp, tp) == 0)
-				eof+*;
+				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
