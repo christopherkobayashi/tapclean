@@ -11,9 +11,8 @@ v0.28
 	 flashload.c (Luigi)
 	New: Added support for "American Action" loader (Luigi)
 	New: Added support for "Creatures" and "Creatures 2" level files (Luigi)
-	Fix: Report end address inclusive for CHR, as with other formats (Luigi)
+	Fix: Reported end address inclusive for CHR, as with other formats (Luigi)
 	New: Added support for "Mayhem in Monsterland" level files (Luigi)
-	Fix: The reported end address for CHR files is now correct (Luigi)
 	Fix: When there is a read error logged the PRG offset is not off 
 	 by 2 anymore (applies to new and rewritten scanners) (Luigi)
 
