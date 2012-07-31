@@ -308,6 +308,10 @@ void cbm_search(void)
 				/* Expect EOF markers?... */
 
 				if (!noc64eof) {
+					/*
+					 * The side effect of acknowledging partial Header files is that
+					 * the calculated end address/size are wrong
+					 */
 					for(eod = i; i <= tap.len - 2; i+=2) {
 						int bitres = cbm_readbit(i);
 						if (bitres == -1)
