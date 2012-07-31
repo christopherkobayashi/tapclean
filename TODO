@@ -1,3 +1,5 @@
+ - For CBM headers with payload > 192 bytes, the crc-32 is still computed on
+   the first 192 bytes only. Is this acceptable? (Luigi)
  - Make a consistent choice about the post-data patterns (in most cases these 
    are described as part of the trailer, whose size is therefore augumented)
    (Luigi)
