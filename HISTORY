@@ -6,6 +6,10 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.29
+	- Improvement: Enabled "TES tape" during general scan in order to 
+	 recognize "Catalypse" (Luigi)
+
 v0.28
 	Code quality: rewritten aces.c, anirog.c, atlantis.c, and 
 	 flashload.c (Luigi)

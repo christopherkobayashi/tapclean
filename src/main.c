@@ -1274,13 +1274,14 @@ static void search_tap(void)
 			if (ldrswt[nocreatures	].state == FALSE && !dbase_is_full && !aborted)
 				creatures_search();
 
+			// Enabled due to "Catalypse" (side 1/2)
+			if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+				testape_search();
+
 			/*
 			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
 			 */
-
-			//if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
-			//	testape_search();
 
 			//if (ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
 			//	fftape_search();
