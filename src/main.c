@@ -122,6 +122,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Rack-It"			,"rackit"	,FALSE},
 	{"Rainbow Arts F1"		,"rainbowf1"	,FALSE},
 	{"Rainbow Arts F2"		,"rainbowf2"	,FALSE},
+	{"Rainbow Islands"		,"rislands"	,FALSE},
 	{"Rasterload"			,"raster"	,FALSE},
 	{"SEUCK"			,"seuck"	,FALSE},
 	{"Snakeload 50"			,"snake50"	,FALSE},
@@ -309,6 +310,8 @@ struct fmt_t ft[120] = {
 	 * version (to the best of our knowledge).
 	 */
 	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,  0x4C, 0xF0, 0x47, 64,  NA,    CSYES},
+
+	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
@@ -1076,6 +1079,9 @@ static void search_tap(void)
 			if (ldrswt[noturbo	].state == FALSE && !dbase_is_full && !aborted)
 				turbotape_search();
 
+			if (ldrswt[norislands	].state == FALSE && !dbase_is_full && !aborted)
+				rainbowislands_search();
+
 			if (ldrswt[nofree	].state == FALSE && !dbase_is_full && !aborted)
 				freeload_search();
 
@@ -1569,6 +1575,8 @@ static void describe_file(int row)
 		case AMACTION:		amaction_describe(row);
 					break;
 		case CREATURES:		creatures_describe(row);
+					break;
+		case RAINBOW_ISLANDS:	rainbowislands_describe(row);
 					break;
 	}
 }

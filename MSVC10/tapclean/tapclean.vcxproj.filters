@@ -228,7 +228,7 @@
     <ClCompile Include="..\..\src\scanners\chuckie_egg.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\compile.c">
+    <ClCompile Include="..\..\src\scanners\creatures.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\cult.c">
@@ -265,6 +265,9 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\rainbowarts_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\rainbowislands.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\tdi_f2.c">

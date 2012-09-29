@@ -254,3 +254,6 @@ int amaction_describe(int);
 
 void creatures_search(void);
 int creatures_describe(int);
+
+void rainbowislands_search (void);
+int rainbowislands_describe(int);

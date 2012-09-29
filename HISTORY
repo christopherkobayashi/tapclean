@@ -9,6 +9,7 @@ Entries are of the following types (since release 0.21):
 v0.29
 	- Improvement: Enabled "TES tape" during general scan in order to 
 	 recognize "Catalypse" (Luigi)
+	New: Added support for "Rainbow Islands" loader (Luigi)
 
 v0.28
 	Code quality: rewritten aces.c, anirog.c, atlantis.c, and 
