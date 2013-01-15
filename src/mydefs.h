@@ -39,8 +39,9 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "TAPClean v0.29-pre2 - (C) 2006-12 TC Team"
-#define BUILDER     "ldf"
+#define VERSION_STR "0.29"
+#define COPYRIGHT_STR "(C) 2006-2013 TC Team"
+#define BUILDER_STR     "ldf"
 
 #define TRUE	1
 #define FALSE	0
