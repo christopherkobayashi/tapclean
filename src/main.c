@@ -1812,11 +1812,10 @@ static void print_results(char *buf)
 	int min;
 	float sec;
 
-	sprintf(buf, "\n\n\nGENERAL INFO AND TEST RESULTS\n");
+	sprintf(buf, "\nTAPClean version: "VERSION_STR"\n\nGENERAL INFO AND TEST RESULTS\n");
 
 	sprintf(lin, "\nTAP Name    : %s", tap.path);
 	strcat(buf, lin);
-
 	sprintf(lin, "\nTAP Size    : %d bytes (%d kB)", tap.len, tap.len >> 10);
 	strcat(buf, lin);
 	sprintf(lin, "\nTAP Version : %d", tap.version);
@@ -2003,7 +2002,7 @@ int main(int argc, char *argv[])
 	build_crc_table();
 
 	printf("\n----------------------------------------------------------------------\n");
-	printf(VERSION_STR" [Build: "__DATE__" by "BUILDER"]\n");
+	printf("TAPClean "VERSION_STR" - "COPYRIGHT_STR" [Built on "__DATE__" by "BUILDER_STR"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
 	printf("----------------------------------------------------------------------\n");
 
@@ -2213,7 +2212,7 @@ int main(int argc, char *argv[])
 				fp = fopen(tcinfoname, "w+t");
 				if (fp != NULL) {
 					printf("\n%s...\n", opname);
-					fprintf(fp, "%s", VERSION_STR);
+					fprintf(fp, "TAPClean %s", VERSION_STR);
 					fclose(fp);
 				}
 			}
@@ -2729,10 +2728,11 @@ void report(void)
 
 	/* show results and general info onscreen... */
 
-	print_results(rbuf);
-
 	if (!batchmode)
+	{
+		print_results(rbuf);
 		fprintf(stdout, "%s", rbuf);
+	}
 
 	free(rbuf);
 
