@@ -113,6 +113,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Ocean F1"			,"oceannew1t1"	,FALSE},
 	{"Ocean F2"			,"oceannew1t2"	,FALSE},
 	{"Ocean New 2"			,"oceannew2"	,FALSE},
+	{"Ocean New 3"			,"oceannew3"	,FALSE},
 	{"Ocean New 4"			,"oceannew4"	,FALSE},
 	{"ODEload"			,"ode"		,FALSE},
 	{"Palace F1"			,"palacef1"	,FALSE},
@@ -312,9 +313,10 @@ struct fmt_t ft[120] = {
 	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,  0x4C, 0xF0, 0x47, 64,  NA,    CSYES},
 
 	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
+	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,  NA,    CSYES},
 
 	/* Closing record */
-	{""			,666,  666,  666, 666,   666,  666,  666, 666, 666,   666}
+	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
 	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 };
 
@@ -1022,7 +1024,7 @@ static void search_tap(void)
 			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].state == FALSE && !dbase_is_full && !aborted)
 				burnervar_search();
 
-			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew4	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew4_search();
 
 			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
@@ -1283,6 +1285,9 @@ static void search_tap(void)
 			// Enabled due to "Catalypse" (side 1/2)
 			if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
 				testape_search();
+
+			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
+				oceannew3_search();
 
 			/*
 			 * Do not add the following ones because they should only be looked for when
@@ -1577,6 +1582,8 @@ static void describe_file(int row)
 		case CREATURES:		creatures_describe(row);
 					break;
 		case RAINBOW_ISLANDS:	rainbowislands_describe(row);
+					break;
+		case OCNEW3:		oceannew3_describe(row);
 					break;
 	}
 }

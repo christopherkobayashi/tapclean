@@ -257,3 +257,6 @@ int creatures_describe(int);
 
 void rainbowislands_search (void);
 int rainbowislands_describe(int);
+
+void oceannew3_search(void);
+int oceannew3_describe(int);
