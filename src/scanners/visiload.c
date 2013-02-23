@@ -178,7 +178,7 @@ int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
 }
 /*---------------------------------------------------------------------------
 */
-void visiload_search(void)
+void visiload_search(unsigned int cbm_data_crc)
 {
    int i,sof,sod,eod,eof,zcnt;
    int j,start,end,len;
@@ -187,10 +187,23 @@ void visiload_search(void)
    
    if(!quiet)
       msgout("  Visiload");
-         
 
-   ah =0;    /* additional header bytes. (initial) */
-   ab =1;    /* additional bits per byte. (initial) */
+   /* Check if this is the BMX Simulator variant which starts with 
+    * 1 additional header byte and 2 additional bits per byte.
+    * Ideally we should extract the info from the CBM file if we 
+    * see more exceptions like this one
+    */
+   if (cbm_data_crc == 0xF1340213)
+   {
+      ah =1;    /* additional header bytes. (initial) */
+      ab =2;    /* additional bits per byte. (initial) */
+   }
+   else
+   {
+      ah =0;    /* additional header bytes. (initial) */
+      ab =1;    /* additional bits per byte. (initial) */
+   }
+
    en =MSbF; /* endianess. (intial) */
 
    for(i=20; i<tap.len-100; i++)
