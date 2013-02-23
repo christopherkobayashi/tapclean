@@ -213,6 +213,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xDD3DE175, LID_VIS1},
 		{0x6B2A1236, LID_VIS1},		/* atom ant. */
 		{0x9EF77DD5, LID_VIS2},
+		{0xF1340213, LID_VIS2},   /* BMX Simulator variant (first turbo file has 5 header bytes) */
 		{0x867C8969, LID_VIS3},
 		{0xC7641A7E, LID_VIS4},
 
