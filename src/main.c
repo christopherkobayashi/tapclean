@@ -945,7 +945,7 @@ static void search_tap(void)
 
 			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4) {
 				if (ldrswt[novisi].state == FALSE && !dbase_is_full && !aborted)
-					visiload_search();
+					visiload_search(tap.cbmcrc);
 			}
 
 			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
@@ -1147,7 +1147,7 @@ static void search_tap(void)
 				burner_search();
 
 			if (ldrswt[novisi	].state == FALSE && !dbase_is_full && !aborted)
-				visiload_search();
+				visiload_search(tap.cbmcrc);
 
 			if (ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
 				wild_search();
