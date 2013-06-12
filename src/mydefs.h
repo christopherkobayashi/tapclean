@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "0.30-pre2"
+#define VERSION_STR "0.30-pre3"
 #define COPYRIGHT_STR "(C) 2006-2013 TC Team"
 #define BUILDER_STR     "ldf"
 
@@ -141,7 +141,7 @@ enum {
  * scanning via header pattern lookup... See file "loader_id.c"
  */
 enum {
-	LIDEX_NONE=0, LIDEX_CREATURES
+	LIDEX_NONE=0
 };
 
 
