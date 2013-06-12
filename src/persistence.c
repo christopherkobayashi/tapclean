@@ -11,13 +11,10 @@
 static const char *persistentstore = "persistence.ini";
 static const char *persistencetmp  = "persistence.tmp";
 
-int load_persistent_data (void)
+static int wait_for_store_update_to_finish ()
 {
 	FILE *pFile;
-	char  readbuffer[64];
-	int   retries, i;
-
-	chdir(exedir);
+	int   retries;
 
 	for (retries = 0;;) {
 		pFile = fopen (persistencetmp, "r");
@@ -27,10 +24,24 @@ int load_persistent_data (void)
 
 		retries++;
 		if (retries >= 3)
-			return PERS_LOCK_TIMEOUT;
+			return 1;
 
 		usleep(1000);
 	}
+
+	return 0;
+}
+
+int load_persistent_data (void)
+{
+	FILE *pFile;
+	char  readbuffer[64];
+	int   i;
+
+	chdir(exedir);
+
+	if (wait_for_store_update_to_finish ())
+		return PERS_LOCK_TIMEOUT;
 
 	pFile = fopen (persistentstore, "r");
 	if (pFile == NULL)
@@ -87,22 +98,12 @@ int load_persistent_data (void)
 int save_persistent_data (void)
 {
 	FILE *pFile;
-	int   retries, i;
+	int   i;
 
 	chdir(exedir);
 
-	for (retries = 0;;) {
-		pFile = fopen (persistencetmp, "r");
-		if (pFile == NULL)
-			break;
-		fclose (pFile);
-
-		retries++;
-		if (retries >= 3)
-			return PERS_LOCK_TIMEOUT;
-
-		usleep(1000);
-	}
+	if (wait_for_store_update_to_finish ())
+		return PERS_LOCK_TIMEOUT;
 
 	pFile = fopen (persistencetmp, "w+");
 	if (pFile == NULL)
