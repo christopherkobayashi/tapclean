@@ -8,6 +8,8 @@ Entries are of the following types (since release 0.21):
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
+	New: Added initial support for loader variable preservation between 
+   program executions (Luigi)
 
 v0.29
 	Improvement: Enabled "TES tape" during general scan in order to 
