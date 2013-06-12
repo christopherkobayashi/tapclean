@@ -9,7 +9,7 @@
 #include "persistence.h"
 
 static const char *persistentstore = "persistence.ini";
-static const char *persistencetmp = "persistence.tmp";
+static const char *persistencetmp  = "persistence.tmp";
 
 int load_persistent_data (void)
 {
@@ -27,21 +27,30 @@ int load_persistent_data (void)
 
 		retries++;
 		if (retries >= 3)
-			return 1;
+			return PERS_LOCK_TIMEOUT;
 
 		usleep(1000);
 	}
 
 	pFile = fopen (persistentstore, "r");
 	if (pFile == NULL)
-		return 2;
+		return PERS_OPEN_ERROR;
 
 	while (fgets (readbuffer, 64, pFile) != NULL) {
+		int  version;
 		char loader[32];
 		int  en, tp, sp, mp, lp, pv, sv;
 
+		if (sscanf (readbuffer,
+				"version = %d",
+				&version) == 1)
+			if (version != 1) {
+				fclose (pFile);
+				return PERS_UNSUPPORTED_VERSION;
+			}
+
 		if (sscanf (readbuffer, 
-				"%s %d %d %d %d %d %d %d",
+				"%s = %d %d %d %d %d %d %d",
 				loader,
 				&en,
 				&tp,
@@ -72,7 +81,7 @@ int load_persistent_data (void)
 
 	fclose (pFile);
 
-	return 0;
+	return PERS_OK;
 }
 
 int save_persistent_data (void)
@@ -90,14 +99,14 @@ int save_persistent_data (void)
 
 		retries++;
 		if (retries >= 3)
-			return 1;
+			return PERS_LOCK_TIMEOUT;
 
 		usleep(1000);
 	}
 
 	pFile = fopen (persistencetmp, "w+");
 	if (pFile == NULL)
-		return 2;
+		return PERS_OPEN_ERROR;
 
 	fputs ("# TAPClean persistence file - do NOT edit\n", pFile);
 	fputs ("[persistence]\n", pFile);
@@ -109,7 +118,7 @@ int save_persistent_data (void)
 		int  j;
 
 		sprintf (writebuffer,
-				"%s %d %d %d %d %d %d %d\n",
+				"%s = %d %d %d %d %d %d %d\n",
 				ft[i].name,
 				ft[i].en,
 				ft[i].tp,
@@ -128,9 +137,8 @@ int save_persistent_data (void)
 
 	fclose (pFile);
 
-	unlink (persistentstore);
+	if (unlink (persistentstore) || rename (persistencetmp, persistentstore))
+		return PERS_IO_ERROR;
 
-	rename (persistencetmp, persistentstore);
-
-	return 0;
+	return PERS_OK;
 }

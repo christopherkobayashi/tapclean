@@ -1977,7 +1977,20 @@ int main(int argc, char *argv[])
 	handle_cps();
 
 	if (preserveloadervars == TRUE)
-		load_persistent_data ();
+		switch (load_persistent_data ()) {
+			case PERS_OK:
+				printf ("\n\nLoader variables restored");
+				break;
+			case PERS_LOCK_TIMEOUT:
+				printf ("\n\nTemporary persistence file found. This might be a dirty leftover: delete and retry");
+				break;
+			case PERS_OPEN_ERROR:
+				printf ("\n\nError opening persistent store for preserved loader variables");
+				break;
+			case PERS_UNSUPPORTED_VERSION:
+				printf ("\n\nCannot use current version of the persistent store for preserved loader variables");
+				break;
+		}
 
 	/* PROCESS ACTIONS... */
 
@@ -2181,7 +2194,20 @@ int main(int argc, char *argv[])
 	}
 
 	if (preserveloadervars == TRUE)
-		save_persistent_data ();
+		switch (save_persistent_data ()) {
+			case PERS_OK:
+				printf ("\n\nLoader variables stored");
+				break;
+			case PERS_LOCK_TIMEOUT:
+				printf ("\n\nTemporary persistence file found. This might be a dirty leftover: delete and retry");
+				break;
+			case PERS_OPEN_ERROR:
+				printf ("\n\nError opening temporary persistent store for preserved loader variables");
+				break;
+			case PERS_IO_ERROR:
+				printf ("\n\nError copying temporary data to the persistent store for preserved loader variables");
+				break;
+		}
 
 	printf("\n\n");
 	cleanup_main();
