@@ -131,18 +131,6 @@ void cyberload_f3_search(void)
       {
          sprintf(lin,"%s_Cyberloader 3.prg",tap.name);
          fp = fopen(lin,"w+b");
-         fputc(0x02,fp);
-         fputc(0x00,fp);
-         for(i=0; i<bufsz; i++)
-            fputc(buf[i] & 0xFF, fp);
-         fclose(fp);
-      }
-
-      /* save the file so I can check it */
-      if(exportcyberloaders)
-      {
-         sprintf(lin,"%s_Cyberloader 3.prg",tap.name);
-         fp = fopen(lin,"w+b");
          fputc(blk[t]->cs & 0xFF,fp);
          fputc((blk[t]->cs & 0xFF00)>>8,fp);
          for(i=0; i<bufsz; i++)
