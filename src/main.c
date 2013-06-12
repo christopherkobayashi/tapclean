@@ -36,6 +36,7 @@
 #include "crc32.h"
 #include "tap2audio.h"
 #include "skewadapt.h"
+#include "persistence.h"
 
 /* program options... */
 
@@ -60,8 +61,7 @@ char ntsc			= FALSE;
 char exportcyberloaders		= FALSE;
 char skewadapt			= FALSE;
 char fstats			= FALSE;
-
-static char preserveloadertable	= TRUE;
+char preserveloadervars		= FALSE;
 
 /*
  * Parameters -no/-do and descriptions
@@ -197,7 +197,6 @@ long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
  * has_cs = flag, provides checksums, 1=yes, 0=no.
  */
 
-struct fmt_t ft_org[120];	/* a backup copy of the following... */
 struct fmt_t ft[120] = {
 	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
 
@@ -523,54 +522,6 @@ static int get_exedir(char *argv0)
 }
 
 /*
- * make a copy of the loader table ft[] so we can revert back to it after any changes.
- * the copy is globally available in ft_org[]
- */
-
-static void copy_loader_table(void)
-{
-	int i;
-
-	for (i = 0; ft[i].tp != 666; i++) {
-		strcpy(ft_org[i].name, ft[i].name);
-		ft_org[i].en = ft[i].en;
-		ft_org[i].tp = ft[i].tp;
-		ft_org[i].sp = ft[i].sp;
-		ft_org[i].mp = ft[i].mp;
-		ft_org[i].lp = ft[i].lp;
-		ft_org[i].pv = ft[i].pv;
-		ft_org[i].sv = ft[i].sv;
-		ft_org[i].pmin = ft[i].pmin;
-		ft_org[i].pmax = ft[i].pmax;
-		ft_org[i].has_cs = ft[i].has_cs;
-	}
-}
-
-/*
- * reset loader table to all original values, ONLY call this if a call to
- * copy_loader_table() has been made.
- */
-
-static void reset_loader_table(void)
-{
-	int i;
-
-	for (i = 0; ft[i].tp != 666; i++) {
-		strcpy(ft[i].name, ft_org[i].name);
-		ft[i].en = ft_org[i].en;
-		ft[i].tp = ft_org[i].tp;
-		ft[i].sp = ft_org[i].sp;
-		ft[i].mp = ft_org[i].mp;
-		ft[i].lp = ft_org[i].lp;
-		ft[i].pv = ft_org[i].pv;
-		ft[i].sv = ft_org[i].sv;
-		ft[i].pmin = ft_org[i].pmin;
-		ft[i].pmax = ft_org[i].pmax;
-		ft[i].has_cs = ft_org[i].has_cs;
-	}
-}
-
-/*
  * Display usage
  */
 
@@ -619,6 +570,7 @@ static void display_usage(void)
 	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
 	printf(" -ntsc          NTSC timing.\n");
 	printf(" -pal           PAL timing (default).\n");
+	printf(" -preserve      Preserve loader variables between program executions.\n");
 	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
 	printf(" -sine          Make audio converter use sine waves.\n");
 	printf(" -skewadapt     Use skewed pulse adapting bit reader.\n");
@@ -701,6 +653,8 @@ static void process_options(int argc, char **argv)
 			noaddpause = TRUE;
 		if (strcmp(argv[i], "-sine") == 0)
 			sine = TRUE;
+		if (strcmp(argv[i], "-preserve") == 0)
+			preserveloadervars = TRUE;
 		if (strcmp(argv[i], "-prgunite") == 0) {
 			prgunite = TRUE;
 			doprg = TRUE;
@@ -1819,7 +1773,7 @@ static void print_results(char *buf)
 	int min;
 	float sec;
 
-	sprintf(buf, "\nTAPClean version: "VERSION_STR"\n\nGENERAL INFO AND TEST RESULTS\n");
+	sprintf(buf, "\n\nTAPClean version: "VERSION_STR"\n\nGENERAL INFO AND TEST RESULTS\n");
 
 	sprintf(lin, "\nTAP Name    : %s", tap.path);
 	strcat(buf, lin);
@@ -2002,9 +1956,6 @@ int main(int argc, char *argv[])
 	if (!create_database())
 		return -1;
 
-	/* Make a copy of the loader table */
-	copy_loader_table();
-
 	/* Pre-calculate CRC table */
 	build_crc_table();
 
@@ -2024,6 +1975,9 @@ int main(int argc, char *argv[])
 
 	process_options(argc, argv);
 	handle_cps();
+
+	if (preserveloadervars == TRUE)
+		load_persistent_data ();
 
 	/* PROCESS ACTIONS... */
 
@@ -2225,6 +2179,9 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+
+	if (preserveloadervars == TRUE)
+		save_persistent_data ();
 
 	printf("\n\n");
 	cleanup_main();
@@ -2537,10 +2494,6 @@ int load_tap(char *name)
 	 * debugmode=FALSE;      reset "debugging" mode.
 	 */
 
-
-	/* If desired, preserve loader table between TAPs... */
-	if (preserveloadertable == FALSE)
-		reset_loader_table();
 
 	/* Makes sure the tap is fully scanned afterwards. */
 	tap.changed = TRUE;
