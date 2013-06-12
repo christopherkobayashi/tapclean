@@ -138,7 +138,9 @@ int save_persistent_data (void)
 
 	fclose (pFile);
 
-	if (unlink (persistentstore) || rename (persistencetmp, persistentstore))
+	unlink (persistentstore);
+
+	if (rename (persistencetmp, persistentstore))
 		return PERS_IO_ERROR;
 
 	return PERS_OK;

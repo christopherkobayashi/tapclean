@@ -1984,9 +1984,6 @@ int main(int argc, char *argv[])
 			case PERS_LOCK_TIMEOUT:
 				printf ("\n\nTemporary persistence file found. This might be a dirty leftover: delete and retry");
 				break;
-			case PERS_OPEN_ERROR:
-				printf ("\n\nError opening persistent store for preserved loader variables");
-				break;
 			case PERS_UNSUPPORTED_VERSION:
 				printf ("\n\nCannot use current version of the persistent store for preserved loader variables");
 				break;
