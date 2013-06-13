@@ -353,6 +353,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\persistence.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\skewadapt.c"
 				>
 			</File>
@@ -632,6 +636,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\oceannew3.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\oceannew4.c"
 					>
 				</File>
@@ -708,6 +716,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\mydefs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\persistence.h"
 				>
 			</File>
 			<File
