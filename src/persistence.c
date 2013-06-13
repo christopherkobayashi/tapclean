@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#define usleep	Sleep
+#else
 #include <unistd.h>
+#endif
 #ifdef WIN32
 #include <direct.h>
 #endif
@@ -36,7 +41,7 @@ int load_persistent_data (void)
 {
 	FILE *pFile;
 	char  readbuffer[64];
-	int   i;
+	size_t i;
 
 	chdir(exedir);
 
@@ -98,7 +103,7 @@ int load_persistent_data (void)
 int save_persistent_data (void)
 {
 	FILE *pFile;
-	int   i;
+	size_t i;
 
 	chdir(exedir);
 
@@ -116,7 +121,7 @@ int save_persistent_data (void)
 
 	for (i = CBM_HEAD; i < sizeof(ft)/sizeof(ft[0]) && ft[i].name[0]; i++) {
 		char writebuffer[64];
-		int  j;
+		size_t j;
 
 		sprintf (writebuffer,
 				"%s = %d %d %d %d %d %d %d\n",
