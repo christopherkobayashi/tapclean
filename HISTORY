@@ -10,6 +10,8 @@ v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
 	New: Added initial support for loader variable preservation between 
    program executions (Luigi)
+	Fix: Limited the amount of data added to the report buffer in order
+   to avoid access violations (Luigi)
 
 v0.29
 	Improvement: Enabled "TES tape" during general scan in order to 
