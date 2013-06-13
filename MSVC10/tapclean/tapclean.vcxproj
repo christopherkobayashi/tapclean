@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\src\filesearch.c" />
     <ClCompile Include="..\..\src\loader_id.c" />
     <ClCompile Include="..\..\src\main.c" />
+    <ClCompile Include="..\..\src\persistence.c" />
     <ClCompile Include="..\..\src\skewadapt.c" />
     <ClCompile Include="..\..\src\tap2audio.c" />
     <ClCompile Include="..\..\src\scanners\aces.c" />
@@ -160,6 +161,7 @@
     <ClCompile Include="..\..\src\scanners\goforgold.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew3.c" />
     <ClCompile Include="..\..\src\scanners\oceannew4.c" />
     <ClCompile Include="..\..\src\scanners\odeload.c" />
     <ClCompile Include="..\..\src\scanners\powerload.c" />
@@ -179,6 +181,7 @@
     <ClInclude Include="..\..\src\filesearch.h" />
     <ClInclude Include="..\..\src\main.h" />
     <ClInclude Include="..\..\src\mydefs.h" />
+    <ClInclude Include="..\..\src\persistence.h" />
     <ClInclude Include="..\..\src\skewadapt.h" />
     <ClInclude Include="..\..\src\tap2audio.h" />
   </ItemGroup>
