@@ -1,3 +1,6 @@
+ - The report is saved in a report buffer and then written to file. As the 
+   buffer has a fixed size, should we instead just write to file directly
+   instead of buffering the report in memory? (Luigi)
  - For CBM headers with payload > 192 bytes, the crc-32 is still computed on
    the first 192 bytes only. Is this acceptable? (Luigi)
  - Make a consistent choice about the post-data patterns (in most cases these 
