@@ -1184,12 +1184,6 @@ static void search_tap(void)
 			if (ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
 				accolade_search();
 
-			if (ldrswt[noaltersw	].state	== FALSE && !dbase_is_full && !aborted)
-				alternativesw_search();
-
-			if (ldrswt[noalterdk	].state	== FALSE && !dbase_is_full && !aborted)
-				alternativedk_search();
-
 			if (ldrswt[noalterwg	].state	== FALSE && !dbase_is_full && !aborted)
 				alternativewg_search();
 
