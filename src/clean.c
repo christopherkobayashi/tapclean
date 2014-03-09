@@ -288,9 +288,9 @@ void unify_pauses(void)
 				/* now compute the output sequence for this pause block... */
 
 				tot = 0;	/* add up cycles in the whole stretch... */
-				printf ("\nAdding up: ");
+				/* printf ("\nAdding up @ $%X: ", i); */
 				for (j = i; j < s; j++) {
-					printf ("%02X ", tap.tmem[j]);
+					/* printf ("%02X ", tap.tmem[j]); */
 					if (tap.tmem[j] == 0)
 						tot += 20000;
 					else
@@ -309,6 +309,9 @@ void unify_pauses(void)
 					tmp[c++] = 0;
 
 				i = s - 1;	/* restart copying from s once i++ is executed */
+
+				/* if (s < tap.len)
+					printf ("\nFirst non-LAME @ $%X", s); */
 			}
 		}
 	}
