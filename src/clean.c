@@ -261,19 +261,19 @@ void unify_pauses(void)
 			tmp[i] = tap.tmem[i];
 
 		for (i = 20, c = 20; i < tap.len && c < tap.len; i++) {
-			if (tap.tmem[i] > LAME)		/* dump non LAME bytes to the output buffer. */
+			if (tap.tmem[i] > LAME)		/* copy non-LAME bytes to the output buffer. */
 				tmp[c++] = tap.tmem[i];
 
 			if (tap.tmem[i] < LAME + 1) {	/* found a v0 LAME byte... */
-				s = i + 1;			/* save location of first LAME. */
-				j = 0;
+				s = i + 1;		/* save location past first LAME. */
+				j = 0;			/* zero size of non-LAME sequence. */
 
 				/* find nearest following block (of x bytes) with NO LAME bytes... */
 
 				while ((s + j) < tap.len) {
 					if (tap.tmem[s + j] < LAME + 1) {
-						j = 0;
-						s++;
+						s += j + 1;	/* save location past current LAME. */
+						j = 0;		/* zero size of non-LAME sequence. */
 					}
 					else {
 						j++;
@@ -288,7 +288,9 @@ void unify_pauses(void)
 				/* now compute the output sequence for this pause block... */
 
 				tot = 0;	/* add up cycles in the whole stretch... */
+				printf ("\nAdding up: ");
 				for (j = i; j < s; j++) {
+					printf ("%02X ", tap.tmem[j]);
 					if (tap.tmem[j] == 0)
 						tot += 20000;
 					else
@@ -306,7 +308,7 @@ void unify_pauses(void)
 				for (j = 0; j < p; j++)
 					tmp[c++] = 0;
 
-				i = s;
+				i = s - 1;	/* restart copying from s once i++ is executed */
 			}
 		}
 	}
