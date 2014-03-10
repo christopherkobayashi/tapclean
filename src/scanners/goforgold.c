@@ -195,6 +195,7 @@ int goforgold_describe (int row)
 
 	trim_string(bfname);
 	pet2text(bfnameASCII, bfname);
+	fname_text(bfnameASCII);
 
 	if (blk[row]->fn != NULL)
 		free(blk[row]->fn);
