@@ -59,6 +59,7 @@ void msgout(char *);
 int find_seq(int *, int, int *, int);
 char* change_file_extention(char *, char *, int);
 char* pet2text(char *, char *);
+void fname_text(char *);
 void trim_string(char *);
 void padstring(char *, int);
 void time2str(time_t, char *);

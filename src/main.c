@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "main.h"
 #include "mydefs.h"
@@ -3063,6 +3064,19 @@ char* pet2text(char *dest, char *src)
 	}
 
 	return dest;
+}
+
+/*
+ * Only keeps alphanumeric chars in a string so that it is safe to use it as filename.
+ */
+
+void fname_text (char *src)
+{
+	char *s;
+
+	for (s = src; *s; s++)
+		if (!isalnum(*s))
+			*s = '_';	/* convert the rest to underscore */
 }
 
 /*
