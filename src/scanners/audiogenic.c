@@ -61,22 +61,22 @@ void audiogenic_search(void)
 				sod = i + 8; /* 1 byte is the sync value... */
 
 				/* ... then 1 byte is the header size and 256 is data size = 257 bytes...
-				   ... the trailing 0x01 value is NOT mandatory! 
+				   ... the trailing 0x01 value is broken for the last file in a chain.
 				   This way eod points to the first bit of the checkbyte... (luigi) */
-				eod = sod + ((HDSZ+257) * 8);
+				eod = sod + ((HDSZ+256) * 8);
 
-				eof = eod + 7;
+				eof = eod + 7;	/* last bit of the check byte */
 
-				/* guess if there's a whole trailer byte */
+				/* check if there's a whole trailer byte */
 				if (readttbyte(eof + 1, lp, sp, tp, en) == 0x01)
 					eof +=8;
-				/* broken trailer byte: trace 'eof' to end of trailer */
+				/* broken trailer byte: trace 'eof' to end of trailer (bit 0 only of course) */
 				else if (eof > 0)
-					while (eof < tap.len - 1 && tap.tmem[eof + 1] > sp - tol && tap.tmem[eof + 1] < sp + tol)
+					while (eof < tap.len - 1 && readttbit(eof + 1, lp, sp, tp) == 0)
 						eof++;
 
-				addblockdef(AUDIOGENIC, sof, sod, eod, eof, 0);
-				i = eof;
+				if (addblockdef(AUDIOGENIC, sof, sod, eod, eof, 0) >= 0)
+					i = eof;
 			}
 		} else {
 			if (z < 0)	/* find_pilot failed (too few/many), set i to failure point. */
@@ -112,7 +112,6 @@ int audiogenic_describe(int row)
 		strcat(info, "loader (part 2)");
 	else
 		strcat(info, "data");
-	strcat(info, lin);
 
 	/* get pilot & trailer lengths */
 
@@ -123,7 +122,7 @@ int audiogenic_describe(int row)
 
 	b = readttbyte(blk[row]->p2 + (258 * 8), lp, sp, tp, en);
 	if (b != -1) { /* (luigi) */
-		sprintf(lin, "\n - Trailer byte (unbroken): $%02X", b);
+		sprintf(lin, "\n - Trailer byte (not broken): $%02X", b);
 		strcat(info, lin);
 	}
 
