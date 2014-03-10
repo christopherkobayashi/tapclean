@@ -288,7 +288,7 @@ int cyberload_f4_describe(int row)
    int carry;
    int l4_offset_to_filename, l4_hsize, cs_hsize;
    unsigned char hd[32];
-   char fname[17];
+   char fname[17], bfnameASCII[17];
    unsigned char cb;
 
    if(blk[row]->lt==CYBER_F4_1)
@@ -320,8 +320,14 @@ int cyberload_f4_describe(int row)
       fname[i] = hd[l4_offset_to_filename +i];
    fname[16]=0;
    trim_string(fname);
-   sprintf(lin,"\n - Name : \"%s\"",fname);
-   strcat(info,lin);
+   //sprintf(lin,"\n - Name : \"%s\"",fname);
+   //strcat(info,lin);
+   pet2text(bfnameASCII, fname);
+   fname_text(bfnameASCII);
+   if (blk[row]->fn != NULL)
+      free(blk[row]->fn);
+   blk[row]->fn = (char*)malloc(strlen(bfnameASCII) + 1);
+   strcpy(blk[row]->fn, bfnameASCII);
 
    blk[row]->cs = hd[l4_offset_to_filename +16] + (hd[l4_offset_to_filename +17]<<8);
    blk[row]->cx = hd[l4_offset_to_filename +18] + (hd[l4_offset_to_filename +19]<<8);
