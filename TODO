@@ -3,8 +3,8 @@
 					h++ < MAXTRAILER &&
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
-   can be simplified to:
-			while (h++ < MAXTRAILER && readttbit(eof + 1, lp, sp, tp) >= 0)
+   can be simplified to (the order of the two conditions IS important):
+			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h++ < MAXTRAILER)
 				eof++;
    (Luigi)
 - The report is saved in a report buffer and then written to file. As the 
