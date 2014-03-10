@@ -6,6 +6,13 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.31
+	Improvement: Disabled "Alternative Software" and "Alternative Software 
+	 DK" scanning in absence of their signature in CBM Data (Luigi)
+	Fix: Corrected and optimized V0 code in unify_pauses (Luigi)
+	Fix: Corrected size of the expected data block in "Audiogenic" 
+	 scanner (Luigi)
+
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
 	New: Added initial support for loader variable preservation between 
