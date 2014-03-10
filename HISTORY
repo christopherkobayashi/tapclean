@@ -12,6 +12,11 @@ v0.31
 	Fix: Corrected and optimized V0 code in unify_pauses (Luigi)
 	Fix: Corrected size of the expected data block in "Audiogenic" 
 	 scanner (Luigi)
+	Improvement: Normalize block names in order to be used for PRG filename
+	 generation safely (Luigi)
+	Improvement: For "Cyberload F4" use the standard description process
+	 to handle block names so that these also propagate into PRG file
+	 names (Luigi)
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
