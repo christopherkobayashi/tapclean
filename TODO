@@ -1,4 +1,13 @@
- - The report is saved in a report buffer and then written to file. As the 
+ - readttbit already checks for TAP data boundaries so the following:
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
+				eof++;
+   can be simplified to:
+			while (h++ < MAXTRAILER && readttbit(eof + 1, lp, sp, tp) >= 0)
+				eof++;
+   (Luigi)
+- The report is saved in a report buffer and then written to file. As the 
    buffer has a fixed size, should we instead just write to file directly
    instead of buffering the report in memory? (Luigi)
  - For CBM headers with payload > 192 bytes, the crc-32 is still computed on
