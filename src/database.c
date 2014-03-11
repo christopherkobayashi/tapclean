@@ -511,7 +511,15 @@ void make_prgs(void)
 						/* entry used to create the final data prg in tmp. */
 
 			prg[j].blkidstart = pt[i];
-			prg[j].fn = blk[pt[i]]->fn; /* No need to make a copy here */
+
+			if (blk[pt[i]]->fn) {
+				prg[j].fn = (char *) malloc (strlen(blk[pt[i]]->fn) + 1);
+
+				if (prg[j].fn) {
+					strcpy (prg[j].fn, blk[pt[i]]->fn);
+					fname_text(prg[j].fn);
+				}
+			}
 
 			do {
 				t = blk[pt[i]]->lt;	/* get details of next exportable part... */
@@ -651,6 +659,10 @@ void reset_prg_database(void)
 		prg[i].cs = 0;
 		prg[i].ce = 0;
 		prg[i].cx = 0;
+		if (prg[i].fn != NULL) {
+			free(prg[i].fn);
+			prg[i].fn = NULL;
+		}
 		if (prg[i].dd != NULL) {
 			free(prg[i].dd);
 			prg[i].dd = NULL;

@@ -319,11 +319,10 @@ int cyberload_f4_describe(int row)
    for(i=0; i<16; i++)
       fname[i] = hd[l4_offset_to_filename +i];
    fname[16]=0;
+
    trim_string(fname);
-   //sprintf(lin,"\n - Name : \"%s\"",fname);
-   //strcat(info,lin);
    pet2text(bfnameASCII, fname);
-   fname_text(bfnameASCII);
+
    if (blk[row]->fn != NULL)
       free(blk[row]->fn);
    blk[row]->fn = (char*)malloc(strlen(bfnameASCII) + 1);
