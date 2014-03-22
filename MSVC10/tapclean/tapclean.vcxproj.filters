@@ -210,7 +210,7 @@
     <ClCompile Include="..\..\src\scanners\actionreplay.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\algasoft.c">
+    <ClCompile Include="..\..\src\scanners\easytape.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\alternativedk.c">

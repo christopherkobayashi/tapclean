@@ -76,7 +76,6 @@ struct ldrswt_t ldrswt[] = {
 	{"Accolade/EA"			,"accolade"	,FALSE},
 	{"Ace of Aces"			,"aces"		,FALSE},
 	{"ActionReplay"			,"ar"		,FALSE},
-	{"Algasoft"			,"algasoft"	,FALSE},
 	{"Alien Syndrome"		,"aliensy"	,FALSE},
 	{"Alternative Software"		,"altersw"	,FALSE},
 	{"Alternative SW (DK)"		,"alterdk"	,FALSE},
@@ -95,6 +94,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Creatures"			,"creatures"	,FALSE},
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
+	{"Easy-Tape"			,"easytape"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
 	{"Fast Evil"			,"fastevil"	,FALSE},
 	{"FF Tape"			,"fftape"	,FALSE},
@@ -315,7 +315,7 @@ struct fmt_t ft[120] = {
 
 	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
 	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,  NA,    CSYES},
-	{"ALGASOFT"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
+	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
@@ -387,7 +387,7 @@ const char knam[][32] = {
 	{"Alternative SW (DK)"},
 	{"Power Load"},
 	{"Gremlin (F1/F2)"},
-	{"Algasoft"}
+	{"Easy-Tape System C"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1025,8 +1025,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].state == FALSE  && !dbase_is_full && !aborted)
 				gremlinf1_search();
 
-			if (tap.cbmid == LID_ALGASOFT	&& ldrswt[noalgasoft	].state == FALSE && !dbase_is_full && !aborted)
-				algasoft_search();
+			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
+				easytape_search();
 
 			/*
 			 * todo : TURRICAN
@@ -1244,8 +1244,15 @@ static void search_tap(void)
 			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew3_search();
 
-			if (ldrswt[noalgasoft	].state == FALSE && !dbase_is_full && !aborted)
-				algasoft_search();
+			/*
+			 * Find a mechanism that enables the following scans just upon detecting
+			 * the very few titles using these formats. The peoblem is that detection
+			 * is based on the CBM boot where these formats are usually used in tape
+			 * compilations.
+			 */
+
+			if (ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
+				easytape_search();
 
 			/*
 			 * Do not add the following ones because they should only be looked for when
@@ -1543,7 +1550,7 @@ static void describe_file(int row)
 					break;
 		case OCNEW3:		oceannew3_describe(row);
 					break;
-		case ALGASOFT:		algasoft_describe(row);
+		case EASYTAPE:		easytape_describe(row);
 					break;
 	}
 }

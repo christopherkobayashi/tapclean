@@ -1038,9 +1038,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit100]
-FileName=..\src\scanners\algasoft.c
+FileName=..\src\scanners\easytape.c
 CompileCpp=0
-Folder=
+Folder=newscanners
 Compile=1
 Link=1
 Priority=1000

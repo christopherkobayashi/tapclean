@@ -146,7 +146,7 @@
     <ClCompile Include="..\..\src\scanners\t108DE0A5.c" />
     <ClCompile Include="..\..\src\scanners\accolade.c" />
     <ClCompile Include="..\..\src\scanners\actionreplay.c" />
-    <ClCompile Include="..\..\src\scanners\algasoft.c" />
+    <ClCompile Include="..\..\src\scanners\easytape.c" />
     <ClCompile Include="..\..\src\scanners\alternativedk.c" />
     <ClCompile Include="..\..\src\scanners\alternativesw.c" />
     <ClCompile Include="..\..\src\scanners\amaction.c" />

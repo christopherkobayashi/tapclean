@@ -572,7 +572,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\algasoft.c"
+					RelativePath="..\..\src\scanners\easytape.c"
 					>
 				</File>
 				<File

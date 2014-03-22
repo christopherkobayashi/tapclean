@@ -261,5 +261,5 @@ int rainbowislands_describe(int);
 void oceannew3_search(void);
 int oceannew3_describe(int);
 
-void algasoft_search(void);
-int algasoft_describe(int);
+void easytape_search(void);
+int easytape_describe(int);
