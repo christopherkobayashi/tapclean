@@ -145,6 +145,10 @@ void amaction_search (void)
 				xinfo -= 3;
 			}
 
+			/* Plausibility check */
+			if (xinfo < 0)
+				continue;
+
 			/* Extract load location and size */
 			s = hd[LOADOFFSETL + xinfo] + (hd[LOADOFFSETH + xinfo] << 8);
 			x = hd[DATAOFFSETL + xinfo] + (hd[DATAOFFSETH + xinfo] << 8) + 1;

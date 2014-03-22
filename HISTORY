@@ -12,12 +12,14 @@ v0.31
 	Fix: Corrected and optimized V0 code in unify_pauses (Luigi)
 	Fix: Corrected size of the expected data block in "Audiogenic" 
 	 scanner (Luigi)
-	Improvement: Normalize block names in order to be used for PRG filename
+	Improvement: Normalize block names in order to be used for PRG filename 
 	 generation safely (Luigi)
-	Improvement: For "Cyberload F4" use the standard description process
-	 to handle block names so that these also propagate into PRG file
+	Improvement: For "Cyberload F4" use the standard description process 
+	 to handle block names so that these also propagate into PRG file 
 	 names (Luigi)
-	New: Added support for "Easy-Tape System C" variants (Luigi)
+	New: Added support for "Easy-Tape System C" (Luigi)
+	Fix: Added plausibility check for "American Action" in order to 
+	 avoid misrecognition of similar formats (Luigi)
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
