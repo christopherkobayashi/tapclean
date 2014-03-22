@@ -572,6 +572,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\algasoft.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\actionreplay.c"
 					>
 				</File>

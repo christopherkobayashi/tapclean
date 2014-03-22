@@ -288,6 +288,10 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xAD9ABE1C, LID_GREMLIN},	/* Gremlin tape F1 and F2 */
 		{0xC721D847, LID_GREMLIN},
 
+		{0x40DF4E6A, LID_ALGASOFT},	/* Algasoft */
+		{0x0B8B7156, LID_ALGASOFT},
+		{0x691067FA, LID_ALGASOFT},
+
 		{0, 0}
 	};
 

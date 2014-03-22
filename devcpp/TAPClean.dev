@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=99
+UnitCount=100
 Type=1
 Ver=1
 ObjFiles=
@@ -1031,6 +1031,16 @@ BuildCmd=
 FileName=..\src\persistence.h
 CompileCpp=0
 Folder=headers
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit100]
+FileName=..\src\scanners\algasoft.c
+CompileCpp=0
+Folder=
 Compile=1
 Link=1
 Priority=1000

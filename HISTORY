@@ -17,6 +17,7 @@ v0.31
 	Improvement: For "Cyberload F4" use the standard description process
 	 to handle block names so that these also propagate into PRG file
 	 names (Luigi)
+	New: Added support for "Algasoft" variants (Luigi)
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)
