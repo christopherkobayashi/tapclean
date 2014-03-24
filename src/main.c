@@ -137,6 +137,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Tequila Sunrise"		,"tequila"	,FALSE},
 	{"TES Tape"			,"testape"	,FALSE},
 	{"Trilogic"			,"trilogic"	,FALSE},
+	{"Turbo 220"			,"tur220"	,FALSE},
 	{"Turbotape 250"		,"turbo"	,FALSE},
 	{"Turrican"			,"turr"		,FALSE},
 	{"U.S. Gold"			,"usgold"	,FALSE},
@@ -316,6 +317,7 @@ struct fmt_t ft[120] = {
 	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
 	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,  NA,    CSYES},
 	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
+	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
@@ -1254,6 +1256,9 @@ static void search_tap(void)
 			if (ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
 				easytape_search();
 
+			if (ldrswt[noturbo220	].state == FALSE && !dbase_is_full && !aborted)
+				turbo220_search();
+
 			/*
 			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
@@ -1551,6 +1556,8 @@ static void describe_file(int row)
 		case OCNEW3:		oceannew3_describe(row);
 					break;
 		case EASYTAPE:		easytape_describe(row);
+					break;
+		case TURBO220:		turbo220_describe(row);
 					break;
 	}
 }

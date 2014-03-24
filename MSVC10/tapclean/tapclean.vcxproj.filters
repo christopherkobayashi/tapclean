@@ -210,9 +210,6 @@
     <ClCompile Include="..\..\src\scanners\actionreplay.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\easytape.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\scanners\alternativedk.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
@@ -238,6 +235,9 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\cult.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\easytape.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\fastevil.c">
@@ -289,6 +289,9 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\trilogic.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\turbo220.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
   </ItemGroup>

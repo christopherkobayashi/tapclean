@@ -20,6 +20,7 @@ v0.31
 	New: Added support for "Easy-Tape System C" (Luigi)
 	Fix: Added plausibility check for "American Action" in order to 
 	 avoid misrecognition of similar formats (Luigi)
+	New: Added support for "Turbo 220" (Luigi)
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)

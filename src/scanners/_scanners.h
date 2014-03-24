@@ -263,3 +263,6 @@ int oceannew3_describe(int);
 
 void easytape_search(void);
 int easytape_describe(int);
+
+void turbo220_search(void);
+int turbo220_describe(int);

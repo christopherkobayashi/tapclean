@@ -146,7 +146,6 @@
     <ClCompile Include="..\..\src\scanners\t108DE0A5.c" />
     <ClCompile Include="..\..\src\scanners\accolade.c" />
     <ClCompile Include="..\..\src\scanners\actionreplay.c" />
-    <ClCompile Include="..\..\src\scanners\easytape.c" />
     <ClCompile Include="..\..\src\scanners\alternativedk.c" />
     <ClCompile Include="..\..\src\scanners\alternativesw.c" />
     <ClCompile Include="..\..\src\scanners\amaction.c" />
@@ -156,6 +155,7 @@
     <ClCompile Include="..\..\src\scanners\chuckie_egg.c" />
     <ClCompile Include="..\..\src\scanners\creatures.c" />
     <ClCompile Include="..\..\src\scanners\cult.c" />
+    <ClCompile Include="..\..\src\scanners\easytape.c" />
     <ClCompile Include="..\..\src\scanners\fastevil.c" />
     <ClCompile Include="..\..\src\scanners\fftape.c" />
     <ClCompile Include="..\..\src\scanners\freeslow.c" />
@@ -173,6 +173,7 @@
     <ClCompile Include="..\..\src\scanners\tequila.c" />
     <ClCompile Include="..\..\src\scanners\tes.c" />
     <ClCompile Include="..\..\src\scanners\trilogic.c" />
+    <ClCompile Include="..\..\src\scanners\turbo220.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\scanners\_scanners.h" />

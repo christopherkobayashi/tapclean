@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "0.31-pre6"
+#define VERSION_STR "0.31-pre7"
 #define COPYRIGHT_STR "(C) 2006-2014 TC Team"
 #define BUILDER_STR     "ldf"
 
@@ -115,7 +115,7 @@ enum {
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
 	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2,
 	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION, CREATURES, RAINBOW_ISLANDS,
-	OCNEW3, EASYTAPE
+	OCNEW3, EASYTAPE, TURBO220
 };
 
 /*
@@ -348,6 +348,7 @@ enum {
 	notequila,
 	notestape,
 	notrilogic,
+	noturbo220,
 	noturbo,
 	noturr,
 	nousgold,

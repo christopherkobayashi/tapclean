@@ -572,10 +572,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\easytape.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\actionreplay.c"
 					>
 				</File>
@@ -613,6 +609,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\cult.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\easytape.c"
 					>
 				</File>
 				<File
@@ -685,6 +685,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\trilogic.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\turbo220.c"
 					>
 				</File>
 			</Filter>
