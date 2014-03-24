@@ -21,6 +21,8 @@ v0.31
 	Fix: Added plausibility check for "American Action" in order to 
 	 avoid misrecognition of similar formats (Luigi)
 	New: Added support for "Turbo 220" (Luigi)
+	Improvement: to stop the irresponsible pollution of TAP archives, 
+	 files with read errors cannot be cleaned any longer (Luigi)
 
 v0.30
 	New: Added initial support for "Ocean New 3" loader (Luigi)

@@ -2091,45 +2091,49 @@ int main(int argc, char *argv[])
 						printf("\n%s...\n", opname);
 
 						if (analyze()) {
-							switch(opnum) {
-								case OP_OPTIMIZE:
-									clean();
-									break;
-								case OP_CONVERT_V0:
-									convert_to_v0();
-									break;
-								case OP_CONVERT_V1:
-									convert_to_v1();
-									break;
-								case OP_FIX_HEADER_SIZE:
-									fix_header_size();
-									analyze();
-									break;
-								case OP_PAUSE_OPTIMIZE:
-									convert_to_v0();
-									clip_ends();
-									unify_pauses();
-									convert_to_v1();
-									add_trailpause();
-									break;
-							}
-
-							if (opnum >= OP_OPTIMIZE) {
-								char *tapnamepos, *cleanedtapnamefullpath;
-
-								strcpy(cleanedtapname, CLEANED_PREFIX);
-								strcat(cleanedtapname, tap.name);
-								change_file_extention(cleanedtapname, "tap", MAXPATH);
-								cleanedtapnamefullpath = cleanedtapname;
-
-								/* Change tap.path because the report refers to the cleaned tap */
-								tapnamepos = strstr(tap.path, tap.name);
-								if (tapnamepos) {
-									strncpy(tapnamepos, cleanedtapname, MAXPATH);
-									cleanedtapnamefullpath = tap.path;
+							if (opnum == OP_OPTIMIZE && tap.total_read_errors) {
+								printf("\n\n%s contains read errors so it won't be cleaned.\n", tap.name);
+							} else {
+								switch(opnum) {
+									case OP_OPTIMIZE:
+										clean();
+										break;
+									case OP_CONVERT_V0:
+										convert_to_v0();
+										break;
+									case OP_CONVERT_V1:
+										convert_to_v1();
+										break;
+									case OP_FIX_HEADER_SIZE:
+										fix_header_size();
+										analyze();
+										break;
+									case OP_PAUSE_OPTIMIZE:
+										convert_to_v0();
+										clip_ends();
+										unify_pauses();
+										convert_to_v1();
+										add_trailpause();
+										break;
 								}
-								save_tap(cleanedtapnamefullpath);
-								printf("\n\nSaved: %s", cleanedtapnamefullpath);
+
+								if (opnum >= OP_OPTIMIZE) {
+									char *tapnamepos, *cleanedtapnamefullpath;
+
+									strcpy(cleanedtapname, CLEANED_PREFIX);
+									strcat(cleanedtapname, tap.name);
+									change_file_extention(cleanedtapname, "tap", MAXPATH);
+									cleanedtapnamefullpath = cleanedtapname;
+
+									/* Change tap.path because the report refers to the cleaned tap */
+									tapnamepos = strstr(tap.path, tap.name);
+									if (tapnamepos) {
+										strncpy(tapnamepos, cleanedtapname, MAXPATH);
+										cleanedtapnamefullpath = tap.path;
+									}
+									save_tap(cleanedtapnamefullpath);
+									printf("\n\nSaved: %s", cleanedtapnamefullpath);
+								}
 							}
 
 							report();
