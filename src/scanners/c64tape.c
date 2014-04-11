@@ -442,8 +442,8 @@ int cbm_describe(int row)
 	static int _dfs = 0, _dfe = 0, _dfx = 0;
 
 	startadr = C64_BASIC_START_ADDR;
-	if (c20 == TRUE)
-		startadr = VIC20_BASIC_START_ADDR;
+	if (c20 == TRUE || c16 == TRUE)
+		startadr = VIC20C16_BASIC_START_ADDR;
 
 	// SEQ FILE support
 

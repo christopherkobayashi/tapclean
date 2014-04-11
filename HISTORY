@@ -6,6 +6,9 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.32
+	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
+
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 
 	 DK" scanning in absence of their signature in CBM Data (Luigi)

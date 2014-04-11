@@ -74,8 +74,8 @@
 #define VIC20_PAL_CPS	1108405
 #define VIC20_NTSC_CPS	1022727
 
-#define VIC20_BASIC_START_ADDR	0x1001
-#define C64_BASIC_START_ADDR	0x0801
+#define VIC20C16_BASIC_START_ADDR	0x1001
+#define C64_BASIC_START_ADDR		0x0801
 
 #define NA	-1	/* indicator: Not Applicable. */
 #define VV	-1	/* indicator: A variable value is used. */
