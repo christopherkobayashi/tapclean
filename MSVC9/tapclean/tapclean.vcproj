@@ -368,23 +368,11 @@
 				Name="scanners"
 				>
 				<File
-					RelativePath="..\..\src\scanners\aces.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\aliensyndrome.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\alternativewg.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\anirog.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\atlantis.c"
 					>
 				</File>
 				<File
@@ -428,15 +416,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\enigma.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\firebird.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\flashload.c"
 					>
 				</File>
 				<File
@@ -689,6 +669,30 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\turbo220.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="rewritten"
+				>
+				<File
+					RelativePath="..\..\src\scanners\aces.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\anirog.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\atlantis.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\enigma.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\flashload.c"
 					>
 				</File>
 			</Filter>
