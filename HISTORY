@@ -10,6 +10,8 @@ v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
 	Improvement: Extract load/end address of the first "Enigma" turbo
 	 file (Luigi)
+	Improvement: Extract load/end address all "Enigma" turbo file for 
+	 non multi-load titles (Luigi)
 
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 

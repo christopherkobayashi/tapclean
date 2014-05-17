@@ -50,6 +50,82 @@
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
+#define MASTERLOADSIZE	0x200	/* size in bytes */
+
+#ifdef _MSC_VER
+#define inline __inline
+#endif
+
+static inline void get_enigma_addresses (int *buf, int bufsz, int blkindex, unsigned int *s, unsigned int *e)
+{
+	int seq_load_type1[15] = {
+		/*
+		 * Example from Defenders of the Earth:
+		 * LDA #$00	; Load address LSB
+		 * STA $60
+		 * LDA #$E0	; MSB of the same
+		 * STA $61
+		 * LDA #$40	; End address LSB
+		 * LDY #$FF	; MSB of the same
+		 * JSR $02BA	; Load
+		 */
+		0xA9,XX,0x85,XX,0xA9,XX,0x85,XX,0xA9,XX,0xA0,XX,0x20,0xBA,0x02
+	};
+	int seq_load_type2[15] = {
+		/*
+		 * Example from Defenders of the Earth:
+		 * LDA #$00	; Load address LSB
+		 * LDX #$CC	; MSB of the same
+		 * STA $60
+		 * STX $61
+		 * LDA #$00	; End address LSB
+		 * LDY #$D0	; MSB of the same
+		 * JSR $02BA	; Load
+		 */
+		0xA9,XX,0xA2,XX,0x85,XX,0x86,XX,0xA9,XX,0xA0,XX,0x20,0xBA,0x02
+	};
+
+	int index, offset1, offset2, minoffset, deltaoffset, sumoffsets;
+
+	index = 1;
+	minoffset = 0;
+	deltaoffset = 0;
+	sumoffsets = 0;
+
+	do {
+		sumoffsets += (minoffset + deltaoffset);
+
+		offset1 = find_seq (buf + sumoffsets, bufsz, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
+		offset2 = find_seq (buf + sumoffsets, bufsz, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
+
+		if (offset1 < offset2 || offset2 == -1) {
+			minoffset = offset1;
+			deltaoffset = sizeof(seq_load_type1) / sizeof(seq_load_type1[0]);
+		}
+		if (offset2 < offset1 || offset1 == -1) {
+			minoffset = offset2;
+			deltaoffset = sizeof(seq_load_type2) / sizeof(seq_load_type2[0]);
+		}
+
+		index++;
+	} while ((index <= blkindex) && !(offset1 == -1 && offset2 == -1));
+
+	if (offset1 == -1 && offset2 == -1) {
+		*s = 0;
+		*e = 0;
+	} else {
+		*s  = buf[sumoffsets + minoffset + 1];
+
+		if (minoffset == offset1) {
+			*s |= buf[sumoffsets + minoffset + 5] << 8;
+		} else {
+			*s |= buf[sumoffsets + minoffset + 3] << 8;
+		}
+		*e  = buf[sumoffsets + minoffset + 9];
+		*e |= buf[sumoffsets + minoffset + 11] << 8;
+	}
+}
+
 void enigma_search(void)
 {
 	int i, h;			/* counters */
@@ -61,7 +137,11 @@ void enigma_search(void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
+	int enigma_index;		/* Index of file (0 = master loader) */
+
 	int xinfo;			/* extra info used in addblockdef() */
+
+	int masterloader[MASTERLOADSIZE];	/* Buffer for master loader (first 0x0200-byte turbo file) */
 
 
 	en = ft[THISLOADER].en;
@@ -72,6 +152,8 @@ void enigma_search(void)
 
 	if (!quiet)
 		msgout("  Enigma Variations Tape");
+
+	enigma_index = 0;
 
 	/*
 	 * First we retrieve the first file variables from the CBM data.
@@ -94,7 +176,14 @@ void enigma_search(void)
 
 		buf = (int *) malloc (bufsz * sizeof(int));
 		if (buf != NULL) {
-			/* Search pattern covers Implosion too */
+			/* Example from Defenders of teh Earth:
+			 * JSR $03C4
+			 * LDA #$00	; First file load address LSB
+			 * STA $60
+			 * LDY #$C0	; MSB of the same
+			 * STY $61
+			 *
+			 * Note: the search pattern covers Implosion too */
 			int seq_load_addr_first[10] = {
 				0x20, 0xC4, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84
 			};
@@ -105,14 +194,12 @@ void enigma_search(void)
 			for (index = 0; index < bufsz; index++)
 				buf[index] = blk[ib]->dd[index];
 
-			index = 0;
-
 			offset = find_seq (buf, bufsz, seq_load_addr_first, sizeof(seq_load_addr_first) / sizeof(seq_load_addr_first[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
 				s |= buf[offset + 8] << 8;
-				e = s + 0x200 - 1;
+				e = s + 0x200;
 			}
 
 			free (buf);
@@ -153,6 +240,17 @@ void enigma_search(void)
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 					i = eof;	/* Search for further files starting from the end of this one */
 			} else {
+				/* Prevent int wraparound when subtracting 1 from end location
+				   to get the location of the last loaded byte */
+				if (e == 0)
+					e = 0xFFFF;
+				else
+					e--;
+
+				/* Plausibility check */
+				if (e < s)
+					continue;
+
 				/* Compute size */
 				x = e - s + 1;
 
@@ -173,11 +271,35 @@ void enigma_search(void)
 				/* Store the info read from previous part as extra-info */
 				xinfo = s + (e << 16);
 
-				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0) {
 					i = eof;	/* Search for further files starting from the end of this one */
 
-				/* We still need to decode these for the following file(s) */
-				s = e = 0;
+					if (enigma_index == 0) {
+						int j, b, rd_err;
+
+						rd_err = 0;
+
+						/* Store master loader */
+						for (j = 0; j < MASTERLOADSIZE; j++) {
+							b = readttbyte(sod + (j  * BITSINABYTE), lp, sp, tp, en);
+							if (b == -1)
+								rd_err++; /* Don't break here: during debug we will see how many errors occur */
+							else
+								masterloader[j] = b;
+						}
+
+						if (rd_err == 0) {
+							enigma_index++;
+							get_enigma_addresses (masterloader, MASTERLOADSIZE, enigma_index, &s, &e);
+						} else {
+							enigma_index = -1;
+							s = e = 0;	/* We can't decode in case of error */
+						}
+					} else if (enigma_index > 0) {
+						enigma_index++;
+						get_enigma_addresses (masterloader, MASTERLOADSIZE, enigma_index, &s, &e);
+					}
+				}
 			}
 		}
 	}
