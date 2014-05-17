@@ -94,22 +94,20 @@ static inline unsigned int get_packed_file_end_address (void)
 	s = LOADADDRFILE3;	/* init load address */
 	x = 0;			/* init size */
 
-	for (i = 0; i < PACKTABLEENTR; i += 2)
-	{
+	for (i = 0; i < PACKTABLEENTR; i += 2) {
 		e = get_packed_address(i);
 		if (e < LOADADDRFILE3)
 			e = ENDADDRFILE3;
 		if (e > ENDADDRFILE3)
 			e = ENDADDRFILE3;
-		if (e > s)
-		{
+		if (e > s) {
 			x += (e - s);
 			if (e == ENDADDRFILE3)
 				break;
 			s = get_packed_address(i + 1);
-		}
-		else
+		} else {
 			break;
+		}
 	}
 
 	return (LOADADDRFILE3 + x);
@@ -166,8 +164,7 @@ void fftape_search (void)
 			/* Valid sync bit + sync byte found, mark start of data */
 			sod = i + BITSINABYTE * SPRSYNCSEQSIZE;
 
-			switch (ff_index)
-			{
+			switch (ff_index) {
 				/* Values for first and second block in a chain are
 				 * hardcoded and the same for each program, it's not
 				 * worth extracting them from CBM data block
@@ -226,20 +223,17 @@ void fftape_search (void)
 			/* Store the load/end addresses as extra-info */
 			xinfo = s + (e << 16);
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
-			{
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0) {
 				i = eof;	/* Search for further files starting from the end of this one */
 
 				/* Calculate end address for third file (readttbyte is quite safe here) */
-				if (ff_index == 2)
-				{
+				if (ff_index == 2) {
 					int j, b, rd_err;
 
 					rd_err = 0;
 
 					/* Store unpack table */
-					for (j = 0; j < PACKTABLESIZE; j++)
-					{
+					for (j = 0; j < PACKTABLESIZE; j++) {
 						b = readttbyte(sod + ((j + PACKTABLEOFFSET) * BITSINABYTE), lp, sp, tp, en);
 						if (b == -1)
 							rd_err++; /* Don't break here: during debug we will see how many errors occur */
@@ -258,14 +252,11 @@ void fftape_search (void)
 				ff_index++;
 
 				/* Prepare for next chain */
-				if (ff_index > FILESINACHAIN)
-				{
+				if (ff_index > FILESINACHAIN) {
 					ff_index = 1;
 					ff3_e = 0x0001;
 				}
-			}
-			else if (ff_index == 3)
-			{
+			} else if (ff_index == 3) {
 				/* If file 3 is unrecognized, then try look for file 4 */
 				ff_index++;
 			}
@@ -327,12 +318,10 @@ int fftape_describe(int row)
 
 #if defined(DEBUGFFTABLES) || defined(DEBUGFFTABLESRAW)
 	/* Unpack table - stored inside the second file of each chain */
-	if (blk[row]->cs == LOADADDRFILE2 && blk[row]->ce + 1 == ENDADDRFILE2)
-	{
+	if (blk[row]->cs == LOADADDRFILE2 && blk[row]->ce + 1 == ENDADDRFILE2) {
 #ifdef DEBUGFFTABLESRAW
 		strcat(info, "\n - Unpack table (LSBs) :");
-		for (i = 0; i < PACKTABLESIZE; i++)
-		{
+		for (i = 0; i < PACKTABLESIZE; i++) {
 			if (i == PACKTABLESIZE/2)
 				strcat(info, "\n - Unpack table (MSBs) :");
 
@@ -342,9 +331,9 @@ int fftape_describe(int row)
 			b = readttbyte(s + ((i + PACKTABLEOFFSET) * BITSINABYTE), lp, sp, tp, en);
 
 			// Do NOT increase read errors for this one is not within DATA
-			if (b == -1)
+			if (b == -1) {
 				strcat(info, "-- ");
-			else {
+			} else {
 				sprintf(lin, "%02X ", b);
 				strcat(info, lin);
 			}
@@ -355,37 +344,34 @@ int fftape_describe(int row)
 		ps = LOADADDRFILE3;
 
 		/* Copy the current table into buffer */
-		for (i = 0; i < PACKTABLESIZE; i++)
-		{
+		for (i = 0; i < PACKTABLESIZE; i++) {
 			b = readttbyte(s + ((i + PACKTABLEOFFSET) * BITSINABYTE), lp, sp, tp, en);
-			if (b != -1)
+			if (b != -1) {
 				unpackt[i] = b;
-			else
+			} else {
 				break;
+			}
 		}
 
-		if (i < PACKTABLESIZE)
+		if (i < PACKTABLESIZE) {
 			strcat(info, "\n - Unpack table is damaged");
-		else
-		{
+		} else {
 			strcat(info, "\n - Sub-blocks for next file :");
-			for (i = 0; i < PACKTABLEENTR; i += 2)
-			{
+			for (i = 0; i < PACKTABLEENTR; i += 2) {
 				pe = get_packed_address(i);
 				if (pe < LOADADDRFILE3)
 					pe = ENDADDRFILE3;
 				if (pe > ENDADDRFILE3)
 					pe = ENDADDRFILE3;
-				if (pe > ps)
-				{
+				if (pe > ps) {
 					sprintf(lin, "\n   s-e: %04X-%04X", ps, pe);
 					strcat(info, lin);
 					if (pe == ENDADDRFILE3)
 						break;
 					ps = get_packed_address(i + 1);
-				}
-				else
+				} else {
 					break;
+				}
 			}
 		}
 #endif
