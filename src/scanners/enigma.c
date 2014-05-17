@@ -176,7 +176,8 @@ void enigma_search(void)
 
 		buf = (int *) malloc (bufsz * sizeof(int));
 		if (buf != NULL) {
-			/* Example from Defenders of teh Earth:
+			/*
+			 * Example from Defenders of the Earth:
 			 * JSR $03C4
 			 * LDA #$00	; First file load address LSB
 			 * STA $60
