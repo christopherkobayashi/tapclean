@@ -56,7 +56,9 @@
 #define inline __inline
 #endif
 
-static inline void get_enigma_addresses (int *buf, int bufsz, int blkindex, unsigned int *s, unsigned int *e)
+//#define ENIGMA_DEBUG
+
+static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffset, int blkindex, unsigned int *s, unsigned int *e)
 {
 	int seq_load_type1[15] = {
 		/*
@@ -99,7 +101,7 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int blkindex, unsi
 	index = 1;
 	minoffset = 0;
 	deltaoffset = 0;
-	sumoffsets = 0;
+	sumoffsets = entrypointoffset;
 
 #ifdef ENIGMA_DEBUG
 	printf ("\n---------------\nIndex: %d", blkindex);
@@ -163,6 +165,7 @@ void enigma_search(void)
 	int xinfo;			/* extra info used in addblockdef() */
 
 	int masterloader[MASTERLOADSIZE];	/* Buffer for master loader (first 0x0200-byte turbo file) */
+	int masterentryvectoroffset, masterentryoffset;
 
 
 	en = ft[THISLOADER].en;
@@ -204,10 +207,27 @@ void enigma_search(void)
 			 * STA $60
 			 * LDY #$C0	; MSB of the same
 			 * STY $61
+			 * INY           
+			 * INY
+			 * JSR S02BA
+			 * JMP ($0910)	; Game specific jump address
 			 *
-			 * Note: the search pattern covers Implosion too */
-			int seq_load_addr_first[10] = {
-				0x20, 0xC4, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84
+			 * Example from Implosion (same as Ace 2):
+			 * LDA #$39      
+			 * STA $0328
+			 * JSR $03C4
+			 * LDA #$00
+			 * STA $F8
+			 * LDY #$0C
+			 * STY $F9
+			 * INY
+			 * INY
+			 * JSR S02BF
+			 * JMP ($0C00)	; Game specific jump address
+			 */
+			int seq_load_addr_and_exec_first[17] = {
+				0x20, 0xC4, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84, XX, 
+				0xC8, 0xC8, 0x20, XX, 0x02, 0x6C
 			};
 
 			int index, offset;
@@ -216,12 +236,18 @@ void enigma_search(void)
 			for (index = 0; index < bufsz; index++)
 				buf[index] = blk[ib]->dd[index];
 
-			offset = find_seq (buf, bufsz, seq_load_addr_first, sizeof(seq_load_addr_first) / sizeof(seq_load_addr_first[0]));
+			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first, sizeof(seq_load_addr_and_exec_first) / sizeof(seq_load_addr_and_exec_first[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
 				s |= buf[offset + 8] << 8;
 				e = s + 0x200;
+
+				masterentryvectoroffset = (buf[offset + 17] | (buf[offset + 18] << 8)) - s;
+
+#ifdef ENIGMA_DEBUG
+				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+#endif
 			}
 
 			free (buf);
@@ -312,14 +338,26 @@ void enigma_search(void)
 
 						if (rd_err == 0) {
 							enigma_index++;
-							get_enigma_addresses (masterloader, MASTERLOADSIZE, enigma_index, &s, &e);
+
+							/* Dereference jump in masterloader */
+							masterentryoffset = (masterloader[masterentryvectoroffset] | (masterloader[masterentryvectoroffset + 1] << 8)) - s;
+#ifdef ENIGMA_DEBUG
+							printf ("\nMasterload start: $%04x", masterentryoffset + s);
+#endif
+
+							if (masterentryoffset >= MASTERLOADSIZE) {
+								enigma_index = -1;
+								s = e = 0;	/* Offset is past the end of the file, give up */
+							} else {
+								get_enigma_addresses (masterloader, MASTERLOADSIZE, masterentryoffset, enigma_index, &s, &e);
+							}
 						} else {
 							enigma_index = -1;
 							s = e = 0;	/* We can't decode in case of error */
 						}
 					} else if (enigma_index > 0) {
 						enigma_index++;
-						get_enigma_addresses (masterloader, MASTERLOADSIZE, enigma_index, &s, &e);
+						get_enigma_addresses (masterloader, MASTERLOADSIZE, masterentryoffset, enigma_index, &s, &e);
 					}
 				}
 			}
