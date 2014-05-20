@@ -68,8 +68,17 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int blkindex, unsi
 		 * LDA #$40	; End address LSB
 		 * LDY #$FF	; MSB of the same
 		 * JSR $02BA	; Load
+		 *
+		 * Example from Implosion (same as Ace 2):
+		 * LDA #$00	; Load address LSB
+		 * STA $F8
+		 * LDA #$F0	; MSB of the same
+		 * STA $F9
+		 * LDA #$FA	; End address LSB
+		 * LDY #$FF
+		 * JSR $02BF	; Load
 		 */
-		0xA9,XX,0x85,XX,0xA9,XX,0x85,XX,0xA9,XX,0xA0,XX,0x20,0xBA,0x02
+		0xA9,XX,0x85,XX,0xA9,XX,0x85,XX,0xA9,XX,0xA0,XX,0x20,XX,0x02
 	};
 	int seq_load_type2[15] = {
 		/*
@@ -92,20 +101,32 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int blkindex, unsi
 	deltaoffset = 0;
 	sumoffsets = 0;
 
+#ifdef ENIGMA_DEBUG
+	printf ("\n---------------\nIndex: %d", blkindex);
+#endif
+
 	do {
 		sumoffsets += (minoffset + deltaoffset);
 
 		offset1 = find_seq (buf + sumoffsets, bufsz, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
 		offset2 = find_seq (buf + sumoffsets, bufsz, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
 
-		if (offset1 < offset2 || offset2 == -1) {
+#ifdef ENIGMA_DEBUG
+		printf ("\nScanning for seq at: %d, ofst1 = %d, ofst2 = %d", sumoffsets, offset1, offset2);
+#endif
+
+		if (offset1 >= 0 && (offset1 < offset2 || offset2 == -1)) {
 			minoffset = offset1;
 			deltaoffset = sizeof(seq_load_type1) / sizeof(seq_load_type1[0]);
 		}
-		if (offset2 < offset1 || offset1 == -1) {
+		if (offset2 >= 0 && (offset2 < offset1 || offset1 == -1)) {
 			minoffset = offset2;
 			deltaoffset = sizeof(seq_load_type2) / sizeof(seq_load_type2[0]);
 		}
+
+#ifdef ENIGMA_DEBUG
+		printf ("\nmin offset = %d, skip next: %d", minoffset, deltaoffset);
+#endif
 
 		index++;
 	} while ((index <= blkindex) && !(offset1 == -1 && offset2 == -1));
