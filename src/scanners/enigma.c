@@ -56,7 +56,7 @@
 #define inline __inline
 #endif
 
-#define ENIGMA_DEBUG
+//#define ENIGMA_DEBUG
 
 static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffset, int blkindex, unsigned int *s, unsigned int *e)
 {
@@ -92,8 +92,17 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 		 * LDA #$00	; End address LSB
 		 * LDY #$D0	; MSB of the same
 		 * JSR $02BA	; Load
+		 *
+		 * Example from The Famous Five:
+		 * LDA #$00	; Load address LSB
+		 * LDX #$CC	; MSB of the same
+		 * STA $60
+		 * STX $61
+		 * LDA #$00	; End address LSB
+		 * LDY #$D0	; MSB of the same
+		 * JSR $02BC	; Load
 		 */
-		0xA9,XX,0xA2,XX,0x85,XX,0x86,XX,0xA9,XX,0xA0,XX,0x20,0xBA,0x02
+		0xA9,XX,0xA2,XX,0x85,XX,0x86,XX,0xA9,XX,0xA0,XX,0x20,XX,0x02
 	};
 
 	int index, offset1, offset2, minoffset, deltaoffset, sumoffsets;
@@ -282,6 +291,11 @@ void enigma_search(void)
 			 * JSR S02BC
 			 * JMP ($0400)
 			 */
+			int seq_load_addr_and_exec_first3[21] = {
+				/* Whole sequence that we will need so array access later on is safe */
+				0x20, 0xC4, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84, XX, 
+				0xA9, XX, 0xA0, XX, 0x20, XX, 0x02, 0x6C, XX, XX
+			};
 
 			int index, offset;
 
@@ -321,6 +335,20 @@ void enigma_search(void)
 				e = s + 0x100;
 
 				masterentryvectoroffset = (buf[offset + 18] | (buf[offset + 19] << 8)) - s;
+#ifdef ENIGMA_DEBUG
+				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+#endif
+			}
+
+			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first3, sizeof(seq_load_addr_and_exec_first3) / sizeof(seq_load_addr_and_exec_first3[0]));
+			if (offset != -1) {
+				/* Update s and e for the first block if info was found */
+				s  = buf[offset + 4];
+				s |= buf[offset + 8] << 8;
+				e  = buf[offset + 12];
+				e |= buf[offset + 14] << 8;
+
+				masterentryvectoroffset = (buf[offset + 19] | (buf[offset + 20] << 8)) - s;
 #ifdef ENIGMA_DEBUG
 				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
 #endif
