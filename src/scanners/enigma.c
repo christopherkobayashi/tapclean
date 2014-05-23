@@ -50,7 +50,7 @@
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
-#define MASTERLOADSIZE	0x200	/* size in bytes */
+#define MASTERLOADSIZE	0x200	/* max size in bytes of the first turbo file */
 
 #ifdef _MSC_VER
 #define inline __inline
@@ -60,6 +60,7 @@
 
 static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffset, int blkindex, unsigned int *s, unsigned int *e)
 {
+	/* Load snippets usually found in the master loader */
 	int seq_load_type1[15] = {
 		/*
 		 * Example from Defenders of the Earth:
@@ -313,8 +314,13 @@ void enigma_search(void)
 				switch (buf[offset + 16]) {
 					case 0x6C:	/* JMP ($0000): We need to de-reference later */
 						masterentryvectoroffset = (buf[offset + 17] | (buf[offset + 18] << 8)) - s;
+
+						/* Plausibility check as we work with integers */
+						if (masterentryvectoroffset < 0)
+							s = e = 0;
 #ifdef ENIGMA_DEBUG
-						printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+						else
+							printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
 #endif
 						break;
 					case 0x4C:	/* JMP $0000: No need to de-reference */
@@ -335,8 +341,13 @@ void enigma_search(void)
 				e = s + 0x100;
 
 				masterentryvectoroffset = (buf[offset + 18] | (buf[offset + 19] << 8)) - s;
+
+				/* Plausibility check as we work with integers */
+				if (masterentryvectoroffset < 0)
+					s = e = 0;
 #ifdef ENIGMA_DEBUG
-				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+				else
+					printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
 #endif
 			}
 
@@ -349,8 +360,13 @@ void enigma_search(void)
 				e |= buf[offset + 14] << 8;
 
 				masterentryvectoroffset = (buf[offset + 19] | (buf[offset + 20] << 8)) - s;
+
+				/* Plausibility check as we work with integers */
+				if (masterentryvectoroffset < 0)
+					s = e = 0;
 #ifdef ENIGMA_DEBUG
-				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+				else
+					printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
 #endif
 			}
 
@@ -420,7 +436,7 @@ void enigma_search(void)
 						readttbit(eof + 1, lp, sp, tp) >= 0)
 					eof++;
 
-				/* Store the info read from previous part as extra-info */
+				/* Store the info read from master loader as extra-info */
 				xinfo = s + (e << 16);
 
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0) {
