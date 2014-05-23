@@ -56,7 +56,7 @@
 #define inline __inline
 #endif
 
-//#define ENIGMA_DEBUG
+#define ENIGMA_DEBUG
 
 static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffset, int blkindex, unsigned int *s, unsigned int *e)
 {
@@ -71,7 +71,7 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 		 * LDY #$FF	; MSB of the same
 		 * JSR $02BA	; Load
 		 *
-		 * Example from Implosion (same as Ace 2):
+		 * Example from Implosion (same as ACE 2):
 		 * LDA #$00	; Load address LSB
 		 * STA $F8
 		 * LDA #$F0	; MSB of the same
@@ -136,6 +136,9 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 	if (offset1 == -1 && offset2 == -1) {
 		*s = 0;
 		*e = 0;
+#ifdef ENIGMA_DEBUG
+		printf ("\nNo further file details found");
+#endif
 	} else {
 		*s  = buf[sumoffsets + minoffset + 1];
 
@@ -146,6 +149,10 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 		}
 		*e  = buf[sumoffsets + minoffset + 9];
 		*e |= buf[sumoffsets + minoffset + 11] << 8;
+
+#ifdef ENIGMA_DEBUG
+		printf ("\ns: $%04X, e: $%04X", *s, *e);
+#endif
 	}
 }
 
@@ -164,7 +171,7 @@ void enigma_search(void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	int masterloader[MASTERLOADSIZE];	/* Buffer for master loader (first 0x0200-byte turbo file) */
+	int masterloader[MASTERLOADSIZE];	/* Buffer for master loader (first turbo file, mostly 0x200 bytes) */
 	int masterentryvectoroffset, masterentryoffset;
 
 
@@ -207,12 +214,12 @@ void enigma_search(void)
 			 * STA $60
 			 * LDY #$C0	; MSB of the same
 			 * STY $61
-			 * INY           
+			 * INY		; End address is 2 pages ahead (0x200 bytes)
 			 * INY
 			 * JSR S02BA
 			 * JMP ($0910)	; Game specific jump address
 			 *
-			 * Example from Implosion (same as Ace 2):
+			 * Example from Implosion (Not yet fully supported):
 			 * LDA #$39      
 			 * STA $0328
 			 * JSR $03C4
@@ -224,11 +231,57 @@ void enigma_search(void)
 			 * INY
 			 * JSR S02BF
 			 * JMP ($0C00)	; Game specific jump address
+			 *
+			 * Example from Frightmare:
+			 * JSR $03C4
+			 * LDA #$00
+			 * STA $60
+			 * LDY #$08
+			 * STY $61
+			 * INY
+			 * INY
+			 * JSR S02BA
+			 * JMP $0810	; Note: Direct jump
 			 */
-			int seq_load_addr_and_exec_first[17] = {
+			int seq_load_addr_and_exec_first1[19] = {
+				/* Whole sequence that we will need so array access later on is safe */
 				0x20, 0xC4, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84, XX, 
-				0xC8, 0xC8, 0x20, XX, 0x02, 0x6C
+				0xC8, 0xC8, 0x20, XX, 0x02, XX, XX, XX
 			};
+
+			/*
+			 * Example from ACE 2:
+			 * LDA #$39
+			 * STA $0328
+			 * JSR $03C7
+			 * LDA #$00	; First file load address LSB
+			 * STA $F8
+			 * LDY #$CC	; MSB of the same
+			 * STY $F9
+			 * INY		; Note: End address is only 1 page ahead (0x100 bytes)
+			 * JSR S02C0
+			 * LDY #$00
+			 * JMP ($CC00)	; Game specific jump address
+			 */
+			int seq_load_addr_and_exec_first2[20] = {
+				/* Whole sequence that we will need so array access later on is safe */
+				0x20, 0xC7, 0x03, 0xA9, XX, 0x85, XX, 0xA0, XX, 0x84, XX, 
+				0xC8, 0x20, XX, 0x02, 0xA0, XX, 0x6C, XX, XX
+			};
+
+			/*
+			 *
+			 * Example from The Famous Five (Not yet supported)
+			 * JSR $03C4
+			 * LDA #$00
+			 * STA $60
+			 * LDY #$04
+			 * STY $61
+			 * LDA #$C5	; Explicitly set End address
+			 * LDY #$04
+			 * JSR S02BC
+			 * JMP ($0400)
+			 */
 
 			int index, offset;
 
@@ -236,15 +289,38 @@ void enigma_search(void)
 			for (index = 0; index < bufsz; index++)
 				buf[index] = blk[ib]->dd[index];
 
-			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first, sizeof(seq_load_addr_and_exec_first) / sizeof(seq_load_addr_and_exec_first[0]));
+			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first1, sizeof(seq_load_addr_and_exec_first1) / sizeof(seq_load_addr_and_exec_first1[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
 				s |= buf[offset + 8] << 8;
 				e = s + 0x200;
 
-				masterentryvectoroffset = (buf[offset + 17] | (buf[offset + 18] << 8)) - s;
+				switch (buf[offset + 16]) {
+					case 0x6C:	/* JMP ($0000): We need to de-reference later */
+						masterentryvectoroffset = (buf[offset + 17] | (buf[offset + 18] << 8)) - s;
+#ifdef ENIGMA_DEBUG
+						printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
+#endif
+						break;
+					case 0x4C:	/* JMP $0000: No need to de-reference */
+						masterentryvectoroffset = -1;
+						masterentryoffset = (buf[offset + 17] | (buf[offset + 18] << 8)) - s;
+#ifdef ENIGMA_DEBUG
+						printf ("\nMasterload start: $%04x", masterentryoffset + s);
+#endif
+						break;
+				}
+			}
 
+			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first2, sizeof(seq_load_addr_and_exec_first2) / sizeof(seq_load_addr_and_exec_first2[0]));
+			if (offset != -1) {
+				/* Update s and e for the first block if info was found */
+				s  = buf[offset + 4];
+				s |= buf[offset + 8] << 8;
+				e = s + 0x100;
+
+				masterentryvectoroffset = (buf[offset + 18] | (buf[offset + 19] << 8)) - s;
 #ifdef ENIGMA_DEBUG
 				printf ("\nMasterload entry vector: $%04x", masterentryvectoroffset + s);
 #endif
@@ -328,32 +404,43 @@ void enigma_search(void)
 						rd_err = 0;
 
 						/* Store master loader */
-						for (j = 0; j < MASTERLOADSIZE; j++) {
+						for (j = 0; j < x; j++) {
 							b = readttbyte(sod + (j  * BITSINABYTE), lp, sp, tp, en);
 							if (b == -1)
 								rd_err++; /* Don't break here: during debug we will see how many errors occur */
 							else
 								masterloader[j] = b;
 						}
+						for (; j < MASTERLOADSIZE; j++)
+							masterloader[j] = 0xEA;	/* Padding with NOPs if required */
 
 						if (rd_err == 0) {
 							enigma_index++;
 
-							/* Dereference jump in masterloader */
-							masterentryoffset = (masterloader[masterentryvectoroffset] | (masterloader[masterentryvectoroffset + 1] << 8)) - s;
+							if (masterentryvectoroffset != -1) {
+								if (masterentryvectoroffset < x - 2 /* We need to read 2 bytes */) {
+									/* Dereference jump in masterloader if we need to and can do */
+									masterentryoffset = (masterloader[masterentryvectoroffset] | (masterloader[masterentryvectoroffset + 1] << 8)) - s;
 #ifdef ENIGMA_DEBUG
-							printf ("\nMasterload start: $%04x", masterentryoffset + s);
+									printf ("\nMasterload start: $%04x", masterentryoffset + s);
 #endif
+								} else {
+									/* Make the next check fail */
+									masterentryoffset = -1;
+								}
+							}
 
-							if (masterentryoffset >= MASTERLOADSIZE) {
+							if (masterentryoffset < 0 || masterentryoffset >= x) {
+								/* Offset is negative or past the end of the file, give up without trying extraction */
 								enigma_index = -1;
-								s = e = 0;	/* Offset is past the end of the file, give up */
+								s = e = 0;
 							} else {
 								get_enigma_addresses (masterloader, MASTERLOADSIZE, masterentryoffset, enigma_index, &s, &e);
 							}
 						} else {
+							/* We can't decode in case of error */
 							enigma_index = -1;
-							s = e = 0;	/* We can't decode in case of error */
+							s = e = 0;
 						}
 					} else if (enigma_index > 0) {
 						enigma_index++;
