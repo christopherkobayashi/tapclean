@@ -215,6 +215,12 @@ void visiload_search(unsigned int cbm_data_crc)
       ab =2;    /* additional bits per byte. (initial) */
       en =LSbF; /* endianess. (initial) */
    }
+   else if (cbm_data_crc == 0xEF640A4B /* Circus Circus */)
+   {
+      ah =0;    /* additional header bytes. (initial) */
+      ab =2;    /* additional bits per byte. (initial) */
+      en =MSbF; /* endianess. (initial) */
+   }
    else
    {
       ah =0;    /* additional header bytes. (initial) */
