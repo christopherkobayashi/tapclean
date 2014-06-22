@@ -220,7 +220,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x95FBE05E, LID_VIS4},		/* Subsunk variant (first turbo file uses LSbF endianness) */
 		{0xB9F20338, LID_VIS4},		/* Chickin Chase, Headache, Sabre Wulf, The Helm variant (first turbo file has 5 header bytes, 2 additional bits per byte and uses LSbF endianness) */
 		{0xBDFBF06B, LID_VIS4},		/* Estra variant (first turbo file 2 additional bits per byte and uses LSbF endianness) */
-		{0xEF640A4B, LID_VIS4},		/* Circus Circus, Sabre Wulf variant (first turbo file has 2 additional bits per byte) */
+		{0xEF640A4B, LID_VIS4},		/* Circus Circus, Sabre Wulf, GoGo The Ghost variant (first turbo file has 2 additional bits per byte) */
+		{0x91F2130D, LID_VIS4},		/* Booty variant (first turbo file has 5 header bytes and uses LSbF endianness) */
 
 		{0xA7D33777, LID_FIRE},
 		{0x041FDA59, LID_FIRE},
@@ -243,11 +244,13 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x8E027BD2, LID_FLASH},
 		{0x1754E006, LID_OCNEW1T1},
-		{0x3A35F804, LID_OCNEW1T1},	/* Ocean New 1 T1 (adidas soccer) */
+		{0x3A35F804, LID_OCNEW1T1},	/* Ocean New 1 T1 (Adidas Soccer) */
 		{0xC039C251, LID_OCNEW1T2},
-		{0x7FFB98B2, LID_OCNEW2},	/* Ocean New 2   (shadow warriors) */
-		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (klax) */
+		{0x7FFB98B2, LID_OCNEW2},	/* Ocean New 2   (Shadow Warriors) */
+		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (Klax) */
+
 		{0x5622E174, LID_ATLAN},	/* Atlantis loader. */
+
 		{0x206A8B68, LID_AUDIOGENIC},	/* Audiogenic loader */
 
 		{0xF1D441D8, LID_CULT},		/* Cult loader */
@@ -284,7 +287,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x823DBD1F, LID_ALTERSW},	/* Alternative Software */
 
-		{0xD7483CDA, LID_CHUCKIEEGG},
+		{0xD7483CDA, LID_CHUCKIEEGG},	/* Chuckie Egg */
 
 		{0x057A87A2, LID_ALTERDK},	/* Early Alternative Software loader */
 

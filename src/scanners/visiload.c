@@ -215,11 +215,17 @@ void visiload_search(unsigned int cbm_data_crc)
       ab =2;    /* additional bits per byte. (initial) */
       en =LSbF; /* endianess. (initial) */
    }
-   else if (cbm_data_crc == 0xEF640A4B /* Circus Circus */)
+   else if (cbm_data_crc == 0xEF640A4B /* Circus Circus, T4 */)
    {
       ah =0;    /* additional header bytes. (initial) */
       ab =2;    /* additional bits per byte. (initial) */
       en =MSbF; /* endianess. (initial) */
+   }
+   else if (cbm_data_crc == 0x91F2130D /* Booty, T4 */)
+   {
+      ah =1;    /* additional header bytes. (initial) */
+      ab =1;    /* additional bits per byte. (initial) */
+      en =LSbF; /* endianess. (initial) */
    }
    else
    {
