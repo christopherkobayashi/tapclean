@@ -60,12 +60,15 @@ don't.
 
 You can determine all this by looking at the starting address of the block (see bottom of page). 
 
-Initial values of loading are : 
+Usually initial values of loading are : 
 
 Data Endianess : MSbF
 Pilot tone : yes
 Additional bits per byte : 1
 Additional header bytes : 0 
+
+However a number of tapes are known that suggest the above initial parameters were fully 
+configurable at mastering time.
 
 If you should read some additional bits you must read them before actual byte starts, this is 
 done for all bytes (including Pilot bytes). So the starting pilot byte that should be read in 
