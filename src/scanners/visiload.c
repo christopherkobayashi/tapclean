@@ -188,23 +188,39 @@ void visiload_search(unsigned int cbm_data_crc)
    if(!quiet)
       msgout("  Visiload");
 
-   /* Check if this is the BMX Simulator variant which starts with 
-    * 1 additional header byte and 2 additional bits per byte.
-    * Ideally we should extract the info from the CBM file if we 
-    * see more exceptions like this one
+   /* Check if this is one of the known variants.
+    * Ideally, we should extract the info below from the CBM file.
     */
-   if (cbm_data_crc == 0xF1340213)
+   if (cbm_data_crc == 0xF1340213 /* BMX Simulator, T2 */ || cbm_data_crc == 0xEB6DF918 /* Exodus, T4 */)
    {
       ah =1;    /* additional header bytes. (initial) */
       ab =2;    /* additional bits per byte. (initial) */
+      en =MSbF; /* endianess. (initial) */
+   }
+   else if (cbm_data_crc == 0x95FBE05E /* Subsunk, T4 */)
+   {
+      ah =0;    /* additional header bytes. (initial) */
+      ab =1;    /* additional bits per byte. (initial) */
+      en =LSbF; /* endianess. (initial) */
+   }
+   else if (cbm_data_crc == 0xB9F20338 /* The Helm, T4 */)
+   {
+      ah =1;    /* additional header bytes. (initial) */
+      ab =2;    /* additional bits per byte. (initial) */
+      en =LSbF; /* endianess. (initial) */
+   }
+   else if (cbm_data_crc == 0xBDFBF06B /* Estra, T4 */)
+   {
+      ah =0;    /* additional header bytes. (initial) */
+      ab =2;    /* additional bits per byte. (initial) */
+      en =LSbF; /* endianess. (initial) */
    }
    else
    {
       ah =0;    /* additional header bytes. (initial) */
       ab =1;    /* additional bits per byte. (initial) */
+      en =MSbF; /* endianess. (initial) */
    }
-
-   en =MSbF; /* endianess. (intial) */
 
    for(i=20; i<tap.len-100; i++)
    {
