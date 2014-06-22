@@ -213,9 +213,13 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xDD3DE175, LID_VIS1},
 		{0x6B2A1236, LID_VIS1},		/* atom ant. */
 		{0x9EF77DD5, LID_VIS2},
-		{0xF1340213, LID_VIS2},   /* BMX Simulator variant (first turbo file has 5 header bytes) */
+		{0xF1340213, LID_VIS2},		/* BMX Simulator variant (first turbo file has 5 header bytes and 2 additional bits per byte) */
 		{0x867C8969, LID_VIS3},
 		{0xC7641A7E, LID_VIS4},
+		{0xEB6DF918, LID_VIS4},		/* Exodus variant (first turbo file has 5 header bytes and 2 additional bits per byte) */
+		{0x95FBE05E, LID_VIS4},		/* Subsunk variant (first turbo file uses LSbF endianness) */
+		{0xB9F20338, LID_VIS4},		/* The Helm variant (first turbo file has 5 header bytes, 2 additional bits per byte and uses LSbF endianness) */
+		{0xBDFBF06B, LID_VIS4},		/* Estra variant (first turbo file 2 additional bits per byte and uses LSbF endianness) */
 
 		{0xA7D33777, LID_FIRE},
 		{0x041FDA59, LID_FIRE},
