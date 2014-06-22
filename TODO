@@ -1,3 +1,6 @@
+ - The Visiload scanner should extract initial loader parameters from the CBM 
+    Data block as these were configurable at mastering time, as shown by early
+    tapes (Luigi)
  - readttbit already checks for TAP data boundaries so the following:
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
