@@ -1,28 +1,40 @@
-/*---------------------------------------------------------------------------
-  rackit.c
+/*
+ * rackit.c (Rack-it/Hewson - rewritten by Luigi Di Fraia, June 2014)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ * 
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; either version 2 of the License, or (at your option) any later 
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
-  Part of project "Final TAP". 
-  
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
-   version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-   PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
-   St, Fifth Floor, Boston, MA 02110-1301 USA
-
----------------------------------------------------------------------------*/
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: Yes
+ * Single on tape: Yes
+ * Sync: Byte
+ * Header: Yes
+ * Data: Continuous
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: No
+ * Trailer homogeneous: N/A
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
@@ -31,122 +43,366 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define HDSZ 8
+#define THISLOADER	RACKIT
 
-/*---------------------------------------------------------------------------
-*/
-void rackit_search(void)
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZE	1	/* amount of sync bytes */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+
+#define HEADERSIZE	8	/* size of block header */
+
+#define XOROFFSET	0	/* xor cypher value (for data) inside header */
+#define BANKOFFSET	1	/* value for $01 */
+#define CHKBOFFSET	2	/* check byte offset inside header */
+#define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
+#define ENDOFFSETL	4	/* end  location (LSB) offset inside header */
+#define LOADOFFSETH	5	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	6	/* load location (LSB) offset inside header */
+#define FILEIDOFFSET	7	/* file ID offset inside header */
+
+#define RACKIT_CBM_DATA_LOAD_ADDRESS	0x0316
+
+#define OPC_ROL		0x26	/* 65xx ROL OPCode */
+#define OPC_ROR		0x66	/* 65xx ROR OPCode */
+
+//#define DEBUG_RACKIT
+
+void rackit_search (void)
 {
-   int i, sof,sod,eod,eof;
-   int pi,zcnt;
-   int lstart,lend,tmp;
-   int lead,sync,tcnt, hd[HDSZ],rd_err;
-   unsigned char pilotsync[10][2] ={{0xDE,0x14},{0x25,0x3D},{0x97,0x1B},{0,0}};
+	int i, h;			/* counters */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
+	int ib;				/* condition variable */
 
-   if(!quiet)
-      msgout("  Rack-It tape");
-         
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
-   pi=0; /* step thru each pilot/sync pair in table. */
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
 
-   while(pilotsync[pi][0]!=0 && pilotsync[pi][1]!=0)
-   {
-      lead= pilotsync[pi][0];  /* get next known pilot/sync pair. */
-      sync= pilotsync[pi][1];
+	int cypher_value;
 
-      for(i=20; i<tap.len-8; i++)
-      {
-         if(readttbyte(i, ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en)==lead)
-         {
-            sof = i;
-            zcnt=0;
-            while(readttbyte(i, ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en)==lead && i<tap.len)
-            {
-               i+=8;
-               zcnt++;
-            }
-            if(zcnt>100 && readttbyte(i, ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en)==sync)
-            {
-               sod= i+8;
+	int xinfo;			/* extra info used in addblockdef() */
 
-               /* decode the header, so we can validate the addresses... */
-               rd_err=0;
-               for(tcnt=0; tcnt<HDSZ; tcnt++)
-               {
-                  hd[tcnt] = readttbyte(sod+(tcnt*8), ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en);
 
-                  if(hd[tcnt]==-1)
-                     rd_err++;     /* count any read errors in header */
-               }
+	if (!quiet)
+		msgout("  Rack-It tape");
 
-               if(rd_err==0)
-               {
-                  lstart = ((hd[5]<<8)+ hd[6]);   /* get start address */
-                  lend =   ((hd[3]<<8)+ hd[4]);   /* get end address */
-                  if(lend>lstart)
-                  {
-                     tmp = lend-lstart;    /* calculate offsets of end of block... */
-                     eod = sod+(tmp*8)+(HDSZ*8)-8;
-                     eof=eod+7;
-                     addblockdef(RACKIT, sof,sod,eod,eof, 0);
-                     i = eof;  /* optimize search */
-                  }
-               }
-            }
-         }
-      }
-      pi++; /* bump to next pilot/sync pair. */
-   }
+	/*
+	 * First we retrieve loader variables from the CBM data block, 
+	 * after decrypting it.
+	 * We use CBM DATA index # 1 as we assume the tape image contains
+	 * a single game.
+	 * For compilations we should search and find the relevant file
+	 * using the search code found e.g. in Biturbo.
+	 */
+
+	cypher_value = -1;	/* Assume we were unable to extract any info */
+
+	/*
+	 * At this stage the describe functions have not been invoked
+	 * yet, therefore we have to extract the load address on the fly.
+	 * Data load address is stored in Header so we need to decode both.
+	 */
+	find_decode_block(CBM_HEAD, 1);
+	ib = find_decode_block(CBM_DATA, 1);
+	if (ib != -1 && (unsigned int) blk[ib]->cs == RACKIT_CBM_DATA_LOAD_ADDRESS) {
+		int *buf, bufsz;
+
+		bufsz = blk[ib]->cx;
+
+#ifdef DEBUG_RACKIT
+		printf ("\nChecking Rackit %04X", blk[ib]->cs);
+#endif
+
+		buf = (int *) malloc (bufsz * sizeof(int));
+		if (buf != NULL) {
+			/*
+			 * Example from Zamzara:
+			 * 
+			 * *=$046F   
+			 * LDA $7C
+			 * EOR $04BD,X
+			 * STA $0200,X
+			 */
+			int seq_decrypt1[8] = {
+				0xA5, XX, 0x5D, XX, 0x04, 0x9D, 0x00, 0x02
+			};
+
+			/*
+			 * Example from Netherworld:
+			 * 
+			 * *=$0465
+			 * LDA #$B4
+			 * EOR $04BD,X
+			 * STA $0200,X
+			 */
+			int seq_decrypt2[8] = {
+				0xA9, XX, 0x5D, XX, 0x04, 0x9D, 0x00, 0x02
+			};
+
+			int index, offset;
+
+			/* Make an 'int' copy for use in find_seq() */
+			for (index = 0; index < bufsz; index++)
+				buf[index] = blk[ib]->dd[index];
+
+			offset = find_seq (buf, bufsz, seq_decrypt1, sizeof(seq_decrypt1) / sizeof(seq_decrypt1[0]));
+			if (offset != -1) {
+				switch (buf[offset + 1]) {
+					case 0x79:
+						cypher_value = 0xB4;
+						break;
+					case 0x7C:
+						cypher_value = 0x24;
+						break;
+
+					/* We might find more ZP registers used in future */
+				}
+
+#ifdef DEBUG_RACKIT
+				printf ("\nCypher value: %02X", cypher_value);
+#endif
+			}
+
+			offset = find_seq (buf, bufsz, seq_decrypt2, sizeof(seq_decrypt2) / sizeof(seq_decrypt2[0]));
+			if (offset != -1)
+				cypher_value = buf[offset + 1];
+
+			/* Decrypt the main loader if we found the cypher value */
+			if (cypher_value != -1) {
+				int seq_endianness[9] = {
+					0x4E, 0x0D, 0xDD, 0xA9, 0x19, 0x8D, 0x0E, 0xDD, XX
+				};
+
+				int seq_pilot_sync[8] = {
+					0xC9, XX, 0xF0, XX, 0xC9, XX, 0xD0, XX
+				};
+
+				/*
+				 * Example from 5th Gear:
+				 *
+				 * DEX
+				 * STX $FC
+				 */
+				int seq_inital_xor_value[3] = {
+					0xCA, 0x86, 0xFC
+				};
+
+				/* Decrypt to the whole lot, even if it's only applicable starting at $04BD */
+				for (index = 0; index < bufsz; index++)
+					buf[index] ^= cypher_value;
+
+				/* We now look for invariants to extract loader parameters */
+				offset = find_seq (buf, bufsz, seq_endianness, sizeof(seq_endianness) / sizeof(seq_endianness[0]));
+				if (offset == -1) {
+					cypher_value = -1;	/* Fail the extraction */
+				} else {
+					ft[THISLOADER].en = (buf[offset + 8] == OPC_ROL) ? MSbF : LSbF;
+
+					offset = find_seq (buf, bufsz, seq_pilot_sync, sizeof(seq_pilot_sync) / sizeof(seq_pilot_sync[0]));
+
+					if (offset == -1) {
+						cypher_value = -1;	/* Fail the extraction */
+					} else {
+						ft[THISLOADER].pv = buf[offset + 1];
+						ft[THISLOADER].sv = buf[offset + 5];
+
+#ifdef DEBUG_RACKIT
+						printf ("\nPilot/sync values: %02X/%02X", ft[THISLOADER].pv, ft[THISLOADER].sv);
+#endif
+
+						/* Check what the start value of the Data checkbyte should be */
+						offset = find_seq (buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
+						if (offset == -1)
+							xinfo = 0x80;
+						else
+							xinfo = 0x00;
+					}
+				}
+			}
+
+			free (buf);
+		}
+	}
+
+	/* Decryption and extraction successful? */
+	if (cypher_value == -1)
+		return;
+
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+	sv = ft[THISLOADER].sv;
+
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, THISLOADER);
+
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
+
+			/* Check if there's a valid sync byte for this loader */
+			if (readttbyte(i, lp, sp, tp, en) != sv)
+				continue;
+
+			/* Valid sync found, mark start of data */
+			sod = i + BITSINABYTE * SYNCSEQSIZE;
+
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
+
+			/* Extract load and end locations */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			/* Prevent int wraparound when subtracting 1 from end location
+			   to get the location of the last loaded byte */
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
+
+			/* Plausibility check */
+			if (e < s)
+				continue;
+
+			/* Compute size */
+			x = e - s + 1;
+
+			/* Point to the first pulse of the last data byte (that's final) */
+			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+
+			/* Point to the last pulse of the last byte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			h = 0;
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
+				eof++;
+
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
+		} else {
+			if (eop < 0)
+				i = (-eop);
+		}
+	}
 }
 
-/*---------------------------------------------------------------------------
-*/
-int rackit_describe(int row)
+int rackit_describe (int row)
 {
-   int i,s,hd[HDSZ],rd_err,b,cb;
-   unsigned char xor;
+	int i, s;
+	int hd[HEADERSIZE];
+	int en, tp, sp, mp, lp;
+	int cb, xor;
 
-   /* decode the header... */
-   s= blk[row]->p2;
-   for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en);
+	int b, rd_err;
 
-   /* compute C64 start address, end address and size... */
-   blk[row]->cs = (hd[5]<<8)+ hd[6];
-   blk[row]->ce = (hd[3]<<8)+ hd[4]-1;
-   blk[row]->cx = (blk[row]->ce - blk[row]->cs)+1;
 
-   xor= hd[0];   /* read xor decode value */
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	mp = ft[THISLOADER].mp;
+	lp = ft[THISLOADER].lp;
 
-   sprintf(lin,"\n - XOR Decode value: $%02X",xor);
-   strcat(info,lin);
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : ", ft[THISLOADER].pv, ft[THISLOADER].sv);
+	strcat(info, lin);
+	strcat(info, ft[THISLOADER].en == MSbF ? "MSbF" : "LSbF");
 
-   /* get pilot & trailer lengths... */
-   blk[row]->pilot_len= (blk[row]->p2- blk[row]->p1 -8) >>3;
-   blk[row]->trail_len= (blk[row]->p4- blk[row]->p3 -7) >>3;
+	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	s = blk[row] -> p2;
 
-   /* extract data and test checksum... */
-   rd_err=0;
-   cb=0;
-   s= (blk[row]->p2)+(HDSZ*8);
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+	for (i = 0; i < HEADERSIZE; i++)
+		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-   if(blk[row]->dd!=NULL)
-      free(blk[row]->dd);
-   blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
-   
-   for(i=0; i<blk[row]->cx; i++)
-   {
-      b= readttbyte(s+(i*8), ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en);
-      cb^=b;
-      if(b==-1)
-         rd_err++;
-      blk[row]->dd[i] = b^xor;  /* (note the decryption being done here) */
-   }
-   b= readttbyte(blk[row]->p2+(2*8), ft[RACKIT].lp, ft[RACKIT].sp, ft[RACKIT].tp, ft[RACKIT].en); /* read actual checbyte */
+	xor = hd[XOROFFSET];
 
-   blk[row]->cs_exp= cb &0xFF;
-   blk[row]->cs_act= b;
-   blk[row]->rd_err= rd_err;
-   return 0;
+	sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
+	strcat(info,lin);
+	sprintf(lin, "\n - XOR cypher value : $%02X", xor);
+	strcat(info, lin);
+
+	/* Extract load and end locations */
+	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+	/* Prevent int wraparound when subtracting 1 from end location
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
+
+	/* Compute size */
+	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in bytes... */
+	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+	/* ... trailer in pulses */
+	/* Note: No trailer has been documented, but we are not pretending it
+	         here, just checking for it is future-proof */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Extract data and test checksum... */
+	rd_err = 0;
+	cb = blk[row]->xi;
+
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
+
+	if (blk[row]->dd != NULL)
+		free(blk[row]->dd);
+
+	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+	for (i = 0; i < blk[row]->cx; i++) {
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		b ^= xor;
+		cb ^= b;
+
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+			strcat(info, lin);
+		}
+	}
+
+	/* Display the overall execution address */
+	if (blk[row]->cs == 0xFFFC && blk[row]->cx == 2) {
+		unsigned int exe_address;
+
+		exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
+		sprintf(lin, "\n - Exe address : $%04X", exe_address);
+		strcat(info, lin);
+	}
+
+	blk[row]->cs_exp = cb & 0xFF;
+	blk[row]->cs_act = hd[CHKBOFFSET];
+	blk[row]->rd_err = rd_err;
+
+	return(rd_err);
 }
-
