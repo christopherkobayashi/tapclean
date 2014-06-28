@@ -50,6 +50,7 @@
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
+/* For the version that was already supported in Final TAP */
 #define HEADERSIZE	8	/* size of block header */
 
 #define XOROFFSET	0	/* xor cypher value (for data) inside header */
@@ -60,6 +61,17 @@
 #define LOADOFFSETH	5	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	6	/* load location (LSB) offset inside header */
 #define FILEIDOFFSET	7	/* file ID offset inside header */
+
+/* For the variant that uses a 7-byte header (Marauder, Netherworld, Scorpion) */
+#define HEADERSIZEV1	7	/* size of block header */
+
+#define BANKOFFSETV1	0	/* value for $01 */
+#define CHKBOFFSETV1	1	/* check byte offset inside header */
+#define ENDOFFSETHV1	2	/* end  location (MSB) offset inside header */
+#define ENDOFFSETLV1	3	/* end  location (LSB) offset inside header */
+#define LOADOFFSETHV1	4	/* load location (MSB) offset inside header */
+#define LOADOFFSETLV1	5	/* load location (LSB) offset inside header */
+#define FILEIDOFFSETV1	6	/* file ID offset inside header */
 
 #define RACKIT_CBM_DATA_LOAD_ADDRESS	0x0316
 
@@ -80,13 +92,15 @@ void rackit_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int cypher_value;
+	int cypher_value;		/* XOR value to decode the core loader */
+
+	int variant;			/* variant of the loader (8 or 7 header bytes) */
 
 	int xinfo;			/* extra info used in addblockdef() */
 
 
 	if (!quiet)
-		msgout("  Rack-It tape");
+		msgout("  Rack-It tape (+Variant)");
 
 	/*
 	 * First we retrieve loader variables from the CBM data block, 
@@ -190,6 +204,10 @@ void rackit_search (void)
 					0xCA, 0x86, 0xFC
 				};
 
+				int seq_hdr_store[2] = {
+					0x95, 0xF3
+				};
+
 				/* Decrypt to the whole lot, even if it's only applicable starting at $04BD */
 				for (index = 0; index < bufsz; index++)
 					buf[index] ^= cypher_value;
@@ -220,6 +238,15 @@ void rackit_search (void)
 						printf ("\nInitial checkbyte value: %02X", xinfo);
 #endif
 
+						/* Check if the variant with a shorter header is used (Marauder, Netherworld, Scorpion) */
+						offset = find_seq (buf, bufsz, seq_hdr_store, sizeof(seq_hdr_store) / sizeof(seq_hdr_store[0]));
+						if (offset == -1)
+							variant = 0;
+						else
+							variant = 1;
+
+						xinfo |= variant << 8;
+
 						sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
 							ft[THISLOADER].pv, 
 							ft[THISLOADER].sv, 
@@ -243,67 +270,133 @@ void rackit_search (void)
 	lp = ft[THISLOADER].lp;
 	sv = ft[THISLOADER].sv;
 
-	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = find_pilot(i, THISLOADER);
+	if (variant == 0) {
+		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+			eop = find_pilot(i, THISLOADER);
 
-		if (eop > 0) {
-			/* Valid pilot found, mark start of file */
-			sof = i;
-			i = eop;
+			if (eop > 0) {
+				/* Valid pilot found, mark start of file */
+				sof = i;
+				i = eop;
 
-			/* Check if there's a valid sync byte for this loader */
-			if (readttbyte(i, lp, sp, tp, en) != sv)
-				continue;
+				/* Check if there's a valid sync byte for this loader */
+				if (readttbyte(i, lp, sp, tp, en) != sv)
+					continue;
 
-			/* Valid sync found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+				/* Valid sync found, mark start of data */
+				sod = i + BITSINABYTE * SYNCSEQSIZE;
 
-			/* Read header */
-			for (h = 0; h < HEADERSIZE; h++) {
-				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
-				if (hd[h] == -1)
-					break;
+				/* Read header */
+				for (h = 0; h < HEADERSIZE; h++) {
+					hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;
+				}
+				if (h != HEADERSIZE)
+					continue;
+
+				/* Extract load and end locations */
+				s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+				e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+				/* Prevent int wraparound when subtracting 1 from end location
+				   to get the location of the last loaded byte */
+				if (e == 0)
+					e = 0xFFFF;
+				else
+					e--;
+
+				/* Plausibility check */
+				if (e < s)
+					continue;
+
+				/* Compute size */
+				x = e - s + 1;
+
+				/* Point to the first pulse of the last data byte (that's final) */
+				eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+
+				/* Point to the last pulse of the last byte */
+				eof = eod + BITSINABYTE - 1;
+
+				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+				h = 0;
+				while (eof < tap.len - 1 &&
+						h++ < MAXTRAILER &&
+						readttbit(eof + 1, lp, sp, tp) >= 0)
+					eof++;
+
+				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+					i = eof;	/* Search for further files starting from the end of this one */
+
+			} else {
+				if (eop < 0)
+					i = (-eop);
 			}
-			if (h != HEADERSIZE)
-				continue;
+		}
+	} else {
+		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+			eop = find_pilot(i, THISLOADER);
 
-			/* Extract load and end locations */
-			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+			if (eop > 0) {
+				/* Valid pilot found, mark start of file */
+				sof = i;
+				i = eop;
 
-			/* Prevent int wraparound when subtracting 1 from end location
-			   to get the location of the last loaded byte */
-			if (e == 0)
-				e = 0xFFFF;
-			else
-				e--;
+				/* Check if there's a valid sync byte for this loader */
+				if (readttbyte(i, lp, sp, tp, en) != sv)
+					continue;
 
-			/* Plausibility check */
-			if (e < s)
-				continue;
+				/* Valid sync found, mark start of data */
+				sod = i + BITSINABYTE * SYNCSEQSIZE;
 
-			/* Compute size */
-			x = e - s + 1;
+				/* Read header */
+				for (h = 0; h < HEADERSIZEV1; h++) {
+					hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;
+				}
+				if (h != HEADERSIZEV1)
+					continue;
 
-			/* Point to the first pulse of the last data byte (that's final) */
-			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+				/* Extract load and end locations */
+				s = hd[LOADOFFSETLV1] + (hd[LOADOFFSETHV1] << 8);
+				e = hd[ENDOFFSETLV1]  + (hd[ENDOFFSETHV1]  << 8);
 
-			/* Point to the last pulse of the last byte */
-			eof = eod + BITSINABYTE - 1;
+				/* Prevent int wraparound when subtracting 1 from end location
+				   to get the location of the last loaded byte */
+				if (e == 0)
+					e = 0xFFFF;
+				else
+					e--;
 
-			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-			h = 0;
-			while (eof < tap.len - 1 &&
-					h++ < MAXTRAILER &&
-					readttbit(eof + 1, lp, sp, tp) >= 0)
-				eof++;
+				/* Plausibility check */
+				if (e < s)
+					continue;
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
-				i = eof;	/* Search for further files starting from the end of this one */
+				/* Compute size */
+				x = e - s + 1;
 
-		} else {
-			if (eop < 0)
-				i = (-eop);
+				/* Point to the first pulse of the last data byte (that's final) */
+				eod = sod + (HEADERSIZEV1 + x - 1) * BITSINABYTE;
+
+				/* Point to the last pulse of the last byte */
+				eof = eod + BITSINABYTE - 1;
+
+				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+				h = 0;
+				while (eof < tap.len - 1 &&
+						h++ < MAXTRAILER &&
+						readttbit(eof + 1, lp, sp, tp) >= 0)
+					eof++;
+
+				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+					i = eof;	/* Search for further files starting from the end of this one */
+
+			} else {
+				if (eop < 0)
+					i = (-eop);
+			}
 		}
 	}
 }
@@ -316,6 +409,8 @@ int rackit_describe (int row)
 	int cb, xor;
 
 	int b, rd_err;
+
+	int variant;
 
 
 	en = ft[THISLOADER].en;
@@ -331,85 +426,170 @@ int rackit_describe (int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
-	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
-	for (i = 0; i < HEADERSIZE; i++)
-		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+	variant = blk[row]->xi >> 8;
 
-	xor = hd[XOROFFSET];
+	if (variant == 0) {
+		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+		for (i = 0; i < HEADERSIZE; i++)
+			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
-	strcat(info,lin);
-	sprintf(lin, "\n - XOR cypher value : $%02X", xor);
-	strcat(info, lin);
+		xor = hd[XOROFFSET];
 
-	/* Extract load and end locations */
-	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+		sprintf(lin,"\n - Header Size : %d bytes", HEADERSIZE);
+		strcat(info,lin);
+		sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
+		strcat(info,lin);
+		sprintf(lin, "\n - XOR cypher value : $%02X", xor);
+		strcat(info, lin);
 
-	/* Prevent int wraparound when subtracting 1 from end location
-	   to get the location of the last loaded byte */
-	if (blk[row]->ce == 0)
-		blk[row]->ce = 0xFFFF;
-	else
-		(blk[row]->ce)--;
+		/* Extract load and end locations */
+		blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+		blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-	/* Compute size */
-	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+		/* Prevent int wraparound when subtracting 1 from end location
+		   to get the location of the last loaded byte */
+		if (blk[row]->ce == 0)
+			blk[row]->ce = 0xFFFF;
+		else
+			(blk[row]->ce)--;
 
-	/* Compute pilot & trailer lengths */
+		/* Compute size */
+		blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
-	/* pilot is in bytes... */
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+		/* Compute pilot & trailer lengths */
 
-	/* ... trailer in pulses */
-	/* Note: No trailer has been documented, but we are not pretending it
-	         here, just checking for it is future-proof */
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+		/* pilot is in bytes... */
+		blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
 
-	/* if there IS pilot then disclude the sync sequence */
-	if (blk[row]->pilot_len > 0)
-		blk[row]->pilot_len -= SYNCSEQSIZE;
+		/* ... trailer in pulses */
+		/* Note: No trailer has been documented, but we are not pretending it
+		         here, just checking for it is future-proof */
+		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* Extract data and test checksum... */
-	rd_err = 0;
-	cb = blk[row]->xi;
+		/* if there IS pilot then disclude the sync sequence */
+		if (blk[row]->pilot_len > 0)
+			blk[row]->pilot_len -= SYNCSEQSIZE;
 
-	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
+		/* Extract data and test checksum... */
+		rd_err = 0;
+		cb = blk[row]->xi & 0xFF;
 
-	if (blk[row]->dd != NULL)
-		free(blk[row]->dd);
+		s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
 
-	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+		if (blk[row]->dd != NULL)
+			free(blk[row]->dd);
 
-	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-		b ^= xor;
-		cb ^= b;
+		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
-		if (b != -1) {
-			blk[row]->dd[i] = b;
-		} else {
-			blk[row]->dd[i] = 0x69;  /* error code */
-			rd_err++;
+		for (i = 0; i < blk[row]->cx; i++) {
+			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+			b ^= xor;
+			cb ^= b;
 
-			/* for experts only */
-			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+			if (b != -1) {
+				blk[row]->dd[i] = b;
+			} else {
+				blk[row]->dd[i] = 0x69;  /* error code */
+				rd_err++;
+
+				/* for experts only */
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+				strcat(info, lin);
+			}
+		}
+
+		/* Display the overall execution address if it's used in a standard way */
+		if (blk[row]->cs == 0xFFFC && blk[row]->cx == 2) {
+			unsigned int exe_address;
+
+			exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
+			sprintf(lin, "\n - Exe address : $%04X", exe_address);
 			strcat(info, lin);
 		}
+
+		blk[row]->cs_exp = cb & 0xFF;
+		blk[row]->cs_act = hd[CHKBOFFSET];
+		blk[row]->rd_err = rd_err;
+
+		return(rd_err);
+	} else {
+		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+		for (i = 0; i < HEADERSIZEV1; i++)
+			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+
+		sprintf(lin,"\n - Header Size : %d bytes", HEADERSIZEV1);
+		strcat(info,lin);
+		sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSETV1]);
+		strcat(info,lin);
+
+		/* Extract load and end locations */
+		blk[row]->cs = hd[LOADOFFSETLV1] + (hd[LOADOFFSETHV1] << 8);
+		blk[row]->ce = hd[ENDOFFSETLV1]  + (hd[ENDOFFSETHV1]  << 8);
+
+		/* Prevent int wraparound when subtracting 1 from end location
+		   to get the location of the last loaded byte */
+		if (blk[row]->ce == 0)
+			blk[row]->ce = 0xFFFF;
+		else
+			(blk[row]->ce)--;
+
+		/* Compute size */
+		blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+
+		/* Compute pilot & trailer lengths */
+
+		/* pilot is in bytes... */
+		blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+		/* ... trailer in pulses */
+		/* Note: No trailer has been documented, but we are not pretending it
+		         here, just checking for it is future-proof */
+		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+		/* if there IS pilot then disclude the sync sequence */
+		if (blk[row]->pilot_len > 0)
+			blk[row]->pilot_len -= SYNCSEQSIZE;
+
+		/* Extract data and test checksum... */
+		rd_err = 0;
+		cb = blk[row]->xi & 0xFF;
+
+		s = blk[row]->p2 + (HEADERSIZEV1 * BITSINABYTE);
+
+		if (blk[row]->dd != NULL)
+			free(blk[row]->dd);
+
+		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+		for (i = 0; i < blk[row]->cx; i++) {
+			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+			cb ^= b;
+
+			if (b != -1) {
+				blk[row]->dd[i] = b;
+			} else {
+				blk[row]->dd[i] = 0x69;  /* error code */
+				rd_err++;
+
+				/* for experts only */
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+				strcat(info, lin);
+			}
+		}
+
+		/* Display the overall execution address if it's used in a standard way */
+		if (blk[row]->cs == 0xFFFC && blk[row]->cx == 2) {
+			unsigned int exe_address;
+
+			exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
+			sprintf(lin, "\n - Exe address : $%04X", exe_address);
+			strcat(info, lin);
+		}
+
+		blk[row]->cs_exp = cb & 0xFF;
+		blk[row]->cs_act = hd[CHKBOFFSETV1];
+		blk[row]->rd_err = rd_err;
+
+		return(rd_err);
 	}
-
-	/* Display the overall execution address if it's used in a standard way */
-	if (blk[row]->cs == 0xFFFC && blk[row]->cx == 2) {
-		unsigned int exe_address;
-
-		exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
-		sprintf(lin, "\n - Exe address : $%04X", exe_address);
-		strcat(info, lin);
-	}
-
-	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = hd[CHKBOFFSET];
-	blk[row]->rd_err = rd_err;
-
-	return(rd_err);
 }
