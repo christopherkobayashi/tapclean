@@ -78,8 +78,9 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 
 #define HDSZ 4
 
-/* As found in first header byte of T1 modifier at the end of a chain */
-#define OVERSIZED_BIT1_PULSE 0x5A
+/* As found in first header byte of T1/T2 modifier at the end of a chain */
+#define OVERSIZED_BIT1_PULSE_T1 0x5A
+#define OVERSIZED_BIT1_PULSE_T2 0x62
 
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
@@ -112,8 +113,16 @@ int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
           */
          if(visi_type == VISI_T1 && 
                allow_known_oversized && 
-               p>(OVERSIZED_BIT1_PULSE-tol) && 
-               p<(OVERSIZED_BIT1_PULSE+tol))
+               p>(OVERSIZED_BIT1_PULSE_T1-tol) && 
+               p<(OVERSIZED_BIT1_PULSE_T1+tol))
+         {
+            tap.tmem[pos+i] = ft[VISI_T1].lp;
+            mb[i]=1;
+         }
+         else if(visi_type == VISI_T2 && 
+               allow_known_oversized && 
+               p>(OVERSIZED_BIT1_PULSE_T2-tol) && 
+               p<(OVERSIZED_BIT1_PULSE_T2+tol))
          {
             tap.tmem[pos+i] = ft[VISI_T1].lp;
             mb[i]=1;
