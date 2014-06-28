@@ -484,10 +484,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\rackit.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\rasterload.c"
 					>
 				</File>
@@ -693,6 +689,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\flashload.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\rackit.c"
 					>
 				</File>
 			</Filter>
