@@ -1980,7 +1980,7 @@ int main(int argc, char *argv[])
 	build_crc_table();
 
 	printf("\n----------------------------------------------------------------------\n");
-	printf("TAPClean "VERSION_STR" - "COPYRIGHT_STR" [Built on "__DATE__" by "BUILDER_STR"]\n");
+	printf("TAPClean "VERSION_STR" - "COPYRIGHT_STR" [Built "__DATE__" by "BUILDER_STR"]\n");
 	printf("Based on Final TAP 2.76 Console - (C) 2001-2006 Subchrist Software\n");
 	printf("----------------------------------------------------------------------\n");
 
