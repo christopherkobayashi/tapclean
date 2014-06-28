@@ -111,10 +111,6 @@ void rackit_search (void)
 
 		bufsz = blk[ib]->cx;
 
-#ifdef DEBUG_RACKIT
-		printf ("\nChecking Rackit %04X", blk[ib]->cs);
-#endif
-
 		buf = (int *) malloc (bufsz * sizeof(int));
 		if (buf != NULL) {
 			/*
@@ -166,8 +162,13 @@ void rackit_search (void)
 			}
 
 			offset = find_seq (buf, bufsz, seq_decrypt2, sizeof(seq_decrypt2) / sizeof(seq_decrypt2[0]));
-			if (offset != -1)
+			if (offset != -1) {
 				cypher_value = buf[offset + 1];
+
+#ifdef DEBUG_RACKIT
+				printf ("\nCypher value: %02X", cypher_value);
+#endif
+			}
 
 			/* Decrypt the main loader if we found the cypher value */
 			if (cypher_value != -1) {
@@ -208,16 +209,22 @@ void rackit_search (void)
 						ft[THISLOADER].pv = buf[offset + 1];
 						ft[THISLOADER].sv = buf[offset + 5];
 
-#ifdef DEBUG_RACKIT
-						printf ("\nPilot/sync values: %02X/%02X", ft[THISLOADER].pv, ft[THISLOADER].sv);
-#endif
-
 						/* Check what the start value of the Data checkbyte should be */
 						offset = find_seq (buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
 						if (offset == -1)
 							xinfo = 0x80;
 						else
 							xinfo = 0x00;
+
+#ifdef DEBUG_RACKIT
+						printf ("\nInitial checkbyte value: %02X", xinfo);
+#endif
+
+						sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
+							ft[THISLOADER].pv, 
+							ft[THISLOADER].sv, 
+							ft[THISLOADER].en == MSbF ? "MSbf" : "LSbF");
+						msgout(lin);
 					}
 				}
 			}
@@ -391,7 +398,7 @@ int rackit_describe (int row)
 		}
 	}
 
-	/* Display the overall execution address */
+	/* Display the overall execution address if it's used in a standard way */
 	if (blk[row]->cs == 0xFFFC && blk[row]->cx == 2) {
 		unsigned int exe_address;
 
