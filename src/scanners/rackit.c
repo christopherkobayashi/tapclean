@@ -319,7 +319,7 @@ void rackit_search (void)
 				/* Point to the last pulse of the last byte */
 				eof = eod + BITSINABYTE - 1;
 
-				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+				/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 &&
 						h++ < MAXTRAILER &&
@@ -383,7 +383,7 @@ void rackit_search (void)
 				/* Point to the last pulse of the last byte */
 				eof = eod + BITSINABYTE - 1;
 
-				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+				/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 &&
 						h++ < MAXTRAILER &&
