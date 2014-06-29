@@ -32,8 +32,8 @@
  * Data: Continuous
  * Checksum: Yes
  * Post-data: No
- * Trailer: No
- * Trailer homogeneous: N/A
+ * Trailer: Yes
+ * Trailer homogeneous: Yes (bit 1 pulses)
  */
 
 #include "../mydefs.h"
@@ -323,7 +323,7 @@ void rackit_search (void)
 				h = 0;
 				while (eof < tap.len - 1 &&
 						h++ < MAXTRAILER &&
-						readttbit(eof + 1, lp, sp, tp) >= 0)
+						readttbit(eof + 1, lp, sp, tp) == 1)
 					eof++;
 
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
@@ -387,7 +387,7 @@ void rackit_search (void)
 				h = 0;
 				while (eof < tap.len - 1 &&
 						h++ < MAXTRAILER &&
-						readttbit(eof + 1, lp, sp, tp) >= 0)
+						readttbit(eof + 1, lp, sp, tp) == 1)
 					eof++;
 
 				if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
