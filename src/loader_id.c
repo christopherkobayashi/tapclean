@@ -300,8 +300,11 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x0B8B7156, LID_EASYTAPE},
 		{0x691067FA, LID_EASYTAPE},
 
-		{0xD4ACE22C, LID_CSPARKS},	/* Creative Sparks */
-		{0xD13ACEED, LID_CSPARKS},
+		{0xD4ACE22C, LID_CSPARKS},	/* Creative Sparks: Chopper */
+		{0x35AAD887, LID_CSPARKS},	/* Danger Mouse in Double Trouble */
+		{0x63CDFCDA, LID_CSPARKS},	/* Mad Doctor */
+		{0x23EE788B, LID_CSPARKS},	/* Taskmaster */
+		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
 
 		{0, 0}
 	};
