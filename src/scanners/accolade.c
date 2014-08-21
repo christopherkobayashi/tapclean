@@ -116,7 +116,7 @@ void accolade_search (void)
 			e = s + x - 1;
 
 			/* Plausibility check */
-			if (e > 0xFFFF)
+			if (e < s || e > 0xFFFF)
 				continue;
 
 			/* Compute size overhead due to internal checksums */
