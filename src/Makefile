@@ -38,7 +38,7 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/alternativedk.o scanners/powerload.o scanners/gremlin_f1.o \
 	scanners/gremlin_f2.o scanners/amaction.o scanners/creatures.o \
 	scanners/rainbowislands.o scanners/easytape.o scanners/turbo220.o \
-	tap2audio.o $(RES)
+	scanners/creativesparks.o tap2audio.o $(RES)
 
 all: $(BIN)
 

@@ -91,6 +91,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Burner Variant"		,"burnervar"	,FALSE},
 	{"CHR"				,"chr"		,FALSE},
 	{"Chuckie Egg"			,"chuckie"	,FALSE},
+	{"Creative Sparks"		,"csparks"	,FALSE},
 	{"Creatures"			,"creatures"	,FALSE},
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
@@ -318,6 +319,7 @@ struct fmt_t ft[120] = {
 	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,  NA,    CSYES},
 	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
+	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,  0x33, 0x01, 0xFF, 64,  NA,    CSYES},
 
 	/* Closing record */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
@@ -389,7 +391,8 @@ const char knam[][32] = {
 	{"Alternative SW (DK)"},
 	{"Power Load"},
 	{"Gremlin (F1/F2)"},
-	{"Easy-Tape System C"}
+	{"Easy-Tape System C"},
+	{"Creative Sparks"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1030,6 +1033,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
 				easytape_search();
 
+			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].state == FALSE && !dbase_is_full && !aborted)
+				creativesparks_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1284,6 +1290,9 @@ static void search_tap(void)
 
 			//if (ldrswt[nogremlinf2].state == FALSE  && !dbase_is_full && !aborted)
 			//	gremlinf2_search();
+
+			//if (ldrswt[nocsparks	].state == FALSE && !dbase_is_full && !aborted)
+			//	creativesparks_search();
 
 			/*
 			 * Do not add the following ones until additonal games using these formats
@@ -1558,6 +1567,8 @@ static void describe_file(int row)
 		case EASYTAPE:		easytape_describe(row);
 					break;
 		case TURBO220:		turbo220_describe(row);
+					break;
+		case CSPARKS:		creativesparks_describe(row);
 					break;
 	}
 }

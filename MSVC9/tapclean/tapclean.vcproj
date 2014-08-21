@@ -580,6 +580,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\creativesparks.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\creatures.c"
 					>
 				</File>

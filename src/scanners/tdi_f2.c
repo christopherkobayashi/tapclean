@@ -135,7 +135,7 @@ void tdif2_search (void)
 			e = s + x - 1;
 
 			/* Plausibility check */
-			if (e > 0xFFFF)
+			if (e < s || e > 0xFFFF)
 				continue;
 
 			/* Point to the first pulse of the checkbyte (that's final) */

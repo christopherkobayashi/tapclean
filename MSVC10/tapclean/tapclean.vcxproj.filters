@@ -231,6 +231,9 @@
     <ClCompile Include="..\..\src\scanners\chuckie_egg.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\creativesparks.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\creatures.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>

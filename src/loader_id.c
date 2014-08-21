@@ -300,6 +300,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x0B8B7156, LID_EASYTAPE},
 		{0x691067FA, LID_EASYTAPE},
 
+		{0xD4ACE22C, LID_CSPARKS},	/* Creative Sparks */
+		{0xD13ACEED, LID_CSPARKS},
+
 		{0, 0}
 	};
 

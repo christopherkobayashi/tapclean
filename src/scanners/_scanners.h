@@ -266,3 +266,6 @@ int easytape_describe(int);
 
 void turbo220_search(void);
 int turbo220_describe(int);
+
+void creativesparks_search(void);
+int creativesparks_describe(int);
