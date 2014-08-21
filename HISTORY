@@ -17,7 +17,7 @@ v0.32
 	Improvement: Overwrite known oversized pulses in "Visiload T2" modifier 
 	 headers too (Luigi)
 	New: Added support for "Rack-It Variant" (Luigi)
-	New: Added support for "Creative Sparks" (Luigi)
+	New: Added support for single-file "Creative Sparks" tapes (Luigi)
 
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 
