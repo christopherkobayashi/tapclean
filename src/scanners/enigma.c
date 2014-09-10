@@ -48,7 +48,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
-#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	0x800	/* max amount of trailer pulses read in (see ACE 2 trailing leftovers) */
 
 #define MASTERLOADSIZE	0x200	/* max size in bytes of the first turbo file */
 

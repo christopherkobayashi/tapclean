@@ -18,6 +18,8 @@ v0.32
 	 headers too (Luigi)
 	New: Added support for "Rack-It Variant" (Luigi)
 	New: Added support for single-file "Creative Sparks" tapes (Luigi)
+	Improvement: Acknowledge the last section of partially loaded files
+	 as trailer in "ACE 2" (Luigi)
 
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 
