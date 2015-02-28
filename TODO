@@ -1,3 +1,12 @@
+ - The size of the trailing silence should be overridable as "Hunchback at the 
+   Olympics" does not properly execute if the tape runs out before the unpacker 
+   has finished processing all data (Luigi - reported by Peepo and Ziggy72)
+ - Burner uses a hardcoded execution address and a hardcoded count of files to 
+   load from tape, as opposite to its predecessor, the Mastertronic variant.
+   However, "Hunchback at the Olympics" shows 15 bits post the data block, 
+   which might have been written by the masterer as dummy information that 
+   should at least be considered file trailer in order to be retained for 
+   historical reasons (Luigi)
  - The Visiload scanner should extract initial loader parameters from the CBM 
     Data block as these were configurable at mastering time, as shown by early
     tapes (Luigi)
