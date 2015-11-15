@@ -449,6 +449,25 @@ int compute_overall_crc(void)
 }
 
 /**
+ *	Dump database contents to console
+ *
+ *	@param void
+ *
+ *	@return none
+ */
+ 
+void dump_database(void)
+{
+	int i, t;
+
+	for (i = 0; i < BLKMAX; i++) {
+		t = blk[i]->lt;		/* get block type */
+		sprintf(lin, "\nName: %s", ft[t].name[0] ? ft[t].name : "NULL");
+		msgout(lin);
+	}
+}
+
+/**
  *	Deallocate file database from RAM
  *
  *	A check for non-NULL is done, in case we are freeing resources

@@ -107,6 +107,7 @@ int count_pauses(void);
 int count_rpulses(void);
 int count_good_checksums(void);
 int compute_overall_crc(void);
+void dump_database(void);
 void destroy_database(void);
 
 /* Prg Database */
