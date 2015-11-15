@@ -88,7 +88,11 @@ int supertape_readbyte(int pos, int mode)
    }
    if(mode==ST_READ)
    {
-      if(pos>(tap.len-8) || pos<20) /* return -1 if out of bounds. */
+      /*
+       * Note by Luigi: we should not stop at len-8 as certain pulses migh
+       * contribute more than one bit based on the state of the reader
+       */
+      if(pos>(tap.len-4) || pos<20) /* return -1 if out of bounds. */
          return -1;
       if(is_pause_param(pos))
          return -1;
@@ -144,10 +148,10 @@ int supertape_readbyte(int pos, int mode)
          pcnt++;
 
       }
-      while(bpos<8);  /* loop until we have (at least) 8 bits. */
+      while(bpos<8 && pos<tap.len);  /* loop until we have (at least) 8 bits or reach the end of tape. */
 
-      if(a==-1)
-         return -1;  /* read error!. */
+      if(a==-1 || bpos<8)
+         return -1;  /* read error or not enough bits read. */
 
 
       byt = bbuf & 0xFF;
@@ -263,7 +267,6 @@ void supertape_search(void)
                 eof= s;
                 addblockdef(SUPERTAPE_DATA, sof,sod,eod,eof, 0);
                 _dsz=0;  /* reset this so no other data block can use previous headers info. */
-
             }
          }
       }
