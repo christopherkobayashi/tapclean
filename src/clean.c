@@ -1375,9 +1375,9 @@ void fix_pavloda_check_bytes(void)
 	}
 
 	if (!fixed_cnt) {
-		msgout("\n  None found.");
+		msgout("  None found.");
 	} else {
-		sprintf(lin,"\n  Fixed %d.", fixed_cnt);
+		sprintf(lin,"  Fixed %d.", fixed_cnt);
 		msgout(lin);
 	}
 
