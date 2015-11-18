@@ -22,6 +22,8 @@ v0.32
 	 as trailer in "ACE 2" (Luigi)
 	Improvement: Corrected supertape_readbyte() to cater for the fact
 	 8 bits might be made of less than 8 pulses (Luigi)
+	Improvement: The cleaning stage can now fix Pavloda check bytes in
+	 all scenarios where a single pulse is missing (Luigi)
 
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 
