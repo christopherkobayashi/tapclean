@@ -1309,13 +1309,13 @@ void fix_pavloda_check_bytes(void)
 
 	/* Unlike other cleaning functions, scan the DB backwards so we don't need to run analyze() at each modification of the TAP data */
 	for (i = BLKMAX - 2; i >= 0; i--) {
-		if (blk[i]->lt == PAV && blk[i + 1]->lt == PAUSE) {
+		if (blk[i]->lt == PAV && (blk[i + 1]->lt == PAUSE || blk[i + 1]->lt == LT_NONE)) {
 			int cstart, nstart, b, pulses;
 
 			/* Point to start of checkbyte */
 			cstart = blk[i] -> p3;
-			/* Point to the start of the following longpulse */
-			nstart = blk[i + 1] -> p1;
+			/* Point to the start of the following longpulse or EOT + 1 */
+			nstart = blk[i] -> p4 + 1;
 
 			b = pav_readbyte(cstart, FALSE);
 			//printf("\n$%X-$%X (%d), %d (%d/%02X)", cstart, nstart - 1, nstart-cstart, b, b == -1 ? 0 : 8+(b>>8), b == -1 ? 0 : b&0xff);
