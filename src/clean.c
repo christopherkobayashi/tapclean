@@ -1298,3 +1298,89 @@ void fix_bleep_pilots(void)
 		msgout("\n  None found.");
 }
 
+void fix_pavloda_check_bytes(void)
+{
+	int i;
+	int fixed_cnt = 0;
+
+	msgout("\nLooking for Pavloda check byte corruptions...");
+
+	/* Unlike other cleaning functions, scan the DB backwards so we don't need to run analyze() at each modification of the TAP data */
+	for (i = BLKMAX - 2; i >= 0; i--) {
+		if (blk[i]->lt == PAV && blk[i + 1]->lt == PAUSE) {
+			int cstart, nstart, b, bits;
+
+			/* Point to start of checkbyte */
+			cstart = blk[i] -> p3;
+			/* Point to the start of the following longpulse */
+			nstart = blk[i + 1] -> p1;
+
+			b = pav_readbyte(cstart, FALSE);
+
+			if (b != -1)
+				bits = (b >> 8) + 8;
+
+			/* Check if check byte is corrupted (which could not be reconstructed at scan time as a pause follows) */
+			if ((b == -1) || (nstart - cstart < bits)) {
+				unsigned char *tmp, *tap_backup;
+				int j;
+
+				tmp = (unsigned char*)malloc(tap.len + 1);
+
+				/* Copy everything up to this point in order to avoid issues with is_pause_param() */
+				for (j = 0; j < nstart; j++)
+					tmp[j] = tap.tmem[j];
+
+				if (b == -1) {
+					/* Add a bit 0 pulse */
+					tmp[j] = ft[PAV].lp;
+				} else {
+					/* Add a bit 1 pulse if we are missing one of the two bit 1 pulses */
+					tmp[j] = ft[PAV].sp;
+				}
+
+				/* Repoint TAP data to the new buffer */
+				tap_backup = tap.tmem;
+				tap.tmem = tmp;
+				tap.len++;
+
+				/* Verify that the check byte can now be read in properly */
+				b = pav_readbyte(cstart, FALSE);
+
+				/* Still error: we can't handle this situation without more information then */
+				if (b == -1) {
+					/* Roll back completely */
+					free(tmp);
+					tap.tmem = tap_backup;
+					tap.len--;
+					continue;
+				}
+
+				/* Does the check byte match its expected value? */
+				if ((b & 0xFF) == blk[i]->cs_exp) {
+					/* Success: copy over the rest of the TAP data after the inserted pulse */
+					for (j = nstart + 1; j < tap.len; j++)
+						tap.tmem[j] = tap_backup[j - 1];
+
+					/* Free the previous array of TAP data */
+					free(tap_backup);
+
+					fix_header_size();
+					tap.changed = 1;
+
+					fixed_cnt++;
+				}				
+			}	
+		}
+	}
+
+	if (!fixed_cnt) {
+		msgout("\n  None found.");
+	} else {
+		sprintf(lin,"\n  Fixed %d.", fixed_cnt);
+		msgout(lin);
+	}
+
+	if (tap.changed)
+		analyze();
+}

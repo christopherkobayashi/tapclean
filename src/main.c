@@ -2812,6 +2812,7 @@ void clean(void)
 		add_trailpause();	/* add a 5 second trailing pause   */
 
 	fix_bleep_pilots();		/* correct any corrupted bleepload pilots */
+	fix_pavloda_check_bytes();	/* correct any corrupted pavloda check bytes */
 
 	msgout("\n");
 	msgout("\nCleaning finished.");

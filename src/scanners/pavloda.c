@@ -53,12 +53,13 @@
 int pav_readbyte(int pos, char ok_to_fix)
 {
    int i,valid,val, extras;
-   int bitpos,bit,byt;
+   int bitpos,bit,byt,force;
    unsigned char byte[10];
 
    bitpos=0;
    i=0;
    extras=0;
+   force=0;
    while(bitpos<8)   /* note: bit 0 is "L", bit 1 is "S,S" */
    {
       if(pos+i<20 || pos+i>tap.len-1) /* check next 8 bits are inside the TAP.. */
@@ -67,22 +68,40 @@ int pav_readbyte(int pos, char ok_to_fix)
       // If the last bit of the checksum was joined into a pause, we cannot fix
       // it here because this would require shifting everything ahead and inserting 
       // a pulse in this position (other recognized blocks could be affected)
+      // However, in this scenario the C64 would still read the pulse as a bit 0
+      // pulse, so we can safely read it as bit 0 pulse here (force = 1) without
+      // changing TAP data
       if(is_pause_param(pos+i))
       {
-         add_read_error(pos+i); /* read error, unexpected pause */
-         return -1;
+         if (bitpos == 7 && ok_to_fix == TRUE)
+         {
+            force = 1;
+         }
+         else
+         {
+            add_read_error(pos+i); /* read error, unexpected pause */
+            return -1;
+         }
       }
-      
+
       valid=0;
-      byt = tap.tmem[pos+i];
-      if(byt>(ft[PAV].sp-tol) && byt<(ft[PAV].sp+tol))     /* we found a valid SHORT pulse */
+      if (!force)
       {
-         bit = 1;
-         valid++;
+         byt = tap.tmem[pos+i];
+         if(byt>(ft[PAV].sp-tol) && byt<(ft[PAV].sp+tol))     /* we found a valid SHORT pulse */
+         {
+            bit = 1;
+            valid++;
+         }
+         if(byt>(ft[PAV].lp-tol) && byt<(ft[PAV].lp+tol))    /* we found a valid LONG pulse */
+         {
+            bit = 0;
+            valid++;
+         }
       }
-      if(byt>(ft[PAV].lp-tol) && byt<(ft[PAV].lp+tol))    /* we found a valid LONG pulse */
+      else
       {
-         bit = 0;
+         bit = 0;  /* rather than changing the TAP data we interpret it according to what the C64 would do */
          valid++;
       }
 
@@ -118,12 +137,21 @@ int pav_readbyte(int pos, char ok_to_fix)
       byte[bitpos++]=bit;   /* store the bit. */
       i++;                  /* bump tmem index to next pulse */
 
-      if(bit==1)     /* bit 1's use 2 pulses, 2nd is ignored... */
+      if(bit==1)     /* bit 1's use 2 pulses*/
       {
+         // Check 2nd one too and force it if broken
+         if (pos+i<tap.len)
+         {
+            byt = tap.tmem[pos+i];
+            if(!is_pause_param(pos+i) && ok_to_fix == TRUE)
+            {
+               if (!(byt>(ft[PAV].sp-tol) && byt<(ft[PAV].sp+tol)))     /* we found an ivalid SHORT pulse */
+                  tap.tmem[pos+i] = ft[PAV].sp;
+            }
+         }
+
          i++;        /* bump tmem index to next pulse (AGAIN). */
          extras++;   /* count additional pulses used. */
-
-         // TODO: check 2nd one too and force it if broken
       }
    }
 
@@ -176,7 +204,7 @@ void pav_search(void)
                    {
                        sprintf(lin,"\n * Read error in PAVLODA header ($%04X), search abandoned.",sod+off);
                        msgout(lin);
-				   }
+                   }
                    return;
                }
                xtr = (byt&0xFF00)>>8;
@@ -206,14 +234,15 @@ void pav_search(void)
                eod = sod+off;
                eof = eod + 8+xtr-1;
 
-               /* At this point the last pulse may be not only corrupted, 
+               /* At this point the last pulse may not only be corrupted, 
                   but it may have been joined to a longpulse */
                if (addblockdef(PAV, sof,sod,eod,eof, 0) < 0)
                {
-                  /* Try not to ask for last pulse (checksum will result
-                     wrong, but at least the block is added) */
+                  /* Try not to ask for last pulse (the check byte might 
+                     end up being wrong, but at least the block is added) */
                   eof--;
                   addblockdef(PAV, sof,sod,eod,eof, 0);
+                  //printf("\n%d-%d (%d)", eod, eof, xtr + 8);
                }
 
                i = eof;  /* optimize search */
@@ -277,7 +306,7 @@ int pav_describe(int row)
       off+=(8+xtr);  /* add size of previous byte to off. */
    }
 
-   b= pav_readbyte(s+off, FALSE);   /* read actual checkbyte */
+   b= pav_readbyte(s+off, TRUE);   /* read actual checkbyte */
    if (b == -1)
    {
       rd_err++;
