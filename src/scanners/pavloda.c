@@ -47,7 +47,7 @@
 // ok_to_fix is TRUE only while reading a checkbyte in the search routine.
 //
 // Update: If the last checkbyte pulse is a long pulse start, we cannot
-// account the whole block. When block ack fails, we now try tro step back by 
+// account the whole block. When block ack fails, we now try to step back by 
 // one TAP pulse. If the block is then acknowledged the checkbyte is rebuilt
 // by the decoding routine but NOT by the cleaning routine.
 int pav_readbyte(int pos, char ok_to_fix)
@@ -65,8 +65,8 @@ int pav_readbyte(int pos, char ok_to_fix)
          return -1;
 
       // If the last bit of the checksum was joined into a pause, we cannot fix
-      // it here because this would require to shift ahead everything and insert 
-      // a pulse in this position (pretty hard to do safely here using C!)
+      // it here because this would require shifting everything ahead and inserting 
+      // a pulse in this position (other recognized blocks could be affected)
       if(is_pause_param(pos+i))
       {
          add_read_error(pos+i); /* read error, unexpected pause */
@@ -95,7 +95,7 @@ int pav_readbyte(int pos, char ok_to_fix)
          // Reliably fix the last bit of checksum (single bit 0 pulse, $3F)
          if (bitpos == 7 && ok_to_fix == TRUE)
          {
-            tap.tmem[pos+i] = ft[PAV].lp;
+            tap.tmem[pos+i] = ft[PAV].lp; /* We ruled out it's not the start of a longpulse, see above */
             bit = 1;
             valid = 1;
          }
@@ -280,11 +280,11 @@ int pav_describe(int row)
    b= pav_readbyte(s+off, FALSE);   /* read actual checkbyte */
    if (b == -1)
    {
-			rd_err++;
+      rd_err++;
 
-			/* for experts only */
-			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + off);
-			strcat(info, lin);
+      /* for experts only */
+      sprintf(lin, "\n - Read Error on checkbyte @$%X", s + off);
+      strcat(info, lin);
    }
 
    blk[row]->cs_exp= cb;
