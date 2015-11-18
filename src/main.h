@@ -86,6 +86,7 @@ void cut_leading_gap(void);
 void add_trailpause(void);
 void fill_cbm_tone(void);
 void fix_bleep_pilots(void);
+void fix_pavloda_check_bytes(void);
 
 /* in loader_id.c...  really an extension of main.c so no separate header */
 
