@@ -462,7 +462,7 @@ void dump_database(void)
 
 	for (i = 0; i < BLKMAX; i++) {
 		t = blk[i]->lt;		/* get block type */
-		sprintf(lin, "\nName: %s", ft[t].name[0] ? ft[t].name : "NULL");
+		sprintf(lin, "\nName: %s ($%X-$%X)", ft[t].name[0] ? ft[t].name : "NULL", blk[i]->p1, blk[i]->p4);
 		msgout(lin);
 	}
 }
