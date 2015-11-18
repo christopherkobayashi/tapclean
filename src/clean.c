@@ -139,7 +139,7 @@ void clip_ends(void)
 	for (i = 0; i < 20; i++)		/* copy the original header.. */
 		tmp[i] = tap.tmem[i];
 
-	for (i = sp, j = 20; i < ep + 1; i++)	/* copy the clipped data area... */
+	for (i = sp, j = 20; i < ep; i++)	/* copy the clipped data area... */
 		tmp[j++] = tap.tmem[i];
 
 	free(tap.tmem);
@@ -147,7 +147,9 @@ void clip_ends(void)
 	fix_header_size();
 	tap.changed = 1;
 
-	msgout("  Done.");
+	sprintf(lin, "  Done (preserved range $%X-$%X).", sp, ep - 1);
+	msgout(lin);
+
 	analyze();
 }
 
@@ -1308,7 +1310,7 @@ void fix_pavloda_check_bytes(void)
 	/* Unlike other cleaning functions, scan the DB backwards so we don't need to run analyze() at each modification of the TAP data */
 	for (i = BLKMAX - 2; i >= 0; i--) {
 		if (blk[i]->lt == PAV && blk[i + 1]->lt == PAUSE) {
-			int cstart, nstart, b, bits;
+			int cstart, nstart, b, pulses;
 
 			/* Point to start of checkbyte */
 			cstart = blk[i] -> p3;
@@ -1316,20 +1318,23 @@ void fix_pavloda_check_bytes(void)
 			nstart = blk[i + 1] -> p1;
 
 			b = pav_readbyte(cstart, FALSE);
+			//printf("\n$%X-$%X (%d), %d (%d/%02X)", cstart, nstart - 1, nstart-cstart, b, b == -1 ? 0 : 8+(b>>8), b == -1 ? 0 : b&0xff);
 
 			if (b != -1)
-				bits = (b >> 8) + 8;
+				pulses = (b >> 8) + 8;
 
 			/* Check if check byte is corrupted (which could not be reconstructed at scan time as a pause follows) */
-			if ((b == -1) || (nstart - cstart < bits)) {
+			if ((b == -1) || (nstart - cstart < pulses)) {
 				unsigned char *tmp, *tap_backup;
 				int j;
 
 				tmp = (unsigned char*)malloc(tap.len + 1);
 
 				/* Copy everything up to this point in order to avoid issues with is_pause_param() */
-				for (j = 0; j < nstart; j++)
+				for (j = 0; j < nstart; j++) {
 					tmp[j] = tap.tmem[j];
+					//if (j >= cstart) printf(" $%02X", tmp[j]);
+				}
 
 				if (b == -1) {
 					/* Add a bit 0 pulse */
@@ -1349,6 +1354,7 @@ void fix_pavloda_check_bytes(void)
 
 				/* Still error: we can't handle this situation without more information then */
 				if (b == -1) {
+					//printf(" Unrecoverable");
 					/* Roll back completely */
 					free(tmp);
 					tap.tmem = tap_backup;
