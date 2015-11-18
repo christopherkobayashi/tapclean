@@ -53,29 +53,48 @@
 int pav_readbyte(int pos, char ok_to_fix)
 {
    int i,valid,val, extras;
-   int bitpos,bit,byt,force;
+   int bitpos,bit,byt,force_ghost_pulse;
    unsigned char byte[10];
 
    bitpos=0;
    i=0;
    extras=0;
-   force=0;
+   force_ghost_pulse=0;
    while(bitpos<8)   /* note: bit 0 is "L", bit 1 is "S,S" */
    {
-      if(pos+i<20 || pos+i>tap.len-1) /* check next 8 bits are inside the TAP.. */
+      /* check next 8 bits are inside the TAP.. */
+      if(pos+i<20) 
          return -1;
 
-      // If the last bit of the checksum was joined into a pause, we cannot fix
-      // it here because this would require shifting everything ahead and inserting 
-      // a pulse in this position (other recognized blocks could be affected)
-      // However, in this scenario the C64 would still read the pulse as a bit 0
-      // pulse, so we can safely read it as bit 0 pulse here (force = 1) without
-      // changing TAP data
+      /* 
+       * After clipping TAP data the last missing pulse of the last Pavloda file 
+       * is not joined to a pause any longer as there isn't any
+       */
+      if (pos+i>tap.len-1)
+      {
+         if (bitpos == 7 && ok_to_fix == TRUE)
+         {
+            force_ghost_pulse = 1;
+         }
+         else
+         {
+            return -1;
+         }
+      }
+
+      /*
+       * If the last bit of the checksum was joined into a pause, we cannot fix
+       * it here because this would require shifting everything ahead and inserting 
+       * a pulse in this position (other recognized blocks could be affected)
+       * However, in this scenario the C64 would still read the pulse as a bit 0
+       * pulse, so we can safely read it as bit 0 pulse here (force_ghost_pulse = 1) 
+       * without changing TAP data
+       */
       if(is_pause_param(pos+i))
       {
          if (bitpos == 7 && ok_to_fix == TRUE)
          {
-            force = 1;
+            force_ghost_pulse = 1;
          }
          else
          {
@@ -85,7 +104,7 @@ int pav_readbyte(int pos, char ok_to_fix)
       }
 
       valid=0;
-      if (!force)
+      if (!force_ghost_pulse)
       {
          byt = tap.tmem[pos+i];
          if(byt>(ft[PAV].sp-tol) && byt<(ft[PAV].sp+tol))     /* we found a valid SHORT pulse */
@@ -135,7 +154,8 @@ int pav_readbyte(int pos, char ok_to_fix)
       }
 
       byte[bitpos++]=bit;   /* store the bit. */
-      i++;                  /* bump tmem index to next pulse */
+      if (!force_ghost_pulse)
+         i++;                  /* bump tmem index to next pulse */
 
       if(bit==1)     /* bit 1's use 2 pulses*/
       {
@@ -224,7 +244,7 @@ void pav_search(void)
                {
                   xtr=0;
                   // attempt to fix checkbyte too if broken
-                  byt = pav_readbyte(sod+off, (tcnt==x+HDSZ));
+                  byt = pav_readbyte(sod+off, (tcnt == x + HDSZ) ? TRUE : FALSE);
                   if(byt!=-1)
                      xtr = (byt&0xFF00)>>8;
                   off+=(8+xtr);  /* add size of previous byte to off. */
@@ -242,7 +262,9 @@ void pav_search(void)
                      end up being wrong, but at least the block is added) */
                   eof--;
                   addblockdef(PAV, sof,sod,eod,eof, 0);
-                  //printf("\n%d-%d (%d)", eod, eof, xtr + 8);
+                  //printf("\nShort checkbyte: $%X-$%X (%d)", eod, eof, xtr + 8);
+               } else {
+                  //printf("\nFull  checkbyte: $%X-$%X (%d)", eod, eof, xtr + 8);
                }
 
                i = eof;  /* optimize search */
