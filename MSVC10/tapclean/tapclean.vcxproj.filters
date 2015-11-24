@@ -261,6 +261,9 @@
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\msx.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\oceannew3.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>

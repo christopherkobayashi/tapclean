@@ -620,6 +620,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\msx.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\oceannew3.c"
 					>
 				</File>
