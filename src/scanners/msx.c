@@ -238,16 +238,29 @@ int msx_describe (int row)
 	blk[row]->cx = 0;
 	blk[row]->ce = 0;
 
-	sprintf(lin,"\n - File ID : $%02X", hd[0]);
+	sprintf(lin,"\n - File Type : $%02X", hd[0]);
 	strcat(info, lin);
+	switch(hd[0]) {
+		case 0xd3:
+			strcat(info, " - BASIC File (CSAVE/CLOAD)");
+			break;
+		case 0xd0:
+			strcat(info, " - Memory Dump (BSAVE/BLOAD)");
+			break;
+		case 0xea:
+			strcat(info, " - Data File (SAVE/LOAD/OPEN)");
+			break;
+		default:
+			strcat(info, " - Unknown type");
+	}
 
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in pulses... */
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
 
 	/* ... trailer in pulses */
-	blk[row]->trail_len = 0;
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
 
 	rd_err = 0;
 
