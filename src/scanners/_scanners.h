@@ -269,3 +269,7 @@ int turbo220_describe(int);
 
 void creativesparks_search(void);
 int creativesparks_describe(int);
+
+int msx_read_byte(int);
+void msx_search(void);
+int msx_describe(int);

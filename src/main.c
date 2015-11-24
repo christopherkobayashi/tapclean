@@ -111,6 +111,7 @@ struct ldrswt_t ldrswt[] = {
 	{"IK"				,"ik"		,FALSE},
 	{"Jetload"			,"jet"		,FALSE},
 	{"Microload"			,"micro"	,FALSE},
+	{"MSX"				,"msx"		,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
 	{"Ocean"			,"ocean"	,FALSE},
 	{"Ocean F1"			,"oceannew1t1"	,FALSE},
@@ -320,6 +321,9 @@ struct fmt_t ft[120] = {
 	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,  0x33, 0x01, 0xFF, 64,  NA,    CSYES},
+
+	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  6000,  NA,    CSNO},
+	{"MSX TAPE DATA"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  1000,  NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
@@ -1252,9 +1256,12 @@ static void search_tap(void)
 			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew3_search();
 
+			if (ldrswt[nomsx	].state == FALSE && !dbase_is_full && !aborted)
+				msx_search();
+
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting
-			 * the very few titles using these formats. The peoblem is that detection
+			 * the very few titles using these formats. The problem is that detection
 			 * is based on the CBM boot where these formats are usually used in tape
 			 * compilations.
 			 */
@@ -1569,6 +1576,10 @@ static void describe_file(int row)
 		case TURBO220:		turbo220_describe(row);
 					break;
 		case CSPARKS:		creativesparks_describe(row);
+					break;
+		case MSX_HEAD:		msx_describe(row);
+					break;
+		case MSX_DATA:		msx_describe(row);
 					break;
 	}
 }
