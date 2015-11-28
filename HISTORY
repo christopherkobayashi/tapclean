@@ -6,6 +6,9 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.33
+	New: Added initial support for MSX tape Headers (Luigi)
+
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
 	Improvement: Extract load/end address of the first "Enigma" turbo
@@ -24,7 +27,6 @@ v0.32
 	 8 bits might be made of less than 8 pulses (Luigi)
 	Improvement: The cleaning stage can now fix Pavloda check bytes in
 	 all scenarios where a single pulse is missing (Luigi)
-	New: Added initial support for MSX tape Headers (Luigi)
 
 v0.31
 	Improvement: Disabled "Alternative Software" and "Alternative Software 
