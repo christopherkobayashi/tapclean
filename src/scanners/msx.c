@@ -204,7 +204,7 @@ void msx_search (void)
 					i = eof;	/* Search for further files starting from the end of this one */
 	
 					/* For now support is only complete for file type 0xd3 */
-					if (hd[0] == 0xd3)
+					if (hd[0] == 0xd3 || hd[0] == 0xd0)
 						state++;
 				}
 			} else {
@@ -270,10 +270,8 @@ void msx_search (void)
 							b = msx_read_byte(sod + pcount, MSX_DATA);
 							if (b == -1)
 								break;
-							hd[h] = b & 0xff;
 							pcount += b >> 8;
-							if (h < H_NAMEOFFSET && hd[h] != 0xd3 && hd[h] != 0xd0 && hd[h] != 0xea)
-								break;
+							hd[h] = b & 0xff;
 						}
 						if (h != H_HEADERSIZE)
 							continue;
@@ -299,21 +297,27 @@ void msx_search (void)
 						/* Parse all data in file in order to point to its end */
 						for (h = 0; h < x; h++) {
 							b = msx_read_byte(sod + pcount, MSX_DATA);
+							/* For now we don't try to find the next start bit and continue reading */
 							if (b == -1)
 								break;
 							pcount += b >> 8;
+							b1 = b;
 						}
 
 						/* Point to the first pulse of the last file name byte (that's final) */
-						eod = sod + pcount - (b >> 8);
+						eod = sod + pcount - (b1 >> 8);
 
 						/* Point to the last pulse of the last byte */
-						eof = eod + (b >> 8) - 1;
+						eof = eod + (b1 >> 8) - 1;
 
-						if (addblockdef(MSX_DATA, sof, sod, eod, eof, 0) >= 0) {
+						/* Store the info read from header as extra-info so we don't neext to extract it again */
+						xinfo = s + (e << 16);
+
+						if (addblockdef(MSX_DATA, sof, sod, eod, eof, xinfo) >= 0)
 							i = eof;
-							state--;
-						}
+
+						/* Back to searching for header even if we failed here */
+						state--;
 
 						break;
 
@@ -423,11 +427,41 @@ int msx_describe (int row)
 
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
-				/* Safe to read here as we already read data at search time */
+				/* Safe to read here as we already read data at search time, including the sentinel */
 				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
 					b = msx_read_byte(s + pcount, MSX_HEAD);
 					blk[row]->dd[i] = b;
 					pcount += b >> 8;
+				}
+				break;
+
+			case 0xd0:
+				/* Retrieve memory location for load/end address from extra-info */
+				blk[row]->cs = blk[row]->xi & 0xFFFF;
+				blk[row]->ce = (blk[row]->xi & 0xFFFF0000) >> 16;
+				blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
+
+				if (blk[row]->dd != NULL)
+					free(blk[row]->dd);
+
+				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
+					b = msx_read_byte(s + pcount, MSX_HEAD);
+					if (b != -1) {
+						blk[row]->dd[i] = b;
+						pcount += b >> 8;
+					} else {
+						blk[row]->dd[i] = 0x69;  /* error code */
+						rd_err++;
+
+						/* for experts only */
+						sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+						strcat(info, lin);
+
+						/* For now we don't try to find the next start bit and continue reading */
+						break;
+					}
 				}
 				break;
 		}
