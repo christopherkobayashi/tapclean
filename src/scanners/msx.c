@@ -155,7 +155,7 @@ void msx_search (void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	int state;
+	int state;			/* whether to search for header or data */
 
 
 	en = ft[MSX_HEAD].en;
@@ -167,7 +167,7 @@ void msx_search (void)
 	if (!quiet)
 		msgout("  MSX tape");
 
-	state = 0;	/* Expect a header */
+	state = 0;	/* Initially search for a header */
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		if (state == 0) {
@@ -237,9 +237,10 @@ void msx_search (void)
 						if (h < 10)
 							continue;
 
-						/* set size */
+						/* Set size */
 						x = h;
 
+						/* Verify we found a 10-zero sentinel at the end */
 						for (h = 0; h < D_SENTINELSIZE; h++)
 							if (sn[h] != 0x00)
 								break;
@@ -261,9 +262,60 @@ void msx_search (void)
 						break;
 
 					case 0xd0:
+						/* Read header */
+						for (h = 0, pcount = 0; h < H_HEADERSIZE; h++) {
+							b = msx_read_byte(sod + pcount, MSX_DATA);
+							if (b == -1)
+								break;
+							hd[h] = b & 0xff;
+							pcount += b >> 8;
+							if (h < H_NAMEOFFSET && hd[h] != 0xd3 && hd[h] != 0xd0 && hd[h] != 0xea)
+								break;
+						}
+						if (h != H_HEADERSIZE)
+							continue;
+
+						/* Extract load and end locations */
+						s = hd[D_LOADOFFSETL] + (hd[D_LOADOFFSETH] << 8);
+						e = hd[D_ENDOFFSETL]  + (hd[D_ENDOFFSETH]  << 8);
+
+						/* Prevent int wraparound when subtracting 1 from end location
+						   to get the location of the last loaded byte */
+						if (e == 0)
+							e = 0xFFFF;
+						else
+							e--;
+
+						/* Plausibility check */
+						if (e < s)
+							continue;
+
+						/* Compute size */
+						x = e - s + 1;
+
+						/* Parse all data in file in order to point to its end */
+						for (h = 0; h < x; h++) {
+							b = msx_read_byte(sod + pcount, MSX_DATA);
+							if (b == -1)
+								break;
+							pcount += b >> 8;
+						}
+
+						/* Point to the first pulse of the last file name byte (that's final) */
+						eod = sod + pcount - (b >> 8);
+
+						/* Point to the last pulse of the last byte */
+						eof = eod + (b >> 8) - 1;
+
+						if (addblockdef(MSX_DATA, sof, sod, eod, eof, 0) >= 0) {
+							i = eof;
+							state--;
+						}
+
 						break;
 
 					case 0xea:
+						state--;
 						break;
 				}
 			} else {
@@ -360,8 +412,8 @@ int msx_describe (int row)
 			case 0xd3:
 				blk[row]->cx = (blk[row]->xi & 0xFFFF0000) >> 16;
 
-				blk[row]->cs = 0;
-				blk[row]->ce = blk[row]->cx - 1;
+				blk[row]->cs = 0x8001;
+				blk[row]->ce = blk[row]->cs + blk[row]->cx - 1;
 
 				if (blk[row]->dd != NULL)
 					free(blk[row]->dd);
