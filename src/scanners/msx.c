@@ -45,6 +45,12 @@
 
 #define BITSINABYTE	11	/* a byte is made up of 11 bits here */
 
+enum {
+	FILE_TYPE_MEM_DUMP = 0xd0,
+	FILE_TYPE_BASIC = 0xd3,
+	FILE_TYPE_DATA = 0xea
+};
+
 /* Header file's header info */
 #define H_HEADERSIZE	16	/* size of header file header */
 #define H_NAMESIZE	6	/* size of filename */
@@ -61,6 +67,10 @@
 
 /* Data file's sentinel for type 0xd3 */
 #define D_SENTINELSIZE	10
+
+/* Data file's payload size for type 0xea */
+#define D_BLOCKSIZE	256
+#define D_EOF		0x1a
 
 int msx_read_byte (int pos, int lt)
 {
@@ -146,6 +156,7 @@ void msx_search (void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[H_HEADERSIZE];		/* buffer to store block header info */
 	int sn[D_SENTINELSIZE];		/* buffer to store sentinel for BASIC file */
+	int pl[D_BLOCKSIZE];		/* buffer to store data file payload */
 	int b, b1;			/* byte value */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
@@ -188,7 +199,10 @@ void msx_search (void)
 						break;
 					hd[h] = b & 0xff;
 					pcount += b >> 8;
-					if (h < H_NAMEOFFSET && hd[h] != 0xd3 && hd[h] != 0xd0 && hd[h] != 0xea)
+					if (h < H_NAMEOFFSET && 
+							hd[h] != FILE_TYPE_BASIC && 
+							hd[h] != FILE_TYPE_MEM_DUMP && 
+							hd[h] != FILE_TYPE_DATA)
 						break;
 				}
 				if (h != H_HEADERSIZE)
@@ -202,10 +216,9 @@ void msx_search (void)
 
 				if (addblockdef(MSX_HEAD, sof, sod, eod, eof, 0) >= 0) {
 					i = eof;	/* Search for further files starting from the end of this one */
-	
-					/* For now support is only complete for file type 0xd3 */
-					if (hd[0] == 0xd3 || hd[0] == 0xd0)
-						state++;
+
+					/* Search for the corresponding data file */	
+					state++;
 				}
 			} else {
 				if (eop < 0) {
@@ -224,7 +237,7 @@ void msx_search (void)
 				sod = i;
 
 				switch(hd[0]) {
-					case 0xd3:
+					case FILE_TYPE_BASIC:
 						for (h = 0; h < D_SENTINELSIZE; h++)
 							sn[h] = -1;
 
@@ -237,8 +250,11 @@ void msx_search (void)
 							sn[h % D_SENTINELSIZE] = b & 0xff;
 							b1 = b;
 						}
-						if (h < 10)
+						if (h < 10) {
+							/* Back to searching for header then */
+							state--;
 							continue;
+						}
 
 						/* Set size */
 						x = h;
@@ -247,24 +263,29 @@ void msx_search (void)
 						for (h = 0; h < D_SENTINELSIZE; h++)
 							if (sn[h] != 0x00)
 								break;
-						if (h != D_SENTINELSIZE)
+						if (h != D_SENTINELSIZE) {
+							/* Back to searching for header then */
+							state--;
 							continue;
+						}
 
-						/* Point to the first pulse of the last file name byte (that's final) */
+						/* Point to the first pulse of the last byte (that's final) */
 						eod = sod + pcount - (b1 >> 8);
 
 						/* Point to the last pulse of the last byte */
 						eof = eod + (b1 >> 8) - 1;
 
-						xinfo = hd[0] + (x << 16);
+						xinfo = x;
 
-						if (addblockdef(MSX_DATA, sof, sod, eod, eof, xinfo) >= 0) {
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
-							state--;
-						}
+
+						/* Back to searching for header even if we failed here */
+						state--;
+
 						break;
 
-					case 0xd0:
+					case FILE_TYPE_MEM_DUMP:
 						/* Read header */
 						for (h = 0, pcount = 0; h < H_HEADERSIZE; h++) {
 							b = msx_read_byte(sod + pcount, MSX_DATA);
@@ -273,8 +294,11 @@ void msx_search (void)
 							pcount += b >> 8;
 							hd[h] = b & 0xff;
 						}
-						if (h != H_HEADERSIZE)
+						if (h != H_HEADERSIZE) {
+							/* Back to searching for header then */
+							state--;
 							continue;
+						}
 
 						/* Extract load and end locations */
 						s = hd[D_LOADOFFSETL] + (hd[D_LOADOFFSETH] << 8);
@@ -288,8 +312,11 @@ void msx_search (void)
 							e--;
 
 						/* Plausibility check */
-						if (e < s)
+						if (e < s) {
+							/* Back to searching for header then */
+							state--;
 							continue;
+						}
 
 						/* Compute size */
 						x = e - s + 1;
@@ -304,16 +331,16 @@ void msx_search (void)
 							b1 = b;
 						}
 
-						/* Point to the first pulse of the last file name byte (that's final) */
+						/* Point to the first pulse of the last byte (that's final) */
 						eod = sod + pcount - (b1 >> 8);
 
 						/* Point to the last pulse of the last byte */
 						eof = eod + (b1 >> 8) - 1;
 
-						/* Store the info read from header as extra-info so we don't neext to extract it again */
+						/* Store the info read from header as extra-info so we don't need to extract it again */
 						xinfo = s + (e << 16);
 
-						if (addblockdef(MSX_DATA, sof, sod, eod, eof, xinfo) >= 0)
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
 							i = eof;
 
 						/* Back to searching for header even if we failed here */
@@ -321,8 +348,47 @@ void msx_search (void)
 
 						break;
 
-					case 0xea:
-						state--;
+					case FILE_TYPE_DATA:
+						/* Parse all data in file in order to point to its end */
+						for (h = 0, pcount = 0; h < D_BLOCKSIZE; h++) {
+							b = msx_read_byte(sod + pcount, MSX_DATA);
+							if (b == -1)
+								break;
+							pcount += b >> 8;
+							pl[h] = b & 0xff;
+							b1 = b;
+						}
+						if (h != D_BLOCKSIZE) {
+							/* Back to searching for header then */
+							state--;
+							continue;
+						}
+
+						/* Set size */
+						x = h;
+
+						/* Verify if there is an EOF char */
+						for (h = 0; h < D_BLOCKSIZE; h++) {
+							if (pl[h] == D_EOF) {
+								/* Back to searching for header after this block is ack'ed */
+								state--;
+								break;
+							}
+						}
+
+						/* Point to the first pulse of the last byte (that's final) */
+						eod = sod + pcount - (b1 >> 8);
+
+						/* Point to the last pulse of the last byte */
+						eof = eod + (b1 >> 8) - 1;
+
+						xinfo = x;
+
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
+							i = eof;	/* Search for further files starting from the end of this one */
+						else if (state)
+							state--;
+
 						break;
 				}
 			} else {
@@ -383,24 +449,16 @@ int msx_describe (int row)
 		sprintf(lin,"\n - File Type : $%02X", hd[0]);
 		strcat(info, lin);
 		switch(hd[0]) {
-			case 0xd3:
+			case FILE_TYPE_BASIC:
 				strcat(info, " - BASIC File (CSAVE/CLOAD)");
 				break;
-			case 0xd0:
+			case FILE_TYPE_MEM_DUMP:
 				strcat(info, " - Memory Dump (BSAVE/BLOAD)");
 				break;
-			case 0xea:
+			case FILE_TYPE_DATA:
 				strcat(info, " - Data File (SAVE/LOAD/OPEN)");
 				break;
 		}
-
-		/* Compute pilot & trailer lengths */
-
-		/* pilot is in pulses... */
-		blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
-
-		/* ... trailer in pulses */
-		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
 
 		rd_err = 0;
 	} else {
@@ -415,9 +473,9 @@ int msx_describe (int row)
 		/* Extract data */
 		rd_err = 0;
 
-		switch (blk[row]->xi & 0xff) {
-			case 0xd3:
-				blk[row]->cx = (blk[row]->xi & 0xFFFF0000) >> 16;
+		switch (blk[row]->meta1) {
+			case FILE_TYPE_BASIC:
+				blk[row]->cx = blk[row]->xi;
 
 				blk[row]->cs = 0x8001;
 				blk[row]->ce = blk[row]->cs + blk[row]->cx - 1;
@@ -435,7 +493,7 @@ int msx_describe (int row)
 				}
 				break;
 
-			case 0xd0:
+			case FILE_TYPE_MEM_DUMP:
 				/* Retrieve memory location for load/end address from extra-info */
 				blk[row]->cs = blk[row]->xi & 0xFFFF;
 				blk[row]->ce = (blk[row]->xi & 0xFFFF0000) >> 16;
@@ -464,8 +522,46 @@ int msx_describe (int row)
 					}
 				}
 				break;
+
+			case FILE_TYPE_DATA:
+				blk[row]->cx = blk[row]->xi;
+
+				blk[row]->cs = 0x0000;
+				blk[row]->ce = blk[row]->cs + blk[row]->cx - 1;
+
+				if (blk[row]->dd != NULL)
+					free(blk[row]->dd);
+
+				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
+					b = msx_read_byte(s + pcount, MSX_HEAD);
+					if (b != -1) {
+						blk[row]->dd[i] = b;
+						pcount += b >> 8;
+					} else {
+						blk[row]->dd[i] = 0x69;  /* error code */
+						rd_err++;
+
+						/* for experts only */
+						sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+						strcat(info, lin);
+
+						/* For now we don't try to find the next start bit and continue reading */
+						break;
+					}
+				}
+				break;
 		}
 	}
+
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in pulses... */
+	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+	/* ... trailer in pulses */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
 
 	blk[row]->rd_err = rd_err;
 
