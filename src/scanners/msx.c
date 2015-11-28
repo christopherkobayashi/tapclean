@@ -202,7 +202,10 @@ void msx_search (void)
 
 				if (addblockdef(MSX_HEAD, sof, sod, eod, eof, 0) >= 0) {
 					i = eof;	/* Search for further files starting from the end of this one */
-					state++;
+	
+					/* For now support is only complete for file type 0xd3 */
+					if (hd[0] == 0xd3)
+						state++;
 				}
 			} else {
 				if (eop < 0) {
