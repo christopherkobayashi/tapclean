@@ -46,9 +46,9 @@
 #define BITSINABYTE	11	/* a byte is made up of 11 bits here */
 
 enum {
-	FILE_TYPE_MEM_DUMP = 0xd0,
-	FILE_TYPE_BASIC = 0xd3,
-	FILE_TYPE_DATA = 0xea
+	FILE_TYPE_D0_MEM_DUMP = 0xd0,
+	FILE_TYPE_D3_BASIC = 0xd3,
+	FILE_TYPE_EA_DATA = 0xea
 };
 
 /* Header file's header info */
@@ -57,20 +57,20 @@ enum {
 #define H_NAMEOFFSET	10	/* filename offset inside header */
 
 /* Data file's header info for type 0xd0 */
-#define D_HEADERSIZE	6	/* size of data file header */
-#define D_LOADOFFSETH	1	/* load location (MSB) offset inside header */
-#define D_LOADOFFSETL	0	/* load location (LSB) offset inside header */
-#define D_ENDOFFSETH	3	/* end  location (MSB) offset inside header */
-#define D_ENDOFFSETL	2	/* end  location (LSB) offset inside header */
-#define D_EXECOFFSETH	5	/* start location (MSB) offset inside header */
-#define D_EXECOFFSETL	4	/* start location (LSB) offset inside header */
+#define D0_HEADERSIZE	6	/* size of data file header */
+#define D0_LOADOFFSETH	1	/* load location (MSB) offset inside header */
+#define D0_LOADOFFSETL	0	/* load location (LSB) offset inside header */
+#define D0_ENDOFFSETH	3	/* end  location (MSB) offset inside header */
+#define D0_ENDOFFSETL	2	/* end  location (LSB) offset inside header */
+#define D0_EXECOFFSETH	5	/* start location (MSB) offset inside header */
+#define D0_EXECOFFSETL	4	/* start location (LSB) offset inside header */
 
 /* Data file's sentinel for type 0xd3 */
-#define D_SENTINELSIZE	10
+#define D3_SENTINELSIZE	10
 
 /* Data file's payload size for type 0xea */
-#define D_BLOCKSIZE	256
-#define D_EOF		0x1a
+#define EA_BLOCKSIZE	256
+#define EA_EOF		0x1a
 
 int msx_read_byte (int pos, int lt)
 {
@@ -155,14 +155,17 @@ void msx_search (void)
 	int i, h, pcount;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[H_HEADERSIZE];		/* buffer to store block header info */
-	int sn[D_SENTINELSIZE];		/* buffer to store sentinel for BASIC file */
-	int pl[D_BLOCKSIZE];		/* buffer to store data file payload */
-	int b, b1;			/* byte value */
+	int sn[D3_SENTINELSIZE];		/* buffer to store sentinel for BASIC file */
+	int pl[EA_BLOCKSIZE];		/* buffer to store data file payload */
+	int dh[D0_HEADERSIZE];		/* buffer to store dump data header info */
+	int b, b1;			/* byte values */
 
 	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
+
+	int ftype;			/* type of file */
 
 	int xinfo;			/* extra info used in addblockdef() */
 
@@ -200,9 +203,9 @@ void msx_search (void)
 					hd[h] = b & 0xff;
 					pcount += b >> 8;
 					if (h < H_NAMEOFFSET && 
-							hd[h] != FILE_TYPE_BASIC && 
-							hd[h] != FILE_TYPE_MEM_DUMP && 
-							hd[h] != FILE_TYPE_DATA)
+							hd[h] != FILE_TYPE_D3_BASIC && 
+							hd[h] != FILE_TYPE_D0_MEM_DUMP && 
+							hd[h] != FILE_TYPE_EA_DATA)
 						break;
 				}
 				if (h != H_HEADERSIZE)
@@ -217,7 +220,9 @@ void msx_search (void)
 				if (addblockdef(MSX_HEAD, sof, sod, eod, eof, 0) >= 0) {
 					i = eof;	/* Search for further files starting from the end of this one */
 
-					/* Search for the corresponding data file */	
+					ftype = hd[0];
+
+					/* Search for the corresponding data file */
 					state++;
 				}
 			} else {
@@ -236,9 +241,9 @@ void msx_search (void)
 				/* Mark start of data */
 				sod = i;
 
-				switch(hd[0]) {
-					case FILE_TYPE_BASIC:
-						for (h = 0; h < D_SENTINELSIZE; h++)
+				switch (ftype) {
+					case FILE_TYPE_D3_BASIC:
+						for (h = 0; h < D3_SENTINELSIZE; h++)
 							sn[h] = -1;
 
 						for (h = 0, pcount = 0;; h++) {
@@ -247,7 +252,7 @@ void msx_search (void)
 								break;
 							pcount += b >> 8;
 							//printf("%c", b & 0xff);
-							sn[h % D_SENTINELSIZE] = b & 0xff;
+							sn[h % D3_SENTINELSIZE] = b & 0xff;
 							b1 = b;
 						}
 						if (h < 10) {
@@ -260,10 +265,10 @@ void msx_search (void)
 						x = h;
 
 						/* Verify we found a 10-zero sentinel at the end */
-						for (h = 0; h < D_SENTINELSIZE; h++)
+						for (h = 0; h < D3_SENTINELSIZE; h++)
 							if (sn[h] != 0x00)
 								break;
-						if (h != D_SENTINELSIZE) {
+						if (h != D3_SENTINELSIZE) {
 							/* Back to searching for header then */
 							state--;
 							continue;
@@ -277,32 +282,32 @@ void msx_search (void)
 
 						xinfo = x;
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 
-						/* Back to searching for header even if we failed here */
+						/* Back to searching for header even if we failed adding block here */
 						state--;
 
 						break;
 
-					case FILE_TYPE_MEM_DUMP:
-						/* Read header */
-						for (h = 0, pcount = 0; h < H_HEADERSIZE; h++) {
+					case FILE_TYPE_D0_MEM_DUMP:
+						/* Read data header header */
+						for (h = 0, pcount = 0; h < D0_HEADERSIZE; h++) {
 							b = msx_read_byte(sod + pcount, MSX_DATA);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
-							hd[h] = b & 0xff;
+							dh[h] = b & 0xff;
 						}
-						if (h != H_HEADERSIZE) {
+						if (h != D0_HEADERSIZE) {
 							/* Back to searching for header then */
 							state--;
 							continue;
 						}
 
 						/* Extract load and end locations */
-						s = hd[D_LOADOFFSETL] + (hd[D_LOADOFFSETH] << 8);
-						e = hd[D_ENDOFFSETL]  + (hd[D_ENDOFFSETH]  << 8);
+						s = dh[D0_LOADOFFSETL] + (dh[D0_LOADOFFSETH] << 8);
+						e = dh[D0_ENDOFFSETL]  + (dh[D0_ENDOFFSETH]  << 8);
 
 						/* Prevent int wraparound when subtracting 1 from end location
 						   to get the location of the last loaded byte */
@@ -324,7 +329,7 @@ void msx_search (void)
 						/* Parse all data in file in order to point to its end */
 						for (h = 0; h < x; h++) {
 							b = msx_read_byte(sod + pcount, MSX_DATA);
-							/* For now we don't try to find the next start bit and continue reading */
+							/* For now we don't try to find the next start bit in order to continue reading */
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -337,20 +342,20 @@ void msx_search (void)
 						/* Point to the last pulse of the last byte */
 						eof = eod + (b1 >> 8) - 1;
 
-						/* Store the info read from header as extra-info so we don't need to extract it again */
+						/* Store the info read from header as extra-info so we don't need to extract it again at the describe stage */
 						xinfo = s + (e << 16);
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;
 
-						/* Back to searching for header even if we failed here */
+						/* Back to searching for header even if we failed adding block here */
 						state--;
 
 						break;
 
-					case FILE_TYPE_DATA:
+					case FILE_TYPE_EA_DATA:
 						/* Parse all data in file in order to point to its end */
-						for (h = 0, pcount = 0; h < D_BLOCKSIZE; h++) {
+						for (h = 0, pcount = 0; h < EA_BLOCKSIZE; h++) {
 							b = msx_read_byte(sod + pcount, MSX_DATA);
 							if (b == -1)
 								break;
@@ -358,7 +363,7 @@ void msx_search (void)
 							pl[h] = b & 0xff;
 							b1 = b;
 						}
-						if (h != D_BLOCKSIZE) {
+						if (h != EA_BLOCKSIZE) {
 							/* Back to searching for header then */
 							state--;
 							continue;
@@ -368,8 +373,8 @@ void msx_search (void)
 						x = h;
 
 						/* Verify if there is an EOF char */
-						for (h = 0; h < D_BLOCKSIZE; h++) {
-							if (pl[h] == D_EOF) {
+						for (h = 0; h < EA_BLOCKSIZE; h++) {
+							if (pl[h] == EA_EOF) {
 								/* Back to searching for header after this block is ack'ed */
 								state--;
 								break;
@@ -384,7 +389,7 @@ void msx_search (void)
 
 						xinfo = x;
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, hd[0]) >= 0)
+						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 						else if (state)
 							state--;
@@ -405,9 +410,10 @@ int msx_describe (int row)
 {
 	int i, pcount;
 	int hd[H_HEADERSIZE];
+	int dh[D0_HEADERSIZE];
 	int en, tp, sp, lp;
 	char bfname[H_NAMESIZE + 1], bfnameASCII[H_NAMESIZE + 1];
-	int b;
+	int b, b1;
 
 	int s;
 	int rd_err;
@@ -449,16 +455,24 @@ int msx_describe (int row)
 		sprintf(lin,"\n - File Type : $%02X", hd[0]);
 		strcat(info, lin);
 		switch(hd[0]) {
-			case FILE_TYPE_BASIC:
+			case FILE_TYPE_D3_BASIC:
 				strcat(info, " - BASIC File (CSAVE/CLOAD)");
 				break;
-			case FILE_TYPE_MEM_DUMP:
+			case FILE_TYPE_D0_MEM_DUMP:
 				strcat(info, " - Memory Dump (BSAVE/BLOAD)");
 				break;
-			case FILE_TYPE_DATA:
+			case FILE_TYPE_EA_DATA:
 				strcat(info, " - Data File (SAVE/LOAD/OPEN)");
 				break;
 		}
+
+		/* Compute pilot & trailer lengths */
+
+		/* pilot is in pulses... */
+		blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+		/* ... trailer in pulses */
+		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
 
 		rd_err = 0;
 	} else {
@@ -474,7 +488,7 @@ int msx_describe (int row)
 		rd_err = 0;
 
 		switch (blk[row]->meta1) {
-			case FILE_TYPE_BASIC:
+			case FILE_TYPE_D3_BASIC:
 				blk[row]->cx = blk[row]->xi;
 
 				blk[row]->cs = 0x8001;
@@ -491,24 +505,44 @@ int msx_describe (int row)
 					blk[row]->dd[i] = b;
 					pcount += b >> 8;
 				}
+
+				/* Compute pilot & trailer lengths */
+
+				/* pilot is in pulses... */
+				blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+				/* ... trailer in pulses */
+				blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
+
 				break;
 
-			case FILE_TYPE_MEM_DUMP:
+			case FILE_TYPE_D0_MEM_DUMP:
 				/* Retrieve memory location for load/end address from extra-info */
 				blk[row]->cs = blk[row]->xi & 0xFFFF;
 				blk[row]->ce = (blk[row]->xi & 0xFFFF0000) >> 16;
 				blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
+
+				/* Safe to read header here as we already read data at search time */
+				for (i = 0, pcount = 0; i < D0_HEADERSIZE; i++) {
+					b = msx_read_byte(s + pcount, MSX_HEAD);
+					pcount += b >> 8;
+					dh[i] = b & 0xff;
+				}
+
+				sprintf(lin, "\n - Execution address: $%04X", dh[D0_EXECOFFSETL] + (dh[D0_EXECOFFSETH] << 8));
+				strcat(info, lin);
 
 				if (blk[row]->dd != NULL)
 					free(blk[row]->dd);
 
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
-				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
+				for (i = 0; i < blk[row]->cx; i++) {
 					b = msx_read_byte(s + pcount, MSX_HEAD);
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;
+						b1 = b;
 					} else {
 						blk[row]->dd[i] = 0x69;  /* error code */
 						rd_err++;
@@ -517,13 +551,22 @@ int msx_describe (int row)
 						sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
 						strcat(info, lin);
 
-						/* For now we don't try to find the next start bit and continue reading */
+						/* For now we don't try to find the next start bit in order to continue reading */
 						break;
 					}
 				}
+
+				/* Compute pilot & trailer lengths */
+
+				/* pilot is in pulses... */
+				blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+				/* ... trailer in pulses */
+				blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b1 >> 8) - 1);
+
 				break;
 
-			case FILE_TYPE_DATA:
+			case FILE_TYPE_EA_DATA:
 				blk[row]->cx = blk[row]->xi;
 
 				blk[row]->cs = 0x0000;
@@ -539,6 +582,7 @@ int msx_describe (int row)
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;
+						b1 = b;
 					} else {
 						blk[row]->dd[i] = 0x69;  /* error code */
 						rd_err++;
@@ -547,21 +591,22 @@ int msx_describe (int row)
 						sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
 						strcat(info, lin);
 
-						/* For now we don't try to find the next start bit and continue reading */
+						/* For now we don't try to find the next start bit in order to continue reading */
 						break;
 					}
 				}
+
+				/* Compute pilot & trailer lengths */
+
+				/* pilot is in pulses... */
+				blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
+
+				/* ... trailer in pulses */
+				blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b1 >> 8) - 1);
+
 				break;
 		}
 	}
-
-	/* Compute pilot & trailer lengths */
-
-	/* pilot is in pulses... */
-	blk[row]->pilot_len = blk[row]->p2 - blk[row]->p1;
-
-	/* ... trailer in pulses */
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - ((b >> 8) - 1);
 
 	blk[row]->rd_err = rd_err;
 
