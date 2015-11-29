@@ -155,16 +155,15 @@ int msx_find_pilot (int pos, int lt)
 	return 0;
 }
 
-void msx_search (void)
+void msx_search (int variant)
 {
 	int i, h, pcount;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[H_HEADERSIZE];		/* buffer to store block header info */
 	int sn[D3_SENTINELSIZE];	/* buffer to store sentinel for BASIC file */
 	int dh[D0_HEADERSIZE];		/* buffer to store dump data header info */
+	int lt;				/* loader type (standard or fast) */
 	int b, b1;			/* byte values */
-
-	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -176,12 +175,6 @@ void msx_search (void)
 	int state;			/* whether to search for header or data */
 
 
-	en = ft[MSX_HEAD].en;
-	tp = ft[MSX_HEAD].tp;
-	sp = ft[MSX_HEAD].sp;
-	lp = ft[MSX_HEAD].lp;
-	sv = ft[MSX_HEAD].sv;
-
 	if (!quiet)
 		msgout("  MSX tape");
 
@@ -189,7 +182,9 @@ void msx_search (void)
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		if (state == STATE_SEARCH_HEADER) {
-			eop = msx_find_pilot(i, MSX_HEAD);
+			lt = variant == 0 ? MSX_HEAD : MSX_HEAD_FAST;
+
+			eop = msx_find_pilot(i, lt);
 
 			if (eop > 0) {
 				/* Valid pilot found, mark start of header file */
@@ -201,7 +196,7 @@ void msx_search (void)
 
 				/* Read header */
 				for (h = 0, pcount = 0; h < H_HEADERSIZE; h++) {
-					b = msx_read_byte(sod + pcount, MSX_HEAD);
+					b = msx_read_byte(sod + pcount, lt);
 					if (b == -1)
 						break;
 					hd[h] = b & 0xff;
@@ -221,7 +216,7 @@ void msx_search (void)
 				/* Point to the last pulse of the last byte */
 				eof = eod + (b >> 8) - 1;
 
-				if (addblockdef(MSX_HEAD, sof, sod, eod, eof, 0) >= 0) {
+				if (addblockdef(lt, sof, sod, eod, eof, 0) >= 0) {
 					i = eof;	/* Search for further files starting from the end of this one */
 
 					ftype = hd[0];
@@ -235,7 +230,9 @@ void msx_search (void)
 				}
 			}
 		} else {
-			eop = msx_find_pilot(i, MSX_DATA);
+			lt = variant == 0 ? MSX_DATA : MSX_DATA_FAST;
+
+			eop = msx_find_pilot(i, lt);
 			
 			if (eop > 0) {
 				/* Valid pilot found, mark start of data file */
@@ -251,7 +248,7 @@ void msx_search (void)
 							sn[h] = -1;
 
 						for (h = 0, pcount = 0;; h++) {
-							b = msx_read_byte(sod + pcount, MSX_DATA);
+							b = msx_read_byte(sod + pcount, lt);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -286,7 +283,7 @@ void msx_search (void)
 
 						xinfo = x;
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 
 						/* Back to searching for header even if we failed adding block here */
@@ -297,7 +294,7 @@ void msx_search (void)
 					case FILE_TYPE_D0_MEM_DUMP:
 						/* Read data header header */
 						for (h = 0, pcount = 0; h < D0_HEADERSIZE; h++) {
-							b = msx_read_byte(sod + pcount, MSX_DATA);
+							b = msx_read_byte(sod + pcount, lt);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -332,7 +329,7 @@ void msx_search (void)
 
 						/* Parse all data in file in order to point to its end */
 						for (h = 0; h < x; h++) {
-							b = msx_read_byte(sod + pcount, MSX_DATA);
+							b = msx_read_byte(sod + pcount, lt);
 							/* For now we don't try to find the next start bit in order to continue reading */
 							if (b == -1)
 								break;
@@ -347,14 +344,14 @@ void msx_search (void)
 						eof = eod + (b1 >> 8) - 1;
 
 						/* Extra byte after data (its meaning is yet unknown) */
-						b = msx_read_byte(sod + pcount, MSX_DATA);
+						b = msx_read_byte(sod + pcount, lt);
 						if (b != -1)
 							eof += b >> 8;
 
 						/* Store the info read from header as extra-info so we don't need to extract it again at the describe stage */
 						xinfo = s + (e << 16);
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;
 
 						/* Back to searching for header even if we failed adding block here */
@@ -365,7 +362,7 @@ void msx_search (void)
 					case FILE_TYPE_EA_DATA:
 						/* Parse all data in file in order to point to its end */
 						for (h = 0, pcount = 0; h < EA_BLOCKSIZE; h++) {
-							b = msx_read_byte(sod + pcount, MSX_DATA);
+							b = msx_read_byte(sod + pcount, lt);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -392,7 +389,7 @@ void msx_search (void)
 
 						xinfo = x;
 
-						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 						else
 							state = STATE_SEARCH_HEADER;
@@ -414,7 +411,7 @@ int msx_describe (int row)
 	int i, pcount;
 	int hd[H_HEADERSIZE];
 	int dh[D0_HEADERSIZE];
-	int en, tp, sp, lp;
+	int lt;
 	char bfname[H_NAMESIZE + 1], bfnameASCII[H_NAMESIZE + 1];
 	int b, b1;
 
@@ -422,18 +419,14 @@ int msx_describe (int row)
 	int rd_err;
 
 
-	if (blk[row]->lt == MSX_HEAD) {
-		en = ft[MSX_HEAD].en;
-		tp = ft[MSX_HEAD].tp;
-		sp = ft[MSX_HEAD].sp;
-		lp = ft[MSX_HEAD].lp;
-
+	lt = blk[row]->lt;
+	if (lt == MSX_HEAD || lt == MSX_HEAD_FAST) {
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 		s = blk[row] -> p2;
 
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0, pcount = 0; i < H_HEADERSIZE; i++) {
-			b = msx_read_byte(s + pcount, MSX_HEAD);
+			b = msx_read_byte(s + pcount, lt);
 			hd[i]= b & 0xff;
 			pcount += b >> 8;
 		}
@@ -479,11 +472,6 @@ int msx_describe (int row)
 
 		rd_err = 0;
 	} else {
-		en = ft[MSX_DATA].en;
-		tp = ft[MSX_DATA].tp;
-		sp = ft[MSX_DATA].sp;
-		lp = ft[MSX_DATA].lp;
-
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 		s = blk[row] -> p2;
 
@@ -504,7 +492,7 @@ int msx_describe (int row)
 
 				/* Safe to read here as we already read data at search time, including the sentinel */
 				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_DATA);
+					b = msx_read_byte(s + pcount, lt);
 					blk[row]->dd[i] = b;
 					pcount += b >> 8;
 				}
@@ -527,7 +515,7 @@ int msx_describe (int row)
 
 				/* Safe to read header here as we already read data at search time */
 				for (i = 0, pcount = 0; i < D0_HEADERSIZE; i++) {
-					b = msx_read_byte(s + pcount, MSX_DATA);
+					b = msx_read_byte(s + pcount, lt);
 					pcount += b >> 8;
 					dh[i] = b & 0xff;
 				}
@@ -541,7 +529,7 @@ int msx_describe (int row)
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 				for (i = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_DATA);
+					b = msx_read_byte(s + pcount, lt);
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;
@@ -559,7 +547,7 @@ int msx_describe (int row)
 					}
 				}
 
-				b = msx_read_byte(s + pcount, MSX_DATA);
+				b = msx_read_byte(s + pcount, lt);
 				if (b != -1) {
 					sprintf(lin, "\n - Post data byte: $%02X", b & 0xff);
 					strcat(info, lin);
@@ -587,7 +575,7 @@ int msx_describe (int row)
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_DATA);
+					b = msx_read_byte(s + pcount, lt);
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;

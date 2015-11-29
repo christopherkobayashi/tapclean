@@ -324,6 +324,8 @@ struct fmt_t ft[120] = {
 
 	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  6000,  NA,    CSNO},
 	{"MSX TAPE DATA"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  1000,  NA,    CSNO},
+	{"MSX TAPE HEADER FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  6000,  NA,    CSNO},
+	{"MSX TAPE DATA FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  1000,  NA,    CSNO},
 
 	/* Closing record */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
@@ -1256,8 +1258,10 @@ static void search_tap(void)
 			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew3_search();
 
-			if (ldrswt[nomsx	].state == FALSE && !dbase_is_full && !aborted)
-				msx_search();
+			if (ldrswt[nomsx	].state == FALSE && !dbase_is_full && !aborted) {
+				msx_search(0);	/* Standard */
+				msx_search(1);	/* Fast */
+			}
 
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting
@@ -1580,6 +1584,10 @@ static void describe_file(int row)
 		case MSX_HEAD:		msx_describe(row);
 					break;
 		case MSX_DATA:		msx_describe(row);
+					break;
+		case MSX_HEAD_FAST:	msx_describe(row);
+					break;
+		case MSX_DATA_FAST:	msx_describe(row);
 					break;
 	}
 }

@@ -271,5 +271,5 @@ void creativesparks_search(void);
 int creativesparks_describe(int);
 
 int msx_read_byte(int, int);
-void msx_search(void);
+void msx_search(int);
 int msx_describe(int);
