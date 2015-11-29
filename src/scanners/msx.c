@@ -559,6 +559,12 @@ int msx_describe (int row)
 					}
 				}
 
+				b = msx_read_byte(s + pcount, MSX_HEAD);
+				if (b != -1) {
+					sprintf(lin, "\n - Post data byte: $%02X", b & 0xff);
+					strcat(info, lin);
+				}
+
 				/* Compute pilot & trailer lengths */
 
 				/* pilot is in pulses... */
