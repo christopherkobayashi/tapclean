@@ -504,7 +504,7 @@ int msx_describe (int row)
 
 				/* Safe to read here as we already read data at search time, including the sentinel */
 				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_HEAD);
+					b = msx_read_byte(s + pcount, MSX_DATA);
 					blk[row]->dd[i] = b;
 					pcount += b >> 8;
 				}
@@ -527,7 +527,7 @@ int msx_describe (int row)
 
 				/* Safe to read header here as we already read data at search time */
 				for (i = 0, pcount = 0; i < D0_HEADERSIZE; i++) {
-					b = msx_read_byte(s + pcount, MSX_HEAD);
+					b = msx_read_byte(s + pcount, MSX_DATA);
 					pcount += b >> 8;
 					dh[i] = b & 0xff;
 				}
@@ -541,7 +541,7 @@ int msx_describe (int row)
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 				for (i = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_HEAD);
+					b = msx_read_byte(s + pcount, MSX_DATA);
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;
@@ -559,7 +559,7 @@ int msx_describe (int row)
 					}
 				}
 
-				b = msx_read_byte(s + pcount, MSX_HEAD);
+				b = msx_read_byte(s + pcount, MSX_DATA);
 				if (b != -1) {
 					sprintf(lin, "\n - Post data byte: $%02X", b & 0xff);
 					strcat(info, lin);
@@ -587,7 +587,7 @@ int msx_describe (int row)
 				blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 				for (i = 0, pcount = 0; i < blk[row]->cx; i++) {
-					b = msx_read_byte(s + pcount, MSX_HEAD);
+					b = msx_read_byte(s + pcount, MSX_DATA);
 					if (b != -1) {
 						blk[row]->dd[i] = b;
 						pcount += b >> 8;
