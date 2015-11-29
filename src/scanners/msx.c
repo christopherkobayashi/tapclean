@@ -51,6 +51,11 @@ enum {
 	FILE_TYPE_EA_DATA = 0xea
 };
 
+enum {
+	STATE_SEARCH_HEADER = 0,
+	STATE_SEARCH_DATA
+};
+
 /* Header file's header info */
 #define H_HEADERSIZE	16	/* size of header file header */
 #define H_NAMESIZE	6	/* size of filename */
@@ -155,8 +160,7 @@ void msx_search (void)
 	int i, h, pcount;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[H_HEADERSIZE];		/* buffer to store block header info */
-	int sn[D3_SENTINELSIZE];		/* buffer to store sentinel for BASIC file */
-	int pl[EA_BLOCKSIZE];		/* buffer to store data file payload */
+	int sn[D3_SENTINELSIZE];	/* buffer to store sentinel for BASIC file */
 	int dh[D0_HEADERSIZE];		/* buffer to store dump data header info */
 	int b, b1;			/* byte values */
 
@@ -181,10 +185,10 @@ void msx_search (void)
 	if (!quiet)
 		msgout("  MSX tape");
 
-	state = 0;	/* Initially search for a header */
+	state = STATE_SEARCH_HEADER;	/* Initially search for a header */
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		if (state == 0) {
+		if (state == STATE_SEARCH_HEADER) {
 			eop = msx_find_pilot(i, MSX_HEAD);
 
 			if (eop > 0) {
@@ -223,7 +227,7 @@ void msx_search (void)
 					ftype = hd[0];
 
 					/* Search for the corresponding data file */
-					state++;
+					state = STATE_SEARCH_DATA;
 				}
 			} else {
 				if (eop < 0) {
@@ -257,7 +261,7 @@ void msx_search (void)
 						}
 						if (h < 10) {
 							/* Back to searching for header then */
-							state--;
+							state = STATE_SEARCH_HEADER;
 							continue;
 						}
 
@@ -270,7 +274,7 @@ void msx_search (void)
 								break;
 						if (h != D3_SENTINELSIZE) {
 							/* Back to searching for header then */
-							state--;
+							state = STATE_SEARCH_HEADER;
 							continue;
 						}
 
@@ -286,7 +290,7 @@ void msx_search (void)
 							i = eof;	/* Search for further files starting from the end of this one */
 
 						/* Back to searching for header even if we failed adding block here */
-						state--;
+						state = STATE_SEARCH_HEADER;
 
 						break;
 
@@ -301,7 +305,7 @@ void msx_search (void)
 						}
 						if (h != D0_HEADERSIZE) {
 							/* Back to searching for header then */
-							state--;
+							state = STATE_SEARCH_HEADER;
 							continue;
 						}
 
@@ -319,7 +323,7 @@ void msx_search (void)
 						/* Plausibility check */
 						if (e < s) {
 							/* Back to searching for header then */
-							state--;
+							state = STATE_SEARCH_HEADER;
 							continue;
 						}
 
@@ -349,7 +353,7 @@ void msx_search (void)
 							i = eof;
 
 						/* Back to searching for header even if we failed adding block here */
-						state--;
+						state = STATE_SEARCH_HEADER;
 
 						break;
 
@@ -360,26 +364,20 @@ void msx_search (void)
 							if (b == -1)
 								break;
 							pcount += b >> 8;
-							pl[h] = b & 0xff;
 							b1 = b;
+
+							/* Verify if there is at least an EOF char */
+							if ((b & 0xff) == EA_EOF)
+								state = STATE_SEARCH_HEADER;
 						}
 						if (h != EA_BLOCKSIZE) {
 							/* Back to searching for header then */
-							state--;
+							state = STATE_SEARCH_HEADER;
 							continue;
 						}
 
 						/* Set size */
 						x = h;
-
-						/* Verify if there is an EOF char */
-						for (h = 0; h < EA_BLOCKSIZE; h++) {
-							if (pl[h] == EA_EOF) {
-								/* Back to searching for header after this block is ack'ed */
-								state--;
-								break;
-							}
-						}
 
 						/* Point to the first pulse of the last byte (that's final) */
 						eod = sod + pcount - (b1 >> 8);
@@ -391,8 +389,8 @@ void msx_search (void)
 
 						if (addblockdefex(MSX_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
-						else if (state)
-							state--;
+						else
+							state = STATE_SEARCH_HEADER;
 
 						break;
 				}
@@ -452,7 +450,7 @@ int msx_describe (int row)
 		blk[row]->cx = 0;
 		blk[row]->ce = 0;
 
-		sprintf(lin,"\n - File Type : $%02X", hd[0]);
+		sprintf(lin,"\n - DATA FILE type : $%02X", hd[0]);
 		strcat(info, lin);
 		switch(hd[0]) {
 			case FILE_TYPE_D3_BASIC:
