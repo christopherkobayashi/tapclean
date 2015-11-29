@@ -7,7 +7,8 @@ Entries are of the following types (since release 0.21):
 	- New: new features, such as support for new loaders
 
 v0.33
-	New: Added initial support for MSX tape Headers (Luigi)
+	New: Added initial support for MSX tape Header files (Luigi)
+	New: Added initial support for MSX tape Data files (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
