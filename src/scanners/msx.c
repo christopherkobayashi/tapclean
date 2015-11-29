@@ -346,6 +346,11 @@ void msx_search (void)
 						/* Point to the last pulse of the last byte */
 						eof = eod + (b1 >> 8) - 1;
 
+						/* Extra byte after data (its meaning is yet unknown) */
+						b = msx_read_byte(sod + pcount, MSX_DATA);
+						if (b != -1)
+							eof += b >> 8;
+
 						/* Store the info read from header as extra-info so we don't need to extract it again at the describe stage */
 						xinfo = s + (e << 16);
 
