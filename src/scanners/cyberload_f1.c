@@ -246,9 +246,6 @@ void cyberload_f1_search(void)
 int cyberload_f1_describe(int row)
 {
    int i,s,b,tmp,rd_err=0;
-   unsigned char hd[32];
-
-   hd[0]= readttbyte(blk[row]->p2, ft[CYBER_F1].lp, ft[CYBER_F1].sp, NA, ft[CYBER_F1].en);
 
    blk[row]->cs= blk[row]->xi;
    blk[row]->cx= ((blk[row]->p3- blk[row]->p2)-8) /9;

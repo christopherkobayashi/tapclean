@@ -85,13 +85,12 @@ void micro_search(void)
 int micro_describe(int row)
 {
 	int i, s, b, rd_err, hd[HDSZ], cb;
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 
 	en = ft[MICROLOAD].en;	/* set endian according to table in main.c */
 	tp = ft[MICROLOAD].tp;	/* set threshold */
 	sp = ft[MICROLOAD].sp;	/* set short pulse */
 	lp = ft[MICROLOAD].lp;	/* set long pulse */
-	sv = ft[MICROLOAD].sv;	/* set sync value */
 
 	/* decode the header... */
 

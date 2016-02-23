@@ -2462,7 +2462,7 @@ int find_pilot(int pos, int fmt)
 
 int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsinabyte)
 {
-	int z, sp, lp, tp, en, pv, sv, pmin, pmax;
+	int z, sp, lp, tp, en, pv, pmin, pmax;
 
 	if (pos < 20)
 		return 0;
@@ -2472,7 +2472,6 @@ int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsi
 	tp = ft[fmt].tp;
 	en = ft[fmt].en;
 	pv = ft[fmt].pv;
-	sv = ft[fmt].sv;
 	pmin = ft[fmt].pmin;
 	pmax = ft[fmt].pmax;
 

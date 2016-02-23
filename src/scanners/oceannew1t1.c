@@ -90,13 +90,12 @@ void oceannew1t1_search(void)
 int oceannew1t1_describe(int row)
 {
 	int i, s, b, hd[HDSZ], cb;
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 
 	en = ft[OCNEW1T1].en;	/* set endian according to table in main.c */
 	tp = ft[OCNEW1T1].tp;	/* set threshold */
 	sp = ft[OCNEW1T1].sp;	/* set short pulse */
 	lp = ft[OCNEW1T1].lp;	/* set long pulse */
-	sv = ft[OCNEW1T1].sv;	/* set sync value */
    
 	/* decode the header to get load address etc... */
 

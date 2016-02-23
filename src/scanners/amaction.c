@@ -69,7 +69,7 @@ void amaction_search (void)
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int hd[HEADERSIZE + MAXFILENAME];	/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;		/* encoding parameters */
+	int en, tp, sp, lp;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -91,7 +91,6 @@ void amaction_search (void)
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
-	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
 		msgout("  American Action tape");

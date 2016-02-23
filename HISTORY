@@ -9,6 +9,7 @@ Entries are of the following types (since release 0.21):
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
 	New: Added initial support for MSX tape Data files (Luigi)
+	Code quality: Removed variables that were set but not used (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)

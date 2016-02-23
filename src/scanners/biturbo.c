@@ -67,7 +67,7 @@ void biturbo_search (void)
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int ib;				/* condition variable */
 
-	int en, tp, sp, lp, sv;		/* encoding parameters */
+	int en, tp, sp, lp;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -89,7 +89,6 @@ void biturbo_search (void)
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
-	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
 		msgout("  Biturbo");

@@ -40,14 +40,13 @@ void alternativewg_search(void)
 {
 	int i, sof, sod, eod, eof;
 	int z, h, hd[HDSZ];
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 	unsigned int s, x;
 
 	en = ft[ALTERWG].en;
 	tp = ft[ALTERWG].tp;
 	sp = ft[ALTERWG].sp;
 	lp = ft[ALTERWG].lp;
-	sv = ft[ALTERWG].sv;
 
 	if (!quiet)
 		msgout("  Alternative World Games");
@@ -71,7 +70,7 @@ void alternativewg_search(void)
 			x = hd[4] + (hd[5] << 8);	/* get length */
 			eod = sod + ((x + HDSZ) * 8) - 1;
 			eof = eod;
-			addblockdef(ALTERWG, sof, sod, eod, eof, 0);
+			addblockdef(ALTERWG, sof, sod, eod, eof, s);
 			i = eof;	/* optimize search */
 		}
 		else

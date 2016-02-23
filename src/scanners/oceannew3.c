@@ -145,7 +145,7 @@ int oceannew3_describe (int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];
-	int en, tp, sp, mp, lp;
+	int en, tp, sp, mp;
 	int cb;
 
 	int b, rd_err;
@@ -155,7 +155,6 @@ int oceannew3_describe (int row)
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	mp = ft[THISLOADER].mp;
-	lp = ft[THISLOADER].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;

@@ -89,13 +89,12 @@ void jetload_search(void)
 int jetload_describe(int row)
 {
 	int i, s, b, hd[HDSZ], rd_err;
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 
 	en = ft[JET].en;	/* set endian according to table in main.c */
 	tp = ft[JET].tp;	/* set threshold */
 	sp = ft[JET].sp;	/* set short pulse */
 	lp = ft[JET].lp;	/* set long pulse */
-	sv = ft[JET].sv;	/* set sync value */
 
 	/* decode the header to get load address etc... */
 

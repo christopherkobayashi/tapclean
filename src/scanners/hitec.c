@@ -85,13 +85,12 @@ void hitec_search(void)
 int hitec_describe(int row)
 {
 	int i, s, b, hd[HDSZ], rd_err, cb;
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 
 	en = ft[HITEC].en;	/* set endian according to table in main.c */
 	tp = ft[HITEC].tp;	/* set threshold */
 	sp = ft[HITEC].sp;	/* set short pulse */
 	lp = ft[HITEC].lp;	/* set long pulse */
-	sv = ft[HITEC].sv;	/* set sync value */
 
 	s = blk[row]->p2;
 	for (i = 0; i < HDSZ; i++) {

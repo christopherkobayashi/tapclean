@@ -405,7 +405,7 @@ int rackit_describe (int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];
-	int en, tp, sp, mp, lp;
+	int en, tp, sp, lp;
 	int cb, xor;
 
 	int b, rd_err;
@@ -416,7 +416,6 @@ int rackit_describe (int row)
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
-	mp = ft[THISLOADER].mp;
 	lp = ft[THISLOADER].lp;
 
 	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : ", ft[THISLOADER].pv, ft[THISLOADER].sv);

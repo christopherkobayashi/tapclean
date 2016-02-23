@@ -76,13 +76,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 					"Chks", "Read", "Files", "Gaps",
 					"CRC32", "Ver", "Var", "Size",
 					"cbmCRC32", "LoaderID"};
-	int fieldszs[FIELDS];
 	char tfields[FIELDS][128];	/* temp fields */
-
-	/* set default field sizes to lengths of field headers... */
-
-	for (i = 0; i < FIELDS; i++)
-		fieldszs[i] = strlen(fields[i]);
 
 	/* check rootdir exists */
 

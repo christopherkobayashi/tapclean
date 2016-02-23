@@ -88,13 +88,12 @@ void freeload_search(void)
 int freeload_describe(int row)
 {
 	int i, s, b, cb, hd[HDSZ];
-	int en, tp, sp, lp, sv;
+	int en, tp, sp, lp;
 
 	en = ft[FREE].en;
 	tp = ft[FREE].tp;
 	sp = ft[FREE].sp;
 	lp = ft[FREE].lp;
-	sv = ft[FREE].sv;
       
 	/* decode header... */
 
