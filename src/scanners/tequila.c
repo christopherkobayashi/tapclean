@@ -244,7 +244,7 @@ int tequila_describe(int row)
 	/* Extract data (Force LSbF) */
 	rd_err = 0;
 
-	s = blk[row]->p2;
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
@@ -269,15 +269,24 @@ int tequila_describe(int row)
 	for (i = 0; i < POSTDATASIZE; i++) {
 		b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, LSbF);
 
-		/* Do NOT increase read errors for this one is not within DATA */
-		if (b != -1)
+		/* Increase read errors for this data is mandatory for the correct execution of the software */
+		if (b != -1) {
 			pd[i] = b;
-		else
+		} else {
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on post-data byte @$%X (offset: $%02X)", s + (blk[row]->cx + i) * BITSINABYTE, i);
+			strcat(info, lin);
+
 			break;
+		}
 	}
 
 	/* Print execution ptr only if it was read in properly */
-	strcat(info, "\n - Post-data Ptr : ");
+	strcat(info, "\n - Post-data Ptr ");
+	sprintf(lin, "@$%X : ", s + blk[row]->cx * BITSINABYTE);
+	strcat(info, lin);
 
 	if (i == POSTDATASIZE) {
 		sprintf(lin, "$%04X", (pd[0]<<8) + pd[1] + 1);
