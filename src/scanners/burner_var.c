@@ -381,11 +381,18 @@ int burnervar_describe (int row)
 		for (i = 0; i < POSTDATASIZE; i++) {
 			b = readttbyte(s + (blk[row]->cx + i) * BITSINABYTE, lp, sp, tp, en);
 
-			/* Do NOT increase read errors for this one is not within DATA */
-			if (b != -1)
+			/* Increase read errors for this data is mandatory for the correct execution of the software */
+			if (b != -1) {
 				pd[i] = b;
-			else
+			} else {
+				rd_err++;
+
+				/* for experts only */
+				sprintf(lin, "\n - Read Error on post-data byte @$%X (offset: $%02X)", s + (blk[row]->cx + i) * BITSINABYTE, i);
+				strcat(info, lin);
+
 				break;
+			}
 		}
 
 		/* Print EOF marker only if it was read in properly */
