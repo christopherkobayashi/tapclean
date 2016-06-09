@@ -398,7 +398,8 @@ const char knam[][32] = {
 	{"Power Load"},
 	{"Gremlin (F1/F2)"},
 	{"Easy-Tape System C"},
-	{"Creative Sparks"}
+	{"Creative Sparks"},
+	{"Trilogic"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1042,6 +1043,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].state == FALSE && !dbase_is_full && !aborted)
 				creativesparks_search();
 
+			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].state == FALSE && !dbase_is_full && !aborted)
+				trilogic_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1214,9 +1218,6 @@ static void search_tap(void)
 			if (ldrswt[norainbowf2	].state	== FALSE && !dbase_is_full && !aborted)
 				rainbowf2_search();
 
-			if (ldrswt[notrilogic	].state	== FALSE && !dbase_is_full && !aborted)
-				trilogic_search();
-
 			if (ldrswt[noburnervar	].state	== FALSE && !dbase_is_full && !aborted)
 				burnervar_search();
 
@@ -1280,6 +1281,9 @@ static void search_tap(void)
 			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
 			 */
+
+			//if (ldrswt[notrilogic	].state	== FALSE && !dbase_is_full && !aborted)
+			//	trilogic_search();
 
 			//if (ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
 			//	fftape_search();

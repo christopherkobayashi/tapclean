@@ -306,6 +306,11 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x23EE788B, LID_CSPARKS},	/* Taskmaster */
 		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
 
+		{0x848FD0AF, LID_TRILOGIC},	/* Alternative releases: Double Dare, 
+						   Fireman Sam, Hellfire Attack, 
+						   Kentucky Racing, Merlin, Metranaut, 
+						   Strike Force, Superted */
+
 		{0, 0}
 	};
 
