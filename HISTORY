@@ -12,6 +12,7 @@ v0.33
 	Code quality: Removed variables that were set but not used (Luigi)
 	Fix: Fixed the address at which the Tequila Sunrise PRG decoder
 	 starts extraction (Luigi)
+	Improvement: Use signature in CBM Data for "Trilogic" too (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
