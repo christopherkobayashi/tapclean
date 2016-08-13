@@ -291,7 +291,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x057A87A2, LID_ALTERDK},	/* Early Alternative Software loader */
 
-		{0xD407EAA3, LID_POWERLOAD},	/* Power Load */
+		{0xD407EAA3, LID_POWERLOAD},	/* Power Load: Felix in the factory, Ghouls, Jet Power Jack, Stock Car */
+		{0xA217E2B1, LID_POWERLOAD},	/* Mr Wiz, Smuggler, U.K. Geography, World Geography */
+		{0xCD358874, LID_POWERLOAD},	/* Percy Penguin */
 
 		{0xAD9ABE1C, LID_GREMLIN},	/* Gremlin tape F1 and F2 */
 		{0xC721D847, LID_GREMLIN},
