@@ -1925,6 +1925,8 @@ static void print_database(char *buf, size_t bufsize)
 	for (i = 0; blk[i]->lt != LT_NONE; i++) {
 		sprintf(lin, "\n---------------------------------");
 		strncat(buf, lin, bufsize - strlen(buf) - 1);
+		sprintf(lin, "\nSeq. no.: %d", i);
+		strncat(buf, lin, bufsize - strlen(buf) - 1);
 		sprintf(lin, "\nFile Type: %s", ft[blk[i]->lt].name);
 		strncat(buf, lin, bufsize - strlen(buf) - 1);
 		sprintf(lin, "\nLocation: $%04X -> $%04X -> $%04X -> $%04X", blk[i]->p1, blk[i]->p2, blk[i]->p3, blk[i]->p4);
