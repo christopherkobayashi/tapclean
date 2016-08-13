@@ -99,8 +99,15 @@ void powerload_search (void)
 	if (ib == -1)
 		return;		/* failed to locate CBM data. */
 
+	/* Percy Pigeon has an extra CBM file before the main loader */
+	if (blk[ib]->cx == 0x83) {
+		ib = find_decode_block(CBM_DATA, 5);
+		if (ib == -1)
+			return;		/* failed to locate CBM data. */
+	}
+
 	/* Basic validation before accessing array elements */
-	if (blk[ib]->cx < EXECOFFSETH + 1)
+	if (blk[ib]->cx < ENDOFFSETL + 1)
 		return;
 
 	s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
@@ -109,8 +116,8 @@ void powerload_search (void)
 	/* Save the real end address for later display */
 	meta1 = e << 16;
 
-	/* Look for a jump to the execution address */
-	if (blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
+	/* Look for a jump to the execution address (not mandatory) */
+	if (blk[ib]->cx >= EXECOFFSETH + 1 && blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
 		meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
 
 	/* Prevent int wraparound when subtracting 1 from end location
@@ -120,7 +127,7 @@ void powerload_search (void)
 	else
 		e--;
 
-	/* Plausibility checks (here since POWERLOAD is always just ONE TURBO file) */
+	/* Plausibility check */
 	if (e < s)
 		return;
 
@@ -197,7 +204,7 @@ void powerload_search (void)
 			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0) {
 				i = eof;	/* Search for further files starting from the end of this one */
 
-				/* Non-genuine Power Loader (e.g. Rocket Roger) */
+				/* Non-standard Power Loader (Rocket Roger loads an extra turbo block) */
 				if ((meta1 & 0xFFFF) == 0) {
 					int *buf, bufsz;
 
