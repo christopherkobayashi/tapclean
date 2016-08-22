@@ -19,6 +19,7 @@ v0.33
 	 "Percy Penguin" (Luigi)
 	Improvement: The "Power Load" scanner now fully supports "Mr Wiz",
 	 "Smuggler", and "U.K. Geography" (Luigi)
+	Improvement: Sequence numbers are now 1-based (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
