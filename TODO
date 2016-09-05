@@ -1,3 +1,6 @@
+ - The corrupted bit of post-data in "PAL Developments Tape" should be 
+   reconstructed as its absence in a cleaned TAP might be causing load to 
+   fail in "Scooby Doo and Scrabby Doo" (Luigi)
  - The size of the trailing silence should be overridable as "Hunchback at the 
    Olympics" does not properly execute if the tape runs out before the unpacker 
    has finished processing all data (Luigi - reported by Peepo and Ziggy72)
