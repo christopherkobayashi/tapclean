@@ -273,6 +273,9 @@
     <ClCompile Include="..\..\src\scanners\odeload.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\paldevel.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\powerload.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>

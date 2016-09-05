@@ -167,6 +167,7 @@
     <ClCompile Include="..\..\src\scanners\oceannew3.c" />
     <ClCompile Include="..\..\src\scanners\oceannew4.c" />
     <ClCompile Include="..\..\src\scanners\odeload.c" />
+    <ClCompile Include="..\..\src\scanners\paldevel.c" />
     <ClCompile Include="..\..\src\scanners\powerload.c" />
     <ClCompile Include="..\..\src\scanners\rainbowarts_f1.c" />
     <ClCompile Include="..\..\src\scanners\rainbowarts_f2.c" />

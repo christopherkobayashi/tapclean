@@ -120,6 +120,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Ocean New 3"			,"oceannew3"	,FALSE},
 	{"Ocean New 4"			,"oceannew4"	,FALSE},
 	{"ODEload"			,"ode"		,FALSE},
+	{"PAL Developments"		,"paldevel"	,FALSE},
 	{"Palace F1"			,"palacef1"	,FALSE},
 	{"Palace F2"			,"palacef2"	,FALSE},
 	{"Pavloda"			,"pav"		,FALSE},
@@ -321,6 +322,7 @@ struct fmt_t ft[120] = {
 	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,  0x33, 0x01, 0xFF, 64,  NA,    CSYES},
+	{"PAL DEVELOPMENTS"	,MSbF, 0x2D, 0x20, NA,  0x42, 0x80, 0x40, 100, NA,    CSNO},
 
 	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  6000,  NA,    CSNO},
 	{"MSX TAPE DATA"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  1000,  NA,    CSNO},
@@ -1259,6 +1261,9 @@ static void search_tap(void)
 			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
 				oceannew3_search();
 
+			if (ldrswt[nopaldevel	].state == FALSE && !dbase_is_full && !aborted)
+				paldevel_search();
+
 			if (ldrswt[nomsx	].state == FALSE && !dbase_is_full && !aborted) {
 				msx_search(0);	/* Standard */
 				msx_search(1);	/* Fast */
@@ -1584,6 +1589,8 @@ static void describe_file(int row)
 		case TURBO220:		turbo220_describe(row);
 					break;
 		case CSPARKS:		creativesparks_describe(row);
+					break;
+		case PAL_DEVELOPMENTS:	paldevel_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

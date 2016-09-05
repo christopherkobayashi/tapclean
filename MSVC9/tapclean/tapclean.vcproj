@@ -636,6 +636,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\paldevel.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\powerload.c"
 					>
 				</File>
