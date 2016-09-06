@@ -32,9 +32,9 @@
  * Header: Yes
  * Data: Continuous
  * Checksum: No
- * Post-data: Yes
- * Trailer: Yes
- * Trailer homogeneous: No
+ * Post-data: Yes (only bit 0 pulses accounted for: the rest is "flattened" during the cleaning stage)
+ * Trailer: No (post-data is forced into a homogeneous trailer during the cleaning stage)
+ * Trailer homogeneous: N/A
  */
 
 #include "../mydefs.h"
@@ -127,11 +127,11 @@ void paldevel_search (void)
 			/* Point to the first pulse of the first postdata byte */
 			eof = eod + BITSINABYTE;
 
-			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 			h = 0;
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
-					readttbit(eof + 1, lp, sp, tp) >= 0)
+					readttbit(eof + 1, lp, sp, tp) == 0)
 				eof++;
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
