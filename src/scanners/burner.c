@@ -64,7 +64,7 @@ void burner_search(void)
 	if(ft[BURNER].en==0x66)
 		ft[BURNER].en=LSbF;
 
-	sprintf(lin,"Burner variables found and set: pv=$%02X, sv=$%02X, en=%d", ft[BURNER].pv,ft[BURNER].sv,ft[BURNER].en);
+	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%d", ft[BURNER].pv,ft[BURNER].sv,ft[BURNER].en);
 	msgout(lin);
 
 	/*------------------------------------------------------------------------------- */
