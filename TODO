@@ -1,4 +1,7 @@
- - The corrupted bit of post-data in "PAL Developments Tape" should be 
+ - Barbarian II uses a variant of the Palace F1 loader with a different 
+   sync: the first of the four sync bytes changes for every file, so it's a 
+   good idea to just use sync bytes 2-4 for identification (SLC)
+ - The corrupted bit of post-data in "Digital Design Tape" should be 
    reconstructed as its absence in a cleaned TAP might be causing load to 
    fail in "Scooby Doo and Scrabby Doo" (Luigi)
  - The size of the trailing silence should be overridable as "Hunchback at the 
