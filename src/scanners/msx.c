@@ -176,9 +176,9 @@ void msx_search (int variant)
 
 
 	if (!quiet) {
-		msgout("  MSX tape ");
+		msgout("  MSX Tape ");
 		msgout(variant ? "Fast" : "Standard");
-  }
+	}
 
 	state = STATE_SEARCH_HEADER;	/* Initially search for a header */
 
