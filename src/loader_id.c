@@ -290,6 +290,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xD7483CDA, LID_CHUCKIEEGG},	/* Chuckie Egg */
 
 		{0x057A87A2, LID_ALTERDK},	/* Early Alternative Software loader */
+		{0xDA74865F, LID_ALTERDK},	/* Arcade Classics */
 
 		{0xD407EAA3, LID_POWERLOAD},	/* Power Load: Felix in the factory, Ghouls, Jet Power Jack, Stock Car */
 		{0xA217E2B1, LID_POWERLOAD},	/* Mr Wiz, Smuggler, U.K. Geography, World Geography */
@@ -308,7 +309,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x23EE788B, LID_CSPARKS},	/* Taskmaster */
 		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
 
-		{0x848FD0AF, LID_TRILOGIC},	/* Alternative releases: Double Dare, 
+		{0x848FD0AF, LID_TRILOGIC},	/* Additional releases: Double Dare, 
 						   Fireman Sam, Hellfire Attack, 
 						   Kentucky Racing, Merlin, Metranaut, 
 						   Strike Force, Superted */

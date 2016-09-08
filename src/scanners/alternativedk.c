@@ -97,13 +97,16 @@ void alternativedk_search (void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	for (pass = 1; pass <= 2; pass++) {
+	for (pass = 1; pass <= 3; pass++) {
 		switch (pass) {
 			case 1:
 				variant = ALTERDK_T1;
 				break;
 			case 2:
 				variant = ALTERDK_T2;
+				break;
+			case 3:
+				variant = ALTERDK_T3;
 				break;
 		}
 

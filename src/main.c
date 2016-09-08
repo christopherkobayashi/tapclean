@@ -306,6 +306,7 @@ struct fmt_t ft[120] = {
 	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,  0x44, 0xFF, 0x00, 25,  NA,    CSYES},
 	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64,0xB5, 0,    1,    5,   NA,    CSYES},
 	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36,0xA5, 0,    1,    5,   NA,    CSYES},
+	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x44, 0x88,0xAF, 0,    1,    5,   NA,    CSYES},
 	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400, NA,    CSYES},
 	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
 	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,  0x3C, 0xE3, 0xED, 64,  NA,    CSYES},
@@ -1569,6 +1570,8 @@ static void describe_file(int row)
 		case ALTERDK_T1:	alternativedk_describe(row);
 					break;
 		case ALTERDK_T2:	alternativedk_describe(row);
+					break;
+		case ALTERDK_T3:	alternativedk_describe(row);
 					break;
 		case POWERLOAD:		powerload_describe(row);
 					break;
