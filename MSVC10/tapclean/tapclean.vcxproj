@@ -156,6 +156,7 @@
     <ClCompile Include="..\..\src\scanners\creativesparks.c" />
     <ClCompile Include="..\..\src\scanners\creatures.c" />
     <ClCompile Include="..\..\src\scanners\cult.c" />
+    <ClCompile Include="..\..\src\scanners\ddesign.c" />
     <ClCompile Include="..\..\src\scanners\easytape.c" />
     <ClCompile Include="..\..\src\scanners\fastevil.c" />
     <ClCompile Include="..\..\src\scanners\fftape.c" />
@@ -167,7 +168,6 @@
     <ClCompile Include="..\..\src\scanners\oceannew3.c" />
     <ClCompile Include="..\..\src\scanners\oceannew4.c" />
     <ClCompile Include="..\..\src\scanners\odeload.c" />
-    <ClCompile Include="..\..\src\scanners\paldevel.c" />
     <ClCompile Include="..\..\src\scanners\powerload.c" />
     <ClCompile Include="..\..\src\scanners\rainbowarts_f1.c" />
     <ClCompile Include="..\..\src\scanners\rainbowarts_f2.c" />

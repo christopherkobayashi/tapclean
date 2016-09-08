@@ -240,6 +240,9 @@
     <ClCompile Include="..\..\src\scanners\cult.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\ddesign.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\easytape.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
@@ -271,9 +274,6 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\odeload.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\scanners\paldevel.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\powerload.c">

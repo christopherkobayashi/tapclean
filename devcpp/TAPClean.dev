@@ -1078,7 +1078,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit104]
-FileName=..\src\scanners\paldevel.c
+FileName=..\src\scanners\ddesign.c
 CompileCpp=0
 Folder=newscanners
 Compile=1

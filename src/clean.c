@@ -493,9 +493,9 @@ void clean_files(void)
 		if (blk[i]->lt == NOVA && blk[i + 1]->lt == GAP) {
 			for (j = blk[i + 1]->p1; j < (blk[i + 1]->p4) + 1; j++)
 				tap.tmem[j] = ft[NOVA].sp;
-		} else if (blk[i]->lt == PAL_DEVELOPMENTS && blk[i + 1]->lt == GAP) {
+		} else if (blk[i]->lt == DIGITAL_DESIGN && blk[i + 1]->lt == GAP) {
 			for (j = blk[i + 1]->p1; j < (blk[i + 1]->p4) + 1; j++)
-				tap.tmem[j] = ft[PAL_DEVELOPMENTS].sp;
+				tap.tmem[j] = ft[DIGITAL_DESIGN].sp;
 		}
 	}
 

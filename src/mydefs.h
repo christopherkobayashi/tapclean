@@ -115,7 +115,7 @@ enum {
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
 	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2,
 	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION, CREATURES, RAINBOW_ISLANDS,
-	OCNEW3, EASYTAPE, TURBO220, CSPARKS, PAL_DEVELOPMENTS, MSX_HEAD, MSX_DATA,
+	OCNEW3, EASYTAPE, TURBO220, CSPARKS, DIGITAL_DESIGN, MSX_HEAD, MSX_DATA,
 	MSX_HEAD_FAST, MSX_DATA_FAST
 };
 
@@ -308,6 +308,7 @@ enum {
 	nocreatures,
 	nocult,
 	nocyber,
+	noddesign,
 	noeasytape,
 	noenigma,
 	nofastevil,
@@ -333,7 +334,6 @@ enum {
 	nooceannew3,
 	nooceannew4,
 	noode,
-	nopaldevel,
 	nopalacef1,
 	nopalacef2,
 	nopav,

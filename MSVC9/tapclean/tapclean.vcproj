@@ -592,6 +592,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\ddesign.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\easytape.c"
 					>
 				</File>
@@ -633,10 +637,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\odeload.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\paldevel.c"
 					>
 				</File>
 				<File

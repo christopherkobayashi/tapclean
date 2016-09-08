@@ -20,7 +20,7 @@ v0.33
 	Improvement: The "Power Load" scanner now fully supports "Mr Wiz",
 	 "Smuggler", and "U.K. Geography" (Luigi)
 	Improvement: Sequence numbers are now 1-based (Luigi)
-	New: Added support for "PAL Developments Tape", which is a variant
+	New: Added support for "Digital Design Tape", which is a variant
 	 of the "Ash+Dave" loader (Luigi)
 
 v0.32
