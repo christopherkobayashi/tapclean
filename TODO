@@ -1,7 +1,9 @@
- - Galactic Games uses 0x50 as Wildload pilot on level files (SLC)
+ - Galactic Games is Wildload but uses 0x50 as pilot byte on level files (SLC)
  - Barbarian II uses a variant of the Palace F1 loader with a different 
-   sync: the first of the four sync bytes changes for every file, so it's a 
-   good idea to just use sync bytes 2-4 for identification (SLC)
+   sync train. Also the first of the four sync bytes changes for every 
+   file, so it's a good idea to just match sync bytes 2-4 for 
+   identification. Same for two Martech titles, one of which is
+   "Brian Jack's Superstar Challenge" and "Eddie Kidd Jump Challenge" (SLC)
  - The corrupted bit of post-data in "Digital Design Tape" should be 
    reconstructed as its absence in a cleaned TAP might be causing load to 
    fail in "Scooby Doo and Scrabby Doo" (Luigi)
