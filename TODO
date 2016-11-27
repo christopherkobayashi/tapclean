@@ -1,5 +1,6 @@
- - Galactic Games is Wildload but uses 0x50 as pilot byte on level files (SLC)
- - Barbarian II uses a variant of the Palace F1 loader with a different 
+ - The "Turrican" scanner reads the checksum as part of the data block (SLC)
+ - "Galactic Games" is Wildload but uses 0x50 as pilot byte on level files (SLC)
+ - "Barbarian II" uses a variant of the Palace F1 loader with a different 
    sync train. Also the first of the four sync bytes changes for every 
    file, so it's a good idea to just match sync bytes 2-4 for 
    identification. Same for two Martech titles, one of which is
