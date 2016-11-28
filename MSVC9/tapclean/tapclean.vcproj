@@ -520,10 +520,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\turrican.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\usgold.c"
 					>
 				</File>
@@ -705,6 +701,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\rackit.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\turrican.c"
 					>
 				</File>
 			</Filter>

@@ -24,6 +24,8 @@ v0.33
 	 of the "Ash+Dave" loader (Luigi)
 	New: Added support for "Alternative Software (DK) T3", used in
 	 "Arcade Classics" (Luigi)
+	Improvement: "Turrican" scanner rewritten in order to optionally
+	 decode header files and correctly read checkbytes (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)
