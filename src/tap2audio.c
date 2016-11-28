@@ -36,8 +36,8 @@
 
 #include "tap2audio.h"
 
-const char auoutname[] =	"out.au";
-const char wavoutname[] =	"out.wav";
+const char tap2audio_auoutname[] =	"out.au";
+const char tap2audio_wavoutname[] =	"out.wav";
 
 /**
  *	Internal usage functions
@@ -142,7 +142,7 @@ static int drawwavesine(int len, int amp, char signd, FILE *filep, unsigned long
  * 'sine' is boolean, if true then the wave is written as sine.
  */
 
-int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
+int tap2audio_au_write(unsigned char *tap, int taplen, const char *filename, char sine)
 {
 	int b, tapversion;
 	long i, lv, ccnt;
@@ -238,7 +238,7 @@ int au_write(unsigned char *tap, int taplen, const char *filename, char sine)
  *'sine' is boolean, if true then the wave is written as sine.
  */
 
-int wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
+int tap2audio_wav_write(unsigned char *tap, int taplen, const char *filename, char sine)
 {
 	long i, lv, ccnt;
 	int b, tapversion;

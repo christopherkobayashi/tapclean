@@ -35,9 +35,9 @@
  * These vars are defined in tap2audio.c. They shouldn't be accessible directly,
  * but by means of a function, in future.
  */
-extern const char auoutname[], wavoutname[];
+extern const char tap2audio_auoutname[], tap2audio_wavoutname[];
 
-int au_write(unsigned char *, int, const char *, char);
-int wav_write(unsigned char *, int, const char *, char);
+int tap2audio_au_write(unsigned char *, int, const char *, char);
+int tap2audio_wav_write(unsigned char *, int, const char *, char);
 
 #endif

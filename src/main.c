@@ -2198,8 +2198,8 @@ int main(int argc, char *argv[])
 						if (analyze()) {
 							printf("\n\nLoaded: %s", tap.name);
 							printf("\n%s...\n", opname);
-							au_write(tap.tmem, tap.len, auoutname, sine);
-							printf("\nSaved: %s", auoutname);
+							tap2audio_au_write(tap.tmem, tap.len, tap2audio_auoutname, sine);
+							printf("\nSaved: %s", tap2audio_auoutname);
 							msgout("\n");
 						}
 					}
@@ -2213,8 +2213,8 @@ int main(int argc, char *argv[])
 						if (analyze()) {
 							printf("\n\nLoaded: %s", tap.name);
 							printf("\n%s...\n", opname);
-							wav_write(tap.tmem, tap.len, wavoutname, sine);
-							printf("\nSaved: %s", wavoutname);
+							tap2audio_wav_write(tap.tmem, tap.len, tap2audio_wavoutname, sine);
+							printf("\nSaved: %s", tap2audio_wavoutname);
 							msgout("\n");
 						}
 					}
