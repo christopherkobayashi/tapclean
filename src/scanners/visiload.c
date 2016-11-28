@@ -410,7 +410,7 @@ void visiload_search(unsigned int cbm_data_crc)
 #endif
                      }
 
-                     crc = compute_crc32(modifier_block, NARCO_POLICE_MODIFIER_SZ);
+                     crc = crc32_compute_crc(modifier_block, NARCO_POLICE_MODIFIER_SZ);
 
                      switch (crc)
                      {

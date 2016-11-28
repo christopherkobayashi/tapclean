@@ -132,7 +132,7 @@ void gremlinf1_search (void)
 		 * At this stage the describe functions have not been invoked
 		 * yet, therefore we have to compute the CRC-32 on the fly.
 		 */
-		crc = compute_crc32(blk[ib]->dd, blk[ib]->cx);
+		crc = crc32_compute_crc(blk[ib]->dd, blk[ib]->cx);
 
 		/*
 		 * TODO: we should dynamically find the decrypt key by

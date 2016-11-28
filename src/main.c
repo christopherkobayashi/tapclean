@@ -488,7 +488,7 @@ static void unload_tap(void)
 static void cleanup_main(void)
 {
 	unload_tap();
-	free_crc_table();
+	crc32_free_crc_table();
 
 	/* deallocate ram from file database */
 	destroy_database();
@@ -1630,7 +1630,7 @@ static void describe_blocks(void)
 			/* make crc32 if the block has been data extracted. */
 
 			if (blk[i]->dd != NULL)
-				blk[i]->crc = compute_crc32(blk[i]->dd, blk[i]->cx);
+				blk[i]->crc = crc32_compute_crc(blk[i]->dd, blk[i]->cx);
 
 			re = blk[i]->rd_err;
 			tap.total_read_errors += re;
@@ -2023,7 +2023,7 @@ int main(int argc, char *argv[])
 		return -1;
 
 	/* Pre-calculate CRC table */
-	build_crc_table();
+	crc32_build_crc_table();
 
 	printf("\n----------------------------------------------------------------------\n");
 	printf("TAPClean "VERSION_STR" - "COPYRIGHT_STR" [Built "__DATE__" by "BUILDER_STR"]\n");

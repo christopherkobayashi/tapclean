@@ -392,7 +392,7 @@ void cbm_search(void)
 						for (j = 0; j < 192; j++)
 							cbm_header[j] = cbm_readbyte(sod + (j * PULSESINABYTE));
 
-						tap.cbmhcrc = compute_crc32(cbm_header, 192);
+						tap.cbmhcrc = crc32_compute_crc(cbm_header, 192);
 
 						cbm_decoded++;
 					}
@@ -416,7 +416,7 @@ void cbm_search(void)
 							cbm_program[cnt2++] = cbm_readbyte(di);
 						len = (eod - sod) / PULSESINABYTE;
 
-						tap.cbmcrc = compute_crc32(cbm_program, len);	/* store program crc globally */
+						tap.cbmcrc = crc32_compute_crc(cbm_program, len);	/* store program crc globally */
 						tap.cbmdatalen = len;
 
 						crcdone = 1;

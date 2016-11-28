@@ -31,10 +31,10 @@
  */
 
 
-#include "crc32.h"
-#include "main.h"
-
 #include <stdlib.h>
+
+#include "crc32.h"
+#include "main.h"	/* For msgout() */
 
 static unsigned int *crc_table;	 
 
@@ -43,7 +43,7 @@ static unsigned int *crc_table;
  * Initialize the CRC calculation table
  */
 
-int build_crc_table(void)
+int crc32_build_crc_table(void)
 {
 	int i, j;
 	unsigned int crc;
@@ -72,7 +72,7 @@ int build_crc_table(void)
  * Return the CRC32 for 'buffer' of length 'count' bytes.
  */
 
-unsigned /*long*/ int compute_crc32(unsigned char *buffer, int count)
+unsigned int crc32_compute_crc(unsigned char *buffer, int count)
 {
 	unsigned int t1, t2, crc = 0xFFFFFFFF;
 
@@ -92,7 +92,7 @@ unsigned /*long*/ int compute_crc32(unsigned char *buffer, int count)
  * Free the CRC table...
  */
 
-void free_crc_table(void)
+void crc32_free_crc_table(void)
 {
 	if (crc_table != NULL)
 		free(crc_table);
