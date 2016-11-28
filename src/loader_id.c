@@ -45,7 +45,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 {
 	int i, id;
 
-	unsigned /*long*/ int kcrc[][2] = {
+	static unsigned int kcrc[][2] = {
 		{0x261DBA0E, LID_FREE},
 		{0x8AAE883E, LID_FREE},
 		{0x2EF78649, LID_FREE},
@@ -314,7 +314,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 						   Kentucky Racing, Merlin, Metranaut, 
 						   Strike Force, Superted */
 
-		{0, 0}
+		{0, 0}				/* List terminator/cap */
 	};
 
 
@@ -336,53 +336,67 @@ int idloader(unsigned /*long*/ int crc, int len)
 			/* look for N... OVA */
 
 			if (cbm_program[i] == 0x0E &&
-				cbm_program[i + 1] == 0x0F &&
-				cbm_program[i + 2] == 0x16 &&
-				cbm_program[i + 3] == 0x01)
+					cbm_program[i + 1] == 0x0F &&
+					cbm_program[i + 2] == 0x16 &&
+					cbm_program[i + 3] == 0x01) {
 
 				id = LID_NOVA;
+
+				break;
+			}
 
 			/* look for N... OVA   (as ASCII) ie. Breakthru */
 
 			if (cbm_program[i] == 0x4E &&
-				cbm_program[i + 1] == 0x4F &&
-				cbm_program[i + 2] == 0x56 &&
-				cbm_program[i + 3] == 0x41)
+					cbm_program[i + 1] == 0x4F &&
+					cbm_program[i + 2] == 0x56 &&
+					cbm_program[i + 3] == 0x41) {
 
 				id = LID_NOVA;
+
+				break;
+			}
 
 			/* and look for C... YBER  (Cyberload) */
 
 			if (cbm_program[i] == 0x03 &&
-				cbm_program[i + 1] == 0x19 &&
-				cbm_program[i + 2] == 0x02 &&
-				cbm_program[i + 3] == 0x05 &&
-				cbm_program[i + 4] == 0x12)
+					cbm_program[i + 1] == 0x19 &&
+					cbm_program[i + 2] == 0x02 &&
+					cbm_program[i + 3] == 0x05 &&
+					cbm_program[i + 4] == 0x12) {
 
 				id = LID_CYBER;
-			
+
+				break;
+			}
+
 			/* and look for G... O AWAY  (Ocean) */
 
 			if (cbm_program[i] == 0x47 &&
-				cbm_program[i + 1] == 0x4F &&
-				cbm_program[i + 2] == 0x20 &&
-				cbm_program[i + 3] == 0x41 &&
-				cbm_program[i + 4] == 0x57)
+					cbm_program[i + 1] == 0x4F &&
+					cbm_program[i + 2] == 0x20 &&
+					cbm_program[i + 3] == 0x41 &&
+					cbm_program[i + 4] == 0x57) {
 
 				id = LID_OCEAN;
+
+				break;
+			}
 
 			/* look for S... NAKE (Snakeload 5.0 or 5.1) */
 
 			if (cbm_program[i] == 0x53 &&
-				cbm_program[i + 1] == 0x4E &&
-				cbm_program[i + 2] == 0x41 &&
-				cbm_program[i + 3] == 0x4B &&
-				cbm_program[i + 4] == 0x45)
+					cbm_program[i + 1] == 0x4E &&
+					cbm_program[i + 2] == 0x41 &&
+					cbm_program[i + 3] == 0x4B &&
+					cbm_program[i + 4] == 0x45) {
 
 				id = LID_SNAKE;
+
+				break;
+			}
 		}
 	}
 
 	return id;
 }
-
