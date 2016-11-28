@@ -87,12 +87,30 @@ int file_select (const struct dirent * entry)
 #endif
 
 /*
+ * creates a new node pointer, allocates its memory and initializes it.
+ * returns a pointer to the new node, it is the job of the calling function to
+ * connect the new node to a linked-list.
+ */
+
+struct node* make_node(const char *name)
+{
+	struct node *n;
+
+	n = (struct node*)malloc(sizeof(struct node));
+	n->name = (char*)malloc(strlen(name) + 1);
+	strcpy(n->name, name);
+	n->link = NULL;
+
+	return n;
+}
+
+/*
  * builds a linked-list of all directory names available under 'rootdir'...
  * returns a pointer to the linked-list of path names (root node).
  * Returns NULL on error.
  */
 
-struct node *get_dir_list(char *rootdir)
+struct node *filesearch_get_dir_list(char *rootdir)
 {
 	struct node *dirs, *c, *d;
 	char cwd[1024], temp[1024];
@@ -236,7 +254,7 @@ struct node *get_dir_list(char *rootdir)
  * returns a pointer to the linked-list of path names (root node).
  */
 
-struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
+struct node *filesearch_get_file_list(char *mask, struct node *dirs, int searchtype)
 {
 	struct node *files, *d, *f;
 	char temp[1024];
@@ -345,28 +363,10 @@ struct node *get_file_list(char *mask, struct node *dirs, int searchtype)
 }
 
 /*
- * creates a new node pointer, allocates its memory and initializes it.
- * returns a pointer to the new node, it is the job of the calling function to
- * connect the new node to a linked-list.
- */
-
-struct node* make_node(const char *name)
-{
-	struct node *n;
-
-	n = (struct node*)malloc(sizeof(struct node));
-	n->name = (char*)malloc(strlen(name) + 1);
-	strcpy(n->name, name);
-	n->link = NULL;
-
-	return n;
-}
-
-/*
  * display the current state of the list onscreen...
  */
 
-int show_list(struct node *r)
+int filesearch_show_list(struct node *r)
 {
 	struct node *c;
 	int totaldirs = 0;
@@ -393,7 +393,7 @@ int show_list(struct node *r)
  * returns 0 on success else 1.
  */
 
-int save_list(struct node *r, char *fname)
+int filesearch_save_list(struct node *r, char *fname)
 {
 	FILE *fp;
 	struct node *c;
@@ -401,7 +401,7 @@ int save_list(struct node *r, char *fname)
 
 	fp = fopen(fname, "w+t");
 	if (fp == NULL) {
-		msgout("\n\nError: save_list(): failed to create file.");
+		msgout("\n\nError: filesearch_save_list(): failed to create file.");
 		return 1;
 	}
 
@@ -423,7 +423,7 @@ int save_list(struct node *r, char *fname)
  *Frees memory for all nodes in a list starting with root node 'r'.
  */
 
-int free_list(struct node *r)
+int filesearch_free_list(struct node *r)
 {
 	struct node *c, *t;
 
@@ -446,7 +446,7 @@ int free_list(struct node *r)
  * note: the list is sorted by the full PATH not just filenames.
  */
 
-int sort_list(struct node *r)
+int filesearch_sort_list(struct node *r)
 {
 	int swaps;
 	struct node *n, *l1, *l2, *l3;
@@ -495,7 +495,7 @@ int sort_list(struct node *r)
  * Note: the ".\" or "./" prefixes could be removed after sorting.
  */
 
-void clip_list(struct node *r)
+void filesearch_clip_list(struct node *r)
 {
 	unsigned int i, k;
 	struct node *n;

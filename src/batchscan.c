@@ -106,15 +106,15 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
       
 	/* build dir & file lists... */
 
-	dl = get_dir_list(fullpath);
+	dl = filesearch_get_dir_list(fullpath);
 
 	if (includesubdirs == FALSE)
-		fl = get_file_list("*.tap", dl, ROOTONLY);
+		fl = filesearch_get_file_list("*.tap", dl, ROOTONLY);
 	else
-		fl = get_file_list("*.tap", dl, ROOTALL);
+		fl = filesearch_get_file_list("*.tap", dl, ROOTALL);
       
-	clip_list(fl);
-	sort_list(fl);  
+	filesearch_clip_list(fl);
+	filesearch_sort_list(fl);  
    
 	/* note: t=fl->link skips the 1st entry "root name". */
 
@@ -127,17 +127,17 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		total_taps++;
 	}
    
-	free_list(fl);
+	filesearch_free_list(fl);
 
 	/* keep DMP files at the very end of the list */
 
 	if (includesubdirs == FALSE)
-		fl = get_file_list("*.dmp", dl, ROOTONLY);
+		fl = filesearch_get_file_list("*.dmp", dl, ROOTONLY);
 	else
-		fl = get_file_list("*.dmp", dl, ROOTALL);
+		fl = filesearch_get_file_list("*.dmp", dl, ROOTALL);
       
-	clip_list(fl);
-	sort_list(fl);  
+	filesearch_clip_list(fl);
+	filesearch_sort_list(fl);  
    
 	/* note: t=fl->link skips the 1st entry "root name". */
 
@@ -150,9 +150,9 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		total_taps++;
 	}
    
-	free_list(fl);
+	filesearch_free_list(fl);
 
-	free_list(dl);
+	filesearch_free_list(dl);
    
 	if (total_taps == 0) {
 		msgout("\nError: No tape images were found.");

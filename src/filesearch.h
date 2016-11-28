@@ -23,25 +23,29 @@
  *
  */   
 
-
+#ifndef __FTFILESEARCH_H__
+#define __FTFILESEARCH_H__
 
 #define ROOTONLY	0
 #define ROOTALL		1
 
-
-struct node
-{
+struct node {
 	char *name;
 	struct node *link;
 };
-        
-struct node *make_node(const char *);
-struct node *get_dir_list(char *);
-struct node *get_file_list(char *, struct node *, int);
 
-int show_list(struct node *);
-int save_list(struct node *, char *);
-int free_list(struct node *);
-int sort_list(struct node *);
-void clip_list(struct node *);  
+/**
+ *	Prototypes
+ */
 
+struct node *filesearch_get_dir_list(char *);
+struct node *filesearch_get_file_list(char *, struct node *, int);
+
+int filesearch_free_list(struct node *);
+int filesearch_sort_list(struct node *);
+void filesearch_clip_list(struct node *);  
+
+int filesearch_show_list(struct node *);
+int filesearch_save_list(struct node *, char *);
+
+#endif
