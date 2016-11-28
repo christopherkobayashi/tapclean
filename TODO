@@ -1,9 +1,15 @@
+ - Avoid code repetition for PRG data extraction and checkbyte calculation (Luigi)
+ - Define a few MACROs for quicker access to data, e.g.:
+   #define HEADER_GET_LOAD_ADDRESS() (hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8))
+   #define HEADER_GET_END_ADDRESS() (hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8))
+   #define HEADER_GET_DATA_SIZE() (hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8))
  - The "Turrican" scanner reads the checksum as part of the data block (SLC)
+    Done.
  - "Galactic Games" is Wildload but uses 0x50 as pilot byte on level files (SLC)
- - "Barbarian II" uses a variant of the Palace F1 loader with a different 
+ - "Barbarian II" uses a variant of the "Palace F1" loader with a different 
    sync train. Also the first of the four sync bytes changes for every 
    file, so it's a good idea to just match sync bytes 2-4 for 
-   identification. Same for two Martech titles, one of which is
+   identification. Same for the following "Martech" titles: 
    "Brian Jack's Superstar Challenge" and "Eddie Kidd Jump Challenge" (SLC)
  - The corrupted bit of post-data in "Digital Design Tape" should be 
    reconstructed as its absence in a cleaned TAP might be causing load to 
