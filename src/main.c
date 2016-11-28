@@ -2041,7 +2041,7 @@ int main(int argc, char *argv[])
 	handle_cps();
 
 	if (preserveloadervars == TRUE)
-		switch (load_persistent_data ()) {
+		switch (persistence_load_loader_parameters ()) {
 			case PERS_OK:
 				printf ("\n\nLoader variables restored");
 				break;
@@ -2259,7 +2259,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (preserveloadervars == TRUE)
-		switch (save_persistent_data ()) {
+		switch (persistence_save_loader_parameters ()) {
 			case PERS_OK:
 				printf ("\n\nLoader variables stored");
 				break;

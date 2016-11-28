@@ -1,3 +1,11 @@
+/**
+ *	@file 	persistence.c
+ *	@brief	A module to reuse discovered loader parameters in subsequent scans.
+ *
+ *	This module persists discovered loader parameters in subsequent 
+ *  invokations of the application.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #ifdef _MSC_VER
@@ -37,7 +45,7 @@ static int wait_for_store_update_to_finish ()
 	return 0;
 }
 
-int load_persistent_data (void)
+int persistence_load_loader_parameters (void)
 {
 	FILE *pFile;
 	char  readbuffer[64];
@@ -100,7 +108,7 @@ int load_persistent_data (void)
 	return PERS_OK;
 }
 
-int save_persistent_data (void)
+int persistence_save_loader_parameters (void)
 {
 	FILE *pFile;
 	size_t i;
