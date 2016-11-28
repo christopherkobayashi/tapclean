@@ -239,6 +239,18 @@ int turrican_describe(int row)
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
 
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in bytes... */
+	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+	/* ... trailer in pulses */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
 	/* Read file type */
 	ftype = readttbyte(s, lp, sp, tp, en);
 	sprintf(lin,"\n - FILE type : $%02X", ftype);
@@ -364,18 +376,6 @@ int turrican_describe(int row)
 		blk[row]->cs_act = b  & 0xFF;
 		blk[row]->rd_err = rd_err;
 	}
-
-	/* Compute pilot & trailer lengths */
-
-	/* pilot is in bytes... */
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
-
-	/* ... trailer in pulses */
-	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
-
-	/* if there IS pilot then disclude the sync sequence */
-	if (blk[row]->pilot_len > 0)
-		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	return(rd_err);
 }
