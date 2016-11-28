@@ -2565,7 +2565,7 @@ int load_tap(char *name)
 			return 0;
 		}
 
-		tap.len = convert_dc2n(input_buffer, output_buffer, (int)flen);
+		tap.len = dc2nconv_to_tap(input_buffer, output_buffer, (int)flen);
 		tap.tmem = output_buffer;
 		free (input_buffer);
 	} else {

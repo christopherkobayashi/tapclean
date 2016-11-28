@@ -1,6 +1,6 @@
 /**
  *	@file 	dc2nconv.c
- *	@brief	Conversion routines to handle DC2N DMP files.
+ *	@brief	Routines to convert DC2N DMP files to TAP in memory.
  */
 
 #include "mydefs.h"
@@ -180,7 +180,7 @@ unsigned long downsample_c16_ntsc (unsigned long utime)
  * @return Amount of useful bytes in the output buffer
  */
 
-int convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, int flen)
+int dc2nconv_to_tap(unsigned char *input_buffer, unsigned char *output_buffer, int flen)
 {
 	int olen;
 	int i;
@@ -212,8 +212,7 @@ int convert_dc2n(unsigned char *input_buffer, unsigned char *output_buffer, int 
 	longpulse = 0;
 
 #ifdef C16_TAPE_RAW_SUPPORT
-	switch (th->platform)
-	{
+	switch (th->platform) {
 		case TAP_FORMAT_PLATFORM_C64:
 			if (th->video_standard == TAP_FORMAT_VIDEO_PAL)
 			        downsample = downsample_c64_pal;
