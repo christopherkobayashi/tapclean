@@ -57,6 +57,7 @@ int add_read_error(int);
 
 void msgout(char *);
 int find_seq(int *, int, int *, int);
+void getfilename(char *, char *);
 char* change_file_extention(char *, char *, int);
 char* pet2text(char *, char *);
 void fname_text(char *);

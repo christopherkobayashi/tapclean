@@ -2523,8 +2523,6 @@ int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsi
  * @return 0 on error.
  */
 
-static void getfilename(char *, char *);
-
 int load_tap(char *name)
 {
 	FILE *fp;
