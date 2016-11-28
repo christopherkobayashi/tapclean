@@ -22,7 +22,7 @@
 
 struct blk_t *blk[BLKMAX];	/*!< Database of all found entities */
 struct prg_t prg[BLKMAX];	/*!< Database of all extracted files (prg's) */
-int dbase_is_full = FALSE;	/*!< Flag that indicates database capacity 
+int database_is_full = FALSE;	/*!< Flag that indicates database capacity 
 				     reached */
 
 /**
@@ -34,7 +34,7 @@ int dbase_is_full = FALSE;	/*!< Flag that indicates database capacity
  *	@return FALSE on memory allocation failure
  */
  
-int create_database(void)
+int database_create_blk_db(void)
 {
 	int i;
 
@@ -42,7 +42,7 @@ int create_database(void)
 		blk[i] = (struct blk_t*)malloc(sizeof(struct blk_t));
 		if (blk[i] == NULL) {
 			printf("\nError: malloc failure whilst creating file database.");
-			destroy_database(); /* Free any already allocated resource */
+			database_destroy_blk_db(); /* Free any already allocated resource */
 			return FALSE;
 		}
 
@@ -61,7 +61,7 @@ int create_database(void)
  *	@return none
  */
  
-void reset_database(void)
+void database_reset_blk_db(void)
 {
 	int i;
 
@@ -115,7 +115,7 @@ void reset_database(void)
  *	@return DBFULL on database full
  */
  
-int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
+int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 {
 	int i, slot, e1, e2;
 
@@ -143,10 +143,10 @@ int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 			slot = i;
 
 		if (slot == BLKMAX-1) {	/* only clear slot is the last one? (the terminator) */
-			if (dbase_is_full == FALSE) {	/* we only need give the error once */
+			if (database_is_full == FALSE) {	/* we only need give the error once */
 				if (!batchmode)		/* dont bother with the warning in batch mode.. */
 					msgout("\n\nWarning: FT's database is full...\nthe report will not be complete.\nTry optimizing.\n\n");
-				dbase_is_full = TRUE;
+				database_is_full = TRUE;
 			}
 			return DBFULL;
 		} else {
@@ -200,9 +200,9 @@ int addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
  *	@return DBFULL on database full
  */
  
-int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
+int database_add_blk_def(int lt, int sof, int sod, int eod, int eof, int xi)
 {
-	return addblockdefex(lt, sof, sod, eod, eof, xi, 0);
+	return database_add_blk_def_ex(lt, sof, sod, eod, eof, xi, 0);
 }
 
 /**
@@ -213,7 +213,7 @@ int addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)
  *	@return none
  */
 
-void sort_blocks(void)
+void database_sort_blks(void)
 {
 	int i, swaps,size;
 	struct blk_t *tmp;
@@ -244,7 +244,7 @@ void sort_blocks(void)
  * Note : The database MUST be re-sorted after a GAP is added!.
  */
 
-void scan_gaps(void)
+void database_scan_gaps(void)
 {
 	int i, p1, p2, sz;
 
@@ -253,8 +253,8 @@ void scan_gaps(void)
 
 	if (p1 < p2) {
 		sz = p2 - p1;
-		addblockdef(GAP, p1, 0, 0, p2 - 1, sz);
-		sort_blocks();
+		database_add_blk_def(GAP, p1, 0, 0, p2 - 1, sz);
+		database_sort_blks();
 	}
 
 	/* double dragon sticks in this loop */
@@ -265,8 +265,8 @@ void scan_gaps(void)
 		if (p1 < (p2 - 1)) {
 			sz = (p2 - 1) - p1;
 			if (sz > 0) {
-				addblockdef(GAP, p1 + 1, 0, 0, p2 - 1, sz);
-				sort_blocks();
+				database_add_blk_def(GAP, p1 + 1, 0, 0, p2 - 1, sz);
+				database_sort_blks();
 			}
 		}
 	}
@@ -275,8 +275,8 @@ void scan_gaps(void)
 	p2 = tap.len - 1;
 	if (p1 < p2) {
 		sz = p2 - p1;
-		addblockdef(GAP, p1 + 1, 0, 0, p2, sz);
-		sort_blocks();
+		database_add_blk_def(GAP, p1 + 1, 0, 0, p2, sz);
+		database_sort_blks();
 	}
 }
 
@@ -286,7 +286,7 @@ void scan_gaps(void)
  * Returns the number found.
  */
 
-int count_bootparts(void)
+int database_count_bootparts(void)
 {
 	int tblk[BLKMAX];
 	int i, j, bootparts;
@@ -317,7 +317,7 @@ int count_bootparts(void)
  * entry 'slot'.
  */
 
-int count_unopt_pulses(int slot)
+int database_count_unopt_pulses(int slot)
 {
 	int i, t, b, imperfect;
 	int s, e;
@@ -354,13 +354,13 @@ int count_unopt_pulses(int slot)
  * Return a count of files in the database that are 100% optimized...
  */
 
-int count_opt_files(void)
+int database_count_opt_blks(void)
 {
 	int i, n;
 
 	for (n = 0, i = 0; blk[i]->lt != LT_NONE; i++) {
 		if (blk[i]->lt > PAUSE) {
-			if (count_unopt_pulses(i) == 0)
+			if (database_count_unopt_pulses(i) == 0)
 				n++;
 		}
 	}
@@ -374,7 +374,7 @@ int count_opt_files(void)
  * This function counts consecutive v1's as a single pause.
  */
 
-int count_pauses(void)
+int database_count_pauses(void)
 {
 	int i, n;
 
@@ -395,7 +395,7 @@ int count_pauses(void)
  * Return the number of pulses accounted for in total across all known files.
  */
 
-int count_rpulses(void)
+int database_count_recognized_pulses(void)
 {
 	int i, tot;
 
@@ -420,7 +420,7 @@ int count_rpulses(void)
  * Returns the quantity of 'has checksum and its OK' files in the database.
  */
 
-int count_good_checksums(void)
+int database_count_good_checkbytes(void)
 {
 	int i, c;
 
@@ -438,7 +438,7 @@ int count_good_checksums(void)
  * Add together all data file CRC32's
  */
 
-int compute_overall_crc(void)
+int database_compute_overall_crc(void)
 {
 	int i, tot = 0;
 
@@ -456,7 +456,7 @@ int compute_overall_crc(void)
  *	@return none
  */
  
-void dump_database(void)
+void database_dump_blk_db(void)
 {
 	int i, t;
 
@@ -471,14 +471,14 @@ void dump_database(void)
  *	Deallocate file database from RAM
  *
  *	A check for non-NULL is done, in case we are freeing resources
- *	after a malloc failure in create_database() (clean job).
+ *	after a malloc failure in database_create_blk_db() (clean job).
  *
  *	@param void
  *
  *	@return none
  */
  
-void destroy_database(void)
+void database_destroy_blk_db(void)
 {
 	int i;
 
@@ -497,7 +497,7 @@ void destroy_database(void)
  * as a single PRG. (neighbour = data addresses run consecutively).
  */
 
-void make_prgs(void)
+void database_make_prgs(void)
 {
 	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
 	unsigned char *tmp, done;
@@ -513,7 +513,7 @@ void make_prgs(void)
 	pt[j] = -1;			/* terminator */
       
 	/* Clear the prg table... */
-	reset_prg_database();
+	database_reset_prg_db();
 
 	tmp = (unsigned char*)malloc(65536 * 2);	/* create buffer for unifications */
 	j = 0;						/* j steps through the finished prg's */
@@ -598,7 +598,7 @@ void make_prgs(void)
  * Returns the number of files saved.
  */
 
-int save_prgs(void)
+int database_save_prgs(void)
 {
 	int i;
 	FILE *fp;    
@@ -669,7 +669,7 @@ int save_prgs(void)
 }
 
 /* empty the prg datbase...  */
-void reset_prg_database(void)
+void database_reset_prg_db(void)
 {
 	int i;
 

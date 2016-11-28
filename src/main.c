@@ -178,8 +178,6 @@ int quiet = FALSE;		/* set 1 to stop the loader search routines from producing o
 				/* ie. "Scanning: Freeload". */
 				/* i set it (1) when (re)searching during optimization. */
 
-//int dbase_is_full = 0;	/* used by 'addblockdef' to indicate database capacity reached. */
-
 long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
 
 
@@ -477,8 +475,8 @@ static void unload_tap(void)
 	tap.tst_cs = 0;
 	tap.tst_rd = 0;
 
-	reset_database();
-	reset_prg_database();
+	database_reset_blk_db();
+	database_reset_prg_db();
 }
 
 /*
@@ -491,7 +489,7 @@ static void cleanup_main(void)
 	crc32_free_crc_table();
 
 	/* deallocate ram from file database */
-	destroy_database();
+	database_destroy_blk_db();
 }
 
 /*
@@ -809,7 +807,7 @@ static void handle_cps(void)
  * Note: This function calls all 'loadername_search' routines and as a result it
  *       fills out only about half of the fields in the blk[] database, they are...
  *
- *       lt, p1, p2, p3, p4, xi (ie, all fields supported by 'addblockdef()').
+ *       lt, p1, p2, p3, p4, xi (ie, all fields supported by 'database_add_blk_def()').
  *
  *       the remaining fields (below) are filled out by 'describe_blocks()' which
  *       calls all 'loadername_decribe()' routines for the particular format (lt).
@@ -821,13 +819,13 @@ static void search_tap(void)
 {
 	long i;
 
-	dbase_is_full = FALSE;	/* enable the "database full" warning. */
-				/* note: addblockdef sets it 1 when full. */
+	database_is_full = FALSE;	/* enable the "database full" warning. */
+				/* note: database_add_blk_def sets it 1 when full. */
 
 	msgout("\nScanning...");
 
 	if (tap.changed) {
-		reset_database();
+		database_reset_blk_db();
 
 		/* initialize the read error table */
 
@@ -855,51 +853,51 @@ static void search_tap(void)
 		}
 
 		if (noid == FALSE) {	/* scanning shortcuts enabled?  */
-			if (tap.cbmid == LID_T250 	&& ldrswt[noturbo].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_T250 	&& ldrswt[noturbo].state == FALSE && !database_is_full && !aborted)
 				turbotape_search();
 
-			if (tap.cbmid == LID_FREE 	&& ldrswt[nofree ].state== FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FREE 	&& ldrswt[nofree ].state== FALSE && !database_is_full && !aborted)
 				freeload_search();
 
-			if (tap.cbmid == LID_ODE 	&& ldrswt[noode ].state== FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ODE 	&& ldrswt[noode ].state== FALSE && !database_is_full && !aborted)
 				odeload_search();
 
-			if (tap.cbmid == LID_NOVA 	&& ldrswt[nonova ].state== FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_NOVA 	&& ldrswt[nonova ].state== FALSE && !database_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (tap.cbmid == LID_BLEEP 	&& ldrswt[nobleep].state == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_BLEEP 	&& ldrswt[nobleep].state == FALSE && !database_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (tap.cbmid == LID_OCEAN 	&& ldrswt[noocean].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCEAN 	&& ldrswt[noocean].state == FALSE && !database_is_full && !aborted)
 				ocean_search();
 
-			if (tap.cbmid == LID_CYBER 	&& ldrswt[nocyber].state == FALSE &&!dbase_is_full) {
+			if (tap.cbmid == LID_CYBER 	&& ldrswt[nocyber].state == FALSE &&!database_is_full) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (tap.cbmid == LID_USG 	&& ldrswt[nousgold	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_USG 	&& ldrswt[nousgold	].state == FALSE && !database_is_full && !aborted)
 				usgold_search();
 
-			if (tap.cbmid == LID_ACE 	&& ldrswt[noaces 	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ACE 	&& ldrswt[noaces 	].state == FALSE && !database_is_full && !aborted)
 				aces_search();
 
-			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].state == FALSE && !database_is_full && !aborted)
 				micro_search();
 
-			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].state == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].state == FALSE && !dbase_is_full)
+			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].state == FALSE && !database_is_full)
 				chr_search();
 
-			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].state == FALSE && !database_is_full && !aborted)
 				burner_search();
 
 			/* if it's a visiload then choose correct type now... */
@@ -917,136 +915,136 @@ static void search_tap(void)
 				visi_type = VISI_T4;
 
 			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4) {
-				if (ldrswt[novisi].state == FALSE && !dbase_is_full && !aborted)
+				if (ldrswt[novisi].state == FALSE && !database_is_full && !aborted)
 					visiload_search(tap.cbmcrc);
 			}
 
-			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].state == FALSE && !database_is_full && !aborted)
 				wild_search();
 
-			if (tap.cbmid == LID_HIT 	&& ldrswt[nohit     ].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_HIT 	&& ldrswt[nohit     ].state == FALSE && !database_is_full && !aborted)
 				hitload_search();
 
-			if (tap.cbmid == LID_RACK 	&& ldrswt[norackit	].state	== FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RACK 	&& ldrswt[norackit	].state	== FALSE && !database_is_full && !aborted)
 				rackit_search();
 
-			if (tap.cbmid == LID_SPAV 	&& ldrswt[nospav	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SPAV 	&& ldrswt[nospav	].state == FALSE && !database_is_full && !aborted)
 				superpav_search();
 
-			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].state == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].state == FALSE && !database_is_full && !aborted) {
 				anirog_search();
 				freeload_search();
 			}
 
-			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].state == FALSE && !database_is_full && !aborted)
 				supertape_search();
 
-			if (tap.cbmid == LID_FIRE 	&& ldrswt[nofire	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FIRE 	&& ldrswt[nofire	].state == FALSE && !database_is_full && !aborted)
 				firebird_search();
 
-			if (tap.cbmid == LID_PAV 	&& ldrswt[nopav		].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_PAV 	&& ldrswt[nopav		].state == FALSE && !database_is_full && !aborted)
 				pav_search();
 
-			if (tap.cbmid == LID_IK 	&& ldrswt[noik		].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_IK 	&& ldrswt[noik		].state == FALSE && !database_is_full && !aborted)
 				ik_search();
 
-			if (tap.cbmid == LID_FLASH 	&& ldrswt[noflash	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FLASH 	&& ldrswt[noflash	].state == FALSE && !database_is_full && !aborted)
 				flashload_search();
 
-			if (tap.cbmid == LID_VIRG 	&& ldrswt[novirgin	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_VIRG 	&& ldrswt[novirgin	].state == FALSE && !database_is_full && !aborted)
 				virgin_search();
 
-			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].state == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].state == FALSE && !database_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].state == FALSE && !database_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].state == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
 
-			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].state == FALSE && !dbase_is_full && !aborted) {
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].state == FALSE && !database_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].state == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
 
-			if (tap.cbmid == LID_ATLAN	&& ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ATLAN	&& ldrswt[noatlantis	].state == FALSE && !database_is_full && !aborted)
 				atlantis_search();
 
-			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].state == FALSE && !database_is_full && !aborted)
 				audiogenic_search();
 
-			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].state == FALSE && !database_is_full && !aborted)
 				cult_search();
 
-			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].state == FALSE && !database_is_full && !aborted)
 				accolade_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf1	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf1	].state == FALSE && !database_is_full && !aborted)
 				rainbowf1_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf2	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf2	].state == FALSE && !database_is_full && !aborted)
 				rainbowf2_search();
 
-			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].state == FALSE && !database_is_full && !aborted)
 				burnervar_search();
 
-			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew4	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew4	].state == FALSE && !database_is_full && !aborted)
 				oceannew4_search();
 
-			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !database_is_full && !aborted)
 				t108DE0A5_search();
 
-			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !database_is_full && !aborted)
 				freeslow_search();
 
-			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].state == FALSE && !database_is_full && !aborted)
 				goforgold_search();
 
-			if (tap.cbmid == LID_FASTEVIL	&& ldrswt[nofastevil	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FASTEVIL	&& ldrswt[nofastevil	].state == FALSE && !database_is_full && !aborted)
 				fastevil_search();
 
-			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].state == FALSE && !database_is_full && !aborted)
 				fftape_search();
 
-			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].state == FALSE && !database_is_full && !aborted)
 				testape_search();
 
-			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].state == FALSE && !database_is_full && !aborted)
 				tequila_search();
 
-			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].state == FALSE  && !database_is_full && !aborted)
 				alternativesw_search();
 
-			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].state == FALSE && !database_is_full && !aborted)
 				chuckieegg_search();
 
-			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].state == FALSE  && !database_is_full && !aborted)
 				alternativedk_search();
 
-			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].state == FALSE  && !database_is_full && !aborted)
 				powerload_search();
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].state == FALSE  && !database_is_full && !aborted)
 				gremlinf2_search();
 
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].state == FALSE  && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].state == FALSE  && !database_is_full && !aborted)
 				gremlinf1_search();
 
-			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].state == FALSE && !database_is_full && !aborted)
 				easytape_search();
 
-			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].state == FALSE && !database_is_full && !aborted)
 				creativesparks_search();
 
-			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].state == FALSE && !dbase_is_full && !aborted)
+			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].state == FALSE && !database_is_full && !aborted)
 				trilogic_search();
 
 			/*
@@ -1060,19 +1058,19 @@ static void search_tap(void)
 		/* Scan the lot.. (if shortcuts are disabled or no loader ID was found) */
 
 		if ((noid == FALSE && tap.cbmid == 0) || (noid == TRUE)) {
-			if (ldrswt[noturbo	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturbo	].state == FALSE && !database_is_full && !aborted)
 				turbotape_search();
 
-			if (ldrswt[norislands	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norislands	].state == FALSE && !database_is_full && !aborted)
 				rainbowislands_search();
 
-			if (ldrswt[nofree	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofree	].state == FALSE && !database_is_full && !aborted)
 				freeload_search();
 
-			if (ldrswt[noode	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noode	].state == FALSE && !database_is_full && !aborted)
 				odeload_search();
 
-			if (ldrswt[nocult	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nocult	].state == FALSE && !database_is_full && !aborted)
 				cult_search();
 
 			/*
@@ -1082,164 +1080,164 @@ static void search_tap(void)
 			 * higher than ocean).
 			 */
 
-			if (ldrswt[nosnake50	].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nosnake50	].state == FALSE && !database_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (ldrswt[nosnake51	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nosnake51	].state == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
 
-			if (ldrswt[nonova	].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nonova	].state == FALSE && !database_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (ldrswt[nobleep	].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nobleep	].state == FALSE && !database_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (ldrswt[noocean	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noocean	].state == FALSE && !database_is_full && !aborted)
 				ocean_search();
 
-			if (ldrswt[nocyber	].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nocyber	].state == FALSE && !database_is_full && !aborted) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (ldrswt[nousgold	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nousgold	].state == FALSE && !database_is_full && !aborted)
 				usgold_search();
 
-			if (ldrswt[noaces	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaces	].state == FALSE && !database_is_full && !aborted)
 				aces_search();
 
-			if (ldrswt[nomicro	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nomicro	].state == FALSE && !database_is_full && !aborted)
 				micro_search();
 
-			if (ldrswt[noraster	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noraster	].state == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (ldrswt[nochr	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nochr	].state == FALSE && !database_is_full && !aborted)
 				chr_search();
 
-			if (ldrswt[noburner	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noburner	].state == FALSE && !database_is_full && !aborted)
 				burner_search();
 
-			if (ldrswt[novisi	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novisi	].state == FALSE && !database_is_full && !aborted)
 				visiload_search(tap.cbmcrc);
 
-			if (ldrswt[nowild	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nowild	].state == FALSE && !database_is_full && !aborted)
 				wild_search();
 
-			if (ldrswt[nohit	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohit	].state == FALSE && !database_is_full && !aborted)
 				hitload_search();
 
-			if (ldrswt[norackit	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norackit	].state == FALSE && !database_is_full && !aborted)
 				rackit_search();
 
-			if (ldrswt[nospav	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nospav	].state == FALSE && !database_is_full && !aborted)
 				superpav_search();
 
-			if (ldrswt[noanirog	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noanirog	].state == FALSE && !database_is_full && !aborted)
 				anirog_search();
 
-			if (ldrswt[nosuper	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nosuper	].state == FALSE && !database_is_full && !aborted)
 				supertape_search();
 
-			if (ldrswt[nofire	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofire	].state == FALSE && !database_is_full && !aborted)
 				firebird_search();
 
-			if (ldrswt[nopav	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopav	].state == FALSE && !database_is_full && !aborted)
 				pav_search();
 
-			if (ldrswt[noik		].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noik		].state == FALSE && !database_is_full && !aborted)
 				ik_search();
 
-			if (ldrswt[noturr	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturr	].state == FALSE && !database_is_full && !aborted)
 				turrican_search();
 
-			if (ldrswt[noseuck	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noseuck	].state == FALSE && !database_is_full && !aborted)
 				seuck1_search();
 
-			if (ldrswt[nojet	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nojet	].state == FALSE && !database_is_full && !aborted)
 				jetload_search();
 
-			if (ldrswt[noflash	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noflash	].state == FALSE && !database_is_full && !aborted)
 				flashload_search();
 
-			if (ldrswt[novirgin	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[novirgin	].state == FALSE && !database_is_full && !aborted)
 				virgin_search();
 
-			if (ldrswt[nohitec	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nohitec	].state == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (ldrswt[notdif2	].state == FALSE && !dbase_is_full && !aborted) /* check f2 first (luigi) */
+			if (ldrswt[notdif2	].state == FALSE && !database_is_full && !aborted) /* check f2 first (luigi) */
 				tdif2_search();
 
-			if (ldrswt[notdif1	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[notdif1	].state == FALSE && !database_is_full && !aborted)
 				tdi_search();
 
-			if (ldrswt[nooceannew1t1].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew1t1].state == FALSE && !database_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (ldrswt[nooceannew1t2].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew1t2].state == FALSE && !database_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (ldrswt[nooceannew2	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew2	].state == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
 
-			if (ldrswt[noatlantis	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noatlantis	].state == FALSE && !database_is_full && !aborted)
 				atlantis_search();
 
-			if (ldrswt[nopalacef1	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopalacef1	].state == FALSE && !database_is_full && !aborted)
 				palacef1_search();
 
-			if (ldrswt[nopalacef2	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nopalacef2	].state == FALSE && !database_is_full && !aborted)
 				palacef2_search();
 
-			if (ldrswt[noenigma	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noenigma	].state == FALSE && !database_is_full && !aborted)
 				enigma_search();
 
-			if (ldrswt[noaudiogenic	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaudiogenic	].state == FALSE && !database_is_full && !aborted)
 				audiogenic_search();
 
-			if (ldrswt[noaliensy	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaliensy	].state == FALSE && !database_is_full && !aborted)
 				aliensyndrome_search();
 
-			if (ldrswt[noaccolade	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noaccolade	].state == FALSE && !database_is_full && !aborted)
 				accolade_search();
 
-			if (ldrswt[noalterwg	].state	== FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noalterwg	].state	== FALSE && !database_is_full && !aborted)
 				alternativewg_search();
 
-			if (ldrswt[norainbowf1	].state	== FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norainbowf1	].state	== FALSE && !database_is_full && !aborted)
 				rainbowf1_search();
 
-			if (ldrswt[norainbowf2	].state	== FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[norainbowf2	].state	== FALSE && !database_is_full && !aborted)
 				rainbowf2_search();
 
-			if (ldrswt[noburnervar	].state	== FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noburnervar	].state	== FALSE && !database_is_full && !aborted)
 				burnervar_search();
 
-			if (ldrswt[nooceannew4	].state	== FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew4	].state	== FALSE && !database_is_full && !aborted)
 				oceannew4_search();
 
-			if (ldrswt[nobiturbo	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nobiturbo	].state == FALSE && !database_is_full && !aborted)
 				biturbo_search();
 
-			if (ldrswt[no108DE0A5	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[no108DE0A5	].state == FALSE && !database_is_full && !aborted)
 				t108DE0A5_search();
 
-			if (ldrswt[noar		].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noar		].state == FALSE && !database_is_full && !aborted)
 				ar_search();
 
-			if (ldrswt[noashdave	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noashdave	].state == FALSE && !database_is_full && !aborted)
 				ashdave_search();
 
-			if (ldrswt[nofrslow	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nofrslow	].state == FALSE && !database_is_full && !aborted)
 				freeslow_search();
 
 			/*
@@ -1249,23 +1247,23 @@ static void search_tap(void)
 			 * where these are in use. Hence the scans are here for the time being. 
 			 */
 
-			if (ldrswt[noamaction	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noamaction	].state == FALSE && !database_is_full && !aborted)
 				amaction_search();
 
-			if (ldrswt[nocreatures	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nocreatures	].state == FALSE && !database_is_full && !aborted)
 				creatures_search();
 
 			// Enabled due to "Catalypse" (side 1/2)
-			if (ldrswt[notestape	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[notestape	].state == FALSE && !database_is_full && !aborted)
 				testape_search();
 
-			if (ldrswt[nooceannew3	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[nooceannew3	].state == FALSE && !database_is_full && !aborted)
 				oceannew3_search();
 
-			if (ldrswt[noddesign	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noddesign	].state == FALSE && !database_is_full && !aborted)
 				ddesign_search();
 
-			if (ldrswt[nomsx	].state == FALSE && !dbase_is_full && !aborted) {
+			if (ldrswt[nomsx	].state == FALSE && !database_is_full && !aborted) {
 				msx_search(0);	/* Standard */
 				msx_search(1);	/* Fast */
 			}
@@ -1277,10 +1275,10 @@ static void search_tap(void)
 			 * compilations.
 			 */
 
-			if (ldrswt[noeasytape	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noeasytape	].state == FALSE && !database_is_full && !aborted)
 				easytape_search();
 
-			if (ldrswt[noturbo220	].state == FALSE && !dbase_is_full && !aborted)
+			if (ldrswt[noturbo220	].state == FALSE && !database_is_full && !aborted)
 				turbo220_search();
 
 			/*
@@ -1288,31 +1286,31 @@ static void search_tap(void)
 			 * their signature is found in CBM Data block.
 			 */
 
-			//if (ldrswt[notrilogic	].state	== FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[notrilogic	].state	== FALSE && !database_is_full && !aborted)
 			//	trilogic_search();
 
-			//if (ldrswt[nofftape	].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nofftape	].state == FALSE && !database_is_full && !aborted)
 			//	fftape_search();
 
-			//if (ldrswt[notequila	].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[notequila	].state == FALSE && !database_is_full && !aborted)
 			//	tequila_search();
 
-			//if (ldrswt[noaltersw	].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[noaltersw	].state == FALSE  && !database_is_full && !aborted)
 			//	alternativesw_search();
 
-			//if (ldrswt[noalterdk	].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[noalterdk	].state == FALSE  && !database_is_full && !aborted)
 			//	alternativedk_search();
 
-			//if (ldrswt[nopower	].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[nopower	].state == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();
 
-			//if (ldrswt[nogremlinf1].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[nogremlinf1].state == FALSE  && !database_is_full && !aborted)
 			//	gremlinf1_search();
 
-			//if (ldrswt[nogremlinf2].state == FALSE  && !dbase_is_full && !aborted)
+			//if (ldrswt[nogremlinf2].state == FALSE  && !database_is_full && !aborted)
 			//	gremlinf2_search();
 
-			//if (ldrswt[nocsparks	].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nocsparks	].state == FALSE && !database_is_full && !aborted)
 			//	creativesparks_search();
 
 			/*
@@ -1323,19 +1321,19 @@ static void search_tap(void)
 			 * is found in CBM Data block.
 			 */
 
-			//if (ldrswt[nogoforgold	].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nogoforgold	].state == FALSE && !database_is_full && !aborted)
 			//	goforgold_search();
 
-			//if (ldrswt[nofastevil		].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nofastevil		].state == FALSE && !database_is_full && !aborted)
 			//	fastevil_search();
 
-			//if (ldrswt[nochuckie		].state == FALSE && !dbase_is_full && !aborted)
+			//if (ldrswt[nochuckie		].state == FALSE && !database_is_full && !aborted)
 			//	chuckieegg_search();
 		}
 
-		sort_blocks();	/* sort the blocks into order of appearance */
-		scan_gaps();	/* add any gaps to the block list */
-		sort_blocks();	/* sort the blocks into order of appearance */
+		database_sort_blks();	/* sort the blocks into order of appearance */
+		database_scan_gaps();	/* add any gaps to the block list */
+		database_sort_blks();	/* sort the blocks into order of appearance */
 
 		tap.changed = 0;	/* important to clear this. */
 
@@ -1849,7 +1847,7 @@ static void print_results(char *buf)
 	strcat(buf, lin);
 	sprintf(lin, "\nData Files  : %d", tap.total_data_files);
 	strcat(buf, lin);
-	sprintf(lin, "\nPauses      : %d", count_pauses());
+	sprintf(lin, "\nPauses      : %d", database_count_pauses());
 	strcat(buf, lin);
 	sprintf(lin, "\nGaps        : %d", tap.total_gaps);
 	strcat(buf, lin);
@@ -1962,7 +1960,7 @@ static void print_database(char *buf, size_t bufsize)
 
 			sprintf(lin, "\nRead Errors: %d", blk[i]->rd_err);
 			strncat(buf, lin, bufsize - strlen(buf) - 1);
-			sprintf(lin, "\nUnoptimized Pulses: %d", count_unopt_pulses(i));
+			sprintf(lin, "\nUnoptimized Pulses: %d", database_count_unopt_pulses(i));
 			strncat(buf, lin, bufsize - strlen(buf) - 1);
 			sprintf(lin, "\nCRC32: %08X", blk[i]->crc);
 			strncat(buf, lin, bufsize - strlen(buf) - 1);
@@ -2019,7 +2017,7 @@ int main(int argc, char *argv[])
 		return -1;
 
 	/* Allocate database for files (not always needed, but still here) */
-	if (!create_database())
+	if (!database_create_blk_db())
 		return -1;
 
 	/* Pre-calculate CRC table */
@@ -2655,10 +2653,10 @@ int analyze(void)
 		tap.purity = get_pulse_stats(20, tap.len - 1);
 	get_file_stats();
 
-	tap.optimized_files = count_opt_files();
-	tap.total_checksums_good = count_good_checksums();
-	tap.detected = count_rpulses();
-	tap.bootable = count_bootparts();
+	tap.optimized_files = database_count_opt_blks();
+	tap.total_checksums_good = database_count_good_checkbytes();
+	tap.detected = database_count_recognized_pulses();
+	tap.bootable = database_count_bootparts();
 
 	/* compute % recognised... */
 
@@ -2692,7 +2690,7 @@ int analyze(void)
 	else
 		tap.tst_op = 1;
 
-	tap.crc = compute_overall_crc();
+	tap.crc = database_compute_overall_crc();
 
 	return 1;
 }
@@ -2788,8 +2786,8 @@ void report(void)
 	free(rbuf);
 
 	if (doprg == TRUE) {
-		make_prgs();
-		save_prgs();
+		database_make_prgs();
+		database_save_prgs();
 	}
 }
 

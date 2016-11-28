@@ -9,9 +9,9 @@
 #define __BLKDATABASE_H__
 
 #define BLKMAX	2000	/*!< maximum number of blocks allowed in database */
-#define DBERR	-1	/*!< return value from "addblockdef" when database 
+#define DBERR	-1	/*!< return value from "database_add_blk_def" when database 
 			     entry failed. */
-#define DBFULL	-2	/*!< return value from "addblockdef" when database 
+#define DBFULL	-2	/*!< return value from "database_add_blk_def" when database 
 			     is full. */
 #define HASNOTCHECKSUM	-2
 
@@ -85,8 +85,8 @@ struct prg_t
 extern struct blk_t *blk[BLKMAX];
 /* Database of all extracted files (prg's). */
 extern struct prg_t prg[BLKMAX];
-/* Flag used by addblockdef() to indicate database capacity reached */
-extern int dbase_is_full;
+/* Flag used by database_add_blk_def() to indicate database capacity reached */
+extern int database_is_full;
 
 
 /**
@@ -94,25 +94,32 @@ extern int dbase_is_full;
  */
 
 /* File Database */
-int create_database(void);
-void reset_database(void);
-int addblockdefex(int, int, int, int, int, int, int);
-int addblockdef(int, int, int, int, int, int);
-void sort_blocks(void);
-void scan_gaps(void);
-int count_bootparts(void);
-int count_unopt_pulses(int);
-int count_opt_files(void);
-int count_pauses(void);
-int count_rpulses(void);
-int count_good_checksums(void);
-int compute_overall_crc(void);
-void dump_database(void);
-void destroy_database(void);
+int database_create_blk_db(void);
+void database_reset_blk_db(void);
+int database_add_blk_def_ex(int, int, int, int, int, int, int);
+int database_add_blk_def(int, int, int, int, int, int);
+void database_sort_blks(void);
+void database_scan_gaps(void);
+int database_count_bootparts(void);
+int database_count_unopt_pulses(int);
+int database_count_opt_blks(void);
+int database_count_pauses(void);
+int database_count_recognized_pulses(void);
+int database_count_good_checkbytes(void);
+int database_compute_overall_crc(void);
+void database_dump_blk_db(void);
+void database_destroy_blk_db(void);
 
 /* Prg Database */
-void make_prgs(void);
-int save_prgs(void);
-void reset_prg_database(void);
+void database_make_prgs(void);
+int database_save_prgs(void);
+void database_reset_prg_db(void);
+
+/**
+ *	Aliases (used so that all scanners won't go through a mass search/replace, yet)
+ */
+
+#define addblockdefex	database_add_blk_def_ex
+#define addblockdef	database_add_blk_def
 
 #endif

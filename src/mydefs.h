@@ -362,8 +362,6 @@ enum {
 	nowild
 };
 
-extern int dbase_is_full;
-
 enum {
 	OP_NONE = 0,
 	OP_TEST,
