@@ -122,4 +122,4 @@ void database_reset_prg_db(void);
 #define addblockdefex	database_add_blk_def_ex
 #define addblockdef	database_add_blk_def
 
-#endif
+#endif /* __BLKDATABASE_H__ */

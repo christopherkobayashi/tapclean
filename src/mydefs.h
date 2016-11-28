@@ -1,6 +1,3 @@
-#ifndef _mydefs_h
-#define _mydefs_h
-
 /*
  * mydefs.h
  *
@@ -25,6 +22,9 @@
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
+
+#ifndef __MYDEFS_H__
+#define __MYDEFS_H__
 
 #include "database.h"
 #include "scanners/_scanners.h"
@@ -375,4 +375,5 @@ enum {
 	OP_BATCH_SCAN,
 	OP_CREATE_INFO
 };
-#endif
+
+#endif /* __MYDEFS_H__ */

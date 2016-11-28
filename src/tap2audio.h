@@ -37,7 +37,11 @@
  */
 extern const char tap2audio_auoutname[], tap2audio_wavoutname[];
 
+/**
+ *	Prototypes
+ */
+
 int tap2audio_au_write(unsigned char *, int, const char *, char);
 int tap2audio_wav_write(unsigned char *, int, const char *, char);
 
-#endif
+#endif /* __TAP2AUDIO_H__ */

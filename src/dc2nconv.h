@@ -9,6 +9,10 @@
 #ifndef __DC2NCONV_H__
 #define __DC2NCONV_H__
 
+/**
+ *	Prototypes
+ */
+
 int dc2nconv_to_tap(unsigned char *src, unsigned char *dst, int sz);
 
-#endif
+#endif /* __DC2NCONV_H__ */

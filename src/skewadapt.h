@@ -22,6 +22,11 @@
 #define __SKEWADAPT_H__
 
 extern char skewadapt_enabled;
+
+/**
+ *	Prototypes
+ */
+
 extern int skewadapt_readttbit(int pos, int lp, int sp, int tp);
 
 #endif /* __SKEWADAPT_H__ */

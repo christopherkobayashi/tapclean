@@ -23,8 +23,8 @@
  *
  */   
 
-#ifndef __FTFILESEARCH_H__
-#define __FTFILESEARCH_H__
+#ifndef __FILESEARCH_H__
+#define __FILESEARCH_H__
 
 #define ROOTONLY	0
 #define ROOTALL		1
@@ -48,4 +48,4 @@ void filesearch_clip_list(struct node *);
 int filesearch_show_list(struct node *);
 int filesearch_save_list(struct node *, char *);
 
-#endif
+#endif /* __FILESEARCH_H__ */

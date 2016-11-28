@@ -17,7 +17,11 @@ enum {
 	PERS_IO_ERROR
 };
 
+/**
+ *	Prototypes
+ */
+
 int persistence_load_loader_parameters (void);
 int persistence_save_loader_parameters (void);
 
-#endif
+#endif /* __PERSISTENCE_H__ */
