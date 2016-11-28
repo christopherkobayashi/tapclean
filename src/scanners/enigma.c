@@ -448,7 +448,7 @@ void enigma_search(void)
 						rd_err = 0;
 
 						/* Store master loader */
-						for (j = 0; j < x; j++) {
+						for (j = 0; j < (int)x; j++) {
 							b = readttbyte(sod + (j  * BITSINABYTE), lp, sp, tp, en);
 							if (b == -1)
 								rd_err++; /* Don't break here: during debug we will see how many errors occur */
@@ -462,7 +462,7 @@ void enigma_search(void)
 							enigma_index++;
 
 							if (masterentryvectoroffset != -1) {
-								if (masterentryvectoroffset < x - 2 /* We need to read 2 bytes */) {
+								if (masterentryvectoroffset < (int)x - 2 /* We need to read 2 bytes */) {
 									/* Dereference jump in masterloader if we need to and can do */
 									masterentryoffset = (masterloader[masterentryvectoroffset] | (masterloader[masterentryvectoroffset + 1] << 8)) - s;
 #ifdef ENIGMA_DEBUG
@@ -474,7 +474,7 @@ void enigma_search(void)
 								}
 							}
 
-							if (masterentryoffset < 0 || masterentryoffset >= x) {
+							if (masterentryoffset < 0 || masterentryoffset >= (int)x) {
 								/* Offset is negative or past the end of the file, give up without trying extraction */
 								enigma_index = -1;
 								s = e = 0;

@@ -330,7 +330,7 @@ void msx_search (int variant)
 						x = e - s + 1;
 
 						/* Parse all data in file in order to point to its end */
-						for (h = 0; h < x; h++) {
+						for (h = 0; h < (int)x; h++) {
 							b = msx_read_byte(sod + pcount, lt);
 							/* For now we don't try to find the next start bit in order to continue reading */
 							if (b == -1)
