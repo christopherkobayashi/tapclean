@@ -6,8 +6,8 @@
  *  invokations of the application.
  */
 
-#ifndef TC_PERSISTENCE_H
-#define TC_PERSISTENCE_H
+#ifndef __PERSISTENCE_H__
+#define __PERSISTENCE_H__
 
 enum {
 	PERS_OK = 0,
