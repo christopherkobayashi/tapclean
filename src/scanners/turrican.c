@@ -202,17 +202,28 @@ void turrican_search(void)
 					if (state != STATE_SEARCH_DATA)
 						continue;
 
+					/* 
+					 * Check if the beginning of this Data file (sof) is
+					 * close enough to its corresponding Header file's end (eof)
+					 * Note: 2000 pulses = half Data file pilot length, in case
+					 *       half the pilot is damaged
+					 */
+					if (sof - eof > 2000) {
+						state = STATE_SEARCH_HEADER;
+						continue;
+					}
+
 					/* Point to the first pulse of the checkbyte (that's final) */
 					eod = sod + (HEADERSIZE + x) * BITSINABYTE;
 
 					/* Initially point to the last pulse of the checkbyte */
 					eof = eod + BITSINABYTE - 1;
 
-					/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+					/* Trace 'eof' to end of trailer (bit 0 pulses only) */
 					h = 0;
 					while (eof < tap.len - 1 &&
 							h++ < MAXTRAILER &&
-							readttbit(eof + 1, lp, sp, tp) >= 0)
+							readttbit(eof + 1, lp, sp, tp) == 0)
 						eof++;
 
 					if (addblockdefex(TURR_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
