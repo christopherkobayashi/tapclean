@@ -292,7 +292,7 @@ int turrican_describe(int row)
 		/* Set load and end locations and size */
 		blk[row]->cs = 0x0100;
 		blk[row]->ce = blk[row]->cs + HDRPAYLOADSIZE - 1;
-		blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+		blk[row]->cx = HDRPAYLOADSIZE;
 
 		/* Retrieve C64 memory location for data load/end address from extra-info */
 		dfs = blk[row]->xi & 0xFFFF;
@@ -303,38 +303,19 @@ int turrican_describe(int row)
 		sprintf(lin,"\n - DATA FILE End address : $%04X", dfe);
 		strcat(info,lin);
 
-		/* Read Header payload contents */
 		rd_err = 0;
 
 #ifdef TURRICAN_EXTRACT_HEADER
+		/* Copy Header payload contents */
+
 		if (blk[row]->dd != NULL)
 			free(blk[row]->dd);
 
 		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
-#endif
 
-		for (i = 0; i < blk[row]->cx; i++) {
-			b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
-
-			if (b != -1) {
-#ifdef TURRICAN_EXTRACT_HEADER
-				blk[row]->dd[i] = b;
+		for (i = 0; i < blk[row]->cx; i++)
+			blk[row]->dd[i] = (unsigned char)hdrpayload[i];
 #endif
-			} else {
-#ifdef TURRICAN_EXTRACT_HEADER
-				blk[row]->dd[i] = 0x69;  /* error code */
-#endif
-				rd_err++;
-
-				/* for experts only */
-#ifdef TURRICAN_EXTRACT_HEADER
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i + 2);
-#else
-				sprintf(lin, "\n - Read Error on byte @$%X (header payload offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i);
-#endif
-				strcat(info, lin);
-			}
-		}
 	} else {
 		int cb;
 
