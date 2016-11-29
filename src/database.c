@@ -497,7 +497,7 @@ void database_destroy_blk_db(void)
  * as a single PRG. (neighbour = data addresses run consecutively).
  */
 
-void database_make_prgs(void)
+void database_make_prg_db(void)
 {
 	int i, c, j, t, x, s, e, errors, ti, pt[BLKMAX];
 	unsigned char *tmp, done;
@@ -598,7 +598,7 @@ void database_make_prgs(void)
  * Returns the number of files saved.
  */
 
-int database_save_prgs(void)
+int database_save_prg_db(void)
 {
 	int i;
 	FILE *fp;    

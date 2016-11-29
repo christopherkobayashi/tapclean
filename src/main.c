@@ -2786,8 +2786,8 @@ void report(void)
 	free(rbuf);
 
 	if (doprg == TRUE) {
-		database_make_prgs();
-		database_save_prgs();
+		database_make_prg_db();
+		database_save_prg_db();
 	}
 }
 

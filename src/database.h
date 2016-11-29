@@ -111,8 +111,8 @@ void database_dump_blk_db(void);
 void database_destroy_blk_db(void);
 
 /* Prg Database */
-void database_make_prgs(void);
-int database_save_prgs(void);
+void database_make_prg_db(void);
+int database_save_prg_db(void);
 void database_reset_prg_db(void);
 
 /**
