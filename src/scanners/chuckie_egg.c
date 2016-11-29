@@ -1,5 +1,5 @@
 /*
- * chuckie_egg.c (by Luigi Di Fraia, Oct 2009 - armaeth@libero.it)
+ * chuckie_egg.c (by Luigi Di Fraia, Oct 2009)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

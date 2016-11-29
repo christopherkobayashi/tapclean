@@ -1,5 +1,5 @@
 /*
- * fftape.c (by Luigi Di Fraia, Oct 2009 - armaeth@libero.it)
+ * fftape.c (by Luigi Di Fraia, Oct 2009)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

@@ -1,5 +1,5 @@
 /*
- * burner_var.c (by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
+ * burner_var.c (by Luigi Di Fraia, Aug 2006)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

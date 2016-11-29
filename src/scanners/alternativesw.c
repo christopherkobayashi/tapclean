@@ -1,5 +1,5 @@
 /*
- * alternativesw.c (by Luigi Di Fraia, Feb 2011 - armaeth@libero.it)
+ * alternativesw.c (by Luigi Di Fraia, Feb 2011)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

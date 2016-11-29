@@ -1,5 +1,5 @@
 /*
- * atlantis.c (rewritten by Luigi Di Fraia, Dec 2011 - armaeth@libero.it)
+ * atlantis.c (rewritten by Luigi Di Fraia, Dec 2011)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

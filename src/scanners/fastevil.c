@@ -1,5 +1,5 @@
 /*
- * fastevil.c (by Luigi Di Fraia, Sep 2009 - armaeth@libero.it)
+ * fastevil.c (by Luigi Di Fraia, Sep 2009)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

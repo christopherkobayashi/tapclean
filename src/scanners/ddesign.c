@@ -1,5 +1,5 @@
 /*
- * ddesign.c (by Luigi Di Fraia, Sep 2016 - armaeth@libero.it)
+ * ddesign.c (by Luigi Di Fraia, Sep 2016)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

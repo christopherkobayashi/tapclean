@@ -1,5 +1,5 @@
 /*
- * tequila.c (by Luigi Di Fraia, Feb 2010 - armaeth@libero.it)
+ * tequila.c (by Luigi Di Fraia, Feb 2010)
  * Takes its name from the text "TEQUILA SUNRISE BELGIUM BRUSSELS  1984"
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".

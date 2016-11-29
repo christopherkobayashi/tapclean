@@ -1,5 +1,5 @@
 /*
- * aces.c (rewritten by Luigi Di Fraia, Nov 2011 - armaeth@libero.it)
+ * aces.c (rewritten by Luigi Di Fraia, Nov 2011)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

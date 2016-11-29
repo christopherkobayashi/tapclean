@@ -1,5 +1,5 @@
 /*
- * ashdave.c (by Luigi Di Fraia, May 2008 - armaeth@libero.it)
+ * ashdave.c (by Luigi Di Fraia, May 2008)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

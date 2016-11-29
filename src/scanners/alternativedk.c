@@ -1,5 +1,5 @@
 /*
- * alternativedk.c (by Luigi Di Fraia, May 2011 - armaeth@libero.it)
+ * alternativedk.c (by Luigi Di Fraia, May 2011)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

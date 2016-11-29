@@ -1,5 +1,5 @@
 /*
- * oceannew3.c (by Luigi Di Fraia, Jan 2013 - armaeth@libero.it)
+ * oceannew3.c (by Luigi Di Fraia, Jan 2013)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

@@ -1,5 +1,5 @@
 /*
- * gremlin_f1.c (by Luigi Di Fraia, May 2011 - armaeth@libero.it)
+ * gremlin_f1.c (by Luigi Di Fraia, May 2011)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

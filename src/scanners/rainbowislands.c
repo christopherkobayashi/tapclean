@@ -1,5 +1,5 @@
 /*
- * rainbowislands.c (by Luigi Di Fraia, Sept 2012 - armaeth@libero.it)
+ * rainbowislands.c (by Luigi Di Fraia, Sept 2012)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

@@ -1,5 +1,5 @@
 /*
- * turbo220.c (by Luigi Di Fraia, Mar 2014 - armaeth@libero.it)
+ * turbo220.c (by Luigi Di Fraia, Mar 2014)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

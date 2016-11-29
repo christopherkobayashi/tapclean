@@ -1,5 +1,5 @@
 /*
- * msx.c (by Luigi Di Fraia, Nov 2015 - armaeth@libero.it)
+ * msx.c (by Luigi Di Fraia, Nov 2015)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

@@ -1,5 +1,5 @@
 /*
- * biturbo.c (by Luigi Di Fraia, Aug 2006 - armaeth@libero.it)
+ * biturbo.c (by Luigi Di Fraia, Aug 2006)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

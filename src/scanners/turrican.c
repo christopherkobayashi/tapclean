@@ -1,5 +1,5 @@
 /*
- * turrican.c (rewritten by Luigi Di Fraia, Nov 2016 - armaeth@libero.it)
+ * turrican.c (rewritten by Luigi Di Fraia, Nov 2016)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
@@ -160,6 +160,7 @@ void turrican_search(void)
 						if (hdrpayload[h] == -1)
 							break;
 					}
+					/* In case of read error we cannot trust the contents so give up on this Header file */
 					if (h != HDRPAYLOADSIZE)
 						continue;
 

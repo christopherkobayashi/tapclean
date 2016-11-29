@@ -1,5 +1,5 @@
 /*
- * amaction.c (by Luigi Di Fraia, March 2012 - armaeth@libero.it)
+ * amaction.c (by Luigi Di Fraia, March 2012)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

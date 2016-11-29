@@ -1,5 +1,5 @@
 /*
- * creativesparks.c (by Luigi Di Fraia, Aug 2014 - armaeth@libero.it)
+ * creativesparks.c (by Luigi Di Fraia, Aug 2014)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

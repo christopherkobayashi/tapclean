@@ -1,5 +1,5 @@
 /*
- * tes.c (by Luigi Di Fraia, Dec 2009 - armaeth@libero.it)
+ * tes.c (by Luigi Di Fraia, Dec 2009)
  *
  * This loader is used in "Special Program" magazine tapes. The name refers to the
  * fact file names are usually in the form "TES <name>".
