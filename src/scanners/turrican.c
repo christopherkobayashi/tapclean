@@ -28,7 +28,7 @@
  * CBM inspection needed: No
  * Single on tape: No
  * Sync: Sequence (bytes)
- * Header: Yes (in its own file)
+ * Header: Yes
  * Data: Continuous
  * Checksum: Yes
  * Post-data: No
@@ -50,14 +50,16 @@
 #define SYNCSEQSIZE	12	/* amount of sync bytes */
 #define MAXTRAILER	2040	/* max amount of trailer pulses read in (after Data only) */
 
-#define HEADERSIZE	0xC0	/* size of block header */
-#define NAMESIZE	0x20	/* size of the filename portion */
+#define HEADERSIZE	1	/* size of block header (for both Header and Data files) */
 
-#define LOADOFFSETH	1	/* load location (MSB) offset inside header */
-#define LOADOFFSETL	0	/* load location (LSB) offset inside header */
-#define ENDOFFSETH	3	/* end location (MSB) offset inside header */
-#define ENDOFFSETL	2	/* end location (LSB) offset inside header */
-#define NAMEOFFSET	5	/* filename offset inside header */
+#define HDRPAYLOADSIZE	0xC0	/* size of the Header file payload */
+#define NAMESIZE	0x20	/* size of the filename portion inside payload */
+
+#define LOADOFFSETH	1	/* load location (MSB) offset inside payload */
+#define LOADOFFSETL	0	/* load location (LSB) offset inside payload */
+#define ENDOFFSETH	3	/* end location (MSB) offset inside payload */
+#define ENDOFFSETL	2	/* end location (LSB) offset inside payload */
+#define NAMEOFFSET	5	/* filename offset inside payload */
 
 enum {
 	FILE_TYPE_DATA = 0x00,
@@ -70,7 +72,10 @@ enum {
 	STATE_SEARCH_DATA
 };
 
-/* If defined header contents are extracted to file and consequently the CRC32 is calculated */
+/*
+ * If defined Header file payload contents are extracted 
+ * and consequently the CRC32 is calculated
+ */
 #define TURRICAN_EXTRACT_HEADER
 
 void turrican_search(void)
@@ -78,7 +83,7 @@ void turrican_search(void)
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
-	int hd[HEADERSIZE];		/* buffer to store block header info */
+	int hdrpayload[HDRPAYLOADSIZE];	/* buffer to store Header file payload */
 
 	int en, tp, sp, lp;		/* encoding parameters */
 
@@ -95,7 +100,7 @@ void turrican_search(void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	int state;			/* whether to search for header or data */
+	int state;			/* whether to search for Header or Data */
 
 
 	en = ft[THISLOADER].en;
@@ -106,7 +111,7 @@ void turrican_search(void)
 	if (!quiet)
 		msgout("  Turrican loader");
 
-	state = STATE_SEARCH_HEADER;	/* Initially search for a header */
+	state = STATE_SEARCH_HEADER;	/* Initially search for a Header */
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -136,26 +141,31 @@ void turrican_search(void)
 			/* Valid sync train found, mark start of data */
 			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
+			/* Read file type from block header */
 			ftype = readttbyte(sod, lp, sp, tp, en);
 
 			switch (ftype) {
-				case FILE_TYPE_HEADER_RELOC:		/* Header files are treated the same way by the original */
-				case FILE_TYPE_HEADER_NON_RELOC:	/* code regardless of being relocatable or not */
+				/*
+				 * Header files are treated the same way by the original
+				 * code regardless of being relocatable or not
+				 */
+				case FILE_TYPE_HEADER_RELOC:
+				case FILE_TYPE_HEADER_NON_RELOC:
 					if (state != STATE_SEARCH_HEADER)
 						continue;
 
-					/* Read header */
-					for (h = 0; h < HEADERSIZE; h++) {
-						hd[h] = readttbyte(sod + (1 + h) * BITSINABYTE, lp, sp, tp, en);
-						if (hd[h] == -1)
+					/* Read Header file payload */
+					for (h = 0; h < HDRPAYLOADSIZE; h++) {
+						hdrpayload[h] = readttbyte(sod + (HEADERSIZE + h) * BITSINABYTE, lp, sp, tp, en);
+						if (hdrpayload[h] == -1)
 							break;
 					}
-					if (h != HEADERSIZE)
+					if (h != HDRPAYLOADSIZE)
 						continue;
 
 					/* Extract load and end locations */
-					s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-					e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+					s = hdrpayload[LOADOFFSETL] + (hdrpayload[LOADOFFSETH] << 8);
+					e = hdrpayload[ENDOFFSETL]  + (hdrpayload[ENDOFFSETH]  << 8);
 
 					/* Prevent int wraparound when subtracting 1 from end location
 					   to get the location of the last loaded byte */
@@ -171,16 +181,16 @@ void turrican_search(void)
 					/* Compute size */
 					x = e - s + 1;
 
-					/* Store the info read from header as extra-info */
+					/* Store the info read from payload as extra-info */
 					xinfo = s + (e << 16);
 
-					/* Point to the first pulse of the last header byte (that's final) */
-					eod = sod + (1 + HEADERSIZE) * BITSINABYTE;
+					/* Point to the first pulse of the last payload byte (that's final) */
+					eod = sod + (HEADERSIZE + HDRPAYLOADSIZE) * BITSINABYTE;
 
-					/* Point to the last pulse of the last header byte */
+					/* Point to the last pulse of the last payload byte */
 					eof = eod + BITSINABYTE - 1;
 
-					if (addblockdef(TURR_HEAD, sof, sod, eod, eof, xinfo) >= 0) {
+					if (addblockdefex(TURR_HEAD, sof, sod, eod, eof, xinfo, ftype) >= 0) {
 						state = STATE_SEARCH_DATA;
 						i = eof;	/* Search for further files starting from the end of this one */
 					}
@@ -192,7 +202,7 @@ void turrican_search(void)
 						continue;
 
 					/* Point to the first pulse of the checkbyte (that's final) */
-					eod = sod + (1 + x) * BITSINABYTE;
+					eod = sod + (HEADERSIZE + x) * BITSINABYTE;
 
 					/* Initially point to the last pulse of the checkbyte */
 					eof = eod + BITSINABYTE - 1;
@@ -204,10 +214,10 @@ void turrican_search(void)
 							readttbit(eof + 1, lp, sp, tp) >= 0)
 						eof++;
 
-					if (addblockdef(TURR_DATA, sof, sod, eod, eof, xinfo) >= 0)
+					if (addblockdefex(TURR_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 						i = eof;	/* Search for further files starting from the end of this one */
 
-					/* Back to searching for header even if we failed adding block here */
+					/* Back to searching for Header even if we failed adding block here */
 					state = STATE_SEARCH_HEADER;
 
 					break;
@@ -252,26 +262,23 @@ int turrican_describe(int row)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Read file type */
-	ftype = readttbyte(s, lp, sp, tp, en);
+	ftype = blk[row]->meta1;
 	sprintf(lin,"\n - FILE type : $%02X", ftype);
 	strcat(info, lin);
-
-	/* Move past the file type */
-	s += BITSINABYTE;
 
 	lt = blk[row]->lt;
 	if (lt == TURR_HEAD) {
 		int dfs, dfe;
-		int hd[HEADERSIZE];
+		int hdrpayload[HDRPAYLOADSIZE];
 		char bfname[NAMESIZE + 1], bfnameASCII[NAMESIZE + 1];
 
-		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
-		for (i = 0; i < HEADERSIZE; i++)
-			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+		/* Read Header payload (it's safe to read it here for it was already decoded during the search stage) */
+		for (i = 0; i < HDRPAYLOADSIZE; i++)
+			hdrpayload[i]= readttbyte(s + (HEADERSIZE + i) * BITSINABYTE, lp, sp, tp, en);
 
 		/* Read filename */
 		for (i = 0; i < NAMESIZE; i++)
-			bfname[i] = hd[NAMEOFFSET + i];
+			bfname[i] = hdrpayload[NAMEOFFSET + i];
 		bfname[i] = '\0';
 
 		trim_string(bfname);
@@ -284,7 +291,7 @@ int turrican_describe(int row)
 
 		/* Set load and end locations and size */
 		blk[row]->cs = 0x0100;
-		blk[row]->ce = 0x01BF;
+		blk[row]->ce = blk[row]->cs + HDRPAYLOADSIZE - 1;
 		blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
 		/* Retrieve C64 memory location for data load/end address from extra-info */
@@ -296,7 +303,7 @@ int turrican_describe(int row)
 		sprintf(lin,"\n - DATA FILE End address : $%04X", dfe);
 		strcat(info,lin);
 
-		/* Read header contents */
+		/* Read Header payload contents */
 		rd_err = 0;
 
 #ifdef TURRICAN_EXTRACT_HEADER
@@ -307,7 +314,7 @@ int turrican_describe(int row)
 #endif
 
 		for (i = 0; i < blk[row]->cx; i++) {
-			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+			b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
 
 			if (b != -1) {
 #ifdef TURRICAN_EXTRACT_HEADER
@@ -321,9 +328,9 @@ int turrican_describe(int row)
 
 				/* for experts only */
 #ifdef TURRICAN_EXTRACT_HEADER
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i + 2);
 #else
-				sprintf(lin, "\n - Read Error on byte @$%X (header payload offset: $%04X)", s + (i * BITSINABYTE), i);
+				sprintf(lin, "\n - Read Error on byte @$%X (header payload offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i);
 #endif
 				strcat(info, lin);
 			}
@@ -336,7 +343,7 @@ int turrican_describe(int row)
 		blk[row]->ce = (blk[row]->xi & 0xFFFF0000) >> 16;
 		blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
-		/* Extract data and test checksum... */
+		/* Extract Data and test checksum... */
 		rd_err = 0;
 		cb = 0;
 
@@ -346,7 +353,7 @@ int turrican_describe(int row)
 		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 		for (i = 0; i < blk[row]->cx; i++) {
-			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+			b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
 			cb ^= b;
 
 			if (b != -1) {
@@ -361,14 +368,14 @@ int turrican_describe(int row)
 			}
 		}
 
-		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
 		if (b == -1) {
 			/* Even if not within data, we cannot validate data reliably if
 			   checksum is unreadable, so that increase read errors */
 			rd_err++;
 
 			/* for experts only */
-			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + ((HEADERSIZE + i) * BITSINABYTE));
 			strcat(info, lin);
 		}
 
