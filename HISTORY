@@ -19,7 +19,8 @@ v0.33
 	 "Percy Penguin" (Luigi)
 	Improvement: The "Power Load" scanner now fully supports "Mr Wiz",
 	 "Smuggler", and "U.K. Geography" (Luigi)
-	Improvement: Sequence numbers are now 1-based (Luigi)
+	Improvement: Sequence numbers are now 1-based in order to match
+	 file numbering (Luigi)
 	New: Added support for "Digital Design Tape", which is a variant
 	 of the "Ash+Dave" loader (Luigi)
 	New: Added support for "Alternative Software (DK) T3", used in
