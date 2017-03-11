@@ -140,7 +140,7 @@ int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, 
 		/* the last usable slot is therefore BLKMAX-2. */
 
 		for (i = 0; blk[i]->lt != LT_NONE; i++);
-			slot = i;
+		slot = i;
 
 		if (slot == BLKMAX-1) {	/* only clear slot is the last one? (the terminator) */
 			if (database_is_full == FALSE) {	/* we only need give the error once */

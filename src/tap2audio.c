@@ -97,7 +97,7 @@ static int drawwavesquare(int len, int amp, char signd, FILE *filep, unsigned lo
 			y = amp;
 		else
 			y =- amp;
-			samples += s_out(y + off, 0, filep, bp, outbuf);
+		samples += s_out(y + off, 0, filep, bp, outbuf);
 	}
 
 	return samples;
