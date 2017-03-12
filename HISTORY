@@ -27,6 +27,10 @@ v0.33
 	 "Arcade Classics" (Luigi)
 	Improvement: "Turrican" scanner rewritten in order to optionally
 	 decode header files and correctly read checkbytes (Luigi)
+	Fix: Fixed memory boundary checks when reading in trailer tones
+	 in "Bleepload", "Bleepload Special", "Novaload F1", "Novaload F2",
+	 "Ocean", "Rasterload", "Snakeload 5.0 T1", "Snakeload 5.0 T2",
+	 "Snakeload 5.1" (Luigi)
 
 v0.32
 	Fix: BASIC program start address is $1001 for C16/+4 too (Luigi)

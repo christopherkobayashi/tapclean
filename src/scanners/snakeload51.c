@@ -81,7 +81,7 @@ void snakeload51_search(void)
                   /*trace 'eof' to end of trailer (skip through S pulses)... */
                   if(eof>0 && eof<tap.len-1)
                   {
-                     while(tap.tmem[eof+1]>ft[SNAKE51].sp-tol && tap.tmem[eof+1]<ft[SNAKE51].sp+tol && eof<tap.len-1)
+                     while(eof<tap.len-1 && tap.tmem[eof+1]>ft[SNAKE51].sp-tol && tap.tmem[eof+1]<ft[SNAKE51].sp+tol)
                         eof++;
                   }
 

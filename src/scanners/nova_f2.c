@@ -85,7 +85,7 @@ void nova_spc_search(void)
                              there instead... */
                            if(readttbyte(eof+1, ft[NOVA].lp, ft[NOVA].sp, ft[NOVA].tp, LSbF)==0x00)
                            {
-                              while(tap.tmem[eof+1]>ft[NOVA].sp-tol && tap.tmem[eof+1]<ft[NOVA].sp+tol && eof<tap.len-1)
+                              while(eof<tap.len-1 && tap.tmem[eof+1]>ft[NOVA].sp-tol && tap.tmem[eof+1]<ft[NOVA].sp+tol)
                                  eof++;
                            }
                            addblockdef(NOVA_SPC,sof,sod,eod,eof,0);

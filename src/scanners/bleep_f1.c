@@ -117,7 +117,7 @@ void bleep_search(void)
                   /* override 'eof' if there is a trailer tone...  */
                   if(readttbyte(eof+1, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en)==0xFF)
                   {
-                     while(tap.tmem[eof+1]>ft[BLEEP].lp-tol && tap.tmem[eof+1]<ft[BLEEP].lp+tol)
+                     while(eof<tap.len-1 && tap.tmem[eof+1]>ft[BLEEP].lp-tol && tap.tmem[eof+1]<ft[BLEEP].lp+tol)
                         eof++;
                   }
 

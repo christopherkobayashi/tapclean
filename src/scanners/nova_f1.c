@@ -106,7 +106,7 @@ void nova_search(void)
                   /* trace 'eof' to end of trailer... */
                   if(eof>0 && eof<tap.len-1)
                   {
-                     while(tap.tmem[eof+1]>ft[NOVA].sp-tol && tap.tmem[eof+1]<ft[NOVA].sp+tol && eof<tap.len-1)
+                     while(eof<tap.len-1 && tap.tmem[eof+1]>ft[NOVA].sp-tol && tap.tmem[eof+1]<ft[NOVA].sp+tol)
                         eof++;
                   }
                   addblockdef(NOVA, sof,sod,eod,eof, 0);

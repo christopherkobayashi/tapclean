@@ -71,12 +71,9 @@ void raster_search(void)
                 assume it is there or is unbroken.
                 grod the pixie has a broken one. */
 
-               /* this should take care of it... */
-               if(eof<tap.len)  /* safety precaution, this was causing a crash.. */
-               {
-                  while(tap.tmem[eof+1]>ft[RASTER].lp-tol && tap.tmem[eof+1]<ft[RASTER].lp+tol)
-                     eof++;
-               }
+               while(eof<tap.len-1 && tap.tmem[eof+1]>ft[RASTER].lp-tol && tap.tmem[eof+1]<ft[RASTER].lp+tol)
+                  eof++;
+
                addblockdef(RASTER, sof,sod,eod,eof, 0);
                i = eof;  /* optimize search */
             }

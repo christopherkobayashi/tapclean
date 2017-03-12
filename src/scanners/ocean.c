@@ -149,7 +149,7 @@ void ocean_search(void)
                                there instead... */
                               if(readttbyte(eof+1, ft[OCEAN_F1].lp, ft[OCEAN_F1].sp, ft[OCEAN_F1].tp, ft[OCEAN_F1].en)==0)
                               {
-                                 while(tap.tmem[eof+1]>ft[OCEAN_F1].sp-tol && tap.tmem[eof+1]<ft[OCEAN_F1].sp+tol && eof<tap.len-1)
+                                 while(eof<tap.len-1 && tap.tmem[eof+1]>ft[OCEAN_F1].sp-tol && tap.tmem[eof+1]<ft[OCEAN_F1].sp+tol)
                                     eof++;
                               }
                               addblockdef(OCEAN_F2,sof,sod,eod,eof,0);
@@ -198,7 +198,7 @@ void ocean_search(void)
 
                         if(readttbyte(eof+1, ft[OCEAN_F1].lp, ft[OCEAN_F1].sp, ft[OCEAN_F1].tp, ft[OCEAN_F1].en)==0x00)
                         {
-                           while(tap.tmem[eof+1]>ft[OCEAN_F1].sp-tol && tap.tmem[eof+1]<ft[OCEAN_F1].sp+tol && eof<tap.len-1)
+                           while(eof<tap.len-1 && tap.tmem[eof+1]>ft[OCEAN_F1].sp-tol && tap.tmem[eof+1]<ft[OCEAN_F1].sp+tol)
                               eof++;
                         }
                         addblockdef(OCEAN_F1,sof,sod,eod,eof,0);
