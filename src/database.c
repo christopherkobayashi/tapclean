@@ -140,6 +140,7 @@ int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, 
 		/* the last usable slot is therefore BLKMAX-2. */
 
 		for (i = 0; blk[i]->lt != LT_NONE; i++);
+
 		slot = i;
 
 		if (slot == BLKMAX-1) {	/* only clear slot is the last one? (the terminator) */
@@ -176,8 +177,9 @@ int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, 
 			blk[slot]->fn = NULL;
 			blk[slot]->ok = 0;
 		}
-	} else
+	} else {
 		return DBERR;
+	}
 
 	return slot;	/* ok, entry added successfully.   */
 }
@@ -460,7 +462,7 @@ void database_dump_blk_db(void)
 {
 	int i, t;
 
-	for (i = 0; i < BLKMAX; i++) {
+	for (i = 0; i < BLKMAX && blk[i]->lt != LT_NONE; i++) {
 		t = blk[i]->lt;		/* get block type */
 		sprintf(lin, "\nName: %s ($%X-$%X)", ft[t].name[0] ? ft[t].name : "NULL", blk[i]->p1, blk[i]->p4);
 		msgout(lin);
