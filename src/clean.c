@@ -178,7 +178,8 @@ void unify_pauses(void)
 		/* copy the original TAP header.. */
 
 		tmp = (unsigned char*)malloc(tap.len + 1024);
-		for (i = 0; i < 20; i++)
+
+		for (i = 0; i < 20; i++)	/* copy the original header.. */
 			tmp[i] = tap.tmem[i];
 
 		for (i = 20, c = 20; i < tap.len; i++) {	/* c steps thru the 2nd buffer */
@@ -262,7 +263,7 @@ void unify_pauses(void)
 		for (i = 0; i < 20; i++)	/* copy the original header.. */
 			tmp[i] = tap.tmem[i];
 
-		for (i = 20, c = 20; i < tap.len && c < tap.len; i++) {
+		for (i = 20, c = 20; i < tap.len; i++) {
 			if (tap.tmem[i] > LAME)		/* copy non-LAME bytes to the output buffer. */
 				tmp[c++] = tap.tmem[i];
 
@@ -276,8 +277,7 @@ void unify_pauses(void)
 					if (tap.tmem[s + j] < LAME + 1) {
 						s += j + 1;	/* save location past current LAME. */
 						j = 0;		/* zero size of non-LAME sequence. */
-					}
-					else {
+					} else {
 						j++;
 						if (j == 30)
 							break;
@@ -352,7 +352,7 @@ void clean_files(void)
 		e = blk[i]->p4;		/* get block end  */
 
 		/* clean... */
-		
+
 		limit = tol + 2;
 		if (boostclean)
 			limit += 10;
