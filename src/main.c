@@ -42,6 +42,7 @@
 /* program options... */
 
 static char noaddpause		= FALSE;
+static char reckless		= FALSE;
 static char sine		= FALSE;
 static char doprg		= FALSE;
 
@@ -436,6 +437,7 @@ static void unload_tap(void)
 	strcpy(tap.path, "");
 	strcpy(tap.name, "");
 	strcpy(tap.cbmname, "");
+
 	if(tap.tmem != NULL) {
 		free(tap.tmem);
 		tap.tmem = NULL;
@@ -443,8 +445,8 @@ static void unload_tap(void)
 
 	tap.len = 0;
 	for(i = 0; i < 256; i++) {
-		tap.pst[i] = 0;
-		tap.fst[i] = 0;
+		tap.pst[i] = 0;	/* Pulse stats table */
+		tap.fst[i] = 0;	/* File  stats table */
 	}
 
 	tap.fsigcheck = 0;
@@ -528,7 +530,7 @@ static int get_exedir(char *argv0)
 	}
 #endif
 
-	ret = (char *)getcwd(exedir, MAXPATH - 2);
+	ret = (char *) getcwd(exedir, MAXPATH - 2);
 	if (ret == NULL)
 		return FALSE;
 
@@ -539,24 +541,45 @@ static int get_exedir(char *argv0)
 }
 
 /*
- * Display usage
+ * Display usage (rationalised).
  */
 
 static void display_usage(void)
 {
-	printf("\n\nUsage:\n\n");
-	printf("tapclean [[option][parameter]]...\n");
-	printf("example: tapclean -o giana_sisters.tap -tol 12\n\n");
-	printf("options...\n\n");
+	printf("\nUsage:\n");
+	printf("tapclean [[option][parameter]] ...\n");
+	printf("Example: tapclean -o giana_sisters.tap -tol 12\n");
 
-	printf(" -t   [tap]     Test TAP.\n");
-	printf(" -o   [tap]     Optimize TAP.\n");
-	printf(" -b   [dir]     Batch test.\n");
-	printf(" -au  [tap]     Convert TAP to Sun AU audio file (44kHz).\n");
-	printf(" -wav [tap]     Convert TAP to Microsoft WAV audio file (44kHz).\n");
-	printf(" -rs  [tap]     Corrects the 'size' field of a TAPs header.\n");
-	printf(" -ct0 [tap]     Convert TAP to version 0 format.\n");
-	printf(" -ct1 [tap]     Convert TAP to version 1 format.\n\n");
+	printf("\nOptions:\n");
+	printf(" -t   [tape]    Test tape image\n");
+	printf(" -o   [tape]    Optimize tape image\n");
+	printf(" -b   [dir]     Batch test\n");
+	printf(" -au  [tape]    Convert tape image to Sun AU audio file (44kHz)\n");
+	printf(" -wav [tape]    Convert tape image to Microsoft WAV audio file (44kHz)\n");
+	printf(" -rs  [TAP]     Correct the 'size' field of a TAP file header\n");
+	printf(" -ct0 [tape]    Convert tape image to version 0 TAP format\n");
+	printf(" -ct1 [tape]    Convert tape image to version 1 TAP format\n\n");
+
+	printf(" -boostclean    Raise cleaning threshold\n");
+	printf(" -debug         Allow detected files to overlap\n");
+	printf(" -do<loader>    Scan only for <loader>\n");
+	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04\n");
+	printf(" -doprg         Create PRG files\n");
+	printf(" -extvisipatch  Extract Visiload loader patch files\n");
+	printf(" -fstats        Pulse stats are per file\n");
+	printf(" -incsubdirs    Make batch scan include subdirectories\n");
+	printf(" -list          List of supported scanners and options used by -no<loader>\n");
+	printf(" -no<loader>    Don't scan for <loader> Example: -nocyber\n");
+	printf(" -noaddpause    Don't add a pause to the file end after clean\n");
+	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers\n");
+	printf(" -noid          Disable scanning for only the 1st ID'd loader\n");
+	printf(" -preserve      Preserve loader variables between program executions\n");
+	printf(" -prgunite      Connect neighbouring PRG's into a single file\n");
+	printf(" -reckless      Allow cleaning of tape images with errors\n");
+	printf(" -sine          Make audio converter use sine waves\n");
+	printf(" -skewadapt     Use skewed pulse adapting bit reader\n");
+	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values\n");
+	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10\n");
 
 	/*
 	 * These switches should only be used for legacy TAP/DMP files produced
@@ -568,54 +591,46 @@ static void display_usage(void)
 	 * Additionally, these switches can be used in case of a TAP/DMP file
 	 * whose contents are intended for more than one platform.
 	 */
+	printf("\nExperimental options (for advanced users):\n");
 	printf(" -16            Force Commodore 16 tape.\n");
 	printf(" -20            Force Commodore VIC 20 tape.\n");
 	printf(" -64            Force Commodore 64 tape (default).\n");
-
-	printf(" -boostclean    Raise cleaning threshold.\n");
-	printf(" -debug         Allows detected files to overlap.\n");
-	printf(" -do<loader>    Scan only for <loader>.\n");
-	printf(" -docyberfault  Report Cyberload F3 bad checksums of $04.\n");
-	printf(" -doprg         Create PRG files.\n");
-	printf(" -extvisipatch  Extract Visiload loader patch files.\n");
-	printf(" -fstats        Pulse stats are per file.\n");
-	printf(" -incsubdirs    Make batch scan include subdirectories.\n");
-	printf(" -list          List of supported scanners and options used by -no<loader>\n");
-	printf(" -no<loader>    Don't scan for <loader>. Example: -nocyber.\n");
-	printf(" -noaddpause    Dont add a pause to the file end after clean.\n");
-	printf(" -noc64eof      C64 ROM scanner will not expect EOF markers.\n");
-	printf(" -noid          Disable scanning for only the 1st ID'd loader.\n");
 	printf(" -ntsc          NTSC timing.\n");
 	printf(" -pal           PAL timing (default).\n");
-	printf(" -preserve      Preserve loader variables between program executions.\n");
-	printf(" -prgunite      Connect neighbouring PRG's into a single file.\n");
-	printf(" -sine          Make audio converter use sine waves.\n");
-	printf(" -skewadapt     Use skewed pulse adapting bit reader.\n");
-	printf(" -sortbycrc     Batch scan sorts report by cbmcrc values.\n");
-	printf(" -tol [0-15]    Set pulsewidth read tolerance, default = 10.\n");
 }
 
 /*
- * Display scanner list
+ * Display scanner list (rationalised).
  */
 
 static void display_scanners(void)
 {
-	int i,l;
-	printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names.\n\n");
-	l=sizeof(ldrswt)/sizeof(*ldrswt);
-	for(i=0;i<l;i++)
-		printf(" %-24s  -no%-12s  -do%-12s\n",ldrswt[i].desc,ldrswt[i].par,ldrswt[i].par );
+	int i, sl;	/* Counter and amount of loader switches */
+
+	printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names:\n\n");
+
+	sl = sizeof(ldrswt) / sizeof(*ldrswt);
+	for (i = 0; i < sl; i++)
+		printf(" %-24s  -no%-12s  -do%-12s\n",
+			ldrswt[i].desc,
+			ldrswt[i].par,
+			ldrswt[i].par
+			);
 }
 
-/* noall */
-static void set_noall(void)
+/*
+ * Exclude all loaders but the CBM ROM one (rationalised).
+ */
+
+static void exclude_all_but_cbm(void)
 {
-	int i,l;
-	l=sizeof(ldrswt)/sizeof(*ldrswt);
-	ldrswt[0].state = FALSE;
-	for(i=1;i<l;i++)
-		ldrswt[i].state = TRUE;
+	int i, sl;	/* Counter and amount of loader switches */
+
+	ldrswt[0].exclude = FALSE;	/* Never exclude CBM ROM Loader */
+
+	sl = sizeof(ldrswt) / sizeof(*ldrswt);
+	for (i = 1; i < sl; i++)
+		ldrswt[i].exclude = TRUE;
 }
 
 /*
@@ -626,9 +641,9 @@ static void process_options(int argc, char **argv)
 {
 	int i;
 	int excludeflag = 1;
-
 	int jj, sl;	/* counter and amount of loader switches */
-	sl = sizeof(ldrswt)/sizeof(*ldrswt);
+
+	sl = sizeof(ldrswt) / sizeof(*ldrswt);
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "-tol") == 0) {		/* flag = set tolerance */
@@ -668,6 +683,8 @@ static void process_options(int argc, char **argv)
 			boostclean = TRUE;
 		if (strcmp(argv[i], "-noaddpause") == 0)
 			noaddpause = TRUE;
+		if (strcmp(argv[i], "-reckless") == 0)
+			reckless = TRUE;
 		if (strcmp(argv[i], "-sine") == 0)
 			sine = TRUE;
 		if (strcmp(argv[i], "-preserve") == 0)
@@ -682,8 +699,7 @@ static void process_options(int argc, char **argv)
 			extvisipatch = TRUE;
 		if (strcmp(argv[i], "-incsubdirs") == 0)
 			incsubdirs = TRUE;
-		if (strcmp(argv[i], "-list") == 0)
-		{
+		if (strcmp(argv[i], "-list") == 0) {
 			display_scanners();
 			exit(0);
 		}
@@ -708,7 +724,7 @@ static void process_options(int argc, char **argv)
 						printf("You cannot mix -no<loader> and -do<loader>\n");
 						exit(1);
 					}
-					ldrswt[jj].state = TRUE;
+					ldrswt[jj].exclude = TRUE;
 					printf(" %s\n", ldrswt[jj].desc);
 				}
 			}
@@ -722,14 +738,14 @@ static void process_options(int argc, char **argv)
 				if (strcmp(argv[i]+3, ldrswt[jj].par) ==  0) {
 					if (excludeflag == 1) {
 						printf("\nIncluded scanners:\n\n");
-						set_noall();
+						exclude_all_but_cbm();
 						/* Print above message only once */
 						excludeflag = 2;
 					} else if (excludeflag == 0) {
 						printf("You cannot mix -no<loader> and -do<loader>\n");
 						exit(1);
 					}
-					ldrswt[jj].state = FALSE;
+					ldrswt[jj].exclude = FALSE;
 					printf(" +%s\n", ldrswt[jj].desc);
 				}
 			}
@@ -853,51 +869,51 @@ static void search_tap(void)
 		}
 
 		if (noid == FALSE) {	/* scanning shortcuts enabled?  */
-			if (tap.cbmid == LID_T250 	&& ldrswt[noturbo].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_T250 	&& ldrswt[noturbo].exclude == FALSE && !database_is_full && !aborted)
 				turbotape_search();
 
-			if (tap.cbmid == LID_FREE 	&& ldrswt[nofree ].state== FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FREE 	&& ldrswt[nofree ].exclude== FALSE && !database_is_full && !aborted)
 				freeload_search();
 
-			if (tap.cbmid == LID_ODE 	&& ldrswt[noode ].state== FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ODE 	&& ldrswt[noode ].exclude== FALSE && !database_is_full && !aborted)
 				odeload_search();
 
-			if (tap.cbmid == LID_NOVA 	&& ldrswt[nonova ].state== FALSE && !database_is_full && !aborted) {
+			if (tap.cbmid == LID_NOVA 	&& ldrswt[nonova ].exclude== FALSE && !database_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (tap.cbmid == LID_BLEEP 	&& ldrswt[nobleep].state == FALSE && !database_is_full && !aborted) {
+			if (tap.cbmid == LID_BLEEP 	&& ldrswt[nobleep].exclude == FALSE && !database_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (tap.cbmid == LID_OCEAN 	&& ldrswt[noocean].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCEAN 	&& ldrswt[noocean].exclude == FALSE && !database_is_full && !aborted)
 				ocean_search();
 
-			if (tap.cbmid == LID_CYBER 	&& ldrswt[nocyber].state == FALSE &&!database_is_full) {
+			if (tap.cbmid == LID_CYBER 	&& ldrswt[nocyber].exclude == FALSE &&!database_is_full) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (tap.cbmid == LID_USG 	&& ldrswt[nousgold	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_USG 	&& ldrswt[nousgold	].exclude == FALSE && !database_is_full && !aborted)
 				usgold_search();
 
-			if (tap.cbmid == LID_ACE 	&& ldrswt[noaces 	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ACE 	&& ldrswt[noaces 	].exclude == FALSE && !database_is_full && !aborted)
 				aces_search();
 
-			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].exclude == FALSE && !database_is_full && !aborted)
 				micro_search();
 
-			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].state == FALSE && !database_is_full)
+			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].exclude == FALSE && !database_is_full)
 				chr_search();
 
-			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
 
 			/* if it's a visiload then choose correct type now... */
@@ -915,136 +931,136 @@ static void search_tap(void)
 				visi_type = VISI_T4;
 
 			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4) {
-				if (ldrswt[novisi].state == FALSE && !database_is_full && !aborted)
+				if (ldrswt[novisi].exclude == FALSE && !database_is_full && !aborted)
 					visiload_search(tap.cbmcrc);
 			}
 
-			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].exclude == FALSE && !database_is_full && !aborted)
 				wild_search();
 
-			if (tap.cbmid == LID_HIT 	&& ldrswt[nohit     ].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_HIT 	&& ldrswt[nohit		].exclude == FALSE && !database_is_full && !aborted)
 				hitload_search();
 
-			if (tap.cbmid == LID_RACK 	&& ldrswt[norackit	].state	== FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_RACK 	&& ldrswt[norackit	].exclude == FALSE && !database_is_full && !aborted)
 				rackit_search();
 
-			if (tap.cbmid == LID_SPAV 	&& ldrswt[nospav	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_SPAV 	&& ldrswt[nospav	].exclude == FALSE && !database_is_full && !aborted)
 				superpav_search();
 
-			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].state == FALSE && !database_is_full && !aborted) {
+			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].exclude == FALSE && !database_is_full && !aborted) {
 				anirog_search();
 				freeload_search();
 			}
 
-			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].exclude == FALSE && !database_is_full && !aborted)
 				supertape_search();
 
-			if (tap.cbmid == LID_FIRE 	&& ldrswt[nofire	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FIRE 	&& ldrswt[nofire	].exclude == FALSE && !database_is_full && !aborted)
 				firebird_search();
 
-			if (tap.cbmid == LID_PAV 	&& ldrswt[nopav		].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_PAV 	&& ldrswt[nopav		].exclude == FALSE && !database_is_full && !aborted)
 				pav_search();
 
-			if (tap.cbmid == LID_IK 	&& ldrswt[noik		].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_IK 	&& ldrswt[noik		].exclude == FALSE && !database_is_full && !aborted)
 				ik_search();
 
-			if (tap.cbmid == LID_FLASH 	&& ldrswt[noflash	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FLASH 	&& ldrswt[noflash	].exclude == FALSE && !database_is_full && !aborted)
 				flashload_search();
 
-			if (tap.cbmid == LID_VIRG 	&& ldrswt[novirgin	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_VIRG 	&& ldrswt[novirgin	].exclude == FALSE && !database_is_full && !aborted)
 				virgin_search();
 
-			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].exclude == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
 
-			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].state == FALSE && !database_is_full && !aborted) {
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
 
-			if (tap.cbmid == LID_ATLAN	&& ldrswt[noatlantis	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ATLAN	&& ldrswt[noatlantis	].exclude == FALSE && !database_is_full && !aborted)
 				atlantis_search();
 
-			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].exclude == FALSE && !database_is_full && !aborted)
 				audiogenic_search();
 
-			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].exclude == FALSE && !database_is_full && !aborted)
 				cult_search();
 
-			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].exclude == FALSE && !database_is_full && !aborted)
 				accolade_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf1	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf1	].exclude == FALSE && !database_is_full && !aborted)
 				rainbowf1_search();
 
-			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf2	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_RAINBOWARTS	&& ldrswt[norainbowf2	].exclude == FALSE && !database_is_full && !aborted)
 				rainbowf2_search();
 
-			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_BURNERVAR	&& ldrswt[noburnervar	].exclude == FALSE && !database_is_full && !aborted)
 				burnervar_search();
 
-			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew4	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW4	&& ldrswt[nooceannew4	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew4_search();
 
-			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_108DE0A5	&& ldrswt[no108DE0A5	].exclude == FALSE && !database_is_full && !aborted)
 				t108DE0A5_search();
 
-			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
 				freeslow_search();
 
-			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].exclude == FALSE && !database_is_full && !aborted)
 				goforgold_search();
 
-			if (tap.cbmid == LID_FASTEVIL	&& ldrswt[nofastevil	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FASTEVIL	&& ldrswt[nofastevil	].exclude == FALSE && !database_is_full && !aborted)
 				fastevil_search();
 
-			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].exclude == FALSE && !database_is_full && !aborted)
 				fftape_search();
 
-			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_TESTAPE	&& ldrswt[notestape	].exclude == FALSE && !database_is_full && !aborted)
 				testape_search();
 
-			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].exclude == FALSE && !database_is_full && !aborted)
 				tequila_search();
 
-			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].state == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].exclude == FALSE  && !database_is_full && !aborted)
 				alternativesw_search();
 
-			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].exclude == FALSE && !database_is_full && !aborted)
 				chuckieegg_search();
 
-			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].state == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
 				alternativedk_search();
 
-			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].state == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 				powerload_search();
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].state == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].exclude == FALSE  && !database_is_full && !aborted)
 				gremlinf2_search();
 
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].state == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].exclude == FALSE  && !database_is_full && !aborted)
 				gremlinf1_search();
 
-			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].exclude == FALSE && !database_is_full && !aborted)
 				easytape_search();
 
-			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_CSPARKS	&& ldrswt[nocsparks	].exclude == FALSE && !database_is_full && !aborted)
 				creativesparks_search();
 
-			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].state == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].exclude == FALSE && !database_is_full && !aborted)
 				trilogic_search();
 
 			/*
@@ -1058,19 +1074,19 @@ static void search_tap(void)
 		/* Scan the lot.. (if shortcuts are disabled or no loader ID was found) */
 
 		if ((noid == FALSE && tap.cbmid == 0) || (noid == TRUE)) {
-			if (ldrswt[noturbo	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noturbo	].exclude == FALSE && !database_is_full && !aborted)
 				turbotape_search();
 
-			if (ldrswt[norislands	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[norislands	].exclude == FALSE && !database_is_full && !aborted)
 				rainbowislands_search();
 
-			if (ldrswt[nofree	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nofree	].exclude == FALSE && !database_is_full && !aborted)
 				freeload_search();
 
-			if (ldrswt[noode	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noode	].exclude == FALSE && !database_is_full && !aborted)
 				odeload_search();
 
-			if (ldrswt[nocult	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nocult	].exclude == FALSE && !database_is_full && !aborted)
 				cult_search();
 
 			/*
@@ -1080,190 +1096,190 @@ static void search_tap(void)
 			 * higher than ocean).
 			 */
 
-			if (ldrswt[nosnake50	].state == FALSE && !database_is_full && !aborted) {
+			if (ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted) {
 				snakeload50t1_search();
 				snakeload50t2_search();
 			}
 
-			if (ldrswt[nosnake51	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
 
-			if (ldrswt[nonova	].state == FALSE && !database_is_full && !aborted) {
+			if (ldrswt[nonova	].exclude == FALSE && !database_is_full && !aborted) {
 				nova_spc_search();
 				nova_search();
 			}
 
-			if (ldrswt[nobleep	].state == FALSE && !database_is_full && !aborted) {
+			if (ldrswt[nobleep	].exclude == FALSE && !database_is_full && !aborted) {
 				bleep_search();
 				bleep_spc_search();
 			}
 
-			if (ldrswt[noocean	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noocean	].exclude == FALSE && !database_is_full && !aborted)
 				ocean_search();
 
-			if (ldrswt[nocyber	].state == FALSE && !database_is_full && !aborted) {
+			if (ldrswt[nocyber	].exclude == FALSE && !database_is_full && !aborted) {
 				cyberload_f1_search();
 				cyberload_f2_search();
 				cyberload_f3_search();
 				cyberload_f4_search();
 			}
 
-			if (ldrswt[nousgold	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nousgold	].exclude == FALSE && !database_is_full && !aborted)
 				usgold_search();
 
-			if (ldrswt[noaces	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noaces	].exclude == FALSE && !database_is_full && !aborted)
 				aces_search();
 
-			if (ldrswt[nomicro	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nomicro	].exclude == FALSE && !database_is_full && !aborted)
 				micro_search();
 
-			if (ldrswt[noraster	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (ldrswt[nochr	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nochr	].exclude == FALSE && !database_is_full && !aborted)
 				chr_search();
 
-			if (ldrswt[noburner	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
 
-			if (ldrswt[novisi	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
 				visiload_search(tap.cbmcrc);
 
-			if (ldrswt[nowild	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nowild	].exclude == FALSE && !database_is_full && !aborted)
 				wild_search();
 
-			if (ldrswt[nohit	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nohit	].exclude == FALSE && !database_is_full && !aborted)
 				hitload_search();
 
-			if (ldrswt[norackit	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[norackit	].exclude == FALSE && !database_is_full && !aborted)
 				rackit_search();
 
-			if (ldrswt[nospav	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nospav	].exclude == FALSE && !database_is_full && !aborted)
 				superpav_search();
 
-			if (ldrswt[noanirog	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noanirog	].exclude == FALSE && !database_is_full && !aborted)
 				anirog_search();
 
-			if (ldrswt[nosuper	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nosuper	].exclude == FALSE && !database_is_full && !aborted)
 				supertape_search();
 
-			if (ldrswt[nofire	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nofire	].exclude == FALSE && !database_is_full && !aborted)
 				firebird_search();
 
-			if (ldrswt[nopav	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nopav	].exclude == FALSE && !database_is_full && !aborted)
 				pav_search();
 
-			if (ldrswt[noik		].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noik		].exclude == FALSE && !database_is_full && !aborted)
 				ik_search();
 
-			if (ldrswt[noturr	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noturr	].exclude == FALSE && !database_is_full && !aborted)
 				turrican_search();
 
-			if (ldrswt[noseuck	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noseuck	].exclude == FALSE && !database_is_full && !aborted)
 				seuck1_search();
 
-			if (ldrswt[nojet	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nojet	].exclude == FALSE && !database_is_full && !aborted)
 				jetload_search();
 
-			if (ldrswt[noflash	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noflash	].exclude == FALSE && !database_is_full && !aborted)
 				flashload_search();
 
-			if (ldrswt[novirgin	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[novirgin	].exclude == FALSE && !database_is_full && !aborted)
 				virgin_search();
 
-			if (ldrswt[nohitec	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nohitec	].exclude == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (ldrswt[notdif2	].state == FALSE && !database_is_full && !aborted) /* check f2 first (luigi) */
+			if (ldrswt[notdif2	].exclude == FALSE && !database_is_full && !aborted) /* check f2 first (luigi) */
 				tdif2_search();
 
-			if (ldrswt[notdif1	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[notdif1	].exclude == FALSE && !database_is_full && !aborted)
 				tdi_search();
 
-			if (ldrswt[nooceannew1t1].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nooceannew1t1].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (ldrswt[nooceannew1t2].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nooceannew1t2].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t2_search();
 
-			if (ldrswt[nooceannew2	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
 
-			if (ldrswt[noatlantis	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noatlantis	].exclude == FALSE && !database_is_full && !aborted)
 				atlantis_search();
 
-			if (ldrswt[nopalacef1	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nopalacef1	].exclude == FALSE && !database_is_full && !aborted)
 				palacef1_search();
 
-			if (ldrswt[nopalacef2	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nopalacef2	].exclude == FALSE && !database_is_full && !aborted)
 				palacef2_search();
 
-			if (ldrswt[noenigma	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noenigma	].exclude == FALSE && !database_is_full && !aborted)
 				enigma_search();
 
-			if (ldrswt[noaudiogenic	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noaudiogenic	].exclude == FALSE && !database_is_full && !aborted)
 				audiogenic_search();
 
-			if (ldrswt[noaliensy	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noaliensy	].exclude == FALSE && !database_is_full && !aborted)
 				aliensyndrome_search();
 
-			if (ldrswt[noaccolade	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noaccolade	].exclude == FALSE && !database_is_full && !aborted)
 				accolade_search();
 
-			if (ldrswt[noalterwg	].state	== FALSE && !database_is_full && !aborted)
+			if (ldrswt[noalterwg	].exclude == FALSE && !database_is_full && !aborted)
 				alternativewg_search();
 
-			if (ldrswt[norainbowf1	].state	== FALSE && !database_is_full && !aborted)
+			if (ldrswt[norainbowf1	].exclude == FALSE && !database_is_full && !aborted)
 				rainbowf1_search();
 
-			if (ldrswt[norainbowf2	].state	== FALSE && !database_is_full && !aborted)
+			if (ldrswt[norainbowf2	].exclude == FALSE && !database_is_full && !aborted)
 				rainbowf2_search();
 
-			if (ldrswt[noburnervar	].state	== FALSE && !database_is_full && !aborted)
+			if (ldrswt[noburnervar	].exclude == FALSE && !database_is_full && !aborted)
 				burnervar_search();
 
-			if (ldrswt[nooceannew4	].state	== FALSE && !database_is_full && !aborted)
+			if (ldrswt[nooceannew4	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew4_search();
 
-			if (ldrswt[nobiturbo	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nobiturbo	].exclude == FALSE && !database_is_full && !aborted)
 				biturbo_search();
 
-			if (ldrswt[no108DE0A5	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[no108DE0A5	].exclude == FALSE && !database_is_full && !aborted)
 				t108DE0A5_search();
 
-			if (ldrswt[noar		].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noar		].exclude == FALSE && !database_is_full && !aborted)
 				ar_search();
 
-			if (ldrswt[noashdave	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noashdave	].exclude == FALSE && !database_is_full && !aborted)
 				ashdave_search();
 
-			if (ldrswt[nofrslow	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
 				freeslow_search();
 
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting
 			 * the very few titles using these formats. We don't really want to slow
 			 * down scanning due to rare formats, but we need to be able to understand
-			 * where these are in use. Hence the scans are here for the time being. 
+			 * where these are in use. Hence the scans are here for the time being.
 			 */
 
-			if (ldrswt[noamaction	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noamaction	].exclude == FALSE && !database_is_full && !aborted)
 				amaction_search();
 
-			if (ldrswt[nocreatures	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nocreatures	].exclude == FALSE && !database_is_full && !aborted)
 				creatures_search();
 
 			// Enabled due to "Catalypse" (side 1/2)
-			if (ldrswt[notestape	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[notestape	].exclude == FALSE && !database_is_full && !aborted)
 				testape_search();
 
-			if (ldrswt[nooceannew3	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nooceannew3	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew3_search();
 
-			if (ldrswt[noddesign	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noddesign	].exclude == FALSE && !database_is_full && !aborted)
 				ddesign_search();
 
-			if (ldrswt[nomsx	].state == FALSE && !database_is_full && !aborted) {
+			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted) {
 				msx_search(0);	/* Standard */
 				msx_search(1);	/* Fast */
 			}
@@ -1275,10 +1291,10 @@ static void search_tap(void)
 			 * compilations.
 			 */
 
-			if (ldrswt[noeasytape	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noeasytape	].exclude == FALSE && !database_is_full && !aborted)
 				easytape_search();
 
-			if (ldrswt[noturbo220	].state == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noturbo220	].exclude == FALSE && !database_is_full && !aborted)
 				turbo220_search();
 
 			/*
@@ -1286,31 +1302,31 @@ static void search_tap(void)
 			 * their signature is found in CBM Data block.
 			 */
 
-			//if (ldrswt[notrilogic	].state	== FALSE && !database_is_full && !aborted)
+			//if (ldrswt[notrilogic	].exclude == FALSE && !database_is_full && !aborted)
 			//	trilogic_search();
 
-			//if (ldrswt[nofftape	].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[nofftape	].exclude == FALSE && !database_is_full && !aborted)
 			//	fftape_search();
 
-			//if (ldrswt[notequila	].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[notequila	].exclude == FALSE && !database_is_full && !aborted)
 			//	tequila_search();
 
-			//if (ldrswt[noaltersw	].state == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[noaltersw	].exclude == FALSE  && !database_is_full && !aborted)
 			//	alternativesw_search();
 
-			//if (ldrswt[noalterdk	].state == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
 			//	alternativedk_search();
 
-			//if (ldrswt[nopower	].state == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();
 
-			//if (ldrswt[nogremlinf1].state == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[nogremlinf1].exclude == FALSE  && !database_is_full && !aborted)
 			//	gremlinf1_search();
 
-			//if (ldrswt[nogremlinf2].state == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[nogremlinf2].exclude == FALSE  && !database_is_full && !aborted)
 			//	gremlinf2_search();
 
-			//if (ldrswt[nocsparks	].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[nocsparks	].exclude == FALSE && !database_is_full && !aborted)
 			//	creativesparks_search();
 
 			/*
@@ -1321,13 +1337,13 @@ static void search_tap(void)
 			 * is found in CBM Data block.
 			 */
 
-			//if (ldrswt[nogoforgold	].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[nogoforgold	].exclude == FALSE && !database_is_full && !aborted)
 			//	goforgold_search();
 
-			//if (ldrswt[nofastevil		].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[nofastevil		].exclude == FALSE && !database_is_full && !aborted)
 			//	fastevil_search();
 
-			//if (ldrswt[nochuckie		].state == FALSE && !database_is_full && !aborted)
+			//if (ldrswt[nochuckie		].exclude == FALSE && !database_is_full && !aborted)
 			//	chuckieegg_search();
 		}
 
@@ -1339,8 +1355,9 @@ static void search_tap(void)
 
 		if (quiet)
 			msgout("  Done.");
-	} else
-		msgout("  Done.");
+	} else {
+		msgout("  Done (no changes).");
+	}
 }
 
 /*
@@ -1350,6 +1367,7 @@ static void search_tap(void)
 
 static void gap_describe(int row)
 {
+	/* Gap size is stored within the "extra info" field of the record */
 	if (blk[row]->xi > 1)
 		sprintf(lin, "\n - Length = %d pulses", blk[row]->xi);
 	else
@@ -1363,15 +1381,15 @@ static void gap_describe(int row)
  * it calls the describe function for that file format which will decode
  * any data in the block and fill in all missing information for that file.
  *
- * Note: Any "additional" (unstored in the database) text info will be available
- * in the global buffer 'info' (this could be improved).
+ * Note: Any "additional" (i.e. not stored in the block database) text info
+ * will only be available in the global buffer 'info' (this could be improved).
  */
 
 static void describe_file(int row)
 {
 	int t;
-	t = blk[row]->lt;
 
+	t = blk[row]->lt;
 	switch(t) {
 		case GAP:		gap_describe(row);
 					break;
@@ -1605,7 +1623,7 @@ static void describe_file(int row)
 }
 
 /*
- * Describes each file in the database, this calls the loadername_describe()
+ * Describe each file in the database, this calls the loadername_describe()
  * function for the files type which fills in all missing information and
  * decodes each file.
  */
@@ -1625,7 +1643,7 @@ static void describe_blocks(void)
 
 		if (t > PAUSE) {
 
-			/* make crc32 if the block has been data extracted. */
+			/* make crc32 if the block data has been extracted. */
 
 			if (blk[i]->dd != NULL)
 				blk[i]->crc = crc32_compute_crc(blk[i]->dd, blk[i]->cx);
@@ -1651,26 +1669,18 @@ static int save_tap(char *name)
 
 	fwrite(tap.tmem, tap.len, 1, fp);
 	fclose(fp);
+
 	return 1;
 }
 
 /*
  * Look at the TAP header and verify signature as C64 TAP.
- * Return 0 if ok else 1.
+ * Return 0 if ok else 1 (rationalised).
  */
 
 static int check_signature(void)
 {
-	int i;
-
-	/* copy 1st 12 chars, strncpy fucks it up somehow. */
-
-	for (i = 0; i < 12; i++)
-		lin[i] = tap.tmem[i];
-
-	lin[i] = 0;
-
-	if (strcmp(lin, "C64-TAPE-RAW") == 0)
+	if (strncmp((char *) tap.tmem, "C64-TAPE-RAW", 12) == 0)
 		return 0;
 	else
 		return 1;
@@ -1686,11 +1696,14 @@ static int check_version(void)
 	int b;
 
 	b = tap.tmem[12];
+
+	/* Only TAP v0 and v1 are supported */
 	if (b == 0 || b == 1) {
 		tap.version = b;
 		return 0;
-	} else
+	} else {
 		return 1;
+	}
 }
 
 /*
@@ -1702,7 +1715,8 @@ static int check_size(void)
 {
 	int sz;
 
-	sz = tap.tmem[16] + (tap.tmem[17] << 8) + (tap.tmem[18] << 16) + (tap.tmem[19] << 24);
+	sz = (int) tap.tmem[16] + ((int) tap.tmem[17] << 8) +
+		((int) tap.tmem[18] << 16) + ((int) tap.tmem[19] << 24);
 	if (sz == tap.len - 20)
 		return 0;
 	else
@@ -1711,7 +1725,8 @@ static int check_size(void)
 
 /*
  * Return the duration in seconds between p1 and p2.
- * p1 and p2 should be valid offsets within the scope of the TAP file.
+ * p1 and p2 should be valid offsets within the data section of the TAP file.
+ * An offset in the middle of a TAP v1 longpulse is considered invalid.
  */
 
 static float get_duration(int p1, int p2)
@@ -1737,13 +1752,16 @@ static float get_duration(int p1, int p2)
 		/* handle v1 zeroes.. */
 
 		if (tap.tmem[i] == 0 && tap.version == 1) {
-			zsum = tap.tmem[i + 1] + (tap.tmem[i + 2] << 8) + (tap.tmem[i + 3] << 16);
-			tot += (double)zsum / cps;
+			zsum = (unsigned /*long*/ int) tap.tmem[i + 1] +
+				((unsigned /*long*/ int) tap.tmem[i + 2] << 8) +
+				((unsigned /*long*/ int) tap.tmem[i + 3] << 16);
+			tot += (double) zsum / cps;
 			i += 3;
 		}
 	}
 
 	apr = (float)tot;	/* approximate and return number of seconds. */
+
 	return apr;
 }
 
@@ -1756,7 +1774,7 @@ static int get_pulse_stats(int start, int end)
 {
 	int i, tot, b;
 
-	for(i = 0; i < 256; i++)	/* clear pulse table...  */
+	for (i = 0; i < 256; i++)	/* clear pulse table...  */
 		tap.pst[i] = 0;
 
 	/* create pulse table... */
@@ -2010,7 +2028,7 @@ int main(int argc, char *argv[])
 	time_t t1, t2;
 
 	/* Delete report and info files */
-	deleteworkfiles();
+	delete_work_files();
 
 	/* Get exe path from argv[0] */
 	if (!get_exedir(argv[0]))
@@ -2032,7 +2050,7 @@ int main(int argc, char *argv[])
 
 	if (argc == 1) {
 		display_usage();
-		printf("\n\n");
+		printf("\n");
 		cleanup_main();
 		return 0;
 	}
@@ -2072,7 +2090,7 @@ int main(int argc, char *argv[])
 				report();
 				printf("\n\nSaved: %s", tcreportname);
 				time(&t2);
-				time2str(t2 - t1, lin);
+				time_to_string(t2 - t1, lin);
 				printf("\nOperation completed in %s.", lin);
 			}
 		}
@@ -2135,7 +2153,7 @@ int main(int argc, char *argv[])
 						printf("\n%s...\n", opname);
 
 						if (analyze()) {
-							if (opnum == OP_OPTIMIZE && tap.total_read_errors) {
+							if (opnum == OP_OPTIMIZE && tap.total_read_errors && reckless == FALSE) {
 								printf("\n\n%s contains read errors so it won't be cleaned.\n", tap.name);
 							} else {
 								switch(opnum) {
@@ -2184,7 +2202,7 @@ int main(int argc, char *argv[])
 							printf("\nSaved: %s", tcreportname);
 
 							time(&t2);
-							time2str(t2 - t1, lin);
+							time_to_string(t2 - t1, lin);
 							printf("\nOperation completed in %s.", lin);
 						}
 					}
@@ -2651,6 +2669,7 @@ int analyze(void)
 
 	if (fstats == FALSE)
 		tap.purity = get_pulse_stats(20, tap.len - 1);
+
 	get_file_stats();
 
 	tap.optimized_files = database_count_opt_blks();
@@ -2772,13 +2791,13 @@ void report(void)
 		//sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcreportname, tcreportname);
 		//system(lin);
 		rename (temptcreportname, tcreportname);
-	} else
+	} else {
 		msgout("\nError: failed to create report file.");
+	}
 
 	/* show results and general info onscreen... */
 
-	if (!batchmode)
-	{
+	if (!batchmode) {
 		print_results(rbuf);
 		fprintf(stdout, "%s", rbuf);
 	}
@@ -2937,6 +2956,7 @@ int is_pause_param(int p)
 			}
 		}
 	}
+
 	return 0; /* p is the pos of one of the last 4 pulses in the TAP file */
 }
 
@@ -3073,8 +3093,7 @@ char* change_file_extention(char *filename, char *new_extension, int buffer_leng
 	for (i = len - 1; i > 0 && filename[i] != '.'; i--)
 		;
 
-	if (filename[i] == '.')
-	{
+	if (filename[i] == '.') {
 		int j;
 
 	        i++;
@@ -3141,7 +3160,7 @@ char* pet2text(char *dest, char *src)
  * Only keeps alphanumeric chars in a string so that it is safe to use it as filename.
  */
 
-void fname_text (char *src)
+void fname_text(char *src)
 {
 	char *s;
 
@@ -3166,26 +3185,10 @@ void trim_string(char *str)
 }
 
 /*
- * Pads the string 'str' with spaces so the resulting string is 'wid' chars long.
- */
-
-void padstring(char *str, int wid)
-{
-	int i, len;
-
-	len = strlen(str);
-	if (len < wid) {
-		for (i = len; i < wid; i++)
-			str[i] = 32;
-		str[i] = 0;
-	}
-}
-
-/*
  * Converts an integer number of seconds to a time string of format HH:MM:SS.
  */
 
-void time2str(time_t secs, char *buf)
+void time_to_string(time_t secs, char *buf)
 {
 	int h, m, s;
 
@@ -3199,7 +3202,7 @@ void time2str(time_t secs, char *buf)
  * Remove all/any existing work files.
  */
 
-void deleteworkfiles(void)
+void delete_work_files(void)
 {
 	FILE *fp;
 

@@ -6,6 +6,12 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for new loaders
 
+v0.34
+	Improvement: Rationalised usage and options messages (Luigi)
+	New: Added the "-reckless" option to clean tape images with read
+	 errors (Luigi)
+	Code quality: Made a number of rationalisations (Luigi)
+
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
 	New: Added initial support for MSX tape Data files (Luigi)

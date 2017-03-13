@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------
   burner.c
-  
-  Part of project "Final TAP". 
-  
+
+  Part of project "Final TAP".
+
   A Commodore 64 tape remastering and data extraction utility.
 
   (C) 2001-2006 Stewart Wilson, Subchrist Software.
-	
-  
-	
-	This program is free software; you can redistribute it and/or modify it under 
-	the terms of the GNU General Public License as published by the Free Software 
-	Foundation; either version 2 of the License, or (at your option) any later 
+
+
+
+	This program is free software; you can redistribute it and/or modify it under
+	the terms of the GNU General Public License as published by the Free Software
+	Foundation; either version 2 of the License, or (at your option) any later
 	version.
-	
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY
+	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 	PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	
-	You should have received a copy of the GNU General Public License along with 
-	this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+
+	You should have received a copy of the GNU General Public License along with
+	this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
 	St, Fifth Floor, Boston, MA 02110-1301 USA
-	
+
 ---------------------------------------------------------------------------*/
 
 #include "../mydefs.h"
@@ -38,10 +38,10 @@ void burner_search(void)
 {
 	int i,j,z,sof,sod,eod,eof;
 	int hd[HDSZ],x,ib;
- 
+
 	if(!quiet)
 		msgout("  Burner");
-			
+
 
 	/* first we retrieve the burner variables from the CBM header... */
 
@@ -69,19 +69,17 @@ void burner_search(void)
 
 	/*------------------------------------------------------------------------------- */
 
-	for(i=20; i<tap.len-8; i++)
-	{
-		if((z=find_pilot(i,BURNER))>0)
-		{
+	for(i=20; i<tap.len-8; i++) {
+
+		if((z=find_pilot(i,BURNER))>0) {
 			sof=i;
 			i=z;
-			if(readttbyte(i, ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en)==ft[BURNER].sv)
-			{
+
+			if(readttbyte(i, ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en)==ft[BURNER].sv) {
 				sod = i+8;
 
 				/* decode the header, so we can validate the addresses */
-				for(j=0; j<HDSZ; j++)
-				{
+				for(j=0; j<HDSZ; j++) {
 					hd[j] = readttbyte(sod+(j*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en);
 					if (hd[j] == -1)
 						break;
@@ -90,17 +88,14 @@ void burner_search(void)
 					continue;
 
 				x= (hd[2]+(hd[3]<<8)) - (hd[0]+ (hd[1]<<8));  /* get data length */
-				if(x>0)
-				{
+				if(x>0) {
 					eod= sod+ ((x+HDSZ)*8)-8;
 					eof= eod+7;
 					addblockdef(BURNER, sof,sod,eod,eof, ft[BURNER].pv+ (ft[BURNER].sv<<8)+ (ft[BURNER].en<<16));
 					i= eof;  /* optimize search  */
 				}
 			}
-		}
-		else
-		{
+		} else {
 			if(z<0)	 /* find_pilot failed (too few/many), set i to failure point.  */
 				i=(-z);
 		}
@@ -129,11 +124,11 @@ int burner_describe(int row)
 
 	blk[row]->cs= hd[0]+ (hd[1]<<8);
 	blk[row]->ce= hd[2]+ (hd[3]<<8)-1;
-	blk[row]->cx= (blk[row]->ce - blk[row]->cs)+1;  
+	blk[row]->cx= (blk[row]->ce - blk[row]->cs)+1;
 
 	sprintf(lin,"\n - Pilot: $%02X, Sync: $%02X, Endianess : %s",blk[row]->xi&0xFF, (blk[row]->xi&0xFF00)>>8, endiname);
 	strcat(info,lin);
-	
+
 	/* get pilot and trailer lengths  */
 	blk[row]->pilot_len= ((blk[row]->p2 - blk[row]->p1 -8)>>3)-1;
 	blk[row]->trail_len= (blk[row]->p4 - blk[row]->p3 -7)>>3;
@@ -146,8 +141,7 @@ int burner_describe(int row)
 		free(blk[row]->dd);
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
-	for(i=0; i<blk[row]->cx; i++)
-	{
+	for(i=0; i<blk[row]->cx; i++) {
 		b= readttbyte(s+(i*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, endi);
 		if(b==-1)
 			rd_err++;

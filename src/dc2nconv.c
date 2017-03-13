@@ -77,7 +77,7 @@ static int write_long_pulse(unsigned char *output_buffer, unsigned long lp)
 		output_buffer[1+wbytes] = (unsigned char) (zerot & 0xFF);
 		output_buffer[2+wbytes] = (unsigned char) ((zerot>>8) & 0xFF);
 		output_buffer[3+wbytes] = (unsigned char) ((zerot>>16) & 0xFF);
-		
+
 		wbytes += 4;
 	}
 

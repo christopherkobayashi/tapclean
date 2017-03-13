@@ -203,8 +203,7 @@ int alternativedk_describe (int row)
 	blk[row]->cx = 0x100;
 
 	/* Give extra info if this is a marker block */
-	if (blk[row]->xi <= 2)
-	{
+	if (blk[row]->xi <= 2) {
 		strcat(info,"\n - Marker block");
 		strcat(info,"\n - Type: ");
 

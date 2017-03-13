@@ -101,7 +101,7 @@ enum {
  */
 static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
 {
-	int variant = BURNERVAR_NOTFOUND;	
+	int variant = BURNERVAR_NOTFOUND;
 
 	int ib;			/* condition variable */
 
@@ -156,7 +156,7 @@ static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
 
 	return variant;
 }
-		
+
 void burnervar_search (void)
 {
 	int i, h;			/* counters */
@@ -189,9 +189,9 @@ void burnervar_search (void)
 
 	/*
 	 * First we retrieve the burner variables from the CBM header.
-	 * We use CBM HEAD index # 1 as we assume the tape image contains 
+	 * We use CBM HEAD index # 1 as we assume the tape image contains
 	 * a single game.
-	 * For compilations we should search and find the relevant file 
+	 * For compilations we should search and find the relevant file
 	 * using the search code found e.g. in Biturbo.
 	 */
 	cbm_index = 1;
@@ -374,8 +374,7 @@ int burnervar_describe (int row)
 	}
 
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
-	if (blk[row]->meta1 != BURNERVAR_LEGACY)
-	{
+	if (blk[row]->meta1 != BURNERVAR_LEGACY) {
 #endif
 		/* Read post-data */
 		for (i = 0; i < POSTDATASIZE; i++) {

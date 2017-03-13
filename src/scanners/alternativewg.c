@@ -1,7 +1,7 @@
 /*
  * alternativewg.c
  *
- * Part of project "tapclean". 
+ * Part of project "tapclean".
  *
  * A Commodore 64 tape remastering and data extraction utility.
  *
@@ -10,17 +10,17 @@
  *
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  */
@@ -50,15 +50,15 @@ void alternativewg_search(void)
 
 	if (!quiet)
 		msgout("  Alternative World Games");
-    
+
 	for (i = 20; i < tap.len - 8; i++) {
+
 		if ((z = find_pilot(i, ALTERWG)) > 0) {
 			sof = i;
 			sod = i = z + 1;
-			/* decode the header so we can validate the addresses... */
 
-			for (h = 0; h < HDSZ; h++)
-			{
+			/* decode the header so we can validate the addresses... */
+			for (h = 0; h < HDSZ; h++) {
 				hd[h] = readttbyte(sod + (h * 8), lp, sp, tp, en);
 				if (hd[h] == -1) /* fail in case of byte read error */
 					break;
@@ -72,9 +72,7 @@ void alternativewg_search(void)
 			eof = eod;
 			addblockdef(ALTERWG, sof, sod, eod, eof, s);
 			i = eof;	/* optimize search */
-		}
-		else
-		{
+		} else {
 			if(z<0)    /* find_pilot failed (too few/many), set i to failure point. */
 				i=(-z);
 		}
@@ -90,7 +88,7 @@ int alternativewg_describe(int row)
 	tp = ft[ALTERWG].tp;
 	sp = ft[ALTERWG].sp;
 	lp = ft[ALTERWG].lp;
-      
+
 	/* decode header... */
 
 	s = blk[row]->p2;

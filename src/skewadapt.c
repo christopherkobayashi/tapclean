@@ -11,19 +11,19 @@
  *
  * Parts of code from main.c readttbit() function.
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
- * 
+ *
  */
 
 
@@ -101,21 +101,21 @@ static void init_pulse_cache(void)
 		cache_bit0[i].value = 0;
 		cache_bit0[i].pos = 0;
 	}
-	
+
 	for (i = 0; i < CACHE_BIT1_SIZE; i++) {
 		cache_bit1[i].value = 1;
 		cache_bit1[i].pos = 0;
 	}
-	
+
 	for (i = 0; i < CACHE_ERROR_SIZE; i++) {
 		cache_err[i].value = -1;
 		cache_err[i].pos = 0;
 	}
-	
+
 	next_bit0 = 0;
 	next_bit1 = 0;
 	next_err = 0;
-	
+
 	cache_max_pos = 0;
 	num_reset_pos = 0;
 }
@@ -130,7 +130,7 @@ static void erase_pulse_cache(void)
 
 	for (i = 0; i < CACHE_SIZE; i++)
 		cache[i].pos = 0;
-	
+
 	cache_max_pos = 0;
 }
 
@@ -178,9 +178,9 @@ int skewadapt_readttbit(int pos, int lp, int sp, int tp)
 	if (cache_lp != lp ||
 	    cache_sp != sp ||
 	    cache_tp != tp) {
-		
+
 		init_pulse_cache();
-		
+
 		cache_lp = lp;
 		cache_sp = sp;
 		cache_tp = tp;
@@ -222,7 +222,7 @@ int skewadapt_readttbit(int pos, int lp, int sp, int tp)
 					      MAX_RESET_POS] >= pos)
 					break;
 			}
-			
+
 			num_reset_pos = i;
 			if (i == 0)
 				i = 20;
@@ -243,7 +243,7 @@ int skewadapt_readttbit(int pos, int lp, int sp, int tp)
 	for (i = 0; i < CACHE_BIT0_SIZE + CACHE_BIT1_SIZE; i++) {
 		if (cache[i].pos == 0)
 			break;
-		
+
 		if (cache[i].value == 0) {
 			ssum += cache[i].width;
 			ns++;
@@ -276,12 +276,12 @@ int skewadapt_readttbit(int pos, int lp, int sp, int tp)
 		v = 0;
 		valid += 1;
 	}
-	
+
 	if (b > tp + skew) {		/* its a LONG (Bit1) pulse... */
 		v = 1;
 		valid += 2;
 	}
-	
+
 	if (b == tp + skew)		/* its ON the threshold!... */
 		valid += 4;
 
@@ -343,7 +343,7 @@ int skewadapt_readttbit(int pos, int lp, int sp, int tp)
 		int *err = &cache_err[next_err].pos;
 		int *bit0 = &cache_bit0[next_bit0].pos;
 		int *bit1 = &cache_bit1[next_bit1].pos;
-		
+
 		if (*err > 0 && *err < *bit0 && *err < *bit1) {
 			*err = 0;
 		}

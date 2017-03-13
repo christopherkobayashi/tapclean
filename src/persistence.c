@@ -2,7 +2,7 @@
  *	@file 	persistence.c
  *	@brief	A module to reuse discovered loader parameters in subsequent scans.
  *
- *	This module persists discovered loader parameters in subsequent 
+ *	This module persists discovered loader parameters in subsequent
  *  invokations of the application.
  */
 
@@ -73,7 +73,7 @@ int persistence_load_loader_parameters (void)
 				return PERS_UNSUPPORTED_VERSION;
 			}
 
-		if (sscanf (readbuffer, 
+		if (sscanf (readbuffer,
 				"%s = %d %d %d %d %d %d %d",
 				loader,
 				&en,

@@ -2,8 +2,8 @@
  *	@file 	persistence.h
  *	@brief	A module to reuse discovered loader parameters in subsequent scans.
  *
- *	This module persists discovered loader parameters in subsequent 
- *  invokations of the application.
+ *	This module persists discovered loader parameters in subsequent
+ *	invokations of the application.
  */
 
 #ifndef __PERSISTENCE_H__

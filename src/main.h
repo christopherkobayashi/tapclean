@@ -56,10 +56,9 @@ char* change_file_extention(char *, char *, int);
 char* pet2text(char *, char *);
 void fname_text(char *);
 void trim_string(char *);
-void padstring(char *, int);
-void time2str(time_t, char *);
+void time_to_string(time_t, char *);
 
-void deleteworkfiles(void);
+void delete_work_files(void);
 
 /* in clean.c...  really an extension of main.c so no separate header */
 

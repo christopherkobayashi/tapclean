@@ -214,7 +214,7 @@ void unify_pauses(void)
 				 * so it works on single pauses too. doh!
 				 */
 
-				i += (j * 4) - 1;	
+				i += (j * 4) - 1;
 
 				if (tot < 16777216) {
 
@@ -359,7 +359,7 @@ void clean_files(void)
 
 		/* clean... threshold is unavailable... */
 		/* dont try and clean gaps or pauses! */
-		
+
 		if (t > 2 && tp == NA) {
 			sprintf(lin, "\nCleaning %s tape block from $%04X to $%04X...", ft[t].name, s, e);
 			msgout(lin);
@@ -400,7 +400,7 @@ void clean_files(void)
 							tap.tmem[j] = sp;
 						if (abs(sp - b) > abs(mp - b))
 							tap.tmem[j] = mp;
-						
+
 						/* note: no change if there is total ambiguity. (abs(sp-b) == abs(mp-b)) */
 					}
 
@@ -414,7 +414,7 @@ void clean_files(void)
 
 						/* note: no change if there is total ambiguity. (abs(mp-b) == abs(lp-b)) */
 					}
-					
+
 					/* qualified as sp AND lp...choose closer... */
 
 					if (owned == 5) {
@@ -433,7 +433,7 @@ void clean_files(void)
 		if (t == ACTIONREPLAY_STURBO) {
 			int st, et;
 			int spt, lpt, tpt;
-			
+
 			st = blk[i]->p3 + 8;		/* get trailer start */
 			et = blk[i]->p4;
 
@@ -793,14 +793,14 @@ void fix_pilots(void)
 
 	do {
 		mi = 0;
-		
+
 		/* clear previous entries... */
-		
+
 		for (i = 0;i < 1024; i++)
 			m[i][0] = 0;
 
 		/* create table of broken pilot offsets... */
-		
+
 		for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
 			b1 = blk[i]->lt;
 			b2 = blk[i + 1]->lt;
@@ -1072,7 +1072,7 @@ void cut_range(int from, int upto)
 
 	if (upto < 20 || upto > tap.len)
 		return;
-	
+
 	if (from > upto)
 		return;
 
@@ -1166,8 +1166,7 @@ void cut_leading_gap(void)
 	msgout("\nCutting leading garbage...");
 
 	/* we look for this pattern...    Start of tape, GAP(<20 pulses) */
-	if (blk[0]->lt == GAP && blk[0]->xi < 20)
-	{
+	if (blk[0]->lt == GAP && blk[0]->xi < 20) {
 		cut_range(blk[0]->p1, blk[0]->p4);
 		msgout("  Done.");
 		analyze();
@@ -1236,7 +1235,7 @@ void fill_cbm_tone(void)
 			}
 		}
 	}
-	
+
 	/* Note: length has not changed but the gap SHOULD now disappear */
 	/* on rescan. (will be recognised as CBM tone). */
 
@@ -1379,8 +1378,8 @@ void fix_pavloda_check_bytes(void)
 					tap.changed = 1;
 
 					fixed_cnt++;
-				}				
-			}	
+				}
+			}
 		}
 	}
 

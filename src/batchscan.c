@@ -1,24 +1,24 @@
 /*
  * batchscan.c
  *
- * Part of project "Final TAP". 
+ * Part of project "Final TAP".
  *
  * A Commodore 64 tape remastering and data extraction utility.
  *
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * Notes:
@@ -43,12 +43,26 @@
 #define FIELDS	15
 
 /*
- * search for all tap files in directory 'rootdir', create a html report of all taps
+ * Pads the string 'str' with spaces so the resulting string is 'wid' chars long.
+ */
+
+static void padstring(char *str, int wid)
+{
+	int i, len;
+
+	len = strlen(str);
+	if (len < wid) {
+		for (i = len; i < wid; i++)
+			str[i] = 32;
+		str[i] = 0;
+	}
+}
+
+/*
+ * search for all tap files in directory 'rootdir', create a report of all taps
  * found there (and optionally in any subdirectories).
  *
  * 'rootdir' is the directory to scan for tap files.
- *
- * 'outfile' is the name of the ouput file (the report).
  *
  * Set includesubdirs >0 to include the whole directory tree above rootdir in the scan.
  *
@@ -94,7 +108,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 	fullpath[strlen(fullpath)] = SLASH;
 	fullpath[strlen(fullpath) + 1] = '\0';
- 
+
 	for (i = 0; i < MAXTAPS; i++)
 		taps[i] = (struct tap_tr*)malloc(sizeof(struct tap_tr));
 
@@ -103,7 +117,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	time(&t1);	/* record current time so we can compute time taken. */
 
 	total_taps = 0;
-      
+
 	/* build dir & file lists... */
 
 	dl = filesearch_get_dir_list(fullpath);
@@ -112,10 +126,10 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		fl = filesearch_get_file_list("*.tap", dl, ROOTONLY);
 	else
 		fl = filesearch_get_file_list("*.tap", dl, ROOTALL);
-      
+
 	filesearch_clip_list(fl);
-	filesearch_sort_list(fl);  
-   
+	filesearch_sort_list(fl);
+
 	/* note: t=fl->link skips the 1st entry "root name". */
 
 	for (t = fl->link, i = 0; t != NULL && i < MAXTAPS; i++) {
@@ -126,7 +140,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		t = t->link;
 		total_taps++;
 	}
-   
+
 	filesearch_free_list(fl);
 
 	/* keep DMP files at the very end of the list */
@@ -135,10 +149,10 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		fl = filesearch_get_file_list("*.dmp", dl, ROOTONLY);
 	else
 		fl = filesearch_get_file_list("*.dmp", dl, ROOTALL);
-      
+
 	filesearch_clip_list(fl);
-	filesearch_sort_list(fl);  
-   
+	filesearch_sort_list(fl);
+
 	/* note: t=fl->link skips the 1st entry "root name". */
 
 	for (t = fl->link; t != NULL && i < MAXTAPS; i++) {
@@ -149,11 +163,11 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 		t = t->link;
 		total_taps++;
 	}
-   
+
 	filesearch_free_list(fl);
 
 	filesearch_free_list(dl);
-   
+
 	if (total_taps == 0) {
 		msgout("\nError: No tape images were found.");
 
@@ -168,14 +182,14 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 	if (doscan) {
 
-		/* 
+		/*
 		 * note: we use a temp file then rename it the the name of outfile
 		 * because the frontend cannot open a file that is in use.
 		 */
-		
+
 		chdir(exedir);
 
-		deleteworkfiles();
+		delete_work_files();
 
 		/* create a new report file... */
 
@@ -188,17 +202,17 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 
 		batchmode = 1;
 		aborted = 0;
-        
+
 		/* Open each file in turn... */
 
 		for (i = 0; i < total_taps && !aborted; i++) {
 			chdir(fullpath);	/* switch to the taps directory */
-         
+
 			sprintf(lin, "\n\nTesting : %s",taps[i]->path);	/* display current tap name */
 			msgout(lin);
 			sprintf(lin, "\n%d remaining.", --j);	/* and amount remaining */
 			msgout(lin);
- 
+
 			/* note : tap.name is updated to be filename only. */
 
 			if (load_tap(taps[i]->path)) {
@@ -335,7 +349,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 			for (j = 0; j < FIELDS; j++)
 				fprintf(fp, "%s  ", tfields[j]);
 		}
-         
+
 		fprintf(fp, "\n");
 		fprintf(fp, "\nTotal TAPs : %d ", i);
 		fprintf(fp, "\nFailed : %d ", failed_taps);
@@ -367,7 +381,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 //		sprintf(lin, OSAPI_RENAME_FILE" %s %s", temptcbatchreportname, tcbatchreportname);
 //		system(lin);
 		rename (temptcbatchreportname, tcbatchreportname);
-           
+
 		/*  print path/name of batch report to screen.. */
 
 		strcpy(temp, fullpath);
@@ -379,7 +393,7 @@ int batchscan(char *rootdir, int includesubdirs, int doscan)
 	}
 
 	time(&t2);
-	time2str(t2 - t1, lin);
+	time_to_string(t2 - t1, lin);
 	printf("\n\nOperation completed in %s.", lin);
 
 	/* cleanup... */

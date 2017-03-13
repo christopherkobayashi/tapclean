@@ -69,8 +69,7 @@ static inline unsigned int crc_xmodem_update (unsigned int crc, unsigned char da
 	int i;
 
 	crc ^= ((unsigned int)data << 8);
-	for (i = 0; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++) {
 		if (crc & 0x8000)
 			crc = (crc << 1) ^ 0x1021;
 		else
@@ -117,7 +116,7 @@ int chuckieegg_readbyte(int pos, int lp, int sp, int tp, int endi)
 		}
 	}
 
-	/* Invert all bits before returning the value since this loader uses 
+	/* Invert all bits before returning the value since this loader uses
 	 * bit 0 pulse longer than bit 1
 	 */
 	return (v ^ 0xFF);
@@ -257,8 +256,8 @@ int chuckieegg_describe(int row)
 		b = chuckieegg_readbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
 #ifdef FORCECHUCKIEEGGCRC
-		/* When part 3 checksum is calculated by the game, the contents 
-		 * in RAM have changed since they were loaded. We change them 
+		/* When part 3 checksum is calculated by the game, the contents
+		 * in RAM have changed since they were loaded. We change them
 		 * too to end up with the expected CRC.
 		 */
 		if (blk[row]->cs + i == 0x0A76)
@@ -268,7 +267,7 @@ int chuckieegg_describe(int row)
 #else
 		crc = crc_xmodem_update(crc, b);
 #endif
-		
+
 		if (b != -1) {
 			blk[row]->dd[i] = b;
 		} else {

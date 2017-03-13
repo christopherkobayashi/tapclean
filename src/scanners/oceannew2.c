@@ -45,18 +45,16 @@ void oceannew2_search(void)
 		msgout("	New Ocean Tape 2");
 				 
 	 
-	for(i=20; i<tap.len-8; i++)
-	{
-		if((z=find_pilot(i,OCNEW2))>0)
-		{
+	for(i=20; i<tap.len-8; i++) {
+
+		if((z=find_pilot(i,OCNEW2))>0) {
 			 sof=i;
 			 i=z;
-			 if(readttbyte(i, ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en)==ft[OCNEW2].sv)
-			 {
+
+			 if(readttbyte(i, ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en)==ft[OCNEW2].sv) {
 				sod=i+8;
 				/* decode the header so we can validate the addresses... */
-				for(h=0; h<HDSZ; h++)
-				{
+				for(h=0; h<HDSZ; h++) {
 					hd[h] = readttbyte(sod+(h*8), ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en);
 					if (hd[h] == -1)
 						break;
@@ -68,8 +66,7 @@ void oceannew2_search(void)
 				s=hd[0]+(hd[1]<<8);	 /* get start address */
 				e=hd[2]+(hd[3]<<8);	 /* get end address */
 
-				if (e>s)
-				{
+				if (e>s) {
 					x=e-s;
 					eod=sod+((x+HDSZ)*8);
 					eof=eod+7;
@@ -77,9 +74,7 @@ void oceannew2_search(void)
 					i=eof;	/* optimize search */
 				}
 			}
-		}
-		else
-		{
+		} else {
 			if(z<0)		/* find_pilot failed (too few/many), set i to failure point. */
 				i=(-z);
 		}
@@ -116,8 +111,7 @@ int oceannew2_describe(int row)
 		free(blk[row]->dd);
 	blk[row]->dd= (unsigned char*)malloc(blk[row]->cx);
 
-	for(i=0; i<blk[row]->cx; i++)
-	{
+	for(i=0; i<blk[row]->cx; i++) {
 		b= readttbyte(s+(i*8), ft[OCNEW2].lp, ft[OCNEW2].sp, ft[OCNEW2].tp, ft[OCNEW2].en);
 		cb^= b;
 		if(b==-1)

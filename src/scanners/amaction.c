@@ -134,12 +134,9 @@ void amaction_search (void)
 
 			/* Figure out filename length */
 			xinfo = find_seq (hd, HEADERSIZE + MAXFILENAME, s_default, 2);
-			if (xinfo == -1)
-			{
+			if (xinfo == -1) {
 				xinfo = 2;
-			}
-			else
-			{
+			} else {
 				/* Remove data size and flag from count */
 				xinfo -= 3;
 			}
@@ -212,7 +209,7 @@ int amaction_describe (int row)
 	for (i = 0; i < fname; i++)
 		bfname[i] = hd[NAMEOFFSET + i];
 	bfname[i] = '\0';
-	
+
 	trim_string(bfname);
 	pet2text(bfnameASCII, bfname);
 

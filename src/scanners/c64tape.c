@@ -455,8 +455,7 @@ int cbm_describe(int row)
 #endif
 
 	// Read the block type (can't fail if the search stage was successful)
-	if (blk[row]->lt == CBM_HEAD)
-	{
+	if (blk[row]->lt == CBM_HEAD) {
 		// Get header info offset
 		s = blk[row]->p2;
 
@@ -464,12 +463,10 @@ int cbm_describe(int row)
 		hd[0] = cbm_readbyte(s);
 
 		// Type is SEQ Data
-		if (hd[0] == 0x02)
-		{
+		if (hd[0] == 0x02) {
 #ifdef CHAINEDCBMSEQSUPPORT
 			// Is it first SEQ?
-			if (_dseqindex == 0)
-			{
+			if (_dseqindex == 0) {
 #endif
 				// Use the info inside CBM block
 				// Note: force it in case CBM Header is broken
@@ -489,8 +486,7 @@ int cbm_describe(int row)
 			// Update static info for next block in a chain.
 			// Anyway the files won't be chained because of the
 			// REPEAT copies!
-			if (blk[row]->xi == REPEAT)
-			{
+			if (blk[row]->xi == REPEAT) {
 				_dfs += 0x00C0;
 				_dfe += 0x00C0;
 			}

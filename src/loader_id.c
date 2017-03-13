@@ -1,28 +1,28 @@
 /*
- * loader_id.c 
+ * loader_id.c
  *
- * Part of project "Final TAP". 
- *  
+ * Part of project "Final TAP".
+ *
  * A Commodore 64 tape remastering and data extraction utility.
  *
  * (C) 2001-2006 Stewart Wilson, Subchrist Software.
- *   
- *   
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
- * version.
- *   
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
- * St, Fifth Floor, Boston, MA 02110-1301 USA
- *   
  *
- * Notes: 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ *
+ * Notes:
  *
  * An effort to speed up the scanning process for TAPs, if I can ID the loader type after
  * the C64 ROM scan is done then I needn't search for ALL formats.
@@ -92,15 +92,15 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xE24E270C, LID_BLEEP},
 		{0xCD8D92EE, LID_BLEEP},
 
-		{0x366784C8, LID_CHR},  
+		{0x366784C8, LID_CHR},
 
-		{0xD09BF46F, LID_BURN},   
+		{0xD09BF46F, LID_BURN},
 		{0x8D6E30E7, LID_BURN},
 		{0x88613263, LID_BURN},
 		{0x291E606A, LID_BURN},
 		{0x6EA1C3AD, LID_BURN},
 
-		{0xC618D67A, LID_WILD},   
+		{0xC618D67A, LID_WILD},
 		{0x657CC9CD, LID_WILD},
 		{0x554FAB46, LID_WILD},
 		{0x8D14D322, LID_WILD},
@@ -190,7 +190,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xA9F2CE53, LID_OCEAN},
 		{0x1C237E84, LID_OCEAN},
 		{0xC1C4A2A0, LID_OCEAN},
-		{0x985B5C4D, LID_OCEAN},    
+		{0x985B5C4D, LID_OCEAN},
 		{0xBD0ECB9E, LID_OCEAN},
 
 		{0x04F2443B, LID_RAST},
@@ -254,7 +254,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x206A8B68, LID_AUDIOGENIC},	/* Audiogenic loader */
 
 		{0xF1D441D8, LID_CULT},		/* Cult loader */
-		
+
 		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
 		{0xF22D0DAB, LID_ACCOLADE},	/* Motor Massacre, Test Drive, Duel, The: Test Drive II */
 		{0xEA684D09, LID_ACCOLADE},	/* Accolade clone (EA: Chuck Yeager, PHP Pegasus, World Tour Golf) */
@@ -309,9 +309,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x23EE788B, LID_CSPARKS},	/* Taskmaster */
 		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
 
-		{0x848FD0AF, LID_TRILOGIC},	/* Additional releases: Double Dare, 
-						   Fireman Sam, Hellfire Attack, 
-						   Kentucky Racing, Merlin, Metranaut, 
+		{0x848FD0AF, LID_TRILOGIC},	/* Additional releases: Double Dare,
+						   Fireman Sam, Hellfire Attack,
+						   Kentucky Racing, Merlin, Metranaut,
 						   Strike Force, Superted */
 
 		{0, 0}				/* List terminator/cap */

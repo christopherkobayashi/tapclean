@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "0.33"
+#define VERSION_STR "0.34-pre1"
 #define COPYRIGHT_STR "(C) 2006-2017 TC Team"
 #define BUILDER_STR     "ldf"
 
@@ -120,7 +120,7 @@ enum {
 };
 
 /*
- * These constants are the loader IDs, used for quick scanning via CRC lookup or 
+ * These constants are the loader IDs, used for quick scanning via CRC lookup or
  * program data pattern lookup... See file "loader_id.c"
  * Note: the position of each enum IS relevant for uses in 'knam' array in main file.
  */
@@ -139,7 +139,7 @@ enum {
 };
 
 /*
- * These constants are loader IDs for extra one-off loaders, used for quick 
+ * These constants are loader IDs for extra one-off loaders, used for quick
  * scanning via header pattern lookup... See file "loader_id.c"
  */
 enum {
@@ -279,7 +279,7 @@ struct ldrswt_t		/* Loader -no/-do switches */
 	char desc[24];	/* Human readable description of loader */
 	char par[12];	/* Whatever can follow the "-do" and "-no" prefixes
 			   to include or exclude a loader */
-	char state;	/* Set to TRUE to exclude loader */
+	char exclude;	/* Set to TRUE to exclude loader */
 };
 
 /* Note: the position of each enum IS relevant for uses in 'ldrswt' array in main file. */

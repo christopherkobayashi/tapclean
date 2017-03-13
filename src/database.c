@@ -22,7 +22,7 @@
 
 struct blk_t *blk[BLKMAX];	/*!< Database of all found entities */
 struct prg_t prg[BLKMAX];	/*!< Database of all extracted files (prg's) */
-int database_is_full = FALSE;	/*!< Flag that indicates database capacity 
+int database_is_full = FALSE;	/*!< Flag that indicates database capacity
 				     reached */
 
 /**
@@ -33,7 +33,7 @@ int database_is_full = FALSE;	/*!< Flag that indicates database capacity
  *	@return TRUE on success
  *	@return FALSE on memory allocation failure
  */
- 
+
 int database_create_blk_db(void)
 {
 	int i;
@@ -49,18 +49,18 @@ int database_create_blk_db(void)
 		blk[i]->dd = NULL;
 		blk[i]->fn = NULL;
 	}
-	
+
 	return TRUE;
 }
 
 /**
- *	Clear database 
- *	
+ *	Clear database
+ *
  *	@param void
  *
  *	@return none
  */
- 
+
 void database_reset_blk_db(void)
 {
 	int i;
@@ -88,7 +88,7 @@ void database_reset_blk_db(void)
 			free(blk[i]->dd);
 			blk[i]->dd = NULL;
 		}
-		
+
 		if(blk[i]->fn != NULL) {
 			free(blk[i]->fn);
 			blk[i]->fn = NULL;
@@ -109,12 +109,12 @@ void database_reset_blk_db(void)
  *	@param eof end of block offset
  *	@param xi extra info
  *	@param meta1 meta info 1
- *	
+ *
  *	@return Slot number the block went to (value is >= 0)
  *	@return DBERR on invalid block definition (due to overlap)
  *	@return DBFULL on database full
  */
- 
+
 int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)
 {
 	int i, slot, e1, e2;
@@ -196,12 +196,12 @@ int database_add_blk_def_ex(int lt, int sof, int sod, int eod, int eof, int xi, 
  *	@param eod end of data offset
  *	@param eof end of block offset
  *	@param xi extra info
- *	
+ *
  *	@return Slot number the block went to (value is >= 0)
  *	@return DBERR on invalid block definition (due to overlap)
  *	@return DBFULL on database full
  */
- 
+
 int database_add_blk_def(int lt, int sof, int sod, int eod, int eof, int xi)
 {
 	return database_add_blk_def_ex(lt, sof, sod, eod, eof, xi, 0);
@@ -209,7 +209,7 @@ int database_add_blk_def(int lt, int sof, int sod, int eod, int eof, int xi)
 
 /**
  *	Sort the database by p1 (file start position, sof) values.
- *	
+ *
  *	@param void
  *
  *	@return none
@@ -223,7 +223,7 @@ void database_sort_blks(void)
 	for (i = 0; blk[i]->lt != LT_NONE && i < BLKMAX; i++);
 
 	size = i;	/* store current size of database */
-   
+
 	do {
 		swaps = 0;
 		for (i = 0; i < size - 1; i++) {
@@ -234,7 +234,7 @@ void database_sort_blks(void)
 				tmp = blk[i];
 				blk[i] = blk[i + 1];
 				blk[i + 1] = tmp;
-				swaps++;  
+				swaps++;
 			}
 		}
 	} while(swaps != 0);	/* repeat til no swaps occur.  */
@@ -272,7 +272,7 @@ void database_scan_gaps(void)
 			}
 		}
 	}
-   
+
 	p1 = blk[i]->p4;		/* choose last blocks last pulse and End of TAP */
 	p2 = tap.len - 1;
 	if (p1 < p2) {
@@ -292,7 +292,7 @@ int database_count_bootparts(void)
 {
 	int tblk[BLKMAX];
 	int i, j, bootparts;
-  
+
 	/* make a block list (types only) without gaps/pauses included.. */
 
 	for (i = 0,j = 0; blk[i]->lt != LT_NONE; i++) {
@@ -331,7 +331,7 @@ int database_count_unopt_pulses(int slot)
 
 	imperfect = 0;
 
-	/* Trailer uses different pulsewidths, so do not consider it unoptimized 
+	/* Trailer uses different pulsewidths, so do not consider it unoptimized
 	   according to the block pulsewidths */
 	if (t == ACTIONREPLAY_STURBO) {
 		for (i = blk[slot]->p3 + 8; i <  blk[slot]->p4 + 1; i++) {
@@ -389,7 +389,7 @@ int database_count_pauses(void)
 			}
 		}
 	}
-   
+
 	return n;
 }
 
@@ -457,7 +457,7 @@ int database_compute_overall_crc(void)
  *
  *	@return none
  */
- 
+
 void database_dump_blk_db(void)
 {
 	int i, t;
@@ -479,7 +479,7 @@ void database_dump_blk_db(void)
  *
  *	@return none
  */
- 
+
 void database_destroy_blk_db(void)
 {
 	int i;
@@ -513,7 +513,7 @@ void database_make_prg_db(void)
 			pt[j++] = i;
 	}
 	pt[j] = -1;			/* terminator */
-      
+
 	/* Clear the prg table... */
 	database_reset_prg_db();
 
@@ -549,12 +549,12 @@ void database_make_prg_db(void)
 				x = blk[pt[i]]->cx;
 				e = blk[pt[i]]->ce;
 				errors += blk[pt[i]]->rd_err;
-            
+
 				/* bad checksum also counts as an error */
 
 				if (ft[blk[pt[i]]->lt].has_cs == TRUE && blk[pt[i]]->cs_exp != blk[pt[i]]->cs_act)
 					errors++;
- 
+
 				for (c = 0; c < x; c++)
 					tmp[ti++] = blk[pt[i]]->dd[c];	/* copy the data to tmp buffer */
 
@@ -576,16 +576,16 @@ void database_make_prg_db(void)
 			} while(!done);
 
 			/* create the finished prg entry using data in tmp...  */
-         
+
 			x = ti;					/* set final data length */
 			prg[j].dd = (unsigned char*)malloc(x);	/* allocate the ram */
 			for (c = 0; c < x; c++)			/* copy the data.. */
 				prg[j].dd[c] = tmp[c];
-			prg[j].lt = t;				/* set file type */ 
-			prg[j].cs = s;				/* set file start address */ 
-			prg[j].ce = e;				/* set file end address */ 
-			prg[j].cx = x;				/* set file length */ 
-			prg[j].errors = errors;			/* set file errors */ 
+			prg[j].lt = t;				/* set file type */
+			prg[j].cs = s;				/* set file start address */
+			prg[j].ce = e;				/* set file end address */
+			prg[j].cx = x;				/* set file length */
+			prg[j].errors = errors;			/* set file errors */
 			j++;					/* onto the next prg... */
 		}
 	}
@@ -603,7 +603,7 @@ void database_make_prg_db(void)
 int database_save_prg_db(void)
 {
 	int i;
-	FILE *fp;    
+	FILE *fp;
 
 	chdir(exedir);
 
@@ -643,8 +643,7 @@ int database_save_prg_db(void)
 
 	for (i = 0; prg[i].lt != 0; i++) {
 		sprintf(lin, "%03d (%04X-%04X)", prg[i].blkidstart + 1, prg[i].cs, prg[i].ce);
-		if (prg[i].fn != NULL)
-		{
+		if (prg[i].fn != NULL) {
 			strcat(lin, " [");
 			strcat(lin, prg[i].fn);
 			strcat(lin, "]");
