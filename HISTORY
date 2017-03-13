@@ -4,7 +4,7 @@ Entries are of the following types (since release 0.21):
 	- Fix: bug fixes
 	- Improvement: where end-user experience has been improved (or
 	  frustration minimized)
-	- New: new features, such as support for new loaders
+	- New: new features, such as support for additional loaders
 
 v0.34
 	Improvement: Rationalised usage and options messages (Luigi)
