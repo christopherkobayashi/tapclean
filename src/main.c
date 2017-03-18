@@ -41,10 +41,10 @@
 
 /* program options... */
 
+static char doprg		= FALSE;
 static char noaddpause		= FALSE;
 static char reckless		= FALSE;
 static char sine		= FALSE;
-static char doprg		= FALSE;
 
 char debug			= FALSE;
 char noid			= FALSE;
@@ -55,15 +55,16 @@ char prgunite			= FALSE;
 char extvisipatch		= FALSE;
 char incsubdirs			= FALSE;
 char sortbycrc			= FALSE;
+char exportcyberloaders		= FALSE;
+char skewadapt			= FALSE;
+char fstats			= FALSE;
+char preserveloadervars		= FALSE;
+
 char c16			= FALSE;
 char c20			= FALSE;
 char c64			= TRUE;
 char pal			= TRUE;
 char ntsc			= FALSE;
-char exportcyberloaders		= FALSE;
-char skewadapt			= FALSE;
-char fstats			= FALSE;
-char preserveloadervars		= FALSE;
 
 /*
  * Parameters -no/-do and descriptions
