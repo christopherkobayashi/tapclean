@@ -84,35 +84,37 @@ void chr_search(void)
 					while (readttbyte(i + (j * 8), lp, sp, tp, en) == sv + j)
 						j++;
 
-					if (j == 156) {	/* whole sequence (156 bytes) exists?  */
-						sod = i + (157 * 8);
+					if (j != 156)	/* whole sequence (156 bytes) exists?  */
+						continue;
 
-						/* now just just trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
+					sod = i + (157 * 8);
 
-						while (readttbyte(sof - 8, lp, sp, tp, en) == PREPILOTVALUE)
-							sof -= 8;
+					/* now just just trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
 
-						/* to find the last pulse, we look in the header for the start/end addresses... */
+					while (readttbyte(sof - 8, lp, sp, tp, en) == PREPILOTVALUE)
+						sof -= 8;
 
-						for (j = 0; j < HDSZ; j++) {	/* decode the header...  */
-							hd[j] = readttbyte(sod + (j * 8), lp, sp, tp, en);
-							if (hd[j] == -1)
-								break;
-						}
-						if (j != HDSZ)
-							continue;
+					/* to find the last pulse, we look in the header for the start/end addresses... */
 
-						/* find block length */
-
-						x = (hd[2] + (hd[3] << 8)) - (hd[0] + (hd[1] << 8));	/* end-start */
-
-						if (x > 0) {
-							eod = sod + (x * 8) + 80;
-							eof = eod + 7;
-							addblockdef(ld, sof, sod, eod, eof, 0);
-							i= eof;  /* optimize search  */
-						}
+					for (j = 0; j < HDSZ; j++) {	/* decode the header...  */
+						hd[j] = readttbyte(sod + (j * 8), lp, sp, tp, en);
+						if (hd[j] == -1)
+							break;
 					}
+					if (j != HDSZ)
+						continue;
+
+					/* find block length */
+
+					x = (hd[2] + (hd[3] << 8)) - (hd[0] + (hd[1] << 8));	/* end-start */
+
+					if (x <= 0)
+						continue;
+
+					eod = sod + (x * 8) + 80;
+					eof = eod + 7;
+					addblockdef(ld, sof, sod, eod, eof, 0);
+					i = eof;	/* optimize search  */
 				}
 			} else {
 				if (z < 0)	/* find_pilot failed (too few/many), set i to failure point. */
