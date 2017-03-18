@@ -63,11 +63,6 @@
 #define LEGSYNCOFFSET	0x93	/* offset to s.v. inside CBM header */
 #define LEGENDIANOFFSET	0x83	/* offset to ROR/ROL OPC inside CBM header */
 
-#define OPC_ROL		0x26	/* 65xx ROL OPCode */
-#define OPC_ROR		0x66	/* 65xx ROR OPCode */
-
-#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
-
 void burner_search (void)
 {
 	int i, h;			/* counters */
@@ -80,8 +75,6 @@ void burner_search (void)
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
-
-	int xinfo;			/* extra info used in addblockdef() */
 
 
 	tp = ft[THISLOADER].tp;
@@ -125,7 +118,10 @@ void burner_search (void)
 	ft[THISLOADER].sv = sv;	/* is this really needed by find_pilot()? */
 	ft[THISLOADER].en = en;
 
-	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
+	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s",
+		pv,
+		sv,
+		ENDIANESS_TO_STRING(en));
 	msgout(lin);
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
@@ -176,9 +172,6 @@ void burner_search (void)
 			/* Point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Store the encoding info as extra-info */
-			xinfo = pv | (sv << 8) | (en << 16);
-
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			/* Note: No trailer has been documented, but we are not strictly
 			         requiring one here, just checking for it is future-proof */
@@ -188,7 +181,7 @@ void burner_search (void)
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -203,22 +196,20 @@ int burner_describe(int row)
 	int i, s;
 	int hd[HEADERSIZE];
 
-	int pv, sv;
 	int en, tp, sp, lp;
 
 	int b, rd_err;
 
 
+	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	/* Retrieve the missing infos from the extra-info field of this block */
-	pv = blk[row]->xi & 0xFF;
-	sv = (blk[row]->xi & 0xFF00) >> 8;
-	en = (blk[row]->xi & 0xFF0000) >> 16;
-
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s", pv, sv, ENDIANESS_TO_STRING(en));
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s",
+		ft[THISLOADER].pv,
+		ft[THISLOADER].sv,
+		ENDIANESS_TO_STRING(en));
 	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */

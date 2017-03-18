@@ -75,11 +75,6 @@
 #define LEGSYNCOFFSET	0x93	/* offset to s.v. inside CBM header */
 #define LEGENDIANOFFSET	0x83	/* offset to ROR/ROL OPC inside CBM header */
 
-#define OPC_ROL		0x26	/* 65xx ROL OPCode */
-#define OPC_ROR		0x66	/* 65xx ROR OPCode */
-
-#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
-
 //#define ENABLE_LEGACY_BURNER_SUPPORT
 
 enum {
@@ -175,8 +170,6 @@ void burnervar_search (void)
 
 	int variant;
 
-	int xinfo;			/* extra info used in addblockdef() */
-
 
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
@@ -215,9 +208,15 @@ void burnervar_search (void)
 
 	if(!quiet) {
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
-		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
+		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%s",
+			pv,
+			sv,
+			ENDIANESS_TO_STRING(en));
 #else
-		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
+		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%s",
+			pv,
+			sv,
+			ENDIANESS_TO_STRING(en));
 #endif
 		msgout(lin);
 	}
@@ -278,9 +277,6 @@ void burnervar_search (void)
 			/* Point to the last pulse of the exe ptr MSB/last data byte for Burner legacy */
 			eof = eod + BITSINABYTE - 1;
 
-			/* Store the encoding info as extra-info */
-			xinfo = pv | (sv << 8) | (en << 16);
-
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			h = 0;
 			while (eof < tap.len - 1 &&
@@ -288,7 +284,7 @@ void burnervar_search (void)
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
-			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, variant) >= 0)
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, variant) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
@@ -304,22 +300,20 @@ int burnervar_describe (int row)
 	int hd[HEADERSIZE];
 	int pd[POSTDATASIZE];
 
-	int pv, sv;
 	int en, tp, sp, lp;
 
 	int b, rd_err;
 
 
+	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	/* Retrieve the missing infos from the extra-info field of this block */
-	pv = blk[row]->xi & 0xFF;
-	sv = (blk[row]->xi & 0xFF00) >> 8;
-	en = (blk[row]->xi & 0xFF0000) >> 16;
-
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s", pv, sv, ENDIANESS_TO_STRING(en));
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s",
+		ft[THISLOADER].pv,
+		ft[THISLOADER].sv,
+		ENDIANESS_TO_STRING(en));
 	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
@@ -380,7 +374,7 @@ int burnervar_describe (int row)
 	}
 
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
-	if (blk[row]->meta1 != BURNERVAR_LEGACY) {
+	if (blk[row]->xi != BURNERVAR_LEGACY) {
 #endif
 		/* Read post-data */
 		for (i = 0; i < POSTDATASIZE; i++) {

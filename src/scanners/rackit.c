@@ -75,9 +75,6 @@
 
 #define RACKIT_CBM_DATA_LOAD_ADDRESS	0x0316
 
-#define OPC_ROL		0x26	/* 65xx ROL OPCode */
-#define OPC_ROR		0x66	/* 65xx ROR OPCode */
-
 //#define DEBUG_RACKIT
 
 void rackit_search (void)
@@ -250,7 +247,7 @@ void rackit_search (void)
 						sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
 							ft[THISLOADER].pv, 
 							ft[THISLOADER].sv, 
-							ft[THISLOADER].en == MSbF ? "MSbf" : "LSbF");
+							ENDIANESS_TO_STRING(ft[THISLOADER].en));
 						msgout(lin);
 					}
 				}
@@ -418,9 +415,11 @@ int rackit_describe (int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : ", ft[THISLOADER].pv, ft[THISLOADER].sv);
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s",
+		ft[THISLOADER].pv,
+		ft[THISLOADER].sv,
+		ENDIANESS_TO_STRING(en));
 	strcat(info, lin);
-	strcat(info, ft[THISLOADER].en == MSbF ? "MSbF" : "LSbF");
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;

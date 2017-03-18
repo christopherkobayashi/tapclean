@@ -83,8 +83,13 @@
 
 #define LSbF	0	/* indicator: Least Significant bit First. */
 #define MSbF	1	/* indicator: Most Significant bit First. */
+#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
+
 #define CSYES	1	/* indicator: A checksum is used. */
 #define CSNO	0	/* indicator: A checksum is not used. */
+
+#define OPC_ROL	0x26	/* 65xx ROL OPCode */
+#define OPC_ROR	0x66	/* 65xx ROR OPCode */
 
 #ifdef _MSC_VER	/* override POSIX names when using MSVC */
 #define chdir	_chdir
