@@ -26,7 +26,7 @@
 /*
  * Status: Beta
  *
- * CBM inspection needed: No
+ * CBM inspection needed: Yes
  * Single on tape: No
  * Sync: Byte
  * Header: Yes
@@ -77,6 +77,8 @@
 
 #define OPC_ROL		0x26	/* 65xx ROL OPCode */
 #define OPC_ROR		0x66	/* 65xx ROR OPCode */
+
+#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
 
 //#define ENABLE_LEGACY_BURNER_SUPPORT
 
@@ -203,15 +205,19 @@ void burnervar_search (void)
 	/* Convert en from the OPCode to any of the internally used values */
 	en = (en == OPC_ROL) ? MSbF : LSbF;
 
-	ft[THISLOADER].pv = pv; /* needed by find_pilot() */
-	ft[THISLOADER].sv = sv; /* is this initialization really needed? */
-	ft[THISLOADER].en = en; /* needed by find_pilot() */
+	/*
+	 * We now need to feed back the discovered info into the ft table
+	 * in order for find_pilot() to use the discovered values
+	 */
+	ft[THISLOADER].pv = pv;
+	ft[THISLOADER].sv = sv;	/* is this really needed by find_pilot()? */
+	ft[THISLOADER].en = en;
 
 	if(!quiet) {
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
-		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%d", pv, sv, en);
+		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
 #else
-		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%d", pv, sv, en);
+		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
 #endif
 		msgout(lin);
 	}
@@ -264,12 +270,16 @@ void burnervar_search (void)
 				eod = sod + (HEADERSIZE + x + POSTDATASIZE - 1) * BITSINABYTE;
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
 			/* Legacy Burner support */
+			/* Point to the first pulse of the last data byte (that's final) */
 			else
-				eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+				eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
 #endif
 
 			/* Point to the last pulse of the exe ptr MSB/last data byte for Burner legacy */
 			eof = eod + BITSINABYTE - 1;
+
+			/* Store the encoding info as extra-info */
+			xinfo = pv | (sv << 8) | (en << 16);
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
 			h = 0;
@@ -277,9 +287,6 @@ void burnervar_search (void)
 					h++ < MAXTRAILER &&
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
-
-			/* Store the discovered values in the extra-info field  */
-			xinfo = pv + (sv<<8)+ (en<<16);
 
 			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, variant) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
@@ -312,9 +319,8 @@ int burnervar_describe (int row)
 	sv = (blk[row]->xi & 0xFF00) >> 8;
 	en = (blk[row]->xi & 0xFF0000) >> 16;
 
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : ", pv, sv);
+	sprintf(lin, "\n - Pilot: $%02X, Sync: $%02X, Endianess: %s", pv, sv, ENDIANESS_TO_STRING(en));
 	strcat(info, lin);
-	strcat(info, en == MSbF ? "MSbF" : "LSbF");
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;

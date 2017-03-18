@@ -57,6 +57,12 @@
 #define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
+#define CBMXORDECRYPT	0x59	/* use this value to decrypt CBM header bytes */
+
+#define LEGPILOTOFFSET	0x88	/* offset to p.v. inside CBM header */
+#define LEGSYNCOFFSET	0x93	/* offset to s.v. inside CBM header */
+#define LEGENDIANOFFSET	0x83	/* offset to ROR/ROL OPC inside CBM header */
+
 #define OPC_ROL		0x26	/* 65xx ROL OPCode */
 #define OPC_ROR		0x66	/* 65xx ROR OPCode */
 
@@ -69,7 +75,8 @@ void burner_search (void)
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 	int ib;				/* condition variable */
 
-	int en, tp, sp, lp, pv, sv;	/* encoding parameters */
+	int pv, sv;			/* dynamically discovered pilot & sync byte */
+	int en, tp, sp, lp;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
@@ -100,13 +107,14 @@ void burner_search (void)
 	if (blk[ib]->cx <= 0x93)
 		return;	/* Not enough bytes in CBM header (short/corrupted) */
 
-	pv = blk[ib]->dd[0x88] ^ 0x59;
-	sv = blk[ib]->dd[0x93] ^ 0x59;
+	pv = blk[ib]->dd[LEGPILOTOFFSET]  ^ CBMXORDECRYPT;
+	sv = blk[ib]->dd[LEGSYNCOFFSET]   ^ CBMXORDECRYPT;
 
-	en = blk[ib]->dd[0x83] ^ 0x59;
+	en = blk[ib]->dd[LEGENDIANOFFSET] ^ CBMXORDECRYPT;
 	if (en != OPC_ROL && en != OPC_ROR)
 		return;	/* Skip search if endianess check failed */
 
+	/* Convert en from the OPCode to any of the internally used values */
 	en = (en == OPC_ROL) ? MSbF : LSbF;
 
 	/*
@@ -114,7 +122,7 @@ void burner_search (void)
 	 * in order for find_pilot() to use the discovered values
 	 */
 	ft[THISLOADER].pv = pv;
-	ft[THISLOADER].sv = sv;
+	ft[THISLOADER].sv = sv;	/* is this really needed by find_pilot()? */
 	ft[THISLOADER].en = en;
 
 	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
@@ -162,10 +170,10 @@ void burner_search (void)
 			/* Compute size */
 			x = e - s + 1;
 
-			/* Point to the first pulse of the checkbyte (that's final) */
+			/* Point to the first pulse of the last data byte (that's final) */
 			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
 
-			/* Initially point to the last pulse of the checkbyte */
+			/* Point to the last pulse of the last byte */
 			eof = eod + BITSINABYTE - 1;
 
 			/* Store the encoding info as extra-info */
@@ -194,7 +202,9 @@ int burner_describe(int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];
-	int en, tp, sp, lp, pv, sv;
+
+	int pv, sv;
+	int en, tp, sp, lp;
 
 	int b, rd_err;
 
@@ -203,12 +213,13 @@ int burner_describe(int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
+	/* Retrieve the missing infos from the extra-info field of this block */
 	pv = blk[row]->xi & 0xFF;
-	sv = (blk[row]->xi >> 8) & 0xFF;
-	en = blk[row]->xi >> 16;
+	sv = (blk[row]->xi & 0xFF00) >> 8;
+	en = (blk[row]->xi & 0xFF0000) >> 16;
 
-	sprintf(lin,"\n - Pilot: $%02X, Sync: $%02X, Endianess: %s", pv, sv, ENDIANESS_TO_STRING(en));
-	strcat(info,lin);
+	sprintf(lin, "\n - Pilot: $%02X, Sync: $%02X, Endianess: %s", pv, sv, ENDIANESS_TO_STRING(en));
+	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row] -> p2;
@@ -241,7 +252,7 @@ int burner_describe(int row)
 	         here, just checking for it is future-proof */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
-	/* if there IS pilot then disclude the sync sequence */
+	/* if there IS pilot then disclude the sync byte */
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 

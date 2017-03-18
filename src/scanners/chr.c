@@ -45,15 +45,19 @@ void chr_search(void)
 {
 	int i, j, z, sof, sod, eod, eof;
 	int x, hd[HDSZ];
-	int en, tp, sp, lp, sv, ld, pass = 1;
+	int en, tp, sp, lp, sv, ld, type;
 
-	do {
-		if (pass == 1)
-			ld = CHR_T1;	/* Cauldron */
-		if (pass == 2)
-			ld = CHR_T2;	/* Hewson */
-		if (pass == 3)
-			ld = CHR_T3;	/* Rainbird */
+	for (type = 1; type <= 3; type++) {
+		switch (type) {
+			case 1:
+				ld = CHR_T1;	/* Cauldron */
+				break;
+			case 2:
+				ld = CHR_T2;	/* Hewson */
+				break;
+			default:
+				ld = CHR_T3;	/* Rainbird */
+		}
 
 		en = ft[ld].en;
 		tp = ft[ld].tp;
@@ -62,14 +66,16 @@ void chr_search(void)
 		sv = ft[ld].sv;
 
 		if (!quiet) {
-			sprintf(lin, "  CHR Loader T%d", pass);
+			sprintf(lin, "  CHR Loader T%d", type);
 			msgout(lin);
 		}
 
 		for (i = 20; i < tap.len - 100; i++) {
+
 			if ((z = find_pilot(i, ld)) > 0) {
 				sof = i;
 				i = z;
+
 				if (readttbyte(i, lp, sp, tp, en) == sv) {
 
 					/* look for sequence $64...$FF */
@@ -113,9 +119,7 @@ void chr_search(void)
 					i = (-z);
 			}
 		}
-		pass++;
 	}
-	while(pass < 4);	/* run 3 times */
 }
 
 int chr_describe(int row)
