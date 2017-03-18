@@ -476,7 +476,7 @@ int gremlinf2_describe (int row)
 		b = readttbyte(s + BITSINABYTE, lp, sp, tp, en);
 		if (b != -1) {
 			exec |= (b << 8);
-			sprintf(lin, "\n - Execution address: $%04X (SYS %d)", exec, exec);
+			sprintf(lin, "\n - Exe address : $%04X (SYS %d)", exec, exec);
 			strcat(info, lin);
 		}
 	}

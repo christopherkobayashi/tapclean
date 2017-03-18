@@ -349,11 +349,11 @@ int powerload_describe(int row)
 		strcat(info, lin);
 	}
 
-	sprintf(lin, "\n - Real end address + 1: $%04X", (blk[row]->meta1 >> 16) & 0xFFFF);
+	sprintf(lin, "\n - Real end address + 1 : $%04X", (blk[row]->meta1 >> 16) & 0xFFFF);
 	strcat(info, lin);
 
 	if ((blk[row]->meta1 & 0xFFFF) != 0) {
-		sprintf(lin, "\n - Execution address (in CBM data): $%04X", blk[row]->meta1 & 0xFFFF);
+		sprintf(lin, "\n - Exe address (in CBM data) : $%04X", blk[row]->meta1 & 0xFFFF);
 		strcat(info, lin);
 	}
 

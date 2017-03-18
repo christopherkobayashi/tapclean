@@ -522,7 +522,7 @@ int msx_describe (int row)
 					dh[i] = b & 0xff;
 				}
 
-				sprintf(lin, "\n - Execution address: $%04X", dh[D0_EXECOFFSETL] + (dh[D0_EXECOFFSETH] << 8));
+				sprintf(lin, "\n - Exe address : $%04X", dh[D0_EXECOFFSETL] + (dh[D0_EXECOFFSETH] << 8));
 				strcat(info, lin);
 
 				if (blk[row]->dd != NULL)
@@ -551,7 +551,7 @@ int msx_describe (int row)
 
 				b = msx_read_byte(s + pcount, lt);
 				if (b != -1) {
-					sprintf(lin, "\n - Post data byte: $%02X", b & 0xff);
+					sprintf(lin, "\n - Post data byte : $%02X", b & 0xff);
 					strcat(info, lin);
 				}
 

@@ -218,7 +218,7 @@ int burner_describe(int row)
 	sv = (blk[row]->xi & 0xFF00) >> 8;
 	en = (blk[row]->xi & 0xFF0000) >> 16;
 
-	sprintf(lin, "\n - Pilot: $%02X, Sync: $%02X, Endianess: %s", pv, sv, ENDIANESS_TO_STRING(en));
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s", pv, sv, ENDIANESS_TO_STRING(en));
 	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */

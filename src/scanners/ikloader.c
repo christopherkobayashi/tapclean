@@ -97,7 +97,7 @@ int ik_describe(int row)
 	blk[row]->ce = hd[3] + (hd[4] << 8);
 	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
 
-	sprintf(lin, "\n - Exe Address: $%04X", hd[5] + (hd[6] << 8));
+	sprintf(lin, "\n - Exe Address : $%04X", hd[5] + (hd[6] << 8));
 	strcat(info, lin);
 
 	/* get pilot & trailer lengths... */

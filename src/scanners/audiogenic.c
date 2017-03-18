@@ -122,7 +122,7 @@ int audiogenic_describe(int row)
 
 	b = readttbyte(blk[row]->p2 + (258 * 8), lp, sp, tp, en);
 	if (b != -1) { /* (luigi) */
-		sprintf(lin, "\n - Trailer byte (not broken): $%02X", b);
+		sprintf(lin, "\n - Trailer byte (not broken) : $%02X", b);
 		strcat(info, lin);
 	}
 

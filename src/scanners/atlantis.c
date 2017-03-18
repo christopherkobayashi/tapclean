@@ -254,7 +254,7 @@ int atlantis_describe (int row)
 	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
 	/* $036F is default and means return from custom Load RAM, so it's of no interest */
 	if (exec != 0x036F) {
-		sprintf(lin, "\n - Execution address: $%04X (SYS %d)", exec, exec);
+		sprintf(lin, "\n - Execution address : $%04X (SYS %d)", exec, exec);
 		strcat(info, lin);
 	}
 
