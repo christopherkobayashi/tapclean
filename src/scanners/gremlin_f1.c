@@ -376,7 +376,7 @@ int gremlinf1_describe (int row)
 		strcat(info, lin);
 	}
 
-	sprintf(lin, "\n - Exe address (in CBM data) : $%04X (SYS %d)", blk[row]->meta1, blk[row]->meta1);
+	sprintf(lin, "\n - Exe Address (in CBM data) : $%04X (SYS %d)", blk[row]->meta1, blk[row]->meta1);
 	strcat(info, lin);
 
 	blk[row]->cs_exp = cb & 0xFF;

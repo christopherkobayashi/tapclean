@@ -338,7 +338,7 @@ int cyberload_f4_describe(int row)
       thrlo =  hd[l4_offset_to_filename +20];
       thrhi =  hd[l4_offset_to_filename +21];
 
-      sprintf(lin,"\n - Enciphered Threshold: $%02X%02X",thrhi,thrlo);
+      sprintf(lin,"\n - Enciphered Threshold : $%02X%02X",thrhi,thrlo);
       strcat(info,lin);
 
       /* high byte is shifted right thus affecting the carry flag... */
@@ -357,14 +357,14 @@ int cyberload_f4_describe(int row)
         to its starting value. */
       thrhi = tmp2+thrhi;
 
-      sprintf(lin,"\n - Deciphered Threshold: $%02X%02X",thrhi,thrlo);
+      sprintf(lin,"\n - Deciphered Threshold : $%02X%02X",thrhi,thrlo);
       strcat(info,lin);
    }
 
    tmp = (blk[row]->cx)>>8;
    if((blk[row]->cx)%256!=0)
       tmp++;
-   sprintf(lin,"\n - Sub-blocks: %d",tmp);
+   sprintf(lin,"\n - Sub-blocks : %d",tmp);
    strcat(info,lin);
 
    /* get pilot & trailer lengths... */
@@ -422,7 +422,7 @@ int cyberload_f4_describe(int row)
    }
    while(pos+boff+(cnt*8) < blk[row]->p3-8);
 
-   sprintf(lin,"\n - Verified sub-block checkbytes: %d of %d",good,blocks);
+   sprintf(lin,"\n - Verified sub-block checkbytes : %d of %d",good,blocks);
    strcat(info,lin);
    blk[row]->cs_exp=blocks;
    blk[row]->cs_act=good;

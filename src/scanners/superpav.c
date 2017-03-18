@@ -307,29 +307,29 @@ int superpav_describe(int row)
       /* SET THE STATIC LOAD ADDRESS FOR FOLLOWING SUB-BLOCKS (IF ANY).. */
       loadbase = blk[row]->cs + blk[row]->cx;
 
-      sprintf(lin,"\n - Block number: $%02X",hd[0]);
+      sprintf(lin,"\n - Block Number : $%02X",hd[0]);
       strcat(info,lin);
-      sprintf(lin,"\n - Sub-block number: $%02X",hd[1]);
+      sprintf(lin,"\n - Sub-block number : $%02X",hd[1]);
       strcat(info,lin);
-      sprintf(lin,"\n - Load address: $%04X",blk[row]->cs);
+      sprintf(lin,"\n - Load address : $%04X",blk[row]->cs);
       strcat(info,lin);
-      sprintf(lin,"\n - Total data size: %d bytes",blk[row]->xi);
+      sprintf(lin,"\n - Total data size : %d bytes",blk[row]->xi);
       strcat(info,lin);
-      sprintf(lin,"\n - Data in this block: %d bytes",blk[row]->cx);
+      sprintf(lin,"\n - Data in this block : %d bytes",blk[row]->cx);
       strcat(info,lin);
-      sprintf(lin,"\n - Total sub-blocks in chain: %d",hd[4]);
+      sprintf(lin,"\n - Total sub-blocks in chain : %d",hd[4]);
       strcat(info,lin);
       
       tmp = ((hd[0]+hd[1]+hd[2]+hd[3]+hd[4]+hd[5]) & 0xFF)+6;
 
       if(hd[6]==tmp)
       {
-         sprintf(lin,"\n - Header checkbyte: OK (expected=$%02X, actual=$%02X)",tmp,hd[6]);
+         sprintf(lin,"\n - Header checkbyte : OK (expected=$%02X, actual=$%02X)",tmp,hd[6]);
          strcat(info,lin);
       }
       else
       {
-         sprintf(lin,"\n - Header checkbyte: FAILED (expected=$%02X, actual=$%02X)",tmp,hd[6]);
+         sprintf(lin,"\n - Header checkbyte : FAILED (expected=$%02X, actual=$%02X)",tmp,hd[6]);
          strcat(info,lin);
       }
 
@@ -393,9 +393,9 @@ int superpav_describe(int row)
 
       loadbase+=256;  /* NUDGE STATIC LOAD ADDRESS FOR NEXT SUB-BLOCK (IF ANY) */
 
-      sprintf(lin,"\n - Block number: $%02X",hd[0]);
+      sprintf(lin,"\n - Block Number : $%02X",hd[0]);
       strcat(info,lin);
-      sprintf(lin,"\n - Sub-block number: $%02X",hd[1]);
+      sprintf(lin,"\n - Sub-block number : $%02X",hd[1]);
       strcat(info,lin);
 
       /* decode...

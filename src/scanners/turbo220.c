@@ -243,7 +243,7 @@ int turbo220_describe(int row)
 	blk[row]->rd_err = rd_err;
 
 	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
-	sprintf(lin, "\n - Exe address : $%04X (SYS %d)", exec, exec);
+	sprintf(lin, "\n - Exe Address : $%04X (SYS %d)", exec, exec);
 	strcat(info, lin);
 
 	return(rd_err);

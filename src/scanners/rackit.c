@@ -501,7 +501,7 @@ int rackit_describe (int row)
 			unsigned int exe_address;
 
 			exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
-			sprintf(lin, "\n - Exe address : $%04X", exe_address);
+			sprintf(lin, "\n - Exe Address : $%04X", exe_address);
 			strcat(info, lin);
 		}
 
@@ -580,7 +580,7 @@ int rackit_describe (int row)
 			unsigned int exe_address;
 
 			exe_address = (unsigned int) blk[row]->dd[0] | (((unsigned int) blk[row]->dd[1]) << 8);
-			sprintf(lin, "\n - Exe address : $%04X", exe_address);
+			sprintf(lin, "\n - Exe Address : $%04X", exe_address);
 			strcat(info, lin);
 		}
 

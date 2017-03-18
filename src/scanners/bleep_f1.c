@@ -156,7 +156,7 @@ int bleep_describe(int row)
       for(i=0; i<4; i++)
          hd[i]= readttbyte(s+(i*8), ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
 
-      sprintf(lin,"\n - Block number : $%02X", hd[1]);
+      sprintf(lin,"\n - Block Number : $%02X", hd[1]);
       strcat(info,lin);
 
       blk[row]->cs  = hd[2]+(hd[3]<<8);  /* record load addr. */
@@ -175,7 +175,7 @@ int bleep_describe(int row)
       s = blk[row]->p3+(t*8)+(3*8);
       b1 = readttbyte(s+0, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
       b2 = readttbyte(s+8, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
-      sprintf(lin,"\n - Execution address : $%04X", (b2<<8)+b1);
+      sprintf(lin,"\n - Exe Address : $%04X", (b2<<8)+b1);
       strcat(info,lin);
 
       /* get pilot length... */

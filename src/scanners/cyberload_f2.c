@@ -325,7 +325,7 @@ int cyberload_f2_describe(int row)
    if((blk[row]->p4 - blk[row]->p3) > 8)
    {
       tmp = readttbyte((blk[row]->p3)+8, ft[CYBER_F2].lp, ft[CYBER_F2].sp, ft[CYBER_F2].tp, ft[CYBER_F2].en);
-      sprintf(lin,"\n - Trailing byte: $%02X", tmp);
+      sprintf(lin,"\n - Trailing byte : $%02X", tmp);
       strcat(info,lin);
    }
 

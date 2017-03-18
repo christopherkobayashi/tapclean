@@ -443,7 +443,6 @@ int visiload_describe(int row)
    int i,s,xsb,ab,ah;
    int hd[HDSZ+1];
    int b,rd_err;
-   char endian[5];
 
    xsb =(blk[row]->xi & 128)>>7;    /* get endianess. */
    ah = (blk[row]->xi & 56)>>3;     /* get no. additional header bytes. */
@@ -478,15 +477,11 @@ int visiload_describe(int row)
    /* show the first data byte if its useful... */
    if(blk[row]->cs==0x034B || blk[row]->cs==0x03A4 || blk[row]->cs==0x0347)
    {
-      sprintf(lin,"\n - First byte $%02X",hd[4]);
+      sprintf(lin,"\n - First byte : $%02X",hd[4]);
       strcat(info,lin);
    }
    /* print block format info...*/
-   if(xsb==1)
-      strcpy(endian,"MSbF");
-   else
-      strcpy(endian,"LSbF");
-   sprintf(lin,"\n - Bits per byte: %d | Endianess: %s | Extra headers bytes: %d",8+ab, endian, ah);
+   sprintf(lin,"\n - Bits per byte : %d | Endianess : %s | Extra headers bytes : %d",8+ab, ENDIANESS_TO_STRING(xsb), ah);
    strcat(info,lin);
 
    /* get pilot & trailer lengths... */

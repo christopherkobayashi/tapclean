@@ -167,7 +167,7 @@ int nova_describe(int row)
    subs= (int)ftmp;
    ftmp= floor((double)blk[row]->cx/256); /* compute total no. blocks (!inc. any <256 bytes) */
    full= (int)ftmp;
-   sprintf(lin,"\n - Sub-blocks: %d (%d full)",subs,full);
+   sprintf(lin,"\n - Sub-blocks : %d (%d full)",subs,full);
    strcat(info,lin);
 
    /* decode all blocks... */

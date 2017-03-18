@@ -269,14 +269,14 @@ int cyberload_f1_describe(int row)
    blk[row]->rd_err = rd_err;
 
    tmp = readttbyte(blk[row]->p3, ft[CYBER_F1].lp, ft[CYBER_F1].sp, NA, ft[CYBER_F1].en);
-   sprintf(lin,"\n - Stack byte: $%02X", tmp);
+   sprintf(lin,"\n - Stack byte : $%02X", tmp);
    strcat(info,lin);
 
    /* display trailing byte if it exists... */
    if((blk[row]->p4 - blk[row]->p3) > 9)
    {
       tmp = readttbyte((blk[row]->p3)+9, ft[CYBER_F1].lp, ft[CYBER_F1].sp, NA, ft[CYBER_F1].en);
-      sprintf(lin,"\n - Trailing byte: $%02X", tmp);
+      sprintf(lin,"\n - Trailing byte : $%02X", tmp);
       strcat(info,lin);
    }
 

@@ -112,7 +112,7 @@ int palacef2_describe(int row)
       free(blk[row]->dd);
    blk[row]->dd= (unsigned char*)malloc(blk[row]->cx);
 
-   sprintf(lin,"\n - Total Blocks: %d",total_blocks);
+   sprintf(lin,"\n - Total Blocks : %d",total_blocks);
    strcat(info,lin);
 
    s= blk[row]->p2 +(5*8);   /* note : skips 1st block header. */
@@ -135,7 +135,7 @@ int palacef2_describe(int row)
       if(cb==b)
          goodchecks++;
    }
-   sprintf(lin,"\n<BR> - Good Checkbytes: %d of %d",goodchecks,total_blocks);
+   sprintf(lin,"\n<BR> - Good Checkbytes : %d of %d",goodchecks,total_blocks);
    strcat(info,lin);
 
    blk[row]->cs_exp= total_blocks;   /* fake the overall checkbyte as a */

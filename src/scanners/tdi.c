@@ -122,7 +122,7 @@ int tdi_describe(int row)
    blk[row]->cx= hd[0]+(hd[1]<<8);
    blk[row]->ce= blk[row]->cs+ blk[row]->cx -1;
 
-   sprintf(lin,"\n - File ID: $%02X",hd[2]);
+   sprintf(lin,"\n - File ID : $%02X",hd[2]);
    strcat(info,lin);
 
    /* get pilot & trailer lengths */

@@ -96,7 +96,7 @@ int oceannew2_describe(int row)
 	blk[row]->ce= hd[2]+(hd[3]<<8)-1;
 	blk[row]->cx= (blk[row]->ce - blk[row]->cs)+1;	
 
-	sprintf(lin,"\n - ID Byte: $%02X",hd[4]);	 /* show ID byte */
+	sprintf(lin,"\n - ID Byte : $%02X",hd[4]);	 /* show ID byte */
 	strcat(info,lin);
 
 	/* get pilot & trailer length */

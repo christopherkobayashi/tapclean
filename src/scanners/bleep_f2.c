@@ -181,7 +181,7 @@ int bleep_spc_describe(int row)
    for(i=0; i<8; i++)
       hd[i]= readttbyte(s+(i*8), ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, MSbF);
 
-   sprintf(lin,"\n - Block number : $%02X", hd[0]);
+   sprintf(lin,"\n - Block Number : $%02X", hd[0]);
    strcat(info,lin);
 
    blk[row]->cs= hd[1]+(hd[2]<<8);
@@ -189,7 +189,7 @@ int bleep_spc_describe(int row)
    blk[row]->ce= ((blk[row]->cs + blk[row]->cx)-1);
 
    /* get execution address...   */
-   sprintf(lin,"\n - Execution address : $%04X", hd[5]+(hd[6]<<8));
+   sprintf(lin,"\n - Exe Address : $%04X", hd[5]+(hd[6]<<8));
    strcat(info,lin);
 
    /* get pilot length... */

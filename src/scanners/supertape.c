@@ -329,11 +329,11 @@ int supertape_describe(int row)
       _dsz= hd[19] + (hd[20]<<8);
       _den= _dst + _dsz;
 
-      sprintf(lin,"\n - DATA Load address: $%04X", _dst);
+      sprintf(lin,"\n - DATA Load address : $%04X", _dst);
       strcat(info,lin);
-      sprintf(lin,"\n - DATA File size: %d bytes", _dsz);
+      sprintf(lin,"\n - DATA File size : %d bytes", _dsz);
       strcat(info,lin);
-      sprintf(lin,"\n - DATA End address (calculated): $%04X", _den);
+      sprintf(lin,"\n - DATA End address (calculated) : $%04X", _den);
       strcat(info,lin);
    }
 

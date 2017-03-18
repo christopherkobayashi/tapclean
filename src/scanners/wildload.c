@@ -135,7 +135,7 @@ int wild_describe(int row)
 
       if(blk[row]->xi!=0)
       {
-         sprintf(lin,"\n - Last word: $%04X",blk[row]->xi);
+         sprintf(lin,"\n - Last word : $%04X",blk[row]->xi);
          strcat(info,lin);
       }
 

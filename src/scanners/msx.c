@@ -522,7 +522,7 @@ int msx_describe (int row)
 					dh[i] = b & 0xff;
 				}
 
-				sprintf(lin, "\n - Exe address : $%04X", dh[D0_EXECOFFSETL] + (dh[D0_EXECOFFSETH] << 8));
+				sprintf(lin, "\n - Exe Address : $%04X", dh[D0_EXECOFFSETL] + (dh[D0_EXECOFFSETH] << 8));
 				strcat(info, lin);
 
 				if (blk[row]->dd != NULL)

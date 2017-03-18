@@ -99,7 +99,7 @@ int virgin_describe(int row)
 
    sprintf(lin,"\n - Block Number : $%02X",hd[0]);
    strcat(info,lin);
-   sprintf(lin,"\n - Execution Address : $%04X",hd[6]+(hd[7]<<8));
+   sprintf(lin,"\n - Exe Address : $%04X",hd[6]+(hd[7]<<8));
    strcat(info,lin);
 
    /* get pilot & trailer length... */
