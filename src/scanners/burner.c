@@ -1,155 +1,275 @@
-/*---------------------------------------------------------------------------
-  burner.c
+/*
+ * burner.c (rewritten by Luigi Di Fraia, Mar 2017)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
-  Part of project "Final TAP".
-
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-
-
-
-	This program is free software; you can redistribute it and/or modify it under
-	the terms of the GNU General Public License as published by the Free Software
-	Foundation; either version 2 of the License, or (at your option) any later
-	version.
-
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY
-	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-	PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License along with
-	this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
-	St, Fifth Floor, Boston, MA 02110-1301 USA
-
----------------------------------------------------------------------------*/
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: Yes
+ * Single on tape: Yes
+ * Sync: Byte
+ * Header: Yes
+ * Data: Continuous
+ * Checksum: No
+ * Post-data: No
+ * Trailer: Commonly no, but not necessarily
+ * Trailer homogeneous: No
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
 
 #include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#define HDSZ 4
+#define THISLOADER	BURNER
 
-/*---------------------------------------------------------------------------*/
-void burner_search(void)
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZE	1	/* amount of sync bytes */
+#define MAXTRAILER	16	/* max amount of trailer pulses read in */
+
+#define HEADERSIZE	4	/* size of block header */
+
+#define LOADOFFSETH	1	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	0	/* load location (LSB) offset inside header */
+#define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
+#define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
+
+#define OPC_ROL		0x26	/* 65xx ROL OPCode */
+#define OPC_ROR		0x66	/* 65xx ROR OPCode */
+
+#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
+
+void burner_search (void)
 {
-	int i,j,z,sof,sod,eod,eof;
-	int hd[HDSZ],x,ib;
+	int i, h;			/* counters */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
+	int ib;				/* condition variable */
 
-	if(!quiet)
+	int en, tp, sp, lp, pv, sv;	/* encoding parameters */
+
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
+
+	int xinfo;			/* extra info used in addblockdef() */
+
+
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+
+	if (!quiet)
 		msgout("  Burner");
 
-
-	/* first we retrieve the burner variables from the CBM header... */
+	/*
+	 * First we retrieve loader variables from the CBM header block, 
+	 * after decrypting it.
+	 * We use CBM HEADER index # 1 as we assume the tape image contains
+	 * a single game.
+	 * For compilations we should search and find the relevant file
+	 * using the search code found e.g. in Biturbo.
+	 */
 
 	ib = find_decode_block(CBM_HEAD, 1);
-	if(ib==-1)
-		return;	 /* failed to locate cbm header. */
+	if (ib == -1)
+		return;	/* Failed to locate CBM header */
 
 	if (blk[ib]->cx <= 0x93)
-		return;	 /* not enough bytes in cbm header. */
+		return;	/* Not enough bytes in CBM header (short/corrupted) */
 
-	ft[BURNER].pv= blk[ib]->dd[0x88] ^ 0x59;
-	ft[BURNER].sv= blk[ib]->dd[0x93] ^ 0x59;
-	ft[BURNER].en= blk[ib]->dd[0x83] ^ 0x59;  /* MSbF rol ($26) or.. LSbF ror($66)  */
+	pv = blk[ib]->dd[0x88] ^ 0x59;
+	sv = blk[ib]->dd[0x93] ^ 0x59;
 
-	if(ft[BURNER].en!=0x26 && ft[BURNER].en!=0x66)  /* skip search if endianess check failed. */
-		return;
+	en = blk[ib]->dd[0x83] ^ 0x59;
+	if (en != OPC_ROL && en != OPC_ROR)
+		return;	/* Skip search if endianess check failed */
 
-	if(ft[BURNER].en==0x26)
-		ft[BURNER].en=MSbF;
-	if(ft[BURNER].en==0x66)
-		ft[BURNER].en=LSbF;
+	en = (en == OPC_ROL) ? MSbF : LSbF;
 
-	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%d", ft[BURNER].pv,ft[BURNER].sv,ft[BURNER].en);
+	/*
+	 * We now need to feed back the discovered info into the ft table
+	 * in order for find_pilot() to use the discovered values
+	 */
+	ft[THISLOADER].pv = pv;
+	ft[THISLOADER].sv = sv;
+	ft[THISLOADER].en = en;
+
+	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s", pv, sv, ENDIANESS_TO_STRING(en));
 	msgout(lin);
 
-	/*------------------------------------------------------------------------------- */
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, THISLOADER);
 
-	for(i=20; i<tap.len-8; i++) {
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
 
-		if((z=find_pilot(i,BURNER))>0) {
-			sof=i;
-			i=z;
+			/* Check if there's a valid sync byte for this loader */
+			if (readttbyte(i, lp, sp, tp, en) != sv)
+				continue;
 
-			if(readttbyte(i, ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en)==ft[BURNER].sv) {
-				sod = i+8;
+			/* Valid sync found, mark start of data */
+			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
-				/* decode the header, so we can validate the addresses */
-				for(j=0; j<HDSZ; j++) {
-					hd[j] = readttbyte(sod+(j*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, ft[BURNER].en);
-					if (hd[j] == -1)
-						break;
-				}
-				if (j != HDSZ)
-					continue;
-
-				x= (hd[2]+(hd[3]<<8)) - (hd[0]+ (hd[1]<<8));  /* get data length */
-				if(x>0) {
-					eod= sod+ ((x+HDSZ)*8)-8;
-					eof= eod+7;
-					addblockdef(BURNER, sof,sod,eod,eof, ft[BURNER].pv+ (ft[BURNER].sv<<8)+ (ft[BURNER].en<<16));
-					i= eof;  /* optimize search  */
-				}
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
 			}
+			if (h != HEADERSIZE)
+				continue;
+
+			/* Extract load and end locations */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			/* Prevent int wraparound when subtracting 1 from end location
+			   to get the location of the last loaded byte */
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
+
+			/* Plausibility check */
+			if (e < s)
+				continue;
+
+			/* Compute size */
+			x = e - s + 1;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
+
+			/* Initially point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Store the encoding info as extra-info */
+			xinfo = pv | (sv << 8) | (en << 16);
+
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			/* Note: No trailer has been documented, but we are not strictly
+			         requiring one here, just checking for it is future-proof */
+			h = 0;
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
+				eof++;
+
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
 		} else {
-			if(z<0)	 /* find_pilot failed (too few/many), set i to failure point.  */
-				i=(-z);
+			if (eop < 0)
+				i = (-eop);
 		}
 	}
 }
-/*---------------------------------------------------------------------------*/
+
 int burner_describe(int row)
 {
-	int i,s,hd[HDSZ],b,rd_err,endi;
-	char endiname[5];
+	int i, s;
+	int hd[HEADERSIZE];
+	int en, tp, sp, lp, pv, sv;
 
-	endi=(blk[row]->xi & 0xFF0000)>>16;
+	int b, rd_err;
 
-	if(endi!=LSbF && endi!=MSbF)  /* skip search if endianess check failed.  */
-		return 0;
 
-	if(endi==MSbF)
-		strcpy(endiname,"MSbF");
-	else
-		strcpy(endiname,"LSbF");
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
 
-	/* decode the header...  */
-	s= blk[row]->p2;
-	for(i=0; i<HDSZ; i++)
-		hd[i] = readttbyte(s+(i*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, endi);
+	pv = blk[row]->xi & 0xFF;
+	sv = (blk[row]->xi >> 8) & 0xFF;
+	en = blk[row]->xi >> 16;
 
-	blk[row]->cs= hd[0]+ (hd[1]<<8);
-	blk[row]->ce= hd[2]+ (hd[3]<<8)-1;
-	blk[row]->cx= (blk[row]->ce - blk[row]->cs)+1;
-
-	sprintf(lin,"\n - Pilot: $%02X, Sync: $%02X, Endianess : %s",blk[row]->xi&0xFF, (blk[row]->xi&0xFF00)>>8, endiname);
+	sprintf(lin,"\n - Pilot: $%02X, Sync: $%02X, Endianess: %s", pv, sv, ENDIANESS_TO_STRING(en));
 	strcat(info,lin);
 
-	/* get pilot and trailer lengths  */
-	blk[row]->pilot_len= ((blk[row]->p2 - blk[row]->p1 -8)>>3)-1;
-	blk[row]->trail_len= (blk[row]->p4 - blk[row]->p3 -7)>>3;
+	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	s = blk[row] -> p2;
 
-	/* extract data...  */
-	rd_err=0;
-	s= (blk[row]->p2)+(HDSZ*8);
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+	for (i = 0; i < HEADERSIZE; i++)
+		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	if(blk[row]->dd!=NULL)
+	/* Extract load and end locations */
+	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+	/* Prevent int wraparound when subtracting 1 from end location
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
+
+	/* Compute size */
+	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
+
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in bytes... */
+	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+	/* ... trailer in pulses */
+	/* Note: No trailer has been documented, but we are not pretending it
+	         here, just checking for it is future-proof */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Extract data */
+	rd_err = 0;
+
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
+
+	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
+
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
-	for(i=0; i<blk[row]->cx; i++) {
-		b= readttbyte(s+(i*8), ft[BURNER].lp, ft[BURNER].sp, ft[BURNER].tp, endi);
-		if(b==-1)
+	for (i = 0; i < blk[row]->cx; i++) {
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
 			rd_err++;
-		blk[row]->dd[i]=b;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+			strcat(info, lin);
+		}
 	}
-	blk[row]->rd_err= rd_err;
-	return 0;
+
+	blk[row]->rd_err = rd_err;
+
+	return(rd_err);
 }
-
-
-
