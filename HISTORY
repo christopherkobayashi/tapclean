@@ -12,6 +12,8 @@ v0.34
 	 errors (Luigi)
 	Code quality: Made a number of rationalisations (Luigi)
 	Improvement: "Burner" scanner rewritten (Luigi)
+	Code quality: Rationalised a number of scanners along with
+	 file detail messages (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
