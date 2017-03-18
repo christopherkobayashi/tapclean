@@ -11,6 +11,7 @@ v0.34
 	New: Added the "-reckless" option to clean tape images with read
 	 errors (Luigi)
 	Code quality: Made a number of rationalisations (Luigi)
+	Improvement: "Burner" scanner rewritten (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)

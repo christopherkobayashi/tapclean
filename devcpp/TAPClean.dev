@@ -202,7 +202,7 @@ BuildCmd=
 [Unit18]
 FileName=..\src\scanners\burner.c
 CompileCpp=0
-Folder=scanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000

@@ -388,10 +388,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\burner.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\c64tape.c"
 					>
 				</File>
@@ -689,6 +685,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\atlantis.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\burner.c"
 					>
 				</File>
 				<File
