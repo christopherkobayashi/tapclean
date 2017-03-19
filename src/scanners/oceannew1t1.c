@@ -96,7 +96,7 @@ int oceannew1t1_describe(int row)
 	tp = ft[OCNEW1_T1].tp;	/* set threshold */
 	sp = ft[OCNEW1_T1].sp;	/* set short pulse */
 	lp = ft[OCNEW1_T1].lp;	/* set long pulse */
-   
+
 	/* decode the header to get load address etc... */
 
 	s = blk[row]->p2;
