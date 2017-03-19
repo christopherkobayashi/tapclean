@@ -45,18 +45,18 @@ void snakeload50t1_search(void)
    
    for(i=20; i<tap.len-8; i++)
    {
-      if((z=find_pilot(i,SNAKE50T1))>0)
+      if((z=find_pilot(i,SNAKE50_T1))>0)
       {
          sof=i;
          i=z;
-         if(readttbit(i, ft[SNAKE50T1].lp, ft[SNAKE50T1].sp, ft[SNAKE50T1].tp)==ft[SNAKE50T1].sv)
+         if(readttbit(i, ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp)==ft[SNAKE50_T1].sv)
          {
             i++;   /* skip sync bit */
             sod=i;
             /* decode the header so we can validate the addresses... */
             for(h=0; h<HDSZ; h++)
             {
-               hd[h] = readttbyte(sod+(h*8), ft[SNAKE50T1].lp, ft[SNAKE50T1].sp, ft[SNAKE50T1].tp, ft[SNAKE50T1].en);
+               hd[h] = readttbyte(sod+(h*8), ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp, ft[SNAKE50_T1].en);
                if (hd[h] == -1)
                   break;
             }
@@ -78,11 +78,11 @@ void snakeload50t1_search(void)
                   /* trace 'eof' to end of trailer (skip through S pulses)... */
                   if(eof>0 && eof<tap.len-1)
                   {
-                     while(eof<tap.len-1 && tap.tmem[eof+1]>ft[SNAKE50T1].sp-tol && tap.tmem[eof+1]<ft[SNAKE50T1].sp+tol)
+                     while(eof<tap.len-1 && tap.tmem[eof+1]>ft[SNAKE50_T1].sp-tol && tap.tmem[eof+1]<ft[SNAKE50_T1].sp+tol)
                         eof++;
                   }
                   
-                  addblockdef(SNAKE50T1, sof,sod,eod,eof, 0);
+                  addblockdef(SNAKE50_T1, sof,sod,eod,eof, 0);
                   i=eof;  /* optimize search */
                }
             }
@@ -104,7 +104,7 @@ int snakeload50t1_describe(int row)
    /* decode the header to get load address etc... */
    s=blk[row]->p2;
    for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), ft[SNAKE50T1].lp, ft[SNAKE50T1].sp, ft[SNAKE50T1].tp, ft[SNAKE50T1].en);
+      hd[i]= readttbyte(s+(i*8), ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp, ft[SNAKE50_T1].en);
 
    blk[row]->cs = hd[6]+(hd[7]<<8);
    blk[row]->ce = hd[8]+(hd[9]<<8)-1;
@@ -125,14 +125,14 @@ int snakeload50t1_describe(int row)
 
    for(i=0; i<blk[row]->cx; i++)
    {
-      b= readttbyte(s+(i*8), ft[SNAKE50T1].lp, ft[SNAKE50T1].sp, ft[SNAKE50T1].tp, ft[SNAKE50T1].en);
+      b= readttbyte(s+(i*8), ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp, ft[SNAKE50_T1].en);
       cb+=b;
 
       if(b==-1)
          rd_err++;
       blk[row]->dd[i]=b;
    }
-   b= readttbyte(s+(i*8), ft[SNAKE50T1].lp, ft[SNAKE50T1].sp, ft[SNAKE50T1].tp, ft[SNAKE50T1].en); /* read actual checkbyte. */ 
+   b= readttbyte(s+(i*8), ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp, ft[SNAKE50_T1].en); /* read actual checkbyte. */ 
 
    blk[row]->cs_exp= cb &0xFF;
    blk[row]->cs_act= b;

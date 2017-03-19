@@ -1539,9 +1539,9 @@ static void describe_file(int row)
 					break;
 		case SNAKE51:		snakeload51_describe(row);
 					break;
-		case SNAKE50T1:		snakeload50t1_describe(row);
+		case SNAKE50_T1:		snakeload50t1_describe(row);
 					break;
-		case SNAKE50T2:		snakeload50t2_describe(row);
+		case SNAKE50_T2:		snakeload50t2_describe(row);
 					break;
 		case PAL_F1:		palacef1_describe(row);
 					break;
