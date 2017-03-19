@@ -1,23 +1,23 @@
  - The loader known as "Alternative Software variant" and used by the "Graphic 
    Adventure Creator" should be renamed to "Imagine/Incentive tape" and the 
    loader used by games created with it, currently referred to as "Alternative 
-   Software tape", should be renamed to "Graphic Adv Creator tape" (Paul Jones)
+   Software tape", should be renamed to "Graphic Adv Creator tape" (Ziggy72)
  - "U.S. Gold tape" was mastered with a tool called "Pro Cass" as found out by 
    SLC who managed to get in touch with some ex-employees: the latter also 
    confirmed that wrong checkbytes were embedded into some tapes in order 
-   to fool crackers. TAPClean could alert on this (Paul Jones)
- - "Cult tape" should be renamed to "Freeze Machine tape" (Paul Jones)
+   to fool crackers. TAPClean could alert on this (Ziggy72)
+ - "Cult tape" should be renamed to "Freeze Machine tape" (Ziggy72)
  - "FF Tape" stands for "Freeze Frame" (SLC) which later became "Freeze Machine" 
-   (Paul Jones)
+   (Ziggy72)
  - "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, 
    (C) 1984 Choice, each supported type is referred to as:
     CHR T1 : Mega-Speed  x9 (fastest)
     CHR T2 : Ultra-Speed x7 (medium)
     CHR T3 : Hyper-Speed x5 (slowest)
-   (Paul Jones)
+   (Ziggy72)
  - Titles using the "Alternative Software" loader were mastered by "The Graphic 
    Adventure Creator", in fact they are all text adventures with graphics
-   (Paul Jones)
+   (Ziggy72)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - Avoid repetition for scanner code:
