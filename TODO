@@ -57,6 +57,11 @@
    can be simplified to (the order of the two conditions IS important):
 			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h++ < MAXTRAILER)
 				eof++;
+   or to (the order of the two confitions is NOT important anymore):
+			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
+				eof++;
+				h++;
+			}
    (Luigi)
  - The report is saved in a report buffer and then written to file. As the 
    buffer has a fixed size, should we instead just write to file directly
