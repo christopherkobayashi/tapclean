@@ -39,7 +39,7 @@ static int wait_for_store_update_to_finish ()
 		if (retries >= 3)
 			return 1;
 
-		usleep(1000);
+		usleep (1000);
 	}
 
 	return 0;
@@ -85,13 +85,13 @@ int persistence_load_loader_parameters (void)
 				&pv,
 				&sv) == 8) {
 
-			for (i = 0; i < strlen(loader); i++) {
+			for (i = 0; i < strlen (loader); i++) {
 				if (loader[i] == '~')
 					loader[i] = ' ';
 			}
 
 			for (i = CBM_HEAD; ft[i].name[0]; i++) {
-				if (strncmp (loader, ft[i].name, strlen(ft[i].name)) == 0) {
+				if (strncmp (loader, ft[i].name, strlen (ft[i].name)) == 0) {
 					ft[i].en = en;
 					ft[i].tp = tp;
 					ft[i].sp = sp;
@@ -145,7 +145,7 @@ int persistence_save_loader_parameters (void)
 				ft[i].pv,
 				ft[i].sv);
 
-		for (j = 0; j < strlen(ft[i].name); j++) {
+		for (j = 0; j < strlen (ft[i].name); j++) {
 			if (writebuffer[j] == ' ')
 				writebuffer[j] = '~';
 		}
