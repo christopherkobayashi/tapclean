@@ -202,6 +202,11 @@ int turbo220_describe(int row)
 	/* Compute size */
 	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
+	/* Extract execution address and print it out */
+	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
+	sprintf(lin, "\n - Exe Address : $%04X (SYS %d)", exec, exec);
+	strcat(info, lin);
+
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in bytes... */
@@ -241,10 +246,6 @@ int turbo220_describe(int row)
 	}
 
 	blk[row]->rd_err = rd_err;
-
-	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
-	sprintf(lin, "\n - Exe Address : $%04X (SYS %d)", exec, exec);
-	strcat(info, lin);
 
 	return(rd_err);
 }
