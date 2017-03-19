@@ -1,5 +1,7 @@
  - "U.S. Goldtape " was mastered with a tool called "ProCass" as found out by 
-   SLC who managed to get in touch with some ex-employees (Paul Jones)
+   SLC who managed to get in touch with some ex-employees: the latter also 
+   confirmed that wrong checkbytes were embedded into some tapes in order 
+   to fool crackers. TAPClean could alert on this (Paul Jones)
  - "Cult tape" should be renamed to "Freeze Machine tape" (Paul Jones)
  - "FF Tape" stands for "Freeze Frame" (SLC) which later became "Freeze Machine" 
    (Paul Jones)
