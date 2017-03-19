@@ -322,7 +322,7 @@ BuildCmd=
 [Unit30]
 FileName=..\src\scanners\hitec.c
 CompileCpp=0
-Folder=scanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000
@@ -582,7 +582,7 @@ BuildCmd=
 [Unit57]
 FileName=..\src\scanners\virgin.c
 CompileCpp=0
-Folder=scanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000

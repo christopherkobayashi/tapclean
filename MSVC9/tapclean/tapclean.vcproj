@@ -420,10 +420,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\hitec.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\hitload.c"
 					>
 				</File>
@@ -517,10 +513,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\usgold.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\virgin.c"
 					>
 				</File>
 				<File
@@ -700,11 +692,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\hitec.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\rackit.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\turrican.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\virgin.c"
 					>
 				</File>
 			</Filter>
