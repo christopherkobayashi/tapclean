@@ -93,21 +93,20 @@ void alternativedk_search (void)
 	unsigned int s;			/* block location referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int pass, variant;
+	int type, variant;
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	for (pass = 1; pass <= 3; pass++) {
-		switch (pass) {
+	for (type = 1; type <= 3; type++) {
+		switch (type) {
 			case 1:
 				variant = ALTERDK_T1;
 				break;
 			case 2:
 				variant = ALTERDK_T2;
 				break;
-			case 3:
+			default:
 				variant = ALTERDK_T3;
-				break;
 		}
 
 		en = ft[variant].en;
@@ -117,7 +116,7 @@ void alternativedk_search (void)
 		sv = ft[variant].sv;
 
 		if (!quiet) {
-			sprintf(lin, "  Alternative SW (DK) T%d", pass);
+			sprintf(lin, "  Alternative SW (DK) T%d", type);
 			msgout(lin);
 		}
 
