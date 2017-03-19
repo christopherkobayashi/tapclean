@@ -139,7 +139,7 @@ void powerload_search (void)
 			sof = i;
 			i = eop;
 
-			/* Decode a 10 byte sequence (possibly a valid sync train) */
+			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 

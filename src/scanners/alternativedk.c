@@ -124,7 +124,6 @@ void alternativedk_search (void)
 		}
 
 		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-
 			eop = alternativedk_find_pilot(variant, i);
 
 			if (eop > 0) {

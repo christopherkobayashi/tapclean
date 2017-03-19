@@ -107,7 +107,7 @@ void ar_search (void)
 
 			i++; /* Take into account this bit */
 
-			/* Decode a 2 byte sequence (possibly a valid sync train) */
+			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
 			for (h = 0; h < SYNCSEQSIZE; h++)
 				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 

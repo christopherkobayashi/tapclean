@@ -150,7 +150,7 @@ void ashdave_search (void)
 			eof = eod + BITSINABYTE;
 
 #ifndef DEBUGASHDAVE
-			/* Decode a 15 byte sequence (possibly a valid postdata pattern) */
+			/* Decode a POSTDATASIZE byte sequence (possibly a valid postdata pattern) */
 			for (h = 0; h < POSTDATASIZE; h++)
 				pat[h] = readttbyte(eof + (h * BITSINABYTE), lp, sp, tp, en);
 

@@ -137,7 +137,7 @@ void fastevil_search (void)
 			/* Point to the first pulse of the first postdata byte */
 			eof = eod + BITSINABYTE;
 
-			/* Decode a 256 byte sequence (possibly a valid postdata pattern) */
+			/* Decode a POSTDATASIZE byte sequence (possibly a valid postdata pattern) */
 			for (h = 0, j = 0; h < POSTDATASIZE; h++, j--)
 				if (readttbyte(eof + (h * BITSINABYTE), lp, sp, tp, en) != (int)j)
 					break;
