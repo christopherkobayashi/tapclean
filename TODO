@@ -1,3 +1,5 @@
+ - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
+   mastered by the same program with different settings (Luigi)
  - Avoid repetition for scanner code:
    - PRG data extraction and checkbyte calculation
    - pilot & trailer length computation
@@ -7,7 +9,7 @@
     #define HEADER_GET_END_ADDRESS()  (hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8))
     #define HEADER_GET_DATA_SIZE()    (hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8))
    (Luigi)
- - The "Turrican" scanner reads the checksum as part of the data block (SLC)
+ o The "Turrican" scanner reads the checksum as part of the data block (SLC)
     Done.
  - "Galactic Games" is Wildload but uses 0x50 as pilot byte on level files (SLC)
  - "Barbarian II" uses a variant of the "Palace F1" loader with a different 
@@ -21,15 +23,16 @@
  - The size of the trailing silence should be overridable as "Hunchback at the 
    Olympics" does not properly execute if the tape runs out before the unpacker 
    has finished processing all data (Luigi - reported by Peepo and Ziggy72)
- - Burner uses a hardcoded execution address and a hardcoded count of files to 
+ o Burner uses a hardcoded execution address and a hardcoded count of files to 
    load from tape, as opposite to its predecessor, the Mastertronic variant.
    However, "Hunchback at the Olympics" shows 15 bits post the data block, 
    which might have been written by the masterer as dummy information that 
    should at least be considered file trailer in order to be retained for 
    historical reasons (Luigi)
+    Done.
  - The Visiload scanner should extract initial loader parameters from the CBM 
-    Data block as these were configurable at mastering time, as shown by early
-    tapes (Luigi)
+   Data block as these were configurable at mastering time, as shown by early
+   tapes. A similar change was done while rewriting Rack-It (Luigi)
  - readttbit already checks for TAP data boundaries so the following:
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
@@ -39,7 +42,7 @@
 			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h++ < MAXTRAILER)
 				eof++;
    (Luigi)
-- The report is saved in a report buffer and then written to file. As the 
+ - The report is saved in a report buffer and then written to file. As the 
    buffer has a fixed size, should we instead just write to file directly
    instead of buffering the report in memory? (Luigi)
  - For CBM headers with payload > 192 bytes, the crc-32 is still computed on
@@ -55,7 +58,7 @@
  - There doesn't appear to be any reason for abandoning search when nova_f1 
    block header contains broken bytes. Proceed with validation and further 
    scanning (Luigi)
- - The block header validation recently (0.27) added to Freeload and Ocean New 
+ ~ The block header validation recently (0.27) added to Freeload and Ocean New 
    scanners by fabbo should be added to old scanners, wherever appropriate 
    (Luigi)
     Done for most scanners. TODO: superpav.c, supertape.c. Leave wildload.c as 
@@ -91,19 +94,18 @@
  - It must be responsibility of the cleaning process to reconstruct the last 
    bit of the last byte of pattern found in Ash+Dave trailer, 0x77, not of the 
    scanner. Move the reconstruction there. (Luigi)
- - Gremlin F2 should be split in T1 (Krakout, Bulldog) and T2 (Avenger).
+ o Gremlin F2 should be split in T1 (Krakout, Bulldog) and T2 (Avenger).
    Possibly even more Tn variants each with its own Threshold counter. (Luigi)
     Done. Splitted into F1 and F2 due to the structural loader differences.
- - Make some templates for the xxx_search() and xxx_describe() functions. (Luigi)
+ ~ Make some templates for the xxx_search() and xxx_describe() functions. (Luigi)
     Done to some extent.
- - FIX xxx_search() functions by checking the return value from addblockdef() 
+ ~ FIX xxx_search() functions by checking the return value from addblockdef() 
    before assigning 'eof' to 'i'. (Luigi)
     Done for new scanners.
  - Fix long / int usage in crc32.c.
     This is not a problem with gcc, but with MS Visual C++ that assumes that
     the size for int and long (4 bytes) are different
-    Or replace it with SHA256 as crc32 is not safe
- - Check for memory and filehandle leaks (error handling).
+ ~ Check for memory and filehandle leaks (error handling).
     Partly done.
  - Add a portable strupr function for sort_list in filesearch.c.
     Use strcasecmp instead?
@@ -122,7 +124,7 @@
     Much of this is now done.
  - Make the code more generic
  - Check start/end pilot/data/trailer:
-    SLC says:
+   SLC says:
     Example from tcreport.txt: Location: $A726 -> $AF33 -> $75C9B -> $76491
     The first points to the first pulse in the file (usually pilot).
     The second as you know points to the first datapulse.
@@ -137,18 +139,18 @@
     Probably check ALL loaders....
  - Use dynamic memory allocation for file/dir names where possible.
  - Avoid hardcoded values as much as possible, use #define.
- - Use "static" and "const" keywords whenever possible.
+ ~ Use "static" and "const" keywords whenever possible.
     Much is done.
  - Use the getcwd(buffer, size) call with buffer initialized to NULL and 
    size to -1, which should be memory safe. Then allocate a new string 
    whose size is buffer size + 2 to append SLASH and a '\0'. Strcpy and then
    free the first one.
- - Get rid of most #ifdef WIN32 stuff.
+ ~ Get rid of most #ifdef WIN32 stuff.
     We need to handle both windows and linux(unix), but #ifdefs are ugly.
     Keep to a bare minimum.
     Mostly done.
  - Do some major rewrite of scanners.
-    There is WAY TOO MUCH duplication of code.
+   There is WAY TOO MUCH duplication of code.
  - Unify scanner/loader names/strings
  - Add new header info to all 'old' scanners and check that the code actually
    are doing what the header info says.
