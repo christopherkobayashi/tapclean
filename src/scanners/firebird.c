@@ -68,13 +68,13 @@ void firebird_search(void)
          {
             ld= FBIRD1;
             sr= 0;      /* string reference (lname). */
-            msgout("   Firebird threshold found = T1 ($320 ms)");
+            msgout("   Firebird threshold found = T1 ($320 cycles)");
          }
          if(blk[t]->dd[i+1]==0x9A && blk[t]->dd[i+6]==0x02)
          {
             ld= FBIRD2;
             sr= 1;      /* string reference (lname). */
-            msgout("   Firebird threshold found = T2 ($29A ms) ");
+            msgout("   Firebird threshold found = T2 ($29A cycles) ");
          }
       }
       free(buf);
