@@ -16,6 +16,8 @@ v0.34
 	 file detail messages (Luigi)
 	Code quality: Simplified reading and checking of the post-data
 	 pattern in "FastEvil" scanner (Luigi)
+	- Improvement: "Cyberload F3" now shows the execution address
+	 when in use (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)

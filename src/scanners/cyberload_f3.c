@@ -197,6 +197,12 @@ int cyberload_f3_describe(int row)
    blk[row]->cx= ((blk[row]->p3 - blk[row]->p2)>>3)-7;        /* record length */
    blk[row]->ce= ((blk[row]->cs + blk[row]->cx) & 0xFFFF)-1;  /* record end address */
 
+   if (hd[4] & 0x80)
+   {
+      sprintf(lin, "\n - Exe Address : $%04X", hd[6] + (hd[7] << 8));
+      strcat(info, lin);
+   }
+
    /* get pilot & trailer lengths... */
    blk[row]->pilot_len= (blk[row]->p2- blk[row]->p1) >>3;
    blk[row]->trail_len= 0;
