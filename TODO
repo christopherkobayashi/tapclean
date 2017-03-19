@@ -1,3 +1,12 @@
+ - "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, 
+   (C) 1984 Choice, each supported type is referred to as:
+    CHR T1 : Mega-Speed  x9 (fastest)
+    CHR T2 : Ultra-Speed x7 (medium)
+    CHR T3 : Hyper-Speed x5 (slowest)
+   (Paul Jones)
+ - Titles using the "Alternative" Software loader were mastered by "The Graphic 
+   Adventure Creator", in fact they are all text adventures with graphics
+   (Paul Jones)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - Avoid repetition for scanner code:
