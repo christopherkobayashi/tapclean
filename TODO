@@ -1,3 +1,11 @@
+ - "Firebird" uses a very clever mechanism to avoid trying all known variants: 
+   it looks for a pattern in the first CBM Header, which it then uses to 
+   extract the pulse read threshold. Once that's done, a single variant is 
+   searched for. Can we re-use this approach for e.g. "Alternative Software 
+   (DK) Tx" since T2 and T3 can be easily confused with the default read 
+   tolerance value? A similar approach could be used for "CHR", "Visi", "Ocean 
+   New", and "Snakeload 5.1". For backward compatibility: if no Tx pattern is 
+   found then the code should cycle through all variants (Luigi)
  - The loader known as "Alternative Software variant" and used by the "Graphic 
    Adventure Creator" should be renamed to "Imagine/Incentive tape" and the 
    loader used by games created with it, currently referred to as "Alternative 
