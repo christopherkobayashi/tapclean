@@ -19,6 +19,11 @@ v0.34
 	Improvement: "Cyberload F3" now shows the execution address
 	 when in use (Luigi)
 	Improvement: "Hi-Tech" and "Virgin" scanners rewritten (Luigi)
+	Improvement: Revised ideal pulsewidths for "Alternative Software 
+	 (DK) T3", used in "Arcade Classics" and "Special Agent", supplied 
+	 by Paul Jones (Luigi)
+	New: Added support for "Alternative Software (DK) T4", used in
+	 "Interdictor Pilot", supplied by Paul Jones (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
@@ -38,7 +43,7 @@ v0.33
 	New: Added support for "Digital Design Tape", which is a variant
 	 of the "Ash+Dave" loader (Luigi)
 	New: Added support for "Alternative Software (DK) T3", used in
-	 "Arcade Classics" (Luigi)
+	 "Arcade Classics", supplied by Zoë (Luigi)
 	Improvement: "Turrican" scanner rewritten in order to optionally
 	 decode header files and correctly read checkbytes (Luigi)
 	Fix: Fixed memory boundary checks when reading in trailer tones
