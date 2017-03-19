@@ -67,11 +67,12 @@ int persistence_load_loader_parameters (void)
 
 		if (sscanf (readbuffer,
 				"version = %d",
-				&version) == 1)
+				&version) == 1) {
 			if (version != 1) {
 				fclose (pFile);
 				return PERS_UNSUPPORTED_VERSION;
 			}
+		}
 
 		if (sscanf (readbuffer,
 				"%s = %d %d %d %d %d %d %d",
@@ -84,22 +85,24 @@ int persistence_load_loader_parameters (void)
 				&pv,
 				&sv) == 8) {
 
-			for (i = 0; i < strlen(loader); i++)
+			for (i = 0; i < strlen(loader); i++) {
 				if (loader[i] == '~')
 					loader[i] = ' ';
+			}
 
-			for (i = CBM_HEAD; i < sizeof(ft)/sizeof(ft[0]) && ft[i].name[0]; i++)
+			for (i = CBM_HEAD; ft[i].name[0]; i++) {
 				if (strncmp (loader, ft[i].name, strlen(ft[i].name)) == 0) {
-					ft[i].en= en;
-					ft[i].tp= tp;
-					ft[i].sp= sp;
-					ft[i].mp= mp;
-					ft[i].lp= lp;
-					ft[i].pv= pv;
-					ft[i].sv= sv;
+					ft[i].en = en;
+					ft[i].tp = tp;
+					ft[i].sp = sp;
+					ft[i].mp = mp;
+					ft[i].lp = lp;
+					ft[i].pv = pv;
+					ft[i].sv = sv;
 
 					break;
 				}
+			}
 		}
 	}
 
@@ -127,7 +130,7 @@ int persistence_save_loader_parameters (void)
 	fputs ("version = 1\n", pFile);
 	fputs ("[loader_values]\n", pFile);
 
-	for (i = CBM_HEAD; i < sizeof(ft)/sizeof(ft[0]) && ft[i].name[0]; i++) {
+	for (i = CBM_HEAD; ft[i].name[0]; i++) {
 		char writebuffer[64];
 		size_t j;
 
@@ -142,9 +145,10 @@ int persistence_save_loader_parameters (void)
 				ft[i].pv,
 				ft[i].sv);
 
-		for (j = 0; j < strlen(ft[i].name); j++)
+		for (j = 0; j < strlen(ft[i].name); j++) {
 			if (writebuffer[j] == ' ')
 				writebuffer[j] = '~';
+		}
 
 		fputs (writebuffer, pFile);
 	}

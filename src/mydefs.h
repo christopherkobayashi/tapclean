@@ -226,7 +226,7 @@ struct tap_tr
 
 struct fmt_t
 {
-	char name[32];		/* format name */
+	char *name;		/* format name */
 	int en;			/* byte endianess, 0=LSbF, 1=MSbF */
 	int tp;			/* threshold pulsewidth (if applicable) */
 	int sp;			/* ideal short pulsewidth */
@@ -238,7 +238,7 @@ struct fmt_t
 	int pmax;		/* maximum pilots that should be present. */
 	int has_cs;		/* flag, provides checksums, 1=yes, 0=no. */
 };
-extern struct fmt_t ft[120];
+extern struct fmt_t ft[];
 
 extern unsigned char cbm_header[192];		/* some formats must have their loader... */
 extern unsigned char cbm_program[65536];	/* interrogated. */
