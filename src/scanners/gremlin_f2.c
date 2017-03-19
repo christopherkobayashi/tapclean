@@ -53,10 +53,10 @@
 
 #define HEADERSIZE	4	/* size of block header */
 
-#define BLOCKIDOFFSET	00	/* block ID inside header */
-#define LOADOFFSETH	02	/* load location (MSB) offset inside header */
-#define LOADOFFSETL	01	/* load location (LSB) offset inside header */
-#define DATAOFFSETL	03	/* data size (LSB) offset inside header */
+#define BLOCKIDOFFSET	0	/* block ID offset inside header */
+#define LOADOFFSETH	2	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	1	/* load location (LSB) offset inside header */
+#define DATAOFFSETL	3	/* data size (LSB) offset inside header */
 
 static int doffset;
 
