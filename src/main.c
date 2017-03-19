@@ -232,7 +232,7 @@ struct fmt_t ft[] = {
 	{"RASTERLOAD"		,MSbF, 0x3F, 0x26, NA,  0x58, 0x80, 0xFF, 20,   NA,    CSYES},
 	{"CYBERLOAD F1"		,MSbF, VV,   VV,   VV,  VV,   VV,   VV,   50,   NA,    CSNO},
 	{"CYBERLOAD F2"		,MSbF, VV,   VV,   VV,  VV,   VV,   VV,   20,   NA,    CSNO},
-	{"CYBERLOAD F3"		,MSbF, VV,   VV,   VV,  VV,   VV,   VV,    7,    9,    CSYES},
+	{"CYBERLOAD F3"		,MSbF, VV,   VV,   VV,  VV,   VV,   VV,    7,   9,     CSYES},
 	{"CYBERLOAD F4_1"	,MSbF, VV,   VV,   VV,  VV,   VV,   VV,    6,   11,    CSYES},
 	{"CYBERLOAD F4_2"	,MSbF, VV,   VV,   VV,  VV,   VV,   VV,    6,   11,    CSYES},
 	{"CYBERLOAD F4_3"	,MSbF, VV,   VV,   VV,  VV,   VV,   VV,    6,   11,    CSYES},
@@ -301,50 +301,50 @@ struct fmt_t ft[] = {
 	{"ACTIONREPLAY_HEADER"  ,LSbF, 0x3A, 0x23, NA,  0x53, 1,    0,    1500, NA,    CSNO},
 	{"ACTIONREPLAY_TURBO"   ,LSbF, 0x3A, 0x23, NA,  0x53, NA,   NA,   NA,   NA,    CSYES},
 	{"ACTIONREPLAY_SUPERTURBO"
-				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,  NA,    CSYES},
-	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200, NA,    CSNO},
-	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,  400,   CSYES},
-	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200, NA,    CSYES},
-	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200, NA,    CSNO},
-	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500,NA,    CSNO},
-	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 100, NA,    CSYES},
-	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,  NA,    CSNO},
-	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 1,    0,    2000,NA,    CSNO},
-	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,  0x44, 0xFF, 0x00, 25,  NA,    CSYES},
-	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64,0xB5, 0,    1,    5,   NA,    CSYES},
-	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36,0xA5, 0,    1,    5,   NA,    CSYES},
-//	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x44, 0x88,0xAF, 0,    1,    5,   NA,    CSYES},
-	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x3F, 0x86,0xAB, 0,    1,    5,   NA,    CSYES},
-	{"ALTERNATIVE SW DK T4"	,MSbF, NA,   0x23, 0x52,0xAB, 0,    1,    5,   NA,    CSYES},
-	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400, NA,    CSYES},
-	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,  NA,    CSYES},
-	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,  0x3C, 0xE3, 0xED, 64,  NA,    CSYES},
-	{"AMERICAN ACTION"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
+				,LSbF, 0x22, 0x13, NA,  0x2B, NA,   NA,   NA,   NA,    CSYES},
+	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,  0x44, 0x80, 0x40, 200,  NA,    CSNO},
+	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,  0x85, 0x40, 0x5A, 45,   400,   CSYES},
+	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,  0x42, 0x02, 0x11, 200,  NA,    CSYES},
+	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,  0x21, 0x10, 0x20, 200,  NA,    CSNO},
+	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,  0x3F, 0,    1,    1500, NA,    CSNO},
+	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,  0x44, 0x02, 0x52, 100,  NA,    CSYES},
+	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,  0x28, 0x02, 0x09, 50,   NA,    CSNO},
+	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52,0x7E, 1,    0,    2000, NA,    CSNO},
+	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,  0x44, 0xFF, 0x00, 25,   NA,    CSYES},
+	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64,0xB5, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36,0xA5, 0,    1,    5,    NA,    CSYES},
+//	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x44, 0x88,0xAF, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x3F, 0x86,0xAB, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T4"	,MSbF, NA,   0x23, 0x52,0xAB, 0,    1,    5,    NA,    CSYES},
+	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,  0x29, 0x02, 0x09, 400,  NA,    CSYES},
+	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,  0x41, 0xE3, 0xED, 64,   NA,    CSYES},
+	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,  0x3C, 0xE3, 0xED, 64,   NA,    CSYES},
+	{"AMERICAN ACTION"	,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,   NA,    CSNO},
 	/*
 	 * Creatures loader uses inverted bit pulses hence pv and sv are real values ^ 0xFF.
 	 * Also, the loader does not use checksums but these were calculated using a healthy
 	 * version (to the best of our knowledge).
 	 */
-	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,  0x4C, 0xF0, 0x47, 64,  NA,    CSYES},
+	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,  0x4C, 0xF0, 0x47, 64,   NA,    CSYES},
 
-	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,  400,   CSYES},
-	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,  NA,    CSYES},
-	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200, NA,    CSYES},
-	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,  NA,    CSNO},
-	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,  0x33, 0x01, 0xFF, 64,  NA,    CSYES},
-	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,  0x42, 0x80, 0x40, 100, NA,    CSNO},
+	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,  0x42, 0x40, 0x5A, 45,   400,   CSYES},
+	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49,0x80, 1,    0,    32,   NA,    CSYES},
+	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,  0x40, 0x02, 0x52, 200,  NA,    CSYES},
+	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,  0x28, 0x02, 0x09, 64,   NA,    CSNO},
+	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,  0x33, 0x01, 0xFF, 64,   NA,    CSYES},
+	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,  0x42, 0x80, 0x40, 100,  NA,    CSNO},
 
 	/* name,                 en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
-	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  6000,  NA,    CSNO},
-	{"MSX TAPE DATA"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  1000,  NA,    CSNO},
-	{"MSX TAPE HEADER FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  6000,  NA,    CSNO},
-	{"MSX TAPE DATA FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  1000,  NA,    CSNO},
+	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  6000,   NA,    CSNO},
+	{"MSX TAPE DATA"	,LSbF, NA,   0x30, NA,  0x60, 1,    0,  1000,   NA,    CSNO},
+	{"MSX TAPE HEADER FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  6000,   NA,    CSNO},
+	{"MSX TAPE DATA FAST"	,LSbF, NA,   0x18, NA,  0x30, 1,    0,  1000,   NA,    CSNO},
 
 	/* Closing record (mandatory cap used e.g. in persistence module for iteration) */
 	{""			,666,  666,  666,  666, 666,  666,  666,  666, 666,   666}
 
-	/* name (max 31 chars),  en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin,pmax,  has_cs. */
+	/* name,                 en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin, pmax,  has_cs. */
 };
 
 /*
