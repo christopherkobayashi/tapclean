@@ -82,7 +82,6 @@ void snakeload50t2_search(void)
                         eof++;
                   }
 
-
                   addblockdef(SNAKE50_T2, sof,sod,eod,eof, 0);
                   i=eof;  /* optimize search */
                }
@@ -91,7 +90,7 @@ void snakeload50t2_search(void)
       }
       else
       {
-         if(z<0)    /* find_pilot failed (too few/many), set i to failure point. */
+         if(z<0)    /* find_pilot() failed (too few/many), set i to failure point. */
             i=(-z);
       }
    }
@@ -142,9 +141,3 @@ int snakeload50t2_describe(int row)
 
    return 0;
 }
-
-
-
-
-
- 

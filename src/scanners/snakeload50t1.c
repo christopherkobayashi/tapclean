@@ -81,7 +81,7 @@ void snakeload50t1_search(void)
                      while(eof<tap.len-1 && tap.tmem[eof+1]>ft[SNAKE50_T1].sp-tol && tap.tmem[eof+1]<ft[SNAKE50_T1].sp+tol)
                         eof++;
                   }
-                  
+
                   addblockdef(SNAKE50_T1, sof,sod,eod,eof, 0);
                   i=eof;  /* optimize search */
                }
@@ -106,9 +106,10 @@ int snakeload50t1_describe(int row)
    for(i=0; i<HDSZ; i++)
       hd[i]= readttbyte(s+(i*8), ft[SNAKE50_T1].lp, ft[SNAKE50_T1].sp, ft[SNAKE50_T1].tp, ft[SNAKE50_T1].en);
 
+   /* get start/end addresses and size */
    blk[row]->cs = hd[6]+(hd[7]<<8);
    blk[row]->ce = hd[8]+(hd[9]<<8)-1;
-   blk[row]->cx = (blk[row]->ce - blk[row]->cs)+1;   
+   blk[row]->cx = (blk[row]->ce - blk[row]->cs)+1;
 
    /* get pilot & trailer lengths */
    blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1 -8);
@@ -140,8 +141,3 @@ int snakeload50t1_describe(int row)
 
    return 0;
 }
-
-
-
-
- 

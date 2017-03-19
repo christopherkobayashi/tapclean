@@ -4,8 +4,11 @@
    searched for. Can we re-use this approach for e.g. "Alternative Software 
    (DK) Tx" since T2 and T3 can be easily confused with the default read 
    tolerance value? A similar approach could be used for "CHR", "Visi", "Ocean 
-   New", and "Snakeload 5.1". For backward compatibility: if no Tx pattern is 
-   found then the code should cycle through all variants (Luigi)
+   New", and "Snakeload 5.0". For backward compatibility: if no Tx pattern is 
+   found then the code should cycle through all Tx variants (Luigi)
+ - There is no reason for which "Ocean New" and "Snakeload 5.0" T1 and T2 
+   should not be handled by the same module, as it happens with all other 
+   scanners; otherwise there is way too much code duplication there (Luigi)
  - The loader known as "Alternative Software variant" and used by the "Graphic 
    Adventure Creator" should be renamed to "Imagine/Incentive tape" and the 
    loader used by games created with it, currently referred to as "Alternative 
@@ -39,7 +42,7 @@
    (Luigi)
  o The "Turrican" scanner reads the checksum as part of the data block (SLC)
     Done.
- - "Galactic Games" is Wildload but uses 0x50 as pilot byte on level files (SLC)
+ - "Galactic Games" uses "Wildload" but pilot byte is 0x50 on level files (SLC)
  - "Barbarian II" uses a variant of the "Palace F1" loader with a different 
    sync train. Also the first of the four sync bytes changes for every 
    file, so it's a good idea to just match sync bytes 2-4 for 
@@ -62,18 +65,18 @@
    Data block as these were configurable at mastering time, as shown by early
    tapes. A similar change was done while rewriting Rack-It (Luigi)
  - readttbit already checks for TAP data boundaries so the following:
-			while (eof < tap.len - 1 &&
-					h++ < MAXTRAILER &&
-					readttbit(eof + 1, lp, sp, tp) >= 0)
-				eof++;
+	while (eof < tap.len - 1 &&
+			h++ < MAXTRAILER &&
+			readttbit(eof + 1, lp, sp, tp) >= 0)
+		eof++;
    can be simplified to (the order of the two conditions IS important):
-			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h++ < MAXTRAILER)
-				eof++;
+	while (readttbit(eof + 1, lp, sp, tp) >= 0 && h++ < MAXTRAILER)
+		eof++;
    or to (the order of the two confitions is NOT important anymore):
-			while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
-				eof++;
-				h++;
-			}
+	while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
+		eof++;
+		h++;
+	}
    (Luigi)
  - The report is saved in a report buffer and then written to file. As the 
    buffer has a fixed size, should we instead just write to file directly
