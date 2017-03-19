@@ -243,11 +243,11 @@ int alternativedk_describe(int);
 void powerload_search(void);
 int powerload_describe(int);
 
-void gremlinf1_search(void);
-int gremlinf1_describe(int);
+void GREMLIN_F1_search(void);
+int GREMLIN_F1_describe(int);
 
-void gremlinf2_search(void);
-int gremlinf2_describe(int);
+void GREMLIN_F2_search(void);
+int GREMLIN_F2_describe(int);
 
 void amaction_search(void);
 int amaction_describe(int);

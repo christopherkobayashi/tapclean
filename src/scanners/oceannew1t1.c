@@ -42,18 +42,18 @@ void oceannew1t1_search(void)
 	int z, h, hd[HDSZ];
 	unsigned int s, e, x;
 
-	en = ft[OCNEW1T1].en;	/* set endian according to table in main.c */
-	tp = ft[OCNEW1T1].tp;	/* set threshold */
-	sp = ft[OCNEW1T1].sp;	/* set short pulse */
-	lp = ft[OCNEW1T1].lp;	/* set long pulse */
-	sv = ft[OCNEW1T1].sv;	/* set sync value */
+	en = ft[OCNEW1_T1].en;	/* set endian according to table in main.c */
+	tp = ft[OCNEW1_T1].tp;	/* set threshold */
+	sp = ft[OCNEW1_T1].sp;	/* set short pulse */
+	lp = ft[OCNEW1_T1].lp;	/* set long pulse */
+	sv = ft[OCNEW1_T1].sv;	/* set sync value */
 
 	if(!quiet)
 		msgout("  New Ocean Tape 1 T1");
          
    
 	for (i = 20; i < tap.len - 8; i++) {
-		if ((z = find_pilot(i, OCNEW1T1)) > 0) {
+		if ((z = find_pilot(i, OCNEW1_T1)) > 0) {
 			sof = i;
 			i = z;
 			if (readttbyte(i, lp, sp, tp, en) == sv) {
@@ -76,7 +76,7 @@ void oceannew1t1_search(void)
 					x = e - s;
 					eod = sod + ((x + HDSZ) * 8);
 					eof = eod + 7;
-					addblockdef(OCNEW1T1, sof, sod, eod, eof, 0);
+					addblockdef(OCNEW1_T1, sof, sod, eod, eof, 0);
 					i = eof;		/* optimize search */
 				}
 			}
@@ -92,10 +92,10 @@ int oceannew1t1_describe(int row)
 	int i, s, b, hd[HDSZ], cb;
 	int en, tp, sp, lp;
 
-	en = ft[OCNEW1T1].en;	/* set endian according to table in main.c */
-	tp = ft[OCNEW1T1].tp;	/* set threshold */
-	sp = ft[OCNEW1T1].sp;	/* set short pulse */
-	lp = ft[OCNEW1T1].lp;	/* set long pulse */
+	en = ft[OCNEW1_T1].en;	/* set endian according to table in main.c */
+	tp = ft[OCNEW1_T1].tp;	/* set threshold */
+	sp = ft[OCNEW1_T1].sp;	/* set short pulse */
+	lp = ft[OCNEW1_T1].lp;	/* set long pulse */
    
 	/* decode the header to get load address etc... */
 

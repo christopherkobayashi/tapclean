@@ -107,8 +107,8 @@ struct ldrswt_t ldrswt[] = {
 	{"Freeload"			,"free"		,FALSE},
 	{"Freeload Slowload"		,"frslow"	,FALSE},
 	{"Go For The Gold"		,"goforgold"	,FALSE},
-	{"Gremlin F1"			,"gremlinf1"	,FALSE},
-	{"Gremlin F2"			,"gremlinf2"	,FALSE},
+	{"Gremlin F1"			,"GREMLIN_F1"	,FALSE},
+	{"Gremlin F2"			,"GREMLIN_F2"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
 	{"IK"				,"ik"		,FALSE},
@@ -989,10 +989,10 @@ static void search_tap(void)
 			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].exclude == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1T1	&& ldrswt[nooceannew1t1	].exclude == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1_T1	&& ldrswt[nooceannew1t1	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t1_search();
 
-			if (tap.cbmid == LID_OCNEW1T2	&& ldrswt[nooceannew1t2	].exclude == FALSE && !database_is_full && !aborted)
+			if (tap.cbmid == LID_OCNEW1_T2	&& ldrswt[nooceannew1t2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew1t2_search();
 
 			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
@@ -1064,11 +1064,11 @@ static void search_tap(void)
 				powerload_search();
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].exclude == FALSE  && !database_is_full && !aborted)
-				gremlinf2_search();
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[noGREMLIN_F2	].exclude == FALSE  && !database_is_full && !aborted)
+				GREMLIN_F2_search();
 
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].exclude == FALSE  && !database_is_full && !aborted)
-				gremlinf1_search();
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[noGREMLIN_F1	].exclude == FALSE  && !database_is_full && !aborted)
+				GREMLIN_F1_search();
 
 			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].exclude == FALSE && !database_is_full && !aborted)
 				easytape_search();
@@ -1336,11 +1336,11 @@ static void search_tap(void)
 			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();
 
-			//if (ldrswt[nogremlinf1].exclude == FALSE  && !database_is_full && !aborted)
-			//	gremlinf1_search();
+			//if (ldrswt[noGREMLIN_F1].exclude == FALSE  && !database_is_full && !aborted)
+			//	GREMLIN_F1_search();
 
-			//if (ldrswt[nogremlinf2].exclude == FALSE  && !database_is_full && !aborted)
-			//	gremlinf2_search();
+			//if (ldrswt[noGREMLIN_F2].exclude == FALSE  && !database_is_full && !aborted)
+			//	GREMLIN_F2_search();
 
 			//if (ldrswt[nocsparks	].exclude == FALSE && !database_is_full && !aborted)
 			//	creativesparks_search();
@@ -1507,9 +1507,9 @@ static void describe_file(int row)
 					break;
 		case IK:		ik_describe(row);
 					break;
-		case FBIRD1:		firebird_describe(row);
+		case FBIRD_T1:		firebird_describe(row);
 					break;
-		case FBIRD2:		firebird_describe(row);
+		case FBIRD_T2:		firebird_describe(row);
 					break;
 		case TURR_HEAD:		turrican_describe(row);
 					break;
@@ -1531,9 +1531,9 @@ static void describe_file(int row)
 					break;
 		case TDI_F1:		tdi_describe(row);
 					break;
-		case OCNEW1T1:		oceannew1t1_describe(row);
+		case OCNEW1_T1:		oceannew1t1_describe(row);
 					break;
-		case OCNEW1T2:		oceannew1t2_describe(row);
+		case OCNEW1_T2:		oceannew1t2_describe(row);
 					break;
 		case ATLAN:		atlantis_describe(row);
 					break;
@@ -1559,9 +1559,9 @@ static void describe_file(int row)
 					break;
 		case ALTERWG:		alternativewg_describe(row);
 					break;
-		case RAINBOWARTSF1:	rainbowf1_describe(row);
+		case RAINBOWARTS_F1:	rainbowf1_describe(row);
 					break;
-		case RAINBOWARTSF2:	rainbowf2_describe(row);
+		case RAINBOWARTS_F2:	rainbowf2_describe(row);
 					break;
 		case TRILOGIC:		trilogic_describe(row);
 					break;
@@ -1609,9 +1609,9 @@ static void describe_file(int row)
 					break;
 		case POWERLOAD:		powerload_describe(row);
 					break;
-		case GREMLINF1:		gremlinf1_describe(row);
+		case GREMLIN_F1:		GREMLIN_F1_describe(row);
 					break;
-		case GREMLINF2:		gremlinf2_describe(row);
+		case GREMLIN_F2:		GREMLIN_F2_describe(row);
 					break;
 		case AMACTION:		amaction_describe(row);
 					break;

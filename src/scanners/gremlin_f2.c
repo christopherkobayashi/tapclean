@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define THISLOADER	GREMLINF2
+#define THISLOADER	GREMLIN_F2
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -60,9 +60,9 @@
 
 static int doffset;
 
-typedef int (*gremlinf2decryptproc_t)(int, unsigned int);
+typedef int (*GREMLIN_F2decryptproc_t)(int, unsigned int);
 
-static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
+static int GREMLIN_F2_decrypt_v1 (int byte, unsigned int dest_addr)
 {
 	/* Bulldog, Krakout, Pool, Snooker, and Westbank */
 	static unsigned char dblock[] = {
@@ -90,7 +90,7 @@ static int gremlinf2_decrypt_v1 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
+static int GREMLIN_F2_decrypt_v2 (int byte, unsigned int dest_addr)
 {
 	/* Auf Wiedersehen Monty */
 	static unsigned char dblock[] = {
@@ -119,7 +119,7 @@ static int gremlinf2_decrypt_v2 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-static int gremlinf2_decrypt_v3 (int byte, unsigned int dest_addr)
+static int GREMLIN_F2_decrypt_v3 (int byte, unsigned int dest_addr)
 {
 	/* One version of Footballer Of The Year */
 	static unsigned char dblock[] = {
@@ -155,7 +155,7 @@ static int gremlinf2_decrypt_v3 (int byte, unsigned int dest_addr)
  *  - -1 if CBM data does not contain a known variant
  *  - variant number (> 0)
  */
-static int gremlinf2_find_variant (int cbm_index)
+static int GREMLIN_F2_find_variant (int cbm_index)
 {
 	int variant = 0;
 
@@ -196,7 +196,7 @@ static int gremlinf2_find_variant (int cbm_index)
 	return variant;
 }
 
-void gremlinf2_search (void)
+void GREMLIN_F2_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -236,7 +236,7 @@ void gremlinf2_search (void)
 	 */
 	cbm_index = 3;
 
-	variant = gremlinf2_find_variant(cbm_index);
+	variant = GREMLIN_F2_find_variant(cbm_index);
 	if (variant <= 0)
 		return;
 
@@ -349,7 +349,7 @@ void gremlinf2_search (void)
 	}
 }
 
-int gremlinf2_describe (int row)
+int GREMLIN_F2_describe (int row)
 {
 	int i, s, x;
 	int hd[HEADERSIZE];
@@ -363,7 +363,7 @@ int gremlinf2_describe (int row)
 	unsigned int current_s, current_x;
 	int current_id;
 
-	gremlinf2decryptproc_t gremlinf2_decrypt;
+	GREMLIN_F2decryptproc_t GREMLIN_F2_decrypt;
 
 
 	en = ft[THISLOADER].en;
@@ -376,13 +376,13 @@ int gremlinf2_describe (int row)
 
 	switch (variant) {
 		case 1:
-			gremlinf2_decrypt = gremlinf2_decrypt_v1;
+			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v1;
 			break;
 		case 2:
-			gremlinf2_decrypt = gremlinf2_decrypt_v2;
+			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v2;
 			break;
 		case 3:
-			gremlinf2_decrypt = gremlinf2_decrypt_v3;
+			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v3;
 			break;
 	}
 
@@ -448,7 +448,7 @@ int gremlinf2_describe (int row)
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {
-				b = (gremlinf2_decrypt)(b, current_s + i);
+				b = (GREMLIN_F2_decrypt)(b, current_s + i);
 				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;

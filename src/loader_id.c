@@ -243,9 +243,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xFADDF41C, LID_HTEC},		/* This is "Hi-Tec" Loader.  (thres=$017E)  Chevy Chase, Top Cat, Yogi */
 
 		{0x8E027BD2, LID_FLASH},
-		{0x1754E006, LID_OCNEW1T1},
-		{0x3A35F804, LID_OCNEW1T1},	/* Ocean New 1 T1 (Adidas Soccer) */
-		{0xC039C251, LID_OCNEW1T2},
+		{0x1754E006, LID_OCNEW1_T1},
+		{0x3A35F804, LID_OCNEW1_T1},	/* Ocean New 1 T1 (Adidas Soccer) */
+		{0xC039C251, LID_OCNEW1_T2},
 		{0x7FFB98B2, LID_OCNEW2},	/* Ocean New 2   (Shadow Warriors) */
 		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (Klax) */
 

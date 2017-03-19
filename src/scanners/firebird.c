@@ -50,7 +50,7 @@ void firebird_search(void)
    char lname[2][16] = {"T1","T2"};
 
    /* try and find correct threshold in loader... */
-   ld= FBIRD1;  /* set default type. */
+   ld= FBIRD_T1;  /* set default type. */
    sr= 0;      /* string reference (lname). */
    t= find_decode_block(CBM_HEAD,1);
    if(t!=-1)
@@ -66,13 +66,13 @@ void firebird_search(void)
       {
          if(blk[t]->dd[i+1]==0x20 && blk[t]->dd[i+6]==0x03)
          {
-            ld= FBIRD1;
+            ld= FBIRD_T1;
             sr= 0;      /* string reference (lname). */
             msgout("   Firebird threshold found = T1 ($320 cycles)");
          }
          if(blk[t]->dd[i+1]==0x9A && blk[t]->dd[i+6]==0x02)
          {
-            ld= FBIRD2;
+            ld= FBIRD_T2;
             sr= 1;      /* string reference (lname). */
             msgout("   Firebird threshold found = T2 ($29A cycles) ");
          }
@@ -141,15 +141,15 @@ int firebird_describe(int row)
    int i,s,b,hd[HDSZ],rd_err,cb;
    int sp,lp,tp;
 
-   if(blk[row]->lt==FBIRD1)
-      {sp=ft[FBIRD1].sp; lp=ft[FBIRD1].lp; tp=ft[FBIRD1].tp;}  /* Firebird T1 */
-   if(blk[row]->lt==FBIRD2)
-      {sp=ft[FBIRD2].sp; lp=ft[FBIRD2].lp; tp=ft[FBIRD2].tp;}  /* Firebird T2 */
+   if(blk[row]->lt==FBIRD_T1)
+      {sp=ft[FBIRD_T1].sp; lp=ft[FBIRD_T1].lp; tp=ft[FBIRD_T1].tp;}  /* Firebird T1 */
+   if(blk[row]->lt==FBIRD_T2)
+      {sp=ft[FBIRD_T2].sp; lp=ft[FBIRD_T2].lp; tp=ft[FBIRD_T2].tp;}  /* Firebird T2 */
 
    /* decode the header... */
    s= blk[row]->p2;
    for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD1].en);
+      hd[i]= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD_T1].en);
 
    blk[row]->cs = hd[0]+ (hd[1]<<8);
    blk[row]->ce = hd[2]+ (hd[3]<<8)-1;
@@ -170,13 +170,13 @@ int firebird_describe(int row)
    
    for(i=0; i<blk[row]->cx; i++)
    {
-      b= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD1].en);
+      b= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD_T1].en);
       cb^=b;
       if(b==-1)
          rd_err++;
       blk[row]->dd[i]=b;
    }
-   b= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD1].en);  /* read actual cb. */
+   b= readttbyte(s+(i*8), lp,sp,tp, ft[FBIRD_T1].en);  /* read actual cb. */
    blk[row]->cs_exp= cb &0xFF;
    blk[row]->cs_act= b;
    blk[row]->rd_err= rd_err;

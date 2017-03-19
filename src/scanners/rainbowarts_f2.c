@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	RAINBOWARTSF2
+#define THISLOADER	RAINBOWARTS_F2
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 

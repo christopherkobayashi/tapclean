@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	GREMLINF1
+#define THISLOADER	GREMLIN_F1
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -78,7 +78,7 @@ static unsigned char dblock[] = {
 	0x05, 0x48, 0xB5, 0x03, 0x48, 0x60
 };
 
-static int gremlinf1_decrypt (int byte, unsigned int dest_addr)
+static int GREMLIN_F1_decrypt (int byte, unsigned int dest_addr)
 {
 	byte ^= dblock[doffset++];
 	doffset %= sizeof (dblock) / sizeof (dblock[0]);
@@ -89,7 +89,7 @@ static int gremlinf1_decrypt (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-void gremlinf1_search (void)
+void GREMLIN_F1_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -266,7 +266,7 @@ void gremlinf1_search (void)
 	}
 }
 
-int gremlinf1_describe (int row)
+int GREMLIN_F1_describe (int row)
 {
 	int i, s, x;
 	int hd[HEADERSIZE];
@@ -346,7 +346,7 @@ int gremlinf1_describe (int row)
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {
-				b = gremlinf1_decrypt(b, current_s + i);
+				b = GREMLIN_F1_decrypt(b, current_s + i);
 				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;
