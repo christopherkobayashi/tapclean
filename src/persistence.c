@@ -51,7 +51,7 @@ int persistence_load_loader_parameters (void)
 	char  readbuffer[64];
 	size_t i;
 
-	chdir(exedir);
+	chdir (exedir);
 
 	if (wait_for_store_update_to_finish ())
 		return PERS_LOCK_TIMEOUT;
@@ -116,7 +116,7 @@ int persistence_save_loader_parameters (void)
 	FILE *pFile;
 	size_t i;
 
-	chdir(exedir);
+	chdir (exedir);
 
 	if (wait_for_store_update_to_finish ())
 		return PERS_LOCK_TIMEOUT;
