@@ -97,7 +97,7 @@ void alternativedk_search (void)
 
 	int xinfo;			/* extra info used in addblockdef() */
 
-	for (type = 1; type <= 3; type++) {
+	for (type = 1; type <= 4; type++) {
 		switch (type) {
 			case 1:
 				variant = ALTERDK_T1;
@@ -105,8 +105,11 @@ void alternativedk_search (void)
 			case 2:
 				variant = ALTERDK_T2;
 				break;
-			default:
+			case 3:
 				variant = ALTERDK_T3;
+				break;
+			default:
+				variant = ALTERDK_T4;
 		}
 
 		en = ft[variant].en;

@@ -99,7 +99,10 @@
 #define unlink	_unlink
 #endif
 
-/* each of these constants indexes an entry in the "ft[]" fmt_t array... */
+/*
+ * Each of these constants indexes an entry in the "ft[]" fmt_t array...
+ * Note: the position of each enum IS relevant for uses in 'ft' array in main file.
+ */
 
 enum {
 	/* Loader type that marks an empty slot in the "lt" field of the "blk[]" blk_t array... */
@@ -118,14 +121,14 @@ enum {
 	ACCOLADE, ALTERWG, RAINBOWARTSF1, RAINBOWARTSF2, TRILOGIC, BURNERVAR,
 	OCNEW4, TDI_F2, BITURBO, T108DE0A5, ACTIONREPLAY_HDR, ACTIONREPLAY_TURBO,
 	ACTIONREPLAY_STURBO, ASHDAVE, FREE_SLOW, GOFORGOLD, FASTEVIL, FFTAPE,
-	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2, ALTERDK_T3,
-	POWERLOAD, GREMLINF1, GREMLINF2, AMACTION, CREATURES, RAINBOW_ISLANDS,
-	OCNEW3, EASYTAPE, TURBO220, CSPARKS, DIGITAL_DESIGN, MSX_HEAD, MSX_DATA,
-	MSX_HEAD_FAST, MSX_DATA_FAST
+	TESTAPE, TEQUILA, ALTERSW, CHUCKIEEGG, ALTERDK_T1, ALTERDK_T2, ALTERDK_T3, 
+	ALTERDK_T4, POWERLOAD, GREMLINF1, GREMLINF2, AMACTION, CREATURES, 
+	RAINBOW_ISLANDS, OCNEW3, EASYTAPE, TURBO220, CSPARKS, DIGITAL_DESIGN, 
+	MSX_HEAD, MSX_DATA, MSX_HEAD_FAST, MSX_DATA_FAST
 };
 
 /*
- * These constants are the loader IDs, used for quick scanning via CRC lookup or
+ * These constants are the loader IDs used for quick scanning via CRC lookup or
  * program data pattern lookup... See file "loader_id.c"
  * Note: the position of each enum IS relevant for uses in 'knam' array in main file.
  */
