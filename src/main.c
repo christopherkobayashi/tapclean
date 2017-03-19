@@ -457,6 +457,7 @@ static void unload_tap(void)
 	}
 
 	tap.len = 0;
+
 	for(i = 0; i < 256; i++) {
 		tap.pst[i] = 0;	/* Pulse stats table */
 		tap.fst[i] = 0;	/* File  stats table */
@@ -623,12 +624,13 @@ static void display_scanners(void)
 	printf("\nList of supported scanners and their -no<loader>/-do<loader> parameter names:\n\n");
 
 	sl = sizeof(ldrswt) / sizeof(*ldrswt);
-	for (i = 0; i < sl; i++)
+	for (i = 0; i < sl; i++) {
 		printf(" %-24s  -no%-12s  -do%-12s\n",
 			ldrswt[i].desc,
 			ldrswt[i].par,
 			ldrswt[i].par
 			);
+	}
 }
 
 /*
@@ -666,8 +668,9 @@ static void process_options(int argc, char **argv)
 					tol = DEFTOL;
 					printf("\n\nTolerance parameter out of range, using default (= 10).");
 				}
-			} else
+			} else {
 				printf("\n\nTolerance parameter missing, using default (= %d).", DEFTOL - 1);
+			}
 		}
 
 		if (strcmp(argv[i], "-debug") == 0)
@@ -2221,8 +2224,9 @@ int main(int argc, char *argv[])
 							printf("\nOperation completed in %s.", lin);
 						}
 					}
-				} else
+				} else {
 					printf("\n\nMissing file name.");
+				}
 			}
 
 			if (opnum == OP_CONVERT_AU) {	/* flag = convert to au */
@@ -2236,8 +2240,9 @@ int main(int argc, char *argv[])
 							msgout("\n");
 						}
 					}
-				} else
+				} else {
 					printf("\n\nMissing file name.");
+				}
 			}
 
 			if (opnum == OP_CONVERT_WAV) {		/* flag = convert to wav */
@@ -2251,8 +2256,9 @@ int main(int argc, char *argv[])
 							msgout("\n");
 						}
 					}
-				} else
+				} else {
 					printf("\n\nMissing file name.");
+				}
 			}
 
 			if (opnum == OP_BATCH_SCAN) {		/* flag = batch scan... */
@@ -2291,7 +2297,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (preserveloadervars == TRUE)
+	if (preserveloadervars == TRUE) {
 		switch (persistence_save_loader_parameters ()) {
 			case PERS_OK:
 				printf ("\n\nLoader variables stored");
@@ -2306,6 +2312,7 @@ int main(int argc, char *argv[])
 				printf ("\n\nError copying temporary data to the persistent store for preserved loader variables");
 				break;
 		}
+	}
 
 	printf("\n\n");
 	cleanup_main();
@@ -2839,7 +2846,7 @@ void clean(void)
 		return;
 	}
 
-	if(debug) {
+	if (debug) {
 		msgout("\nError: Optimization is disabled whilst in debugging mode.");
 		return;
 	}
@@ -2880,6 +2887,7 @@ void clean(void)
 
 	msgout("\n");
 	msgout("\nCleaning finished.");
+
 	quiet = 0;			/* allow talking again. */
 }
 
@@ -3179,9 +3187,10 @@ void fname_text(char *src)
 {
 	char *s;
 
-	for (s = src; *s; s++)
+	for (s = src; *s; s++) {
 		if (!isalnum(*s))
 			*s = '_';	/* convert the rest to underscore */
+	}
 }
 
 /*
@@ -3195,7 +3204,7 @@ void trim_string(char *str)
 	len = strlen(str);
 	if (len > 0) {
 		for (i = len - 1; str[i] == 32 && i > 0; i--)
-  		str[i] = 0;	/* nullify trailing spaces.  */
+			str[i] = 0;	/* nullify trailing spaces.  */
 	}
 }
 
