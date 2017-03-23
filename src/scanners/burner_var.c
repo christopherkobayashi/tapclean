@@ -94,7 +94,7 @@ enum {
  * Returns:
  *  - BURNERVAR_NOTFOUND if CBM Data block was not found at index cbm_index
  *  - BURNERVAR_NOMATCH  if CBM data does not contain a known variant
- *  - <variant number> (see enum definition)
+ *  - <variant number> otherwise (see enum definition)
  */
 static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
 {
@@ -104,7 +104,7 @@ static int burnervar_find_variant (int cbm_index, int *pv, int *sv, int *en)
 
 	ib = find_decode_block(CBM_HEAD, cbm_index);
 	if (ib == -1)
-		return variant;    /* failed to locate cbm header. */
+		return variant;	/* failed to locate cbm header. */
 
 	variant = BURNERVAR_NOMATCH;
 
