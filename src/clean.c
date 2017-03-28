@@ -826,7 +826,7 @@ void fix_pilots(void)
 
 						/* over-ride 'repair' width for visiload */
 
-						if (b2 == VISI_T1 || b2 == VISI_T2 || b2 == VISI_T3 || b2 == VISI_T4)
+						if (b2 == VISI_T1 || b2 == VISI_T2 || b2 == VISI_T3 || b2 == VISI_T4 || b2 == VISI_T5)
 							m[mi][2] = 8 + (blk[i + 1]->xi & 7);
 
 						/* over-ride 'repair' width for supertape (just cut!) */
