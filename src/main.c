@@ -936,22 +936,22 @@ static void search_tap(void)
 
 			/* if it's a visiload then choose correct type now... */
 
-			if (tap.cbmid == LID_VIS1)
+			if (tap.cbmid == LID_VIS_T1)
 				visi_type = VISI_T1;
 
-			if (tap.cbmid == LID_VIS2)
+			if (tap.cbmid == LID_VIS_T2)
 				visi_type = VISI_T2;
 
-			if (tap.cbmid == LID_VIS3)
+			if (tap.cbmid == LID_VIS_T3)
 				visi_type = VISI_T3;
 
-			if (tap.cbmid == LID_VIS4)
+			if (tap.cbmid == LID_VIS_T4)
 				visi_type = VISI_T4;
 
-			if (tap.cbmid == LID_VIS5)
+			if (tap.cbmid == LID_VIS_T5)
 				visi_type = VISI_T5;
 
-			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4 || tap.cbmid == LID_VIS5) {
+			if (tap.cbmid == LID_VIS_T1 || tap.cbmid == LID_VIS_T2 || tap.cbmid == LID_VIS_T3 || tap.cbmid == LID_VIS_T4 || tap.cbmid == LID_VIS_T5) {
 				if (ldrswt[novisi].exclude == FALSE && !database_is_full && !aborted)
 					visiload_search(tap.cbmcrc);
 			}

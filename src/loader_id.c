@@ -210,21 +210,21 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x24BE37F6, LID_ANI},
 		{0xA09E55E9, LID_ANI},
 
-		{0xDD3DE175, LID_VIS1},
-		{0x6B2A1236, LID_VIS1},		/* atom ant. */
-		{0x9EF77DD5, LID_VIS2},
-		{0xF1340213, LID_VIS2},		/* BMX Simulator variant (first turbo file has 5 header bytes and 2 additional bits per byte) */
-		{0x867C8969, LID_VIS3},
-		{0xC7641A7E, LID_VIS4},
-		{0xEB6DF918, LID_VIS4},		/* Exodus mastering parameters (first turbo file has 5 header bytes and 2 additional bits per byte) */
-		{0x95FBE05E, LID_VIS4},		/* Subsunk mastering parameters (first turbo file uses LSbF endianness) */
-		{0xB9F20338, LID_VIS4},		/* Chickin Chase, Headache, Sabre Wulf, The Helm mastering parameters (first turbo file has 5 header bytes, 2 additional bits per byte and uses LSbF endianness) */
-		{0xBDFBF06B, LID_VIS4},		/* Estra mastering parameters (first turbo file 2 additional bits per byte and uses LSbF endianness) */
-		{0xEF640A4B, LID_VIS4},		/* Circus Circus, Sabre Wulf, GoGo The Ghost mastering parameters (first turbo file has 2 additional bits per byte) */
-		{0x91F2130D, LID_VIS4},		/* Booty mastering parameters (first turbo file has 5 header bytes and uses LSbF endianness) */
-		{0x2AA7A25A, LID_VIS5},		/* Critical Mass mastering parameters (first turbo file has 4 header bytes and 1 additional bit per byte) */
-		{0xBBB52B89, LID_VIS5},		/* Spellseeker mastering parameters (same as Critical Mass) */
-		{0xDE1AE55C, LID_VIS5},		/* Confuzion, Nick Faldo Plays The Open, TimeTrax, Mr. Mephisto mastering parameters (same as Critical Mass) */
+		{0xDD3DE175, LID_VIS_T1},
+		{0x6B2A1236, LID_VIS_T1},		/* atom ant. */
+		{0x9EF77DD5, LID_VIS_T2},
+		{0xF1340213, LID_VIS_T2},		/* BMX Simulator variant (first turbo file has 5 header bytes and 2 additional bits per byte) */
+		{0x867C8969, LID_VIS_T3},
+		{0xC7641A7E, LID_VIS_T4},
+		{0xEB6DF918, LID_VIS_T4},		/* Exodus mastering parameters (first turbo file has 5 header bytes and 2 additional bits per byte) */
+		{0x95FBE05E, LID_VIS_T4},		/* Subsunk mastering parameters (first turbo file uses LSbF endianness) */
+		{0xB9F20338, LID_VIS_T4},		/* Chickin Chase, Headache, Sabre Wulf, The Helm mastering parameters (first turbo file has 5 header bytes, 2 additional bits per byte and uses LSbF endianness) */
+		{0xBDFBF06B, LID_VIS_T4},		/* Estra mastering parameters (first turbo file 2 additional bits per byte and uses LSbF endianness) */
+		{0xEF640A4B, LID_VIS_T4},		/* Circus Circus, Sabre Wulf, GoGo The Ghost mastering parameters (first turbo file has 2 additional bits per byte) */
+		{0x91F2130D, LID_VIS_T4},		/* Booty mastering parameters (first turbo file has 5 header bytes and uses LSbF endianness) */
+		{0x2AA7A25A, LID_VIS_T5},		/* Critical Mass mastering parameters (first turbo file has 4 header bytes and 1 additional bit per byte) */
+		{0xBBB52B89, LID_VIS_T5},		/* Spellseeker mastering parameters (same as Critical Mass) */
+		{0xDE1AE55C, LID_VIS_T5},		/* Confuzion, Nick Faldo Plays The Open, TimeTrax, Mr. Mephisto mastering parameters (same as Critical Mass) */
 
 		{0xA7D33777, LID_FIRE},
 		{0x041FDA59, LID_FIRE},
