@@ -12,13 +12,14 @@ ATV Simulator, American 3D Pool, Arcade Flight Simulator, Big Mac, Bigfoot, BMX 
 Bump-Set-Spike, Cage Match, Carnage, Draconus, ALL the "Dizzy" Games, Human Race, Kikstart, 
 Pod, etc.. 
 
-There appears to be at least 4 types of this loader, each loader is basically identical but 
+There appears to be at least 5 types of this loader, each loader is basically identical but 
 they each set different thresholds... 
 
 Type 1 (threshold : $1B6 clock cycles, TAP byte $37).
 Type 2 (threshold : $1E6 clock cycles, TAP byte $3D).
 Type 3 (threshold : $1F8 clock cycles, TAP byte $3F).
 Type 4 (threshold : $243 clock cycles, TAP byte $48).
+Type 5 (threshold : $291 clock cycles, TAP byte $52).
 
 
 Bit 1's sampled from TAP files show values of $48+ for type 1, whilst sampled bit 1's from 
@@ -29,11 +30,11 @@ Bit 0's for type 4 are around $30.
 
 --------------------------------------------------------------------------------
 
-        Type1   Type2   Type3   Type4  
+        Type1   Type2   Type3   Type4   Type5  
 
-Bit 0 : $25     $25     $25     $30   (sampled)
-Bit 1 : $48     $4B     $54     $5D   (sampled) 
-Thres : $35     $3B     $3E     $47   (exact)
+Bit 0 : $25     $25     $25     $30     $37   (sampled)
+Bit 1 : $48     $4B     $54     $5D     $6B   (sampled) 
+Thres : $35     $3B     $3E     $47     $52   (exact)
 
 Endianess : It changes during the loading! as does the number of bits per byte!
 Pilot byte : $00 (*256)
