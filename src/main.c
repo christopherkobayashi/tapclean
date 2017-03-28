@@ -257,6 +257,7 @@ struct fmt_t ft[] = {
 	{"VISILOAD T2"		,VV,   0x3B, 0x25, NA,   0x4B, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T3"		,VV,   0x3E, 0x25, NA,   0x54, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T4"		,VV,   0x47, 0x30, NA,   0x5D, 0x00, 0x16, 100,  NA,    CSNO},
+	{"VISILOAD T5"		,VV,   0x47, 0x35, NA,   0x6A, 0x00, 0x16, 100,  NA,    CSNO},
 	{"SUPERTAPE HEADER"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0x2A, 50,   NA,    CSYES},
 	{"SUPERTAPE DATA"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0xC5, 50,   NA,    CSYES},
 	{"PAVLODA"		,MSbF, 0x28, 0x1F, NA,   0x3F, 0,    1,    50,   NA,    CSYES},
@@ -380,6 +381,7 @@ const char knam[][32] = {
 	{"Visiload T2"},
 	{"Visiload T3"},
 	{"Visiload T4"},
+	{"Visiload T5"},
 	{"Firebird loader"},
 	{"Novaload (ns)"},
 	{"IK loader"},
@@ -946,7 +948,10 @@ static void search_tap(void)
 			if (tap.cbmid == LID_VIS4)
 				visi_type = VISI_T4;
 
-			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4) {
+			if (tap.cbmid == LID_VIS5)
+				visi_type = VISI_T5;
+
+			if (tap.cbmid == LID_VIS1 || tap.cbmid == LID_VIS2 || tap.cbmid == LID_VIS3 || tap.cbmid == LID_VIS4 || tap.cbmid == LID_VIS5) {
 				if (ldrswt[novisi].exclude == FALSE && !database_is_full && !aborted)
 					visiload_search(tap.cbmcrc);
 			}
