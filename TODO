@@ -1,3 +1,6 @@
+ - The "Visiload" scanner should extract initial loader parameters from the CBM 
+   Data block as these were configurable at mastering time, as shown by early
+   tapes. A similar change was done when rewriting "Rack-It" (Luigi)
  - "Firebird" uses a very clever mechanism to avoid trying all known Tx 
    variants: it looks for a pattern in the first CBM Header, which it then 
    uses to extract the pulse read threshold. Once that's done, a single 
@@ -78,9 +81,6 @@
    should at least be considered file trailer in order to be retained for 
    historical reasons (Luigi)
     Done.
- - The Visiload scanner should extract initial loader parameters from the CBM 
-   Data block as these were configurable at mastering time, as shown by early
-   tapes. A similar change was done while rewriting Rack-It (Luigi)
  - readttbit already checks for TAP data boundaries so the following:
 	while (eof < tap.len - 1 &&
 			h++ < MAXTRAILER &&
