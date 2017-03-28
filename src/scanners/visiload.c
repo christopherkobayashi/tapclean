@@ -388,7 +388,7 @@ void visiload_search(unsigned int cbm_data_crc)
                   pt=1;
 
                   /* Narco Police requires loader parameter reset every so often */
-                  if (end == 0x03DB)
+                  if (end == 0x03DB && !strncmp((char *) &cbm_header[5], "NARCO POLICE", 12))
                   {
                      #define NARCO_POLICE_MODIFIER_SZ 0x20
 

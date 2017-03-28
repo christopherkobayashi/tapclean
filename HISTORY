@@ -29,6 +29,10 @@ v0.34
 	New: Added support for "Visiload T5", used in "Critical Mass", 
 	"Spellseeker", "Confuzion", "Nick Faldo Plays  The Open", 
 	"TimeTrax", "Mr. Mephisto", supplied by Paul Jones (Luigi)
+	Improvement: The special modifier logic used in "Narco Police"'s
+	 "Visiload" is now only used when the CBM filename starts with
+	 "NARCO POLICE" in order not to trigger false positives in e.g.
+	 "Critical Mass" (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
