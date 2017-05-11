@@ -15,7 +15,7 @@
    instead of all variants.
    In all cases, looking at the first CBM file only makes sense when a title 
    is not part of a compilation: by using cbm_header[]/cbm_program[] directly 
-   we lose room for future flexibility (Luigi)
+   in idloader() we lose room for future flexibility (Luigi)
  - There is no reason for which "Ocean New" and "Snakeload 5.0" T1 and T2 
    should not be handled by the same module, as it happens with all other 
    scanners; otherwise there is way too much code duplication there (Luigi)
