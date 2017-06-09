@@ -112,6 +112,10 @@ void turbotape_search(void)
                      }
                      while(byt==0x20);
 
+                     /* Support for ABC-Turbo (used in Polish game compilations) */
+                     if ((byt == 0x78 && zcnt == 54) || (byt == 0xEA && zcnt == 27))
+                        zcnt = 193;
+
                      zcnt--;
                      eod = sod+(zcnt*8)-8;
                      eof = eod+7;  /* prepare for poss override. */
