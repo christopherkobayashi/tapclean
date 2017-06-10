@@ -35,6 +35,8 @@ v0.34
 	 "Critical Mass" (Luigi)
 	Improvement: The "Turbotape 250" scanner can now handle two versions
 	 of "Micrus Copy" files, popular in cracked Polish tapes (Luigi)
+	New: Added support for "Freeload Slowload T2", used in "Super 
+	 Champs", supplied by Paul Jones (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)

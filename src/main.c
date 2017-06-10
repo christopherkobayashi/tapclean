@@ -304,7 +304,8 @@ struct fmt_t ft[] = {
 	{"ACTIONREPLAY_SUPERTURBO"
 				,LSbF, 0x22, 0x13, NA,   0x2B, NA,   NA,   NA,   NA,    CSYES},
 	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,   0x44, 0x80, 0x40, 200,  NA,    CSNO},
-	{"FREELOAD SLOWLOAD"	,MSbF, 0x77, 0x5A, NA,   0x85, 0x40, 0x5A, 45,   400,   CSYES},
+	{"FREELOAD SLOWLOAD T1"	,MSbF, 0x77, 0x5A, NA,   0x85, 0x40, 0x5A, 45,   400,   CSYES},
+	{"FREELOAD SLOWLOAD T2"	,MSbF, 0x9A, 0x66, NA,   0xCD, 0x40, 0x5A, 45,   400,   CSYES},
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,   0x42, 0x02, 0x11, 200,  NA,    CSYES},
 	{"FAST EVIL"		,MSbF, 0x1D, 0x17, NA,   0x21, 0x10, 0x20, 200,  NA,    CSNO},
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,   0x3F, 0,    1,    1500, NA,    CSNO},
@@ -1590,7 +1591,9 @@ static void describe_file(int row)
 					break;
 		case ASHDAVE:		ashdave_describe(row);
 					break;
-		case FREE_SLOW:		freeslow_describe(row);
+		case FREE_SLOW_T1:	freeslow_describe(row);
+					break;
+		case FREE_SLOW_T2:	freeslow_describe(row);
 					break;
 		case GOFORGOLD:		goforgold_describe(row);
 					break;
