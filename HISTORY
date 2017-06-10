@@ -34,7 +34,7 @@ v0.34
 	 "NARCO POLICE" in order not to trigger false positives in e.g.
 	 "Critical Mass" (Luigi)
 	Improvement: The "Turbotape 250" scanner can now handle two versions
-	 of "ABC-Turbo" files, popular in cracked Polish tapes (Luigi)
+	 of "Micrus Copy" files, popular in cracked Polish tapes (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
