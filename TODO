@@ -7,8 +7,9 @@
    variant is searched for. Can we re-use this approach for e.g. "Alternative 
    Software (DK) Tx" since T2 and T3 can be easily confused with the default 
    read tolerance value? A similar approach could be used for "CHR", "Visi", 
-   "Ocean New", and "Snakeload 5.0". For backward compatibility: if no Tx 
-   pattern is found then the code should cycle through all Tx variants (Luigi)
+   "Ocean New", "Snakeload 5.0", and "Freeload Slowload". For backward 
+   compatibility: if no Tx pattern is found then the code should cycle through 
+   all Tx variants (Luigi)
  - In fact, the above could be performed in idloader() when the CRC search 
    fails, so that a LID_<loader>_Tx id could be returned to be used as parameter 
    to the <loader>_search() function, instructing it to only try the Tx variant
