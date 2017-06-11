@@ -38,6 +38,9 @@ v0.34
 	 tapes, submitted by Pawel (Luigi)
 	New: Added support for "Freeload Slowload T2", used in "Super 
 	 Champs", supplied by Paul Jones (Luigi)
+	Fix: Fixed decoding of the "Turbotape 250" header so that the
+	 last byte of the filename is now properly set. Bug reported
+	 by Pawel (Luigi)
 
 v0.33
 	New: Added initial support for MSX tape Header files (Luigi)
