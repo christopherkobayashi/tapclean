@@ -33,8 +33,9 @@ v0.34
 	 "Visiload" is now only used when the CBM filename starts with
 	 "NARCO POLICE" in order not to trigger false positives in e.g.
 	 "Critical Mass" (Luigi)
-	Improvement: The "Turbotape 250" scanner can now handle two versions
-	 of "Micrus Copy" files, popular in cracked Polish tapes (Luigi)
+	Improvement: The "Turbotape 250" scanner can now handle three
+	 versions of "Micrus Copy" files, popular in cracked Polish
+	 tapes, submitted by Pawel (Luigi)
 	New: Added support for "Freeload Slowload T2", used in "Super 
 	 Champs", supplied by Paul Jones (Luigi)
 
