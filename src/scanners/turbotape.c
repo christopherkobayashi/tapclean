@@ -113,7 +113,7 @@ void turbotape_search(void)
                      while(byt==0x20);
 
                      /* Support for "Micrus Copy" (used in Polish game compilations) */
-                     if ((byt == 0x78 && zcnt == 54) || (byt == 0xEA && zcnt == 27))
+                     if ((byt == 0x78 && zcnt == 54) || (byt == 0xEA && zcnt == 27) || (byt == 0x78 && zcnt == 58))
                         zcnt = 193;
 
                      zcnt--;
