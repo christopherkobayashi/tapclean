@@ -190,7 +190,7 @@ int turbotape_describe(int row)
 
    /* decode the first few bytes to determine block type... */
    s= blk[row]->p2;
-   for(i=0; i<HDSZ; i++)
+   for(i=0; i<HDSZ+1; i++)
       hd[i]= readttbyte(s+(i*8), ft[TT_HEAD].lp, ft[TT_HEAD].sp, ft[TT_HEAD].tp, MSbF);
 
    /* display filetype */
