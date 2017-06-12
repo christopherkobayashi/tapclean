@@ -82,6 +82,8 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 #define OVERSIZED_BIT1_PULSE_T1 0x5A
 #define OVERSIZED_BIT1_PULSE_T2 0x62
 
+#define VISILOAD_CBM_DATA_LOAD_ADDRESS	0x029F
+
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
  'abits' specifies a number of additional (1) bits that MUST precede the byte
