@@ -111,12 +111,15 @@ void rackit_search (void)
 	cypher_value = -1;	/* Assume we were unable to extract any info */
 
 	/*
-	 * At this stage the describe functions have not been invoked
-	 * yet, therefore we have to extract the load address on the fly.
-	 * Data load address is stored in Header so we need to decode both.
+	 * At this stage the describe functions have not been invoked yet,
+	 * therefore we have to extract the CBM Data load address on the fly.
+	 *
+	 * The CBM Data load address is stored in CBM Header so we need to
+	 * decode both before we can access the blk[ib]->cs record of the
+	 * corresponding CBM Data.
 	 */
-	find_decode_block(CBM_HEAD, 1);
-	ib = find_decode_block(CBM_DATA, 1);
+	find_decode_block(CBM_HEAD, 1);	/* As per comment above, we don't need its index */
+	ib = find_decode_block(CBM_DATA, 1);	/* This fails if the above failed */
 	if (ib != -1 && (unsigned int) blk[ib]->cs == RACKIT_CBM_DATA_LOAD_ADDRESS) {
 		int *buf, bufsz;
 
