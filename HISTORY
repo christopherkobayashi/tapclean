@@ -6,6 +6,12 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for additional loaders
 
+v0.35
+	Improvement: The "Visiload" scanner now scans CBM files in order
+	 to extract loading parameters and supports multiple titles on the
+	 same tape image even when these use different initial loading
+	 parameters, including different threshold values (Luigi)
+
 v0.34
 	Improvement: Rationalised usage and options' messages (Luigi)
 	New: Added the "-reckless" option to clean tape images with read

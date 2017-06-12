@@ -86,7 +86,7 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
  Reads a Visiload format byte at 'pos' in tap.tmem,
  'abits' specifies a number of additional (1) bits that MUST precede the byte
 */
-int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
+static int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
 {
    int b,valid;
    /*long*/ int i;
@@ -187,7 +187,7 @@ int visiload_readbyte(int pos, int endi, int abits, int allow_known_oversized)
 }
 /*---------------------------------------------------------------------------
 */
-void visiload_search(unsigned int cbm_data_crc)
+void visiload_search(void)
 {
    int i,sof,sod,eod,eof,zcnt;
    int j,start,end,len;
@@ -197,54 +197,132 @@ void visiload_search(unsigned int cbm_data_crc)
    if(!quiet)
       msgout("  Visiload");
 
-   /* Check if this is one of the known variants.
-    * Ideally, we should extract the info below from the CBM file.
-    */
-   if (cbm_data_crc == 0xF1340213 /* BMX Simulator, T2 */ || cbm_data_crc == 0xEB6DF918 /* Exodus, T4 */)
-   {
-      ah =1;    /* additional header bytes. (initial) */
-      ab =2;    /* additional bits per byte. (initial) */
-      en =MSbF; /* endianess. (initial) */
-   }
-   else if (cbm_data_crc == 0x95FBE05E /* Subsunk, T4 */)
-   {
-      ah =0;    /* additional header bytes. (initial) */
-      ab =1;    /* additional bits per byte. (initial) */
-      en =LSbF; /* endianess. (initial) */
-   }
-   else if (cbm_data_crc == 0xB9F20338 /* The Helm, T4 */)
-   {
-      ah =1;    /* additional header bytes. (initial) */
-      ab =2;    /* additional bits per byte. (initial) */
-      en =LSbF; /* endianess. (initial) */
-   }
-   else if (cbm_data_crc == 0xBDFBF06B /* Estra, T4 */)
-   {
-      ah =0;    /* additional header bytes. (initial) */
-      ab =2;    /* additional bits per byte. (initial) */
-      en =LSbF; /* endianess. (initial) */
-   }
-   else if (cbm_data_crc == 0xEF640A4B /* Circus Circus, T4 */)
-   {
-      ah =0;    /* additional header bytes. (initial) */
-      ab =2;    /* additional bits per byte. (initial) */
-      en =MSbF; /* endianess. (initial) */
-   }
-   else if (cbm_data_crc == 0x91F2130D /* Booty, T4 */)
-   {
-      ah =1;    /* additional header bytes. (initial) */
-      ab =1;    /* additional bits per byte. (initial) */
-      en =LSbF; /* endianess. (initial) */
-   }
-   else
-   {
-      ah =0;    /* additional header bytes. (initial) */
-      ab =1;    /* additional bits per byte. (initial) */
-      en =MSbF; /* endianess. (initial) */
-   }
+	int cbm_index;
 
-   for(i=20; i<tap.len-100; i++)
-   {
+	for (cbm_index = 1; ; cbm_index += 2) {
+
+		int match;
+		int ib, slice_start, slice_end;
+		int threshold;
+
+		/*
+		 * At this stage the describe functions have not been invoked yet,
+		 * therefore we have to extract the CBM Data load address on the fly.
+		 *
+		 * The CBM Data load address is stored in CBM Header so we need to
+		 * decode both before we can access the blk[ib]->cs record of the
+		 * corresponding CBM Data.
+		 */
+
+		match = 0;
+
+		find_decode_block(CBM_HEAD, cbm_index);
+		ib  = find_decode_block(CBM_DATA, cbm_index);	/* This fails if the above failed */
+		if (ib != -1 && (unsigned int) blk[ib]->cs == VISILOAD_CBM_DATA_LOAD_ADDRESS) {
+			int *buf, bufsz;
+
+			bufsz = blk[ib]->cx;
+
+			buf = (int *) malloc (bufsz * sizeof(int));
+			if (buf != NULL) {
+				int seq_endianness_and_bpb[12] = {
+					0xAD, 0x0D, 0xDD, 0x4A, 0x2C, 0x0D, 0xDC, XX, 0xFC, 0x60, 0xA2, XX
+				};
+
+				int seq_header_bytes[] = {
+					0xA0, XX, 0x20, XX, 0x03, 0x99, 0xAC, 0x00, 0x88, 0x10, 0xF7
+				};
+
+				int seq_pulse_threshold[] = {
+					0xA9, XX, 0x8D, 0x04, 0xDD, 0xA9, XX, 0x8D, 0x05, 0xDD
+				};
+
+				int index, offset;
+
+				/* Make an 'int' copy for use in find_seq() */
+				for (index = 0; index < bufsz; index++)
+					buf[index] = blk[ib]->dd[index];
+
+				/* We now look for invariants to extract loader parameters */
+
+				match = 1;
+
+				offset = find_seq (buf, bufsz, seq_endianness_and_bpb, sizeof(seq_endianness_and_bpb) / sizeof(seq_endianness_and_bpb[0]));
+				if (offset == -1) {
+					match = 0;
+				} else {
+					en = (buf[offset + 7] == OPC_ROL) ? MSbF : LSbF;
+					ab = buf[offset + 11] - 8;
+				}
+
+				offset = find_seq (buf, bufsz, seq_header_bytes, sizeof(seq_header_bytes) / sizeof(seq_header_bytes[0]));
+				if (offset == -1) {
+					match = 0;
+				} else {
+					ah = buf[offset + 1] - 3;
+				}
+
+				offset = find_seq (buf, bufsz, seq_pulse_threshold, sizeof(seq_pulse_threshold) / sizeof(seq_pulse_threshold[0]));
+				if (offset == -1) {
+					match = 0;
+				} else {
+					threshold = buf[offset + 1] + 256 * buf[offset + 6];
+				}
+
+				slice_start = blk[ib]->p4 + 1;	/* Set to CBM Dta end + 1 */
+
+				free (buf);
+			}
+		}
+
+		/* Parameter extraction successful? */
+		if (match == 0)
+			continue;
+
+		sprintf(lin,"\nVisiload variables found and set: ah=$%02X, ab=$%02X, th=$%04X, en=%s", 
+			ah, 
+			ab, 
+			threshold, 
+			ENDIANESS_TO_STRING(en));
+		msgout(lin);
+
+		/* Set the Tx type for further decoding now */
+		switch (threshold) {
+			case 0x01B6:
+				visi_type = VISI_T1;
+				break;
+
+			case 0x01E6:
+				visi_type = VISI_T2;
+				break;
+
+			case 0x01F8:
+				visi_type = VISI_T3;
+				break;
+
+			case 0x0243:
+				visi_type = VISI_T4;
+				break;
+
+			default:	/* 0x0291 */
+				visi_type = VISI_T5;
+				break;
+		}
+
+		/* 
+		 * Search for the next set of CBM files, if any, because we only want to 
+		 * look for a Visiload file chain in between two CBM boots
+		 */
+		ib = find_decode_block(CBM_HEAD, cbm_index + 2);
+                if (ib != -1) {
+			slice_end = blk[ib]->p1;
+		} else {
+			slice_end = tap.len;
+		}
+
+		for (i = slice_start; i < slice_end-100; i++) {
+
+			/* ---------------- Existing code ---------------- */
       b= visiload_readbyte(i,en,ab,0);   /* look for a pilot byte... */
       if(b== ft[visi_type].pv)
       {
@@ -273,7 +351,7 @@ void visiload_search(unsigned int cbm_data_crc)
                      b= visiload_readbyte(j,en,ab,0);
                      j++;
                   }
-                  while(b!=ft[visi_type].pv && j<tap.len-100);
+                  while(b!=ft[visi_type].pv && j<slice_end-100);
                   j--;
                   sof= j;
                   do  /* read thru all pilot bytes... */
@@ -281,7 +359,7 @@ void visiload_search(unsigned int cbm_data_crc)
                      b= visiload_readbyte(j,en,ab,0);
                      j+=(8+ab);
                   }
-                  while(b==ft[visi_type].pv && j<tap.len-100);
+                  while(b==ft[visi_type].pv && j<slice_end-100);
                   j-=(8+ab);
 
                   /* ! should check pilot count here?, theres usually only 2 or 3 pilots ! */
@@ -295,7 +373,7 @@ void visiload_search(unsigned int cbm_data_crc)
                         sprintf(lin," * Visiload sync byte failed @ %04X, search aborted.", j);
                         msgout(lin);
                      }
-                     return;   /* abort search if sync fails. */
+                     break;   /* abort search if sync fails. */
                   }
                   sod= j+(8+ab);
                   pt=0;
@@ -331,7 +409,7 @@ void visiload_search(unsigned int cbm_data_crc)
                         msgout(lin);
                         msgout("");
                      }
-                     return;
+                     break;
                   }
                }
 
@@ -428,11 +506,18 @@ void visiload_search(unsigned int cbm_data_crc)
                sof= j;   /* set these ready for next block */
                sod= j;
             }
-            while(j<tap.len-100);
+            while(j<slice_end-100);
 
          }
       }
-   }
+			/* ---------------- End of existing code ---------------- */
+
+		}
+
+		/* If the slice ends at tape end, then we're done */
+		if (slice_end == tap.len)
+			break;
+	}
 }
 /*---------------------------------------------------------------------------
 */
