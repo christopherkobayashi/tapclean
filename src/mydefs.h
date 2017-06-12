@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "0.34-pre8"
+#define VERSION_STR "0.34"
 #define COPYRIGHT_STR "(C) 2006-2017 TC Team"
 #define BUILDER_STR     "ldf"
 
