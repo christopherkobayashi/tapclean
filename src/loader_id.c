@@ -222,6 +222,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xBDFBF06B, LID_VIS_T4},		/* Estra mastering parameters (first turbo file 2 additional bits per byte and uses LSbF endianness) */
 		{0xEF640A4B, LID_VIS_T4},		/* Circus Circus, Sabre Wulf, GoGo The Ghost mastering parameters (first turbo file has 2 additional bits per byte) */
 		{0x91F2130D, LID_VIS_T4},		/* Booty mastering parameters (first turbo file has 5 header bytes and uses LSbF endianness) */
+		{0xA39BB46C, LID_VIS_T4},		/* Fun School 2 (first turbo file has 2 additional bits per byte and uses LSbF endianness) */
 		{0x2AA7A25A, LID_VIS_T5},		/* Critical Mass mastering parameters (first turbo file has 4 header bytes and 1 additional bit per byte) */
 		{0xBBB52B89, LID_VIS_T5},		/* Spellseeker mastering parameters (same as Critical Mass) */
 		{0xDE1AE55C, LID_VIS_T5},		/* Confuzion, Nick Faldo Plays The Open, TimeTrax, Mr. Mephisto mastering parameters (same as Critical Mass) */
