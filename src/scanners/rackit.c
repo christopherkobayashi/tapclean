@@ -218,41 +218,32 @@ void rackit_search (void)
 					cypher_value = -1;	/* Fail the extraction */
 				} else {
 					ft[THISLOADER].en = (buf[offset + 8] == OPC_ROL) ? MSbF : LSbF;
+				}
 
-					offset = find_seq (buf, bufsz, seq_pilot_sync, sizeof(seq_pilot_sync) / sizeof(seq_pilot_sync[0]));
-
-					if (offset == -1) {
-						cypher_value = -1;	/* Fail the extraction */
-					} else {
-						ft[THISLOADER].pv = buf[offset + 1];
-						ft[THISLOADER].sv = buf[offset + 5];
-
-						/* Check what the start value of the Data checkbyte should be */
-						offset = find_seq (buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
-						if (offset == -1)
-							xinfo = 0x80;
-						else
-							xinfo = 0x00;
-
+				offset = find_seq (buf, bufsz, seq_pilot_sync, sizeof(seq_pilot_sync) / sizeof(seq_pilot_sync[0]));
+				if (offset == -1) {
+					cypher_value = -1;	/* Fail the extraction */
+				} else {
+					ft[THISLOADER].pv = buf[offset + 1];
+					ft[THISLOADER].sv = buf[offset + 5];
+					
+					/* Check what the start value of the Data checkbyte should be */
+					offset = find_seq (buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
+					if (offset == -1)
+						xinfo = 0x80;
+					else
+						xinfo = 0x00;
 #ifdef DEBUG_RACKIT
-						printf ("\nInitial checkbyte value: %02X", xinfo);
+					printf ("\nInitial checkbyte value: %02X", xinfo);
 #endif
+					/* Check if the variant with a shorter header is used (Marauder, Netherworld, Scorpion) */
+					offset = find_seq (buf, bufsz, seq_hdr_store, sizeof(seq_hdr_store) / sizeof(seq_hdr_store[0]));
+					if (offset == -1)
+						variant = 0;
+					else
+						variant = 1;
 
-						/* Check if the variant with a shorter header is used (Marauder, Netherworld, Scorpion) */
-						offset = find_seq (buf, bufsz, seq_hdr_store, sizeof(seq_hdr_store) / sizeof(seq_hdr_store[0]));
-						if (offset == -1)
-							variant = 0;
-						else
-							variant = 1;
-
-						xinfo |= variant << 8;
-
-						sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
-							ft[THISLOADER].pv, 
-							ft[THISLOADER].sv, 
-							ENDIANESS_TO_STRING(ft[THISLOADER].en));
-						msgout(lin);
-					}
+					xinfo |= variant << 8;
 				}
 			}
 
@@ -263,6 +254,12 @@ void rackit_search (void)
 	/* Decryption and extraction successful? */
 	if (cypher_value == -1)
 		return;
+
+	sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
+		ft[THISLOADER].pv, 
+		ft[THISLOADER].sv, 
+		ENDIANESS_TO_STRING(ft[THISLOADER].en));
+	msgout(lin);
 
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
@@ -429,6 +426,7 @@ int rackit_describe (int row)
 
 	variant = blk[row]->xi >> 8;
 
+	/* Note: There is some code duplication below, but keep it as it is for clarity */
 	if (variant == 0) {
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0; i < HEADERSIZE; i++)
