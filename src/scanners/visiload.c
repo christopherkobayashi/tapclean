@@ -245,8 +245,6 @@ void visiload_search(unsigned int cbm_data_crc)
 
    for(i=20; i<tap.len-100; i++)
    {
-      /* note: first block always has pilot, MSbF endianess, 1 additional bit per byte. */
-
       b= visiload_readbyte(i,en,ab,0);   /* look for a pilot byte... */
       if(b== ft[visi_type].pv)
       {
