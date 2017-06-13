@@ -220,7 +220,9 @@ void visiload_search(void)
 
 		find_decode_block(CBM_HEAD, cbm_index);
 		ib  = find_decode_block(CBM_DATA, cbm_index);	/* This fails if the above failed */
-		if (ib != -1 && (unsigned int) blk[ib]->cs == VISILOAD_CBM_DATA_LOAD_ADDRESS) {
+		if (ib == -1) {
+			break;
+		} else if ((unsigned int) blk[ib]->cs == VISILOAD_CBM_DATA_LOAD_ADDRESS) {
 			int *buf, bufsz;
 
 			bufsz = blk[ib]->cx;
@@ -515,10 +517,6 @@ void visiload_search(void)
 			/* ---------------- End of existing code ---------------- */
 
 		}
-
-		/* If the slice ends at tape end, then we're done */
-		if (slice_end == tap.len)
-			break;
 	}
 }
 /*---------------------------------------------------------------------------
