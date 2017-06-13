@@ -82,7 +82,7 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 #define OVERSIZED_BIT1_PULSE_T1 0x5A
 #define OVERSIZED_BIT1_PULSE_T2 0x62
 
-#define VISILOAD_CBM_DATA_LOAD_ADDRESS	0x029F
+#define VISILOAD_CBM_DATA_SIZE	0x0121
 
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
@@ -214,15 +214,19 @@ void visiload_search(void)
 		 * The CBM Data load address is stored in CBM Header so we need to
 		 * decode both before we can access the blk[ib]->cs record of the
 		 * corresponding CBM Data.
+		 *
+		 * Unfortunately the load address returned for a given CBM Data
+		 * seems to be inconsistent with what it really is, so we use the
+		 * data block size instead.
 		 */
 
 		match = 0;
 
-		find_decode_block(CBM_HEAD, cbm_index);
+		find_decode_block(CBM_HEAD, cbm_index);	/* Required if we were to extract the load address */
 		ib  = find_decode_block(CBM_DATA, cbm_index);	/* This fails if the above failed */
 		if (ib == -1) {
 			break;
-		} else if ((unsigned int) blk[ib]->cs == VISILOAD_CBM_DATA_LOAD_ADDRESS) {
+		} else if ((unsigned int) blk[ib]->cx == VISILOAD_CBM_DATA_SIZE) {
 			int *buf, bufsz;
 
 			bufsz = blk[ib]->cx;
@@ -317,12 +321,12 @@ void visiload_search(void)
 		 * Search for the next set of CBM files, if any, because we only want to 
 		 * look for a Visiload file chain in between two CBM boots
 		 */
-		ib = find_decode_block(CBM_HEAD, cbm_index + 2);
-                if (ib != -1) {
-			slice_end = blk[ib]->p1;
-		} else {
+		//ib = find_decode_block(CBM_HEAD, cbm_index + 2);
+                //if (ib != -1) {
+		//	slice_end = blk[ib]->p1;
+		//} else {
 			slice_end = tap.len;
-		}
+		//}
 
 		for (i = slice_start; i < slice_end-100; i++) {
 
