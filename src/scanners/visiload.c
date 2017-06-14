@@ -421,6 +421,9 @@ void visiload_search(void)
                   }
                }
 
+               if (hcnt != HDSZ+ah+1)
+               	break;
+
                start= (hd[2+ah]<<8) + hd[3+ah];  /* start address is at offsets 2,3 */
                end= (hd[0+ah]<<8) + hd[1+ah];    /* end address is at offsets 0,1 */
                len= end-start;
