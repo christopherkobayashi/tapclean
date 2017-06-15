@@ -199,9 +199,9 @@ void visiload_search(void)
    if(!quiet)
       msgout("  Visiload");
 
-	int cbm_index;
+	int cbm_index = 1;
 
-	for (cbm_index = 1; ; cbm_index += 2) {
+	for (;;) {
 
 		int match;
 		int ib, slice_start, slice_end;
@@ -216,13 +216,15 @@ void visiload_search(void)
 		 * corresponding CBM Data.
 		 *
 		 * Unfortunately the load address returned for a given CBM Data
-		 * seems to be inconsistent with what it really is, so we use the
-		 * data block size instead.
+		 * might be inconsistent with what it really is, e.g. if there's a
+		 * unrecognized CBM Data earlier in the tape the index of the CBM
+		 * Header and that of Data get out of sync, so we use the data 
+		 * block size instead, which is worked out of the Data block itself.
 		 */
 
 		match = 0;
 
-		find_decode_block(CBM_HEAD, cbm_index);	/* Required if we were to extract the load address */
+		//find_decode_block(CBM_HEAD, cbm_index);	/* Required if we were to extract the load address */
 		ib  = find_decode_block(CBM_DATA, cbm_index);	/* This fails if the above failed */
 		if (ib == -1) {
 			break;
@@ -284,10 +286,13 @@ void visiload_search(void)
 		}
 
 		/* Parameter extraction successful? */
-		if (match == 0)
+		if (match == 0) {
+			cbm_index += 2;
 			continue;
+		}
 
-		sprintf(lin,"\nVisiload variables found and set: ah=$%02X, ab=$%02X, th=$%04X, en=%s", 
+		sprintf(lin,
+			"  Visiload variables found and set: ah=$%02X, ab=$%02X, th=$%04X, en=%s", 
 			ah, 
 			ab, 
 			threshold, 
@@ -321,12 +326,23 @@ void visiload_search(void)
 		 * Search for the next set of CBM files, if any, because we only want to 
 		 * look for a Visiload file chain in between two CBM boots
 		 */
-		//ib = find_decode_block(CBM_HEAD, cbm_index + 2);
-                //if (ib != -1) {
-		//	slice_end = blk[ib]->p1;
-		//} else {
-			slice_end = tap.len;
-		//}
+		do {
+			ib = find_decode_block(CBM_HEAD, cbm_index + 2);
+        	        if (ib != -1) {
+				slice_end = blk[ib]->p1;
+			} else {
+				slice_end = tap.len;
+			}
+
+			cbm_index += 2;
+
+		} while (slice_end < slice_start);
+
+		sprintf(lin,
+			" - scanning from $%04X to $%04X\n", 
+			slice_start,
+			slice_end);
+		msgout(lin);
 
 		for (i = slice_start; i < slice_end-100; i++) {
 
