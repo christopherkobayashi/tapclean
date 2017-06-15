@@ -11,11 +11,6 @@ Note: tasks are marked as per below. Completed tasks are still included here
    parameters has been found: "Fun School". So the above change must extract 
    loader parameters from the relevant CBM block instead of the first one on 
    the tape (Ziggy72)
- - The find_decode_block() function is not working as expected. In fact, the
-   change to "Visiload" that extracts loader parameters had to be modified:
-   CBM DATA block load address is not always consistent (last file in "Off The
-   Hook") and at times if the N-th CBM HEADER file does not exist it returns
-   an inconsistent DB index. Verify what's going on there (Luigi)
  - "Firebird" uses a very clever mechanism to avoid trying all known Tx 
    variants: it looks for a pattern in the first CBM Header, which it then 
    uses to extract the pulse read threshold. Once that's done, a single 
