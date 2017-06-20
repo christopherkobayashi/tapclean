@@ -30,6 +30,9 @@ Note: tasks are marked as per below. Completed tasks are still included here
  - There is no reason for which "Ocean New" and "Snakeload 5.0" T1 and T2 
    should not be handled by the same module, as it happens with all other 
    scanners; otherwise there is way too much code duplication there (Luigi)
+ - Titles using the "Alternative Software" loader were mastered by "The Graphic 
+   Adventure Creator", in fact they are all text adventures with graphics
+   (Ziggy72)
  - The loader known as "Alternative Software variant" and used by the "Graphic 
    Adventure Creator" should be renamed to "Imagine/Incentive tape" and the 
    loader used by games created with it, currently referred to as "Alternative 
@@ -47,9 +50,6 @@ Note: tasks are marked as per below. Completed tasks are still included here
     CHR T2 : Ultra-Speed x7 (medium)
     CHR T3 : Hyper-Speed x5 (slowest)
    (Ziggy72)
- - Titles using the "Alternative Software" loader were mastered by "The Graphic 
-   Adventure Creator", in fact they are all text adventures with graphics
-   (Ziggy72)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - The code that starts with:
@@ -62,6 +62,14 @@ Note: tasks are marked as per below. Completed tasks are still included here
    In all cases, looking at the first CBM file only makes sense when a title 
    is not part of a compilation: by using cbm_header[]/cbm_program[] directly 
    we lose room for future flexibility (Luigi)
+ - In clean_files() Shouldn't the following line:
+    e = blk[i]->p3;		/* move block end backwards */
+   read as per below instead?
+    e = blk[i]->p3+7;		/* move block end backwards */
+   The reason is that when t == ACTIONREPLAY_STURBO the trailer between 
+   p3+8 and p4 (inclusive) is cleaned using header pulses, so the rest goes 
+   from p1 to p3+7, where p3 the offset of first bit of the last data byte 
+   (Luigi)
  - Avoid repetition for scanner code:
    - PRG data extraction and checkbyte calculation
    - pilot & trailer length computation
