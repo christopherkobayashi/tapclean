@@ -135,9 +135,12 @@ void trilogic_search (void)
 			else
 				e--;
 
-			/* Plausibility check */
-			/* Note: there's a plausibility check on s == 0x0801 because load address
-				 is the very same for all genuine Trilogic tapes! */
+			/*
+			 * Plausibility check
+			 *
+			 * Note: there's a plausibility check on s == 0x0801 because load address
+			 *       is the very same for all genuine Trilogic tapes!
+			 */
 			if (e < s || s != 0x0801)
 				continue;
 
