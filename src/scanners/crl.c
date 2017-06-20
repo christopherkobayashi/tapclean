@@ -23,7 +23,7 @@
  * Status: Beta
  *
  * CBM inspection needed: Yes
- * Single on tape: Yes
+ * Single on tape: Commonly yes, but not necessarily (e.g. Frankenstein)
  * Sync: Custom pulses
  * Header: No
  * Data: Continuous
@@ -63,7 +63,7 @@ static inline void get_crl_addresses (int *buf, int bufsz, int blkindex, unsigne
 	sumoffsets = 0;
 
 #ifdef CRL_DEBUG
-	printf ("\n---------------\nIndex: %d", blkindex);
+	printf("\n---------------\nIndex: %d", blkindex);
 #endif
 
 	for (index = 0; index < blkindex; index++) {
@@ -72,7 +72,7 @@ static inline void get_crl_addresses (int *buf, int bufsz, int blkindex, unsigne
 		offset = find_seq(buf + sumoffsets, bufsz - sumoffsets, seq_next_file, sizeof(seq_next_file) / sizeof(seq_next_file[0]));
 		if (offset == -1) {
 #ifdef CRL_DEBUG
-			printf ("\nCould not find %d-th offset: no more files", index + 1);
+			printf("\nCould not find %d-th offset: no more files", index + 1);
 #endif
 			break;
 		}
@@ -81,7 +81,7 @@ static inline void get_crl_addresses (int *buf, int bufsz, int blkindex, unsigne
 		deltaoffset = sizeof(seq_next_file) / sizeof(seq_next_file[0]);
 
 #ifdef CRL_DEBUG
-		printf ("\nFound %d-th offset: %d", index + 1, sumoffsets);
+		printf("\nFound %d-th offset: %d", index + 1, sumoffsets);
 #endif
 	}
 
@@ -89,13 +89,13 @@ static inline void get_crl_addresses (int *buf, int bufsz, int blkindex, unsigne
 		*s = 0;
 		*x= 0;
 #ifdef CRLEBUG
-		printf ("\nNo further file details found");
+		printf("\nNo further file details found");
 #endif
 	} else {
 		*s = buf[sumoffsets + 1] + 256 * buf[sumoffsets + 6];
 		*x = 256 * buf[sumoffsets + 11];
 #ifdef CRL_DEBUG
-		printf ("\nAbs offset: %d, s: $%04X, x: $%04X", sumoffsets, *s, *x);
+		printf("\nAbs offset: %d, s: $%04X, x: $%04X", sumoffsets, *s, *x);
 #endif
 	}
 }
@@ -139,7 +139,7 @@ void crl_search (void)
 
 	s = x = 0;
 
-	ib = find_decode_block(CBM_HEAD, 1);	/* As per comment above, we don't need its index */
+	ib = find_decode_block(CBM_HEAD, 1);
 	if (ib != -1) {
 		int *buf, bufsz;
 
@@ -183,6 +183,12 @@ void crl_search (void)
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 
+		/*
+		 * Pilot pulses might end up being encoded as long pulses so we 
+		 * can't just look for single byte pulses
+		 */
+
+		/*
 		for (j = 0; j < 5; j++) {
 			if (readttbit(i + j, 0xFD, 0x90, 0xC0) != 1)
 				break;
@@ -191,10 +197,11 @@ void crl_search (void)
 			i += j;
 			continue;
 		}
+		*/
 
 		/* Valid pilot found, mark start of file */
-		sof = i;
-		i += j;
+		//sof = i;
+		//i += j;
 
 		for (j = 0; j < 5; j++) {
 			if (readttbit(i + j, 0xAD, 0x30, 0x60) != 1)
@@ -206,6 +213,7 @@ void crl_search (void)
 		}
 
 		/* Valid sync found, mark start of data */
+		sof = i;
 		i += j;
 		sod = i;
 
@@ -221,8 +229,12 @@ void crl_search (void)
 		/* Store the info read from CBM part as extra-info */
 		xinfo = s + (e << 16);
 
-		if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0) {
+		/* The last pulse is often missing/oversized */
+		if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0 || addblockdef(THISLOADER, sof, sod, eod, eof - 1, xinfo) >= 0) {
 			i = eof;	/* Search for further files starting from the end of this one */
+#ifdef CRL_DEBUG
+			printf("\naddblockdef succeded for sof=%04X eof=%04X", sof, eof);
+#endif
 
 			if (crl_index == 0) {
 				int b, rd_err;
@@ -242,13 +254,13 @@ void crl_search (void)
 
 				if (rd_err == 0) {
 #ifdef CRL_DEBUG
-					printf ("\nMasterload OK, start: $%04x", s);
+					printf("\nMasterload OK, start: $%04x", s);
 #endif
 					crl_index++;
 					get_crl_addresses(masterloader, MASTERLOADSIZE, crl_index, &s, &x);
 				} else  {
 #ifdef CRL_DEBUG
-					printf ("\nMasterload FAIL, start: $%04x", s);
+					printf("\nMasterload FAIL, start: $%04x", s);
 #endif
 					/* We can't decode in case of error */
 					crl_index = -1;
@@ -258,6 +270,10 @@ void crl_search (void)
 				crl_index++;
 				get_crl_addresses(masterloader, MASTERLOADSIZE, crl_index, &s, &x);
 			}
+		} else {
+#ifdef CRL_DEBUG
+			printf("\naddblockdef failed for sof=%04X eof=%04X", sof, eof);
+#endif
 		}
 
 		/* More blocks to load? */
