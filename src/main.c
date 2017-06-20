@@ -168,8 +168,6 @@ char tmp[64000];		/* general purpose string building buffer. */
 
 int aborted = FALSE;		/* general 'operation aborted by user' flag. */
 
-int visi_type = VISI_T2;	/* default visiload type, overidden when loader ID'd. */
-
 int batchmode = FALSE;		/* set to 1 when "batch analysis" is performed. */
 				/* set to 0 when the user Opens an individual tap. */
 
@@ -259,6 +257,7 @@ struct fmt_t ft[] = {
 	{"VISILOAD T3"		,VV,   0x3E, 0x25, NA,   0x54, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T4"		,VV,   0x47, 0x30, NA,   0x5D, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T5"		,VV,   0x52, 0x37, NA,   0x6B, 0x00, 0x16, 100,  NA,    CSNO},
+	{"VISILOAD T6"		,VV,   0x2B, 0x1C, NA,   0x37, 0x00, 0x16, 100,  NA,    CSNO},
 	{"SUPERTAPE HEADER"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0x2A, 50,   NA,    CSYES},
 	{"SUPERTAPE DATA"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0xC5, 50,   NA,    CSYES},
 	{"PAVLODA"		,MSbF, 0x28, 0x1F, NA,   0x3F, 0,    1,    50,   NA,    CSYES},
@@ -385,6 +384,7 @@ const char knam[][32] = {
 	{"Visiload T3"},
 	{"Visiload T4"},
 	{"Visiload T5"},
+	{"Visiload T6"},
 	{"Firebird loader"},
 	{"Novaload (ns)"},
 	{"IK loader"},
@@ -938,27 +938,23 @@ static void search_tap(void)
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
 
-			/* if it's a visiload then choose correct type now... */
+			if (tap.cbmid == LID_VIS_T1	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
-			if (tap.cbmid == LID_VIS_T1)
-				visi_type = VISI_T1;
+			if (tap.cbmid == LID_VIS_T2	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
-			if (tap.cbmid == LID_VIS_T2)
-				visi_type = VISI_T2;
+			if (tap.cbmid == LID_VIS_T3	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
-			if (tap.cbmid == LID_VIS_T3)
-				visi_type = VISI_T3;
+			if (tap.cbmid == LID_VIS_T4	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
-			if (tap.cbmid == LID_VIS_T4)
-				visi_type = VISI_T4;
+			if (tap.cbmid == LID_VIS_T5	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
-			if (tap.cbmid == LID_VIS_T5)
-				visi_type = VISI_T5;
-
-			if (tap.cbmid == LID_VIS_T1 || tap.cbmid == LID_VIS_T2 || tap.cbmid == LID_VIS_T3 || tap.cbmid == LID_VIS_T4 || tap.cbmid == LID_VIS_T5) {
-				if (ldrswt[novisi].exclude == FALSE && !database_is_full && !aborted)
-					visiload_search();
-			}
+			if (tap.cbmid == LID_VIS_T6	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
 
 			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].exclude == FALSE && !database_is_full && !aborted)
 				wild_search();
@@ -1472,6 +1468,8 @@ static void describe_file(int row)
 		case VISI_T4:		visiload_describe(row);
 					break;
 		case VISI_T5:		visiload_describe(row);
+					break;
+		case VISI_T6:		visiload_describe(row);
 					break;
 		case CYBER_F1:		cyberload_f1_describe(row);
 					break;

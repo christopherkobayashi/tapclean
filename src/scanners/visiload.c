@@ -60,12 +60,8 @@ t1. CRC $001CDFBE  :  threshold = $1B6 (TAP byte $35)
 t2. CRC $001CE3DE  :  threshold = $1E6 (TAP byte $3B)
 t3. CRC $001CE56A  :  threshold = $1F8 (TAP byte $3E)
 t4. CRC $001CD5F7  :  threshold = $243 (TAP byte $47)
-
-
-IMPORTANT : -
-
-'visi_type' is a global defined in the main file, its default value (VISI_T2) is
-over-ridden when the CBM program is ID'd as being whichever of the 4 types.
+t5. CRC ---------  :  threshold = $291 (TAP byte $52)
+t6. CRC ---------  :  threshold = $159 (TAP byte $2B)
 
 ---------------------------------------------------------------------------*/
 
@@ -81,8 +77,11 @@ over-ridden when the CBM program is ID'd as being whichever of the 4 types.
 /* As found in first header byte of T1/T2 modifier at the end of a chain */
 #define OVERSIZED_BIT1_PULSE_T1 0x5A
 #define OVERSIZED_BIT1_PULSE_T2 0x62
+#define OVERSIZED_BIT1_PULSE_T6 0x45
 
 #define VISILOAD_CBM_DATA_SIZE	0x0121
+
+static int visi_type = VISI_T2;	/* default visiload type, overidden when loader ID'd. */
 
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
@@ -127,6 +126,14 @@ static int visiload_readbyte(int pos, int endi, int abits, int allow_known_overs
                p<(OVERSIZED_BIT1_PULSE_T2+tol))
          {
             tap.tmem[pos+i] = ft[VISI_T1].lp;
+            mb[i]=1;
+         }
+         else if(visi_type == VISI_T6 && 
+               allow_known_oversized && 
+               p>(OVERSIZED_BIT1_PULSE_T6-tol) && 
+               p<(OVERSIZED_BIT1_PULSE_T6+tol))
+         {
+            tap.tmem[pos+i] = ft[VISI_T6].lp;
             mb[i]=1;
          }
          else
@@ -317,8 +324,16 @@ void visiload_search(void)
 				visi_type = VISI_T4;
 				break;
 
-			default:	/* 0x0291 */
+			case 0x0291:
 				visi_type = VISI_T5;
+				break;
+
+			case 0x0159:
+				visi_type = VISI_T6;
+				break;
+
+			default:
+				visi_type = VISI_T2;	/* Was the default in Final Tap too */
 				break;
 		}
 

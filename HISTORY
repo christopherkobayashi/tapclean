@@ -13,6 +13,8 @@ v0.35
 	 parameters, including different threshold values (Luigi)
 	New: Added initial support for "CRL", used in "Vengaence",
 	 supplied by Pawel (Luigi)
+	New: Added support for "Visiload T6", used in "Spindizzy 64",
+	 supplied by Paul Jones (Luigi)
 
 v0.34
 	Improvement: Rationalised usage and options' messages (Luigi)
