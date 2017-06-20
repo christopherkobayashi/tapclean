@@ -95,6 +95,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Chuckie Egg"			,"chuckie"	,FALSE},
 	{"Creative Sparks"		,"csparks"	,FALSE},
 	{"Creatures"			,"creatures"	,FALSE},
+	{"CRL"				,"crl"		,FALSE},
 	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
 	{"Digital Design"		,"ddesign"	,FALSE},
@@ -335,6 +336,7 @@ struct fmt_t ft[] = {
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x02, 0x09, 64,   NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,   0x33, 0x01, 0xFF, 64,   NA,    CSYES},
 	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,   0x42, 0x80, 0x40, 100,  NA,    CSNO},
+	{"CRL"			,LSbF, 0x40, 0x22, NA,   0x4C, NA,   NA,   NA,   NA,    CSNO},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -417,7 +419,8 @@ const char knam[][32] = {
 	{"Gremlin (F1/F2)"},
 	{"Easy-Tape System C"},
 	{"Creative Sparks"},
-	{"Trilogic"}
+	{"Trilogic"},
+	{"CRL"},
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1085,6 +1088,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].exclude == FALSE && !database_is_full && !aborted)
 				trilogic_search();
 
+			if (tap.cbmid == LID_CRL	&& ldrswt[nocrl	].exclude == FALSE && !database_is_full && !aborted)
+				crl_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1638,6 +1644,8 @@ static void describe_file(int row)
 		case CSPARKS:		creativesparks_describe(row);
 					break;
 		case DIGITAL_DESIGN:	ddesign_describe(row);
+					break;
+		case CRL:		crl_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

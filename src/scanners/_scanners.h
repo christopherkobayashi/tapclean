@@ -269,6 +269,8 @@ int turbo220_describe(int);
 void creativesparks_search(void);
 int creativesparks_describe(int);
 
+void crl_search (void);
+
 void ddesign_search(void);
 int ddesign_describe(int);
 

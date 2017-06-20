@@ -321,6 +321,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 						   Kentucky Racing, Merlin, Metranaut,
 						   Strike Force, Superted */
 
+		{0xAFA2836C, LID_CRL},		/* Slightly risky as CBM Data is just a vector, 0302: 52 03 */
+
 		{0, 0}				/* List terminator/cap */
 	};
 

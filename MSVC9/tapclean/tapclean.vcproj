@@ -572,7 +572,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\cult.c"
+					RelativePath="..\..\src\scanners\crl.c"
 					>
 				</File>
 				<File
@@ -681,6 +681,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\burner.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\cult.c"
 					>
 				</File>
 				<File
