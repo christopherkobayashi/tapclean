@@ -336,7 +336,7 @@ struct fmt_t ft[] = {
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x02, 0x09, 64,   NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,   0x33, 0x01, 0xFF, 64,   NA,    CSYES},
 	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,   0x42, 0x80, 0x40, 100,  NA,    CSNO},
-	{"CRL"			,LSbF, 0x40, 0x22, NA,   0x4C, NA,   NA,   NA,   NA,    CSNO},
+	{"CRL"			,LSbF, 0x40, 0x22, NA,   0x59, NA,   NA,   NA,   NA,    CSNO},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
