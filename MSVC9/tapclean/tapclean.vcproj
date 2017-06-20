@@ -516,10 +516,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\visiload.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\wildload.c"
 					>
 				</File>
@@ -709,6 +705,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\virgin.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\visiload.c"
 					>
 				</File>
 			</Filter>
