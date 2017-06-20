@@ -120,8 +120,8 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 	do {
 		sumoffsets += (minoffset + deltaoffset);
 
-		offset1 = find_seq (buf + sumoffsets, bufsz, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
-		offset2 = find_seq (buf + sumoffsets, bufsz, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
+		offset1 = find_seq (buf + sumoffsets, bufsz - sumoffsets, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
+		offset2 = find_seq (buf + sumoffsets, bufsz - sumoffsets, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
 
 #ifdef ENIGMA_DEBUG
 		printf ("\nScanning for seq at: %d, ofst1 = %d, ofst2 = %d", sumoffsets, offset1, offset2);
@@ -448,7 +448,7 @@ void enigma_search(void)
 						rd_err = 0;
 
 						/* Store master loader */
-						for (j = 0; j < (int)x; j++) {
+						for (j = 0; j < (int)x && j < MASTERLOADSIZE; j++) {
 							b = readttbyte(sod + (j  * BITSINABYTE), lp, sp, tp, en);
 							if (b == -1)
 								rd_err++; /* Don't break here: during debug we will see how many errors occur */
