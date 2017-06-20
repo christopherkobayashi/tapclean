@@ -270,7 +270,7 @@ void creativesparks_search(void);
 int creativesparks_describe(int);
 
 void crl_search(void);
-void crl_describe(int);
+int crl_describe(int);
 
 void ddesign_search(void);
 int ddesign_describe(int);
