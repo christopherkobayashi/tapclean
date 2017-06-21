@@ -2698,9 +2698,21 @@ int analyze(void)
 	/* + call describe_blocks() to extract data and get checksum info. */
 
 	note_errors = FALSE;
+
 	search_tap();
+
 	note_errors = TRUE;
+
+	/*
+	 * Calls to find_decode_block() can set tap.cbmname incorrectly, e.g.
+	 * in Visiload, according to which CBM Header is looked for first, so 
+	 * we force the first CBM Header filename discovery by resetting 
+	 * tap.cbmname.
+	 */
+	strcpy(tap.cbmname, "");
+
 	describe_blocks();
+
 	note_errors = FALSE;
 
 	/* Gather statistics... */
