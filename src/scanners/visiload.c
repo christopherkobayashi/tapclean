@@ -232,10 +232,13 @@ void visiload_search(void)
 		match = 0;
 
 		//find_decode_block(CBM_HEAD, cbm_index);	/* Required if we were to extract the load address */
-		ib  = find_decode_block(CBM_DATA, cbm_index);	/* This fails if the above failed */
+		ib  = find_decode_block(CBM_DATA, cbm_index);
 		if (ib == -1) {
-			break;
+
+			break;	/* No further titles on this tape image */
+
 		} else if ((unsigned int) blk[ib]->cx == VISILOAD_CBM_DATA_SIZE) {
+
 			int *buf, bufsz;
 
 			bufsz = blk[ib]->cx;
@@ -338,20 +341,30 @@ void visiload_search(void)
 		}
 
 		/* 
-		 * Search for the next set of CBM files, if any, because we only want to 
-		 * look for a Visiload file chain in between two CBM boots
+		 * Search for the next set of CBM files, if any, because we only 
+		 * want to look for a Visiload file chain in between two CBM boots
 		 */
 		do {
+
 			ib = find_decode_block(CBM_HEAD, cbm_index + 2);
-        	        if (ib != -1) {
-				slice_end = blk[ib]->p1;
-			} else {
+			if (ib == -1)
 				slice_end = tap.len;
-			}
+			else
+				slice_end = blk[ib]->p1;
 
 			cbm_index += 2;
 
 		} while (slice_end < slice_start);
+
+		/*
+		 * Optimize search: If there's a CBM Data (repeated) file 
+		 * in between, then start scanning from its end
+		 */
+		ib  = find_decode_block(CBM_DATA, cbm_index - 1);
+		if (ib != -1) {
+			if (blk[ib]->p4 < slice_end)
+				slice_start = blk[ib]->p4 + 1;
+		}
 
 		sprintf(lin,
 			" - scanning from $%04X to $%04X\n", 
