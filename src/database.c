@@ -451,7 +451,7 @@ int database_compute_overall_crc(void)
 }
 
 /**
- *	Dump database contents to console
+ *	Dump database contents to console (for debug purposes)
  *
  *	@param void
  *
