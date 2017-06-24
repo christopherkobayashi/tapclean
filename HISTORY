@@ -204,15 +204,15 @@ v0.24
 	New: Added Makefile.MAC (bgk)
 
 v0.23
-	Fix: excluding Jetload doesn't exclude IK and viceversa (Luigi)
-	Improvement: if occurring in file header Visiload T1 oversized pulses
+	Fix: excluding "Jetload" doesn't exclude "IK" and viceversa (Luigi)
+	Improvement: if occurring in file header "Visiload T1" oversized pulses
 	 do not cause scanner to stop looking for Visiload blocks (Luigi)
 	Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
 	New: Added support for "Go for the gold" loader, contributed by Kevin
 	  Palberg (Luigi)
 	Improvement: "Cyberload F4" scanner now recognizes Myth's F4
 	 files (Kevin)
-	Code quality: changed trailer read block to use readttbit in new
+	Code quality: changed trailer read block to use readttbit() in new
 	 scanners (Luigi)
 	New: Added support for "Fast Evil" loader, found in "The Evil
 	 Dead" (Luigi)
@@ -293,7 +293,7 @@ v0.16
 	PARTLY Fixed the c64tape.c trailer read routine.
 	 Trailer is now accounted even if terminated by a spike, not just
 	 a pause (Luigi)
-	Moved TDI F2 search before TDI F1
+	Moved TDI F2 search before TDI F1 (Luigi)
 
 v0.15
 	Edited "Cult" scanner (Luigi)
