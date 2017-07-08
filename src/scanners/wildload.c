@@ -1,28 +1,40 @@
-/*---------------------------------------------------------------------------
-  wildload.c
+/*
+ * wildload.c (rewritten by Luigi Di Fraia, Jul 2017)
+ *
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
+ *
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ *
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
-  Part of project "Final TAP". 
-  
-  A Commodore 64 tape remastering and data extraction utility.
-
-  (C) 2001-2006 Stewart Wilson, Subchrist Software.
-   
-  
-   
-   This program is free software; you can redistribute it and/or modify it under 
-   the terms of the GNU General Public License as published by the Free Software 
-   Foundation; either version 2 of the License, or (at your option) any later 
-   version.
-   
-   This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-   PARTICULAR PURPOSE. See the GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License along with 
-   this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
-   St, Fifth Floor, Boston, MA 02110-1301 USA
-
----------------------------------------------------------------------------*/
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Sequence (bytes)
+ * Header: Yes
+ * Data: Continuous (loaded backwards)
+ * Checksum: Yes (XOR)
+ * Post-data: No
+ * Trailer: No
+ * Trailer homogeneous: N/A
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
@@ -31,157 +43,255 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define HDSZ 5
+#define THISLOADER	WILD
 
-/*---------------------------------------------------------------------------*/
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
+
+#define SYNCSEQSIZE	10	/* amount of sync bytes */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+
+#define HEADERSIZE	5	/* size of block header */
+
+#define ENDOFFSETH	1	/* end  location (MSB) offset inside header */
+#define ENDOFFSETL	0	/* end  location (LSB) offset inside header */
+#define DATAOFFSETH	3	/* data size (MSB) offset inside header */
+#define DATAOFFSETL	2	/* data size (LSB) offset inside header */
+
 void wild_search(void)
 {
-   int i,sof,sod,eod,eof;
-   int pos,cnt2,z,len;
-   int hd[HDSZ],pat[10];
+	int i, h;			/* counter */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-   if(!quiet)
-      msgout("  Wildload");
+	int en, tp, sp, lp;		/* encoding parameters */
+
+	unsigned int e;			/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
+
+	/* Expected sync pattern */
+	static int sypat[SYNCSEQSIZE] = {
+		0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
+	};
+	int match;
+
+
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
+
+	if(!quiet)
+		msgout("  Wildload");
          
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, THISLOADER);
 
-   for(i=20; i<tap.len-8; i++)
-   {
-      if((z=find_pilot(i,WILD))>0)
-      {
-         sof=i;
-         i=z;
-         if(readttbyte(i, ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en)==ft[WILD].sv)  /* ending with a sync.  */
-         {
-            for(cnt2=0; cnt2<10; cnt2++)
-               pat[cnt2] = readttbyte(i+(cnt2*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);   /* decode a 10 byte TT sequence  */
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
 
-             if(pat[0]==0x0A && pat[1]==9 && pat[2]==8 && pat[3]==7 && pat[4]==6
-               && pat[5]==5 && pat[6]==4 && pat[7]==3 && pat[8]==2 && pat[9]==1)
-            {
-               sod= i+80;
+			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
+			for (h = 0; h < SYNCSEQSIZE; h++)
+				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
 
-               /* decode header...  */
-               for(cnt2=0; cnt2<HDSZ; cnt2++)
-               {
-                  hd[cnt2] = readttbyte(sod+(cnt2*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);
-                  if(hd[cnt2]==-1)
-                     return;        /* read error in header, abort.  */
-               }
+			/* Note: no need to check if readttbyte is returning -1, for
+			         the following comparison (DONE ON ALL READ BYTES)
+			         will fail all the same in that case */
 
-               len= (hd[2])+(hd[3]<<8);
+			/* Check sync train. We may use the find_seq() facility too */
+			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
+				if (pat[h] != sypat[h])
+					match = 0;
 
-               eod= sod+(len*8)+(HDSZ*8);
-               eof= eod+7;
+			/* Sync train doesn't match */
+			if (!match)
+				continue;
 
-               addblockdef(WILD, sof,sod,eod,eof, 0);  /* add 1st block   */
+			/* Valid sync train found, mark start of data */
+			sod = i + BITSINABYTE * SYNCSEQSIZE;
 
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
 
-               /* locate any sub-blocks...   */
-               pos= eof+1;    /* set pointer to next possible block  */
-               do
-               {
-                  /* find data length for this block...  */
-                  for(cnt2=0; cnt2<HDSZ; cnt2++)
-                  {
-                     hd[cnt2] = readttbyte(pos+(cnt2*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);
-                     if(hd[cnt2]==-1)
-                        return;        /* read error in header, abort. */
-                  }
-                  len = (hd[2])+(hd[3]<<8);   /* read length of this block  */
-                  if(len!=0) /* note if length read is $0000 then we're finished.  */
-                  {
-                     sof= pos;
-                     sod= sof;
-                     eod= pos+ (len*8)+(HDSZ*8);
-                     eof= eod+7;
-                     addblockdef(WILD, sof,sod,eod,eof, 0);
-                     pos= eof+1;  /* bump pointer  */
-                  }
-                  else /* add stop block...   */
-                  {
-                     sof= pos;
-                     sod= sof;
-                     eod= sod+40;
-                     eof= eod+6;   /* size is always 47 pulses.  */
-                     addblockdef(WILD_STOP, sof,sod,eod,eof, 0);
-                     pos= eof+1;  /* bump pointer  */
-                  }
-               }
-               while(len!=0 && pos<tap.len);
+			/* Extract end location (the first byte is stored here) and size */
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+			x = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
 
-               i=pos;  /* make sure following headblock search starts at correct position */
-            }
-         }
-      }
-   }
+			/* Plausibility check */
+			if (e + 1 < x)
+				continue;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+
+			/* Initially point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Add 1st block */
+			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) < 0)
+				continue;
+
+			/* Locate chained blocks */
+
+			sof = eof + 1;	/* Set pointer to next possible block in chain */
+
+			do {
+				/* Find data length for this block */
+				for (h = 0; h < HEADERSIZE; h++) {
+					hd[h] = readttbyte(sof + h * BITSINABYTE, lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;        /* Read error in header: abort */
+				}
+
+				if (h < HEADERSIZE)
+					break;
+
+				x = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
+
+				/* If length read is $0000 then we're finished */
+				if (x) {
+					sod = sof;
+					eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+					eof = eod + BITSINABYTE - 1;
+
+					if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) < 0)
+						break;
+
+					sof = eof + 1;	/* Bump pointer */
+				} else {
+					sod = sof;
+					eod = sod + HEADERSIZE * BITSINABYTE;
+					eof = eod + BITSINABYTE - 2;	/* Size is always 47 pulses */
+
+					if (addblockdef(WILD_STOP, sof, sod, eod, eof, 0) < 0)
+						break;
+
+					sof = eof + 1;	/* Bump pointer */
+				}
+
+			} while (x && sof < tap.len);
+
+			i = sof;	/* Make sure following headblock search starts at correct position */
+		}
+	}
 }
-/*---------------------------------------------------------------------------*/
+
 int wild_describe(int row)
 {
-   int i,s,len,scnt;
-   int b,rd_err,cb,hd[HDSZ];
+	int i;
+	int hd[HEADERSIZE];
+	int en, tp, sp, lp;
 
-   if(blk[row]->lt==WILD)
-   {
-      /* decode the header... */
-      s = blk[row]->p2;
-      for(i=0; i<HDSZ; i++)
-         hd[i] = readttbyte(s+(i*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);
+	int s, len, scnt;
+	int b, rd_err;
+	int cb;
 
-      /* compute C64 start address, end address and size...  */
-      blk[row]->ce = hd[0]+ (hd[1]<<8);  /* (note: data loads backwards)   */
-      blk[row]->cx = hd[2]+ (hd[3]<<8);
-      blk[row]->cs = ((blk[row]->ce - blk[row]->cx)+1)&0xFFFF;
 
-      if(blk[row]->xi!=0)
-      {
-         sprintf(lin,"\n - Last word : $%04X",blk[row]->xi);
-         strcat(info,lin);
-      }
+	/* Same encoding parameters for WILD and WILD_STOP */
+	en = ft[THISLOADER].en;
+	tp = ft[THISLOADER].tp;
+	sp = ft[THISLOADER].sp;
+	lp = ft[THISLOADER].lp;
 
-      /* get pilot/trailer lengths... */
-      blk[row]->pilot_len= (blk[row]->p2 - blk[row]->p1) >>3;
-      blk[row]->trail_len= (blk[row]->p4 - blk[row]->p3 -7) >>3;
+	rd_err = 0;
 
-      /* extract data... (loaded backwards using 'len')    */
-      rd_err=0;
-      cb=0;
-      s= (blk[row]->p2)+(HDSZ*8);
+	if (blk[row]->lt == WILD) {
 
-      if(blk[row]->dd!=NULL)
-         free(blk[row]->dd);
-      blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+		s = blk[row] -> p2;
 
-      scnt= blk[row]->ce;  /* ...end (start) address is required for correct decoding. */
-      len = blk[row]->cx;
+		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+		for (i = 0; i < HEADERSIZE; i++)
+			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-      for(i=0; i<blk[row]->cx; i++)
-      {
-         b= readttbyte(s+(i*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);
-         cb^= (b^(scnt&0xFF));
-         if(b==-1)
-            rd_err++;
-         else
-            blk[row]->dd[len-1-i] = b ^ (scnt & 0xFF);
-         scnt--;
-      }
-      b= readttbyte(s+(i*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en); /* read actual cb.  */
-      blk[row]->cs_exp = cb &0xFF;
-      blk[row]->cs_act = b;
-      blk[row]->rd_err = rd_err;
-   }
+		/* Compute/read C64 memory location for load/end address, and read data size */
+		blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);	/* Note: data loads backwards */
+		blk[row]->cx = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
+		blk[row]->cs = ((blk[row]->ce - blk[row]->cx) + 1) & 0xFFFF;
 
-   /*-----------------------------------------------------------*/
-   if(blk[row]->lt==WILD_STOP)
-   {
-      sprintf(lin,"\n - Size : 47 pulses (always)");
-      strcat(info,lin);
+		/* Compute pilot & trailer lengths */
 
-      /* decode 5 bytes... (they are not stored, just read for error purposes) */
-      s= blk[row]->p2;
-      for(i=0; i<HDSZ; i++)
-         readttbyte(s+(i*8), ft[WILD].lp, ft[WILD].sp, ft[WILD].tp, ft[WILD].en);
-   }
-   return 0;
+		/* pilot is in bytes... */
+		blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+		/* ... trailer in pulses */
+		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+		/* if there IS pilot then disclude the sync byte */
+		if (blk[row]->pilot_len > 0) 
+			blk[row]->pilot_len -= SYNCSEQSIZE;
+
+		/* Extract data (loaded backwards) and test checksum... */
+		cb = 0;
+
+		s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
+
+		if (blk[row]->dd != NULL)
+			free(blk[row]->dd);
+
+		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
+
+		scnt = blk[row]->ce & 0xFF;	/* ...end (start) address is required for correct decoding. */
+		len  = blk[row]->cx;
+
+		for (i = 0; i < blk[row]->cx; i++) {
+			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+			cb ^= (b ^ scnt);
+
+			if (b != -1) {
+				blk[row]->dd[len - 1 - i] = b ^ (scnt & 0xFF);
+			} else {
+				blk[row]->dd[len - 1 - i] = 0x69;  /* error code */
+				rd_err++;
+
+				/* for experts only */
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), len - 1 - i + 2);
+				strcat(info, lin);
+			}
+
+			scnt--;
+		}
+
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en); /* read actual cb.  */
+		if (b == -1) {
+			/* Even if not within data, we cannot validate data reliably if
+			   checksum is unreadable, so that increase read errors */
+			rd_err++;
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+			strcat(info, lin);
+		}
+
+		blk[row]->cs_exp = cb & 0xFF;
+		blk[row]->cs_act = b  & 0xFF;
+		blk[row]->rd_err = rd_err;
+
+	} else if (blk[row]->lt == WILD_STOP) {
+
+		sprintf(lin, "\n - Size : 47 pulses (always)");
+		strcat(info, lin);
+
+		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+		s = blk[row] -> p2;
+
+		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+		for (i = 0; i < HEADERSIZE; i++)
+			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+
+		/* Compute/read C64 memory location for load/end address, and read data size */
+		blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);	/* Note: data loads backwards */
+		blk[row]->cx = hd[DATAOFFSETL] + (hd[DATAOFFSETH] << 8);
+		blk[row]->cs = 0x0000;
+	}
+
+	return(rd_err);
 }
-

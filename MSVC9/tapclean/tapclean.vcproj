@@ -515,10 +515,6 @@
 					RelativePath="..\..\src\scanners\usgold.c"
 					>
 				</File>
-				<File
-					RelativePath="..\..\src\scanners\wildload.c"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="newscanners"
@@ -709,6 +705,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\visiload.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\wildload.c"
 					>
 				</File>
 			</Filter>

@@ -15,6 +15,7 @@ v0.35
 	 supplied by Pawel (Luigi)
 	New: Added support for "Visiload T6", used in "Spindizzy 64",
 	 supplied by Paul Jones (Luigi)
+	Improvement: "Wildload" scanner rewritten (Luigi)
 
 v0.34
 	Improvement: Rationalised usage and options' messages (Luigi)
