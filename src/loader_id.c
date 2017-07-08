@@ -112,6 +112,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x97AB5438, LID_WILD},
 		{0xFC8E7F96, LID_WILD},
 		{0x69D7FCC6, LID_WILD},
+		{0xA440C91A, LID_WILD},		/* Mindfighter */
 
 		{0x00A517B5, LID_USG},
 		{0x518F7B24, LID_USG},
