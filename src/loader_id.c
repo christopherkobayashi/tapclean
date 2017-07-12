@@ -156,6 +156,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xB1F027B4, LID_MIC},
 		{0x178977C3, LID_MIC},
 		{0x29DCB0D1, LID_MIC},
+		{0x91DC3707, LID_MIC},		/* Melon Mania */
 
 		{0x58EEE22A, LID_ACE},		/* Ace of Aces */
 		{0x915280DA, LID_ACE},
