@@ -81,7 +81,9 @@ t6. CRC ---------  :  threshold = $159 (TAP byte $2B)
 
 #define VISILOAD_CBM_DATA_SIZE	0x0121
 
-static int visi_type = VISI_T2;	/* default visiload type, overidden when loader ID'd. */
+extern char preserveloadervars;
+
+static int visi_type = VISI_T2;	/* default visiload type, overidden when loader is identified. */
 
 /*---------------------------------------------------------------------------
  Reads a Visiload format byte at 'pos' in tap.tmem,
@@ -335,6 +337,10 @@ void visiload_search(void)
 				visi_type = VISI_T6;
 				break;
 
+			case 0x0222:
+				visi_type = VISI_T7;
+				break;
+
 			default:
 				visi_type = VISI_T2;	/* Was the default in Final Tap too */
 				break;
@@ -549,6 +555,40 @@ void visiload_search(void)
                         case 0x7DF3B6CE:  /* Loads the menu */
                         case 0x50D31A06:
                         case 0x0AD70202:
+
+                           en= MSbF;      /* Reset loader to use MSbF... */
+                           ab= 1;         /* ... 1 extra bit per byte... */
+                           ah= 0;         /* ... and no extra header bytes... */
+                           break;
+                     }
+                  }
+                  else if (end == 0x03EB && !strncmp((char *) &cbm_header[5], "PUFFY", 5))
+                  {
+                     #define PUFFYS_SAGA_MODIFIER_SZ 0x30
+
+                     int data_offset;
+                     unsigned char modifier_block[PUFFYS_SAGA_MODIFIER_SZ];
+                     int m_index;
+                     unsigned int crc;
+
+                     data_offset = sod+(ah+HDSZ)*(8+ab);
+
+                     /* We have to extract data here and check it; no other option possible */
+                     for (m_index = 0; m_index < PUFFYS_SAGA_MODIFIER_SZ; m_index++)
+                     {
+                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
+#ifdef DEBUG
+                        if (m_index % 16 ==0)
+                           printf ("\n%06X: ", data_offset);
+                        printf ("%02X ", modifier_block[m_index]);
+#endif
+                     }
+
+                     crc = crc32_compute_crc(modifier_block, PUFFYS_SAGA_MODIFIER_SZ);
+
+                     switch (crc)
+                     {
+                        case 0x82D152D1:
 
                            en= MSbF;      /* Reset loader to use MSbF... */
                            ab= 1;         /* ... 1 extra bit per byte... */

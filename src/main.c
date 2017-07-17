@@ -258,6 +258,7 @@ struct fmt_t ft[] = {
 	{"VISILOAD T4"		,VV,   0x47, 0x30, NA,   0x5D, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T5"		,VV,   0x52, 0x37, NA,   0x6B, 0x00, 0x16, 100,  NA,    CSNO},
 	{"VISILOAD T6"		,VV,   0x2B, 0x1C, NA,   0x37, 0x00, 0x16, 100,  NA,    CSNO},
+	{"VISILOAD T7"		,VV,   0x44, 0x2D, NA,   0x5A, 0x00, 0x16, 100,  NA,    CSNO},
 	{"SUPERTAPE HEADER"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0x2A, 50,   NA,    CSYES},
 	{"SUPERTAPE DATA"	,LSbF, NA,   0x21, 0x32, 0x43, 0x16, 0xC5, 50,   NA,    CSYES},
 	{"PAVLODA"		,MSbF, 0x28, 0x1F, NA,   0x3F, 0,    1,    50,   NA,    CSYES},
@@ -385,6 +386,7 @@ const char knam[][32] = {
 	{"Visiload T4"},
 	{"Visiload T5"},
 	{"Visiload T6"},
+	{"Visiload T7"},
 	{"Firebird loader"},
 	{"Novaload (ns)"},
 	{"IK loader"},
@@ -956,6 +958,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_VIS_T6	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
 				visiload_search();
 
+			if (tap.cbmid == LID_VIS_T7	&& ldrswt[novisi	].exclude == FALSE && !database_is_full && !aborted)
+				visiload_search();
+
 			if (tap.cbmid == LID_WILD 	&& ldrswt[nowild	].exclude == FALSE && !database_is_full && !aborted)
 				wild_search();
 
@@ -1470,6 +1475,8 @@ static void describe_file(int row)
 		case VISI_T5:		visiload_describe(row);
 					break;
 		case VISI_T6:		visiload_describe(row);
+					break;
+		case VISI_T7:		visiload_describe(row);
 					break;
 		case CYBER_F1:		cyberload_f1_describe(row);
 					break;

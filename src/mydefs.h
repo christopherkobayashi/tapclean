@@ -39,7 +39,7 @@
 #define SLASH   '/'
 #endif
 
-#define VERSION_STR "0.35-pre7"
+#define VERSION_STR "0.35-pre8"
 #define COPYRIGHT_STR "(C) 2006-2017 TC Team"
 #define BUILDER_STR     "ldf"
 
@@ -155,6 +155,7 @@ enum {
 	VISI_T4,
 	VISI_T5,
 	VISI_T6,
+	VISI_T7,
 	SUPERTAPE_HEAD,
 	SUPERTAPE_DATA,
 	PAV,
@@ -257,6 +258,7 @@ enum {
 	LID_VIS_T4,
 	LID_VIS_T5,
 	LID_VIS_T6,
+	LID_VIS_T7,
 	LID_FIRE,
 	LID_NOVA,
 	LID_IK,

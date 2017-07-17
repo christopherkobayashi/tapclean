@@ -11,6 +11,9 @@ Note: tasks are marked as per below. Completed tasks are still included here
    parameters has been found: "Fun School". So the above change must extract 
    loader parameters from the relevant CBM block instead of the first one on 
    the tape (Ziggy72)
+ - "Visiload" tapes with level data on Side B are not yet supported as the 
+   scanner looks for CBM blocks to extract loader parameters, even when loader 
+   variables are preserved across scans. What can we do here? (Luigi)
  - "Firebird" uses a very clever mechanism to avoid trying all known Tx 
    variants: it looks for a pattern in the first CBM Header, which it then 
    uses to extract the pulse read threshold. Once that's done, a single 

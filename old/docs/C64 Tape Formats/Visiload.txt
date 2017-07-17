@@ -21,6 +21,7 @@ Type 3 (threshold : $1F8 clock cycles, TAP byte $3F).
 Type 4 (threshold : $243 clock cycles, TAP byte $48).
 Type 5 (threshold : $291 clock cycles, TAP byte $52).
 Type 6 (threshold : $159 clock cycles, TAP byte $2B).
+Type 7 (threshold : $222 clock cycles, TAP byte $44).
 
 
 Bit 1's sampled from TAP files show values of $48+ for type 1, whilst sampled bit 1's from 
@@ -31,11 +32,11 @@ Bit 0's for type 4 are around $30.
 
 --------------------------------------------------------------------------------
 
-        Type1   Type2   Type3   Type4   Type5   Type6  
+        Type1   Type2   Type3   Type4   Type5   Type6   Type7
 
-Bit 0 : $25     $25     $25     $30     $37     $1C   (sampled)
-Bit 1 : $48     $4B     $54     $5D     $6B     $37   (sampled) 
-Thres : $35     $3B     $3E     $47     $52     $2B   (exact)
+Bit 0 : $25     $25     $25     $30     $37     $1C     $2D     (sampled)
+Bit 1 : $48     $4B     $54     $5D     $6B     $37     $5A     (sampled) 
+Thres : $35     $3B     $3E     $47     $52     $2B     $44     (exact)
 
 Endianess : It changes during the loading! as does the number of bits per byte!
 Pilot byte : $00 (*256)
