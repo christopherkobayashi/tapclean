@@ -229,7 +229,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x2AA7A25A, LID_VIS_T5},		/* Critical Mass mastering parameters (first turbo file has 4 header bytes and 1 additional bit per byte) */
 		{0xBBB52B89, LID_VIS_T5},		/* Spellseeker mastering parameters (same as Critical Mass) */
 		{0xDE1AE55C, LID_VIS_T5},		/* Confuzion, Nick Faldo Plays The Open, TimeTrax, Mr. Mephisto mastering parameters (same as Critical Mass) */
-		{0x7D657986, LID_VIS_T6},		/* Spindizzy 64 from Five Star Games */
+		{0x7D657986, LID_VIS_T6},		/* Spindizzy 64 (part of Five Star Games) */
+		{0xD6FE2E69, LID_VIS_T7},		/* Puffy's Saga */
 
 		{0xA7D33777, LID_FIRE},
 		{0x041FDA59, LID_FIRE},
