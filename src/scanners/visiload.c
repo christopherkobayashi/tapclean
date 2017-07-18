@@ -62,6 +62,7 @@ t3. CRC $001CE56A  :  threshold = $1F8 (TAP byte $3E)
 t4. CRC $001CD5F7  :  threshold = $243 (TAP byte $47)
 t5. CRC ---------  :  threshold = $291 (TAP byte $52)
 t6. CRC ---------  :  threshold = $159 (TAP byte $2B)
+t7. CRC ---------  :  threshold = $222 (TAP byte $44)
 
 ---------------------------------------------------------------------------*/
 
@@ -80,8 +81,6 @@ t6. CRC ---------  :  threshold = $159 (TAP byte $2B)
 #define OVERSIZED_BIT1_PULSE_T6 0x45
 
 #define VISILOAD_CBM_DATA_SIZE	0x0121
-
-extern char preserveloadervars;
 
 static int visi_type = VISI_T2;	/* default visiload type, overidden when loader is identified. */
 
@@ -308,7 +307,7 @@ void visiload_search(void)
 			ah, 
 			ab, 
 			threshold, 
-			ENDIANESS_TO_STRING(en));
+			ENDIANNESS_TO_STRING(en));
 		msgout(lin);
 
 		/* Set the Tx type for further decoding now */
@@ -487,7 +486,7 @@ void visiload_search(void)
 
              /* create an attribute value for this block...
                 att value...
-                bit 7: endianess (1=msbf)
+                bit 7: endianness (1=msbf)
                 bit 6: unused.
                 bit 5: additional header bytes, bit 2
                 bit 4: additional header bytes, bit 1
@@ -618,7 +617,7 @@ int visiload_describe(int row)
    int hd[HDSZ+1];
    int b,rd_err;
 
-   xsb =(blk[row]->xi & 128)>>7;    /* get endianess. */
+   xsb =(blk[row]->xi & 128)>>7;    /* get endianness. */
    ah = (blk[row]->xi & 56)>>3;     /* get no. additional header bytes. */
    ab = (blk[row]->xi & 7);         /* and no. additional bits per byte. */
 
@@ -655,7 +654,7 @@ int visiload_describe(int row)
       strcat(info,lin);
    }
    /* print block format info...*/
-   sprintf(lin,"\n - Bits per byte : %d | Endianess : %s | Extra headers bytes : %d",8+ab, ENDIANESS_TO_STRING(xsb), ah);
+   sprintf(lin,"\n - Bits per byte : %d | Endianness : %s | Extra headers bytes : %d",8+ab, ENDIANNESS_TO_STRING(xsb), ah);
    strcat(info,lin);
 
    /* get pilot & trailer lengths... */
