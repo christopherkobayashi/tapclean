@@ -258,7 +258,7 @@ void rackit_search (void)
 	sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
 		ft[THISLOADER].pv, 
 		ft[THISLOADER].sv, 
-		ENDIANESS_TO_STRING(ft[THISLOADER].en));
+		ENDIANNESS_TO_STRING(ft[THISLOADER].en));
 	msgout(lin);
 
 	en = ft[THISLOADER].en;
@@ -415,10 +415,10 @@ int rackit_describe (int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s",
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianness : %s",
 		ft[THISLOADER].pv,
 		ft[THISLOADER].sv,
-		ENDIANESS_TO_STRING(en));
+		ENDIANNESS_TO_STRING(en));
 	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */

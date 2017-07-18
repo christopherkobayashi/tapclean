@@ -190,7 +190,7 @@ long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
  * the loader docs, this is done to let partly damaged games be detected
  * and fixed.
  *
- * en = byte endianess, 0=LSbF, 1=MSbF
+ * en = byte endianness, 0=LSbF, 1=MSbF
  * tp = threshold pulsewidth (if applicable)
  * sp = ideal short pulsewidth
  * mp = ideal medium pulsewidth (if applicable)
@@ -2429,7 +2429,7 @@ int readttbit(int pos, int lp, int sp, int tp)
  * sp = ideal short pulse width.
  * tp = threshold pulse width (can be NA if unknown)
  * return 0 or 1 on success else -1.
- * endi = endianess (use constants LSbF or MSbF).
+ * endi = endianness (use constants LSbF or MSbF).
  * Returns byte value on success, or -1 on failure.
  *
  * Note: Most formats can use this (and readttbit) for reading data, but some

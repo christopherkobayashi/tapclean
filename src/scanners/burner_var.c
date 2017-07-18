@@ -211,12 +211,12 @@ void burnervar_search (void)
 		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%s",
 			pv,
 			sv,
-			ENDIANESS_TO_STRING(en));
+			ENDIANNESS_TO_STRING(en));
 #else
 		sprintf(lin, "  Burner variant found: pv=$%02X, sv=$%02X, en=%s",
 			pv,
 			sv,
-			ENDIANESS_TO_STRING(en));
+			ENDIANNESS_TO_STRING(en));
 #endif
 		msgout(lin);
 	}
@@ -310,10 +310,10 @@ int burnervar_describe (int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianess : %s",
+	sprintf(lin, "\n - Pilot : $%02X, Sync : $%02X, Endianness : %s",
 		ft[THISLOADER].pv,
 		ft[THISLOADER].sv,
-		ENDIANESS_TO_STRING(en));
+		ENDIANNESS_TO_STRING(en));
 	strcat(info, lin);
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */

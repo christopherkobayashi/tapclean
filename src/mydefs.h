@@ -83,7 +83,7 @@
 
 #define LSbF	0	/* indicator: Least Significant bit First. */
 #define MSbF	1	/* indicator: Most Significant bit First. */
-#define ENDIANESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
+#define ENDIANNESS_TO_STRING(en) ((en) == MSbF ? "MSbF" : "LSbF")
 
 #define CSYES	1	/* indicator: A checksum is used. */
 #define CSNO	0	/* indicator: A checksum is not used. */
@@ -378,7 +378,7 @@ struct tap_tr
 struct fmt_t
 {
 	char *name;		/* format name */
-	int en;			/* byte endianess, 0=LSbF, 1=MSbF */
+	int en;			/* byte endianness, 0=LSbF, 1=MSbF */
 	int tp;			/* threshold pulsewidth (if applicable) */
 	int sp;			/* ideal short pulsewidth */
 	int mp;			/* ideal medium pulsewidth (if applicable) */
