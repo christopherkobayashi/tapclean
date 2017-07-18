@@ -243,8 +243,7 @@ void pav_search(void)
                for(off=0,tcnt=0; tcnt<x+HDSZ+1; tcnt++)
                {
                   xtr=0;
-                  // attempt to fix checkbyte too if broken
-                  byt = pav_readbyte(sod+off, (tcnt == x + HDSZ) ? TRUE : FALSE);
+                  byt = pav_readbyte(sod+off, FALSE);
                   if(byt!=-1)
                      xtr = (byt&0xFF00)>>8;
                   off+=(8+xtr);  /* add size of previous byte to off. */
