@@ -18,6 +18,9 @@ v0.35
 	Improvement: "Wildload" scanner rewritten (Luigi)
 	New: Added support for "Visiload T7", used in "Puffy's Saga",
 	 supplied by Paul Jones (Luigi)
+	Improvement: The "Pavloda" scanner does not alter TAP data
+	 in memory any longer at the search stage: Melon Mania (Microload)
+	 does not fail checkbyte test of the file loaded at $3000 (Luigi)
 
 v0.34
 	Improvement: Rationalised usage and options' messages (Luigi)
