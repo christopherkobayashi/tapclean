@@ -11,6 +11,9 @@ use and this is set by just ONE byte in the CBM header (at offset $19) for each 
 In 'Final TAP' they will from now on be referred to as CHR loader T1, CHR loader T2 and 
 CHR loader T3, where Tn is ordered by threshold. 
 
+Update: Paul Jones (Ziggy72) found out that the tool "Mega-save" was used to save data to 
+tape using this format.
+
 --------------------------------------------------------------------------------
 
 CHR loader T1 (Previously known as CAULDRON LOADER and also KETTLE LOADER) 
@@ -46,7 +49,7 @@ CHR loader T2 (Previously known as HEWSON LOADER)
 --------------------------------------------------------------------------------
 
 
-Threshold = $016E (366) clock cycles (TAP byte = $2D).
+Threshold : $016E (366) clock cycles (TAP byte : $2D).
 Bit 0 : $26 
 Bit 1 : $36 
 
@@ -57,7 +60,7 @@ CHR loader T3 (Previously known as RAINBIRD LOADER)
 --------------------------------------------------------------------------------
 
 
-Threshold = $01FA (506) clock cycles (TAP byte = $3E).
+Threshold : $01FA (506) clock cycles (TAP byte : $3E).
 Bit 0 : $36
 Bit 1 : $47 
 
