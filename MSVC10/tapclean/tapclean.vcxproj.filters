@@ -237,9 +237,6 @@
     <ClCompile Include="..\..\src\scanners\creatures.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\crl.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\scanners\cult.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>

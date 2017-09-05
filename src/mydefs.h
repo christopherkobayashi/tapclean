@@ -222,7 +222,6 @@ enum {
 	TURBO220,
 	CSPARKS,
 	DIGITAL_DESIGN,
-	CRL,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -294,7 +293,6 @@ enum {
 	LID_EASYTAPE,
 	LID_CSPARKS,
 	LID_TRILOGIC,
-	LID_CRL
 };
 
 /*
@@ -463,7 +461,6 @@ enum {
 	nochuckie,
 	nocsparks,
 	nocreatures,
-	nocrl,
 	nocult,
 	nocyber,
 	noddesign,
