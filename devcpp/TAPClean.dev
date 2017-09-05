@@ -592,7 +592,7 @@ BuildCmd=
 [Unit58]
 FileName=..\src\scanners\visiload.c
 CompileCpp=0
-Folder=rewritten
+Folder=scanners
 Compile=1
 Link=1
 Priority=1000
