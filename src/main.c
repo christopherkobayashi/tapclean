@@ -611,11 +611,11 @@ static void display_usage(void)
 	 * whose contents are intended for more than one platform.
 	 */
 	printf("\nExperimental options (for advanced users):\n");
-	printf(" -16            Force Commodore 16 tape.\n");
-	printf(" -20            Force Commodore VIC 20 tape.\n");
-	printf(" -64            Force Commodore 64 tape (default).\n");
-	printf(" -ntsc          NTSC timing.\n");
-	printf(" -pal           PAL timing (default).\n");
+	printf(" -16            Force Commodore 16 tape\n");
+	printf(" -20            Force Commodore VIC 20 tape\n");
+	printf(" -64            Force Commodore 64 tape (default)\n");
+	printf(" -ntsc          NTSC timing\n");
+	printf(" -pal           PAL timing (default)\n");
 }
 
 /*
