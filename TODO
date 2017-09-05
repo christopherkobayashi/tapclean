@@ -103,7 +103,9 @@ Note: tasks are marked as per below. Completed tasks are still included here
    should at least be considered file trailer in order to be retained for 
    historical reasons (Luigi)
     Done.
- - readttbit already checks for TAP data boundaries so the following:
+ - The use of MAXTRAILER should be replaced by the use of an extra attribute 
+   of the "fmt_t" structure, e.g. "tmax" (Luigi)
+ - readttbit() already checks for TAP data boundaries so the following:
 	while (eof < tap.len - 1 &&
 			h++ < MAXTRAILER &&
 			readttbit(eof + 1, lp, sp, tp) >= 0)
