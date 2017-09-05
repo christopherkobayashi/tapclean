@@ -38,6 +38,7 @@ int readttbit(int, int, int, int);
 int readttbyte(int, int, int, int, int);
 int find_pilot(int, int);
 int find_pilot_bytes_ex(int, int, readbyteproc_t, int);
+void calculate_averages_in_pilot(int start, int end, int threshold, int *sp, int *lp);
 int load_tap(char *);
 int analyze(void);
 void report(void);

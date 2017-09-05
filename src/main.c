@@ -2578,6 +2578,31 @@ int find_pilot_bytes_ex(int pos, int fmt, readbyteproc_t readbyte_usr, int bitsi
 	return 0;
 }
 
+void calculate_averages_in_pilot(int start, int end, int threshold, int *sp, int *lp)
+{
+	int pos, b;
+	int sp_sum, sp_tot, lp_sum, lp_tot;
+
+
+	sp_sum = sp_tot = lp_sum = lp_tot = 0;
+	*sp = *lp = 0;
+
+	for (pos = start; pos <= end; pos++) {
+		b = tap.tmem[pos];
+		if (b > threshold) {
+			lp_sum += b;
+			lp_tot++;
+		} else {
+			sp_sum += b;
+			sp_tot++;
+		}
+	}
+	if (sp_tot)
+		*sp = sp_sum / sp_tot;
+	if (lp_tot)
+		*lp = lp_sum / lp_tot;
+}
+
 /*
  * Load the named tap file into buffer (tap.tmem[])
  *
