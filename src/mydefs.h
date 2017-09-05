@@ -34,14 +34,14 @@
 /* OS dependent slash */
 
 #ifdef WIN32
-#define SLASH   '\\'
+#define SLASH	'\\'
 #else
-#define SLASH   '/'
+#define SLASH	'/'
 #endif
 
-#define VERSION_STR "0.35-pre9"
-#define COPYRIGHT_STR "(C) 2006-2017 TC Team"
-#define BUILDER_STR     "ldf"
+#define VERSION_STR	"0.35"
+#define COPYRIGHT_STR	"(C) 2006-2017 TC Team"
+#define BUILDER_STR	"ldf"
 
 #define TRUE	1
 #define FALSE	0
@@ -49,7 +49,7 @@
 #ifndef MAXPATH
 #define MAXPATH	512
 #endif
-#define NUM_READ_ERRORS 100
+#define NUM_READ_ERRORS	100
 
 #define CLEANED_PREFIX	"clean."
 
