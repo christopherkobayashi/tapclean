@@ -360,7 +360,7 @@ void clean_files(void)
 		/* clean... threshold is unavailable... */
 		/* dont try and clean gaps or pauses! */
 
-		if (t > 2 && tp == NA) {
+		if (t > PAUSE && tp == NA) {
 			sprintf(lin, "\nCleaning %s tape block from $%04X to $%04X...", ft[t].name, s, e);
 			msgout(lin);
 
@@ -451,12 +451,12 @@ void clean_files(void)
 				/* note: pulses that match threshold are unaffected. */
 			}
 
-			e = blk[i]->p3;		/* move block end backwards */
+			e = blk[i]->p3;		/* move block end backwards, ready for the following cleaning code */
 		}
 
 		/* clean... (threshold IS available)... */
 
-		if (t > 2 && tp != NA) {
+		if (t > PAUSE && tp != NA) {
 			sprintf(lin, "\nCleaning %s tape block from $%04X to $%04X.", ft[t].name, s, e);
 			msgout(lin);
 
@@ -747,7 +747,7 @@ void standardize_pauses(void)
 
 		/* 2 data blocks with pause in the middle? */
 
-		if (b1 > 2 && b2 == PAUSE && b3 > 2) {
+		if (b1 > PAUSE && b2 == PAUSE && b3 > PAUSE) {
 			q = 0;
 
 			if (b1 == CBM_HEAD && b3 == CBM_DATA)
@@ -805,7 +805,7 @@ void fix_pilots(void)
 			b1 = blk[i]->lt;
 			b2 = blk[i + 1]->lt;
 
-			if (b1 == GAP && b2 > 2) {	/* we look for... GAP, Datafile. */
+			if (b1 == GAP && b2 > PAUSE) {	/* we look for... GAP, Datafile. */
 				b3 = 0;
 				if ((i - 1) >= 0)	/* check for a PAUSE before the GAP.. */
 					b3 = blk[i - 1]->lt;
