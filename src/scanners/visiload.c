@@ -204,10 +204,10 @@ void visiload_search(void)
    int b,att,ah,ab,en,pt,db1;
    int hd[200],hcnt;
    
+	int cbm_index = 1;
+
    if(!quiet)
       msgout("  Visiload");
-
-	int cbm_index = 1;
 
 	for (;;) {
 
