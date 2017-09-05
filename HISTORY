@@ -11,8 +11,6 @@ v0.35
 	 to extract loading parameters and supports multiple titles on the
 	 same tape image even when these use different initial loading
 	 parameters, including different threshold values (Luigi)
-	New: Added partial support for "CRL", used in "Vengaence",
-	 supplied by Pawel (Luigi)
 	New: Added support for "Visiload T6", used in "Spindizzy 64",
 	 supplied by Paul Jones (Luigi)
 	Improvement: "Wildload" scanner rewritten (Luigi)
