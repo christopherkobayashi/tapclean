@@ -119,6 +119,10 @@ Note: tasks are marked as per below. Completed tasks are still included here
 		h++;
 	}
    (Luigi)
+ - The generic sync sequence code, found e.g. in wildload.c, can be simplified 
+   so that it doesn't use an array of expected values but just calculates the 
+   n-th value based on the first sync byte and the n-th position, as it is 
+   done in chr.c (Luigi)
  - The report is saved in a report buffer and then written to file. As the 
    buffer has a fixed size, should we instead just write to file directly
    instead of buffering the report in memory? (Luigi)
