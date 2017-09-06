@@ -170,7 +170,7 @@ void GREMLIN_F1_search (void)
 				continue;
 
 			/* Valid sync found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Mark start of current block */
 			current_sod = sod;
@@ -260,7 +260,7 @@ void GREMLIN_F1_search (void)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}
@@ -318,7 +318,7 @@ int GREMLIN_F1_describe (int row)
 	do {
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0; i < HEADERSIZE; i++)
-			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+			hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 		/* Extract current sub-block ID, load location, and size */
 		current_id = hd[BLOCKIDOFFSET];

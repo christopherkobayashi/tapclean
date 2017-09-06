@@ -387,7 +387,7 @@ void enigma_search(void)
 				continue;
 
 			/* Valid sync found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			if (s == 0) {
 				int b;

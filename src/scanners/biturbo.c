@@ -121,7 +121,7 @@ void biturbo_search (void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Now we try to retrieve the Biturbo variables from the corresponding CBM
 			   Data block ('FIRST' instance).
@@ -203,7 +203,7 @@ void biturbo_search (void)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}

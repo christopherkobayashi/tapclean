@@ -8,6 +8,8 @@ Entries are of the following types (since release 0.21):
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
+	Code quality: Implemented a number of rationalisations across the
+	 board (Luigi)
 
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order

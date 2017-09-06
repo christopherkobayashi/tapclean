@@ -121,7 +121,7 @@ void amaction_search (void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header */
 			for (h = 0; h < HEADERSIZE + MAXFILENAME; h++) {
@@ -175,7 +175,7 @@ void amaction_search (void)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}
@@ -197,13 +197,13 @@ int amaction_describe (int row)
 	lp = ft[THISLOADER].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-	s = blk[row] -> p2;
+	s = blk[row]->p2;
 
 	fname = blk[row]->xi;
 
 	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE + fname; i++)
-		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 	/* Copy filename */
 	for (i = 0; i < fname; i++)

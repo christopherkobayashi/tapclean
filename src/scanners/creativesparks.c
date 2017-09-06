@@ -148,7 +148,7 @@ void creativesparks_search (void)
 			//printf ("\nSync train found @ %d", i);
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Point to the first pulse of the last checkbyte (that's final) */
 			/* Note: - 1 because "bso" also includes the last checkbyte! */
@@ -171,7 +171,7 @@ void creativesparks_search (void)
 				return;	/* We are done here */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}

@@ -157,7 +157,7 @@ void powerload_search (void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Compute size */
 			x = e - s + 1;
@@ -274,7 +274,7 @@ void powerload_search (void)
 			}
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}

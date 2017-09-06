@@ -125,7 +125,7 @@ void ar_search (void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header */
 			for (h = 0; h < HEADERSIZE; h++) {
@@ -189,7 +189,7 @@ void ar_search (void)
 			addblockdef(THISLOADER, sof, sod, sod + (HEADERSIZE - 1) * BITSINABYTE, sod + (HEADERSIZE - 1) * BITSINABYTE + BITSINABYTE - 1, 0);
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}

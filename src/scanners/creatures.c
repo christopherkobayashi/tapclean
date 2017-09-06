@@ -145,7 +145,7 @@ void creatures_search (void)
 				continue;
 
 			/* Valid sync found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header */
 			for (h = 0; h < HEADERSIZE; h++) {
@@ -194,7 +194,7 @@ void creatures_search (void)
 			}
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}

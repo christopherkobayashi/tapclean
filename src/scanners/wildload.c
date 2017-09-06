@@ -110,7 +110,7 @@ void wild_search(void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header */
 			for (h = 0; h < HEADERSIZE; h++) {
@@ -206,11 +206,11 @@ int wild_describe(int row)
 	if (blk[row]->lt == WILD) {
 
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-		s = blk[row] -> p2;
+		s = blk[row]->p2;
 
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0; i < HEADERSIZE; i++)
-			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+			hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 		/* Compute/read C64 memory location for load/end address, and read data size */
 		blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);	/* Note: data loads backwards */
@@ -281,11 +281,11 @@ int wild_describe(int row)
 		strcat(info, lin);
 
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-		s = blk[row] -> p2;
+		s = blk[row]->p2;
 
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0; i < HEADERSIZE; i++)
-			hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
+			hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 		/* Compute/read C64 memory location for load/end address, and read data size */
 		blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);	/* Note: data loads backwards */

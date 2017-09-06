@@ -225,7 +225,7 @@ int ocean_describe(int row)
 
    s= blk[row]->p2;
    for(i=0;i<2; i++)
-      hd[i]= readttbyte(s+(i*8), ft[OCEAN_F1].lp, ft[OCEAN_F1].sp, ft[OCEAN_F1].tp, ft[OCEAN_F1].en);
+      hd[i] = readttbyte(s+(i*8), ft[OCEAN_F1].lp, ft[OCEAN_F1].sp, ft[OCEAN_F1].tp, ft[OCEAN_F1].en);
 
    blk[row]->cs = (int)hd[0]<<8;
    blk[row]->ce = blk[row]->cs + 255;

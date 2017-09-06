@@ -67,8 +67,8 @@ enum {
 #define D0_LOADOFFSETL	0	/* load location (LSB) offset inside header */
 #define D0_ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define D0_ENDOFFSETL	2	/* end  location (LSB) offset inside header */
-#define D0_EXECOFFSETH	5	/* start location (MSB) offset inside header */
-#define D0_EXECOFFSETL	4	/* start location (LSB) offset inside header */
+#define D0_EXECOFFSETH	5	/* execution address (MSB) offset inside header */
+#define D0_EXECOFFSETL	4	/* execution address (LSB) offset inside header */
 
 /* Data file's sentinel for type 0xd3 */
 #define D3_SENTINELSIZE	10
@@ -227,7 +227,7 @@ void msx_search (int variant)
 					state = STATE_SEARCH_DATA;
 				}
 			} else {
-				if (eop < 0)
+				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 					i = (-eop);
 			}
 		} else {
@@ -398,7 +398,7 @@ void msx_search (int variant)
 						break;
 				}
 			} else {
-				if (eop < 0)
+				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 					i = (-eop);
 			}
 		}
@@ -422,12 +422,12 @@ int msx_describe (int row)
 	lt = blk[row]->lt;
 	if (lt == MSX_HEAD || lt == MSX_HEAD_FAST) {
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-		s = blk[row] -> p2;
+		s = blk[row]->p2;
 
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0, pcount = 0; i < H_HEADERSIZE; i++) {
 			b = msx_read_byte(s + pcount, lt);
-			hd[i]= b & 0xff;
+			hd[i] = b & 0xff;
 			pcount += b >> 8;
 		}
 
@@ -473,7 +473,7 @@ int msx_describe (int row)
 		rd_err = 0;
 	} else {
 		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-		s = blk[row] -> p2;
+		s = blk[row]->p2;
 
 		/* Extract data */
 		rd_err = 0;

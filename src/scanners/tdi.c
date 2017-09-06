@@ -116,7 +116,7 @@ int tdi_describe(int row)
    /* decode header (note : could be either type)... */
    s= blk[row]->p2;
    for(i=0; i<hdsz; i++)
-      hd[i]= readttbyte(s+(i*8), ft[TDI_F1].lp, ft[TDI_F1].sp, ft[TDI_F1].tp, ft[TDI_F1].en);
+      hd[i] = readttbyte(s+(i*8), ft[TDI_F1].lp, ft[TDI_F1].sp, ft[TDI_F1].tp, ft[TDI_F1].en);
 
    blk[row]->cs= 0;
    blk[row]->cx= hd[0]+(hd[1]<<8);

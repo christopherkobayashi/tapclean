@@ -92,7 +92,7 @@ int oceannew1t2_describe(int row)
    /* decode the header to get load address etc... */
    s= blk[row]->p2;
    for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), ft[OCNEW1_T2].lp, ft[OCNEW1_T2].sp, ft[OCNEW1_T2].tp, ft[OCNEW1_T2].en);
+      hd[i] = readttbyte(s+(i*8), ft[OCNEW1_T2].lp, ft[OCNEW1_T2].sp, ft[OCNEW1_T2].tp, ft[OCNEW1_T2].en);
 
    blk[row]->cs= hd[1]+(hd[2]<<8);
    blk[row]->ce= hd[3]+(hd[4]<<8)-1;

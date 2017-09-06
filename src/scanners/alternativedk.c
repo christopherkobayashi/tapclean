@@ -176,7 +176,7 @@ void alternativedk_search (void)
 					i = eof;	/* Search for further files starting from the end of this one */
 
 			} else {
-				if (eop < 0)
+				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 					i = (-eop);
 			}
 		}

@@ -139,7 +139,7 @@ void turrican_search(void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read file type from block header */
 			ftype = readttbyte(sod, lp, sp, tp, en);
@@ -238,7 +238,7 @@ void turrican_search(void)
 					continue;
 			}
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}
@@ -259,7 +259,7 @@ int turrican_describe(int row)
 	lp = ft[THISLOADER].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-	s = blk[row] -> p2;
+	s = blk[row]->p2;
 
 	/* Compute pilot & trailer lengths */
 

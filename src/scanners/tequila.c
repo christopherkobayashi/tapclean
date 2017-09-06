@@ -119,7 +119,7 @@ void tequila_search(void)
 				continue;
 
 			/* Valid sync train found, mark start of data */
-			sod = i + BITSINABYTE * SYNCSEQSIZE;
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header (force LSbF for this variant) */
 			for (h = 0; h < HEADERSIZE; h++) {
@@ -177,7 +177,7 @@ void tequila_search(void)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}
@@ -199,11 +199,11 @@ int tequila_describe(int row)
 	lp = ft[THISLOADER].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
-	s = blk[row] -> p2;
+	s = blk[row]->p2;
 
 	/* Read header (Force LSbF) (it's safe to read it here for it was already decoded during the search stage) */
 	for (i = 0; i < HEADERSIZE; i++)
-		hd[i]= readttbyte(s + i * BITSINABYTE, lp, sp, tp, LSbF);
+		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, LSbF);
 
 	/* Endianness is MSbF up to File ID so we decode File ID on its own */
 	hd_id = readttbyte(s, lp, sp, tp, en);

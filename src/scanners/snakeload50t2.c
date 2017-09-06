@@ -104,7 +104,7 @@ int snakeload50t2_describe(int row)
    /* decode the header to get load address etc... */
    s=blk[row]->p2;
    for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), ft[SNAKE50_T2].lp, ft[SNAKE50_T2].sp, ft[SNAKE50_T2].tp, ft[SNAKE50_T2].en);
+      hd[i] = readttbyte(s+(i*8), ft[SNAKE50_T2].lp, ft[SNAKE50_T2].sp, ft[SNAKE50_T2].tp, ft[SNAKE50_T2].en);
 
    /* get start/end addresses and size */
    blk[row]->cs = hd[6]+(hd[7]<<8);

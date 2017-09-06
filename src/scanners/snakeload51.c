@@ -107,7 +107,7 @@ int snakeload51_describe(int row)
    /* decode the header to get load address etc... */
    s=blk[row]->p2;
    for(i=0; i<HDSZ; i++)
-      hd[i]= readttbyte(s+(i*8), ft[SNAKE51].lp, ft[SNAKE51].sp, ft[SNAKE51].tp, ft[SNAKE51].en);
+      hd[i] = readttbyte(s+(i*8), ft[SNAKE51].lp, ft[SNAKE51].sp, ft[SNAKE51].tp, ft[SNAKE51].en);
 
    blk[row]->cs = hd[12]+(hd[11]<<8);
    blk[row]->ce = hd[10]+(hd[9]<<8)-1;

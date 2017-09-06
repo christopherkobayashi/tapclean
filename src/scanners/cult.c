@@ -183,7 +183,7 @@ void cult_search (void)
 						         so we should just "return" here. */
 
 		} else {
-			if (eop < 0)
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
 	}
