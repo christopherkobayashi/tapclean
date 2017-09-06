@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.35"
+#define VERSION_STR	"0.36-pre1"
 #define COPYRIGHT_STR	"(C) 2006-2017 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -125,9 +125,9 @@ enum {
 	OCEAN_F1,
 	OCEAN_F2,
 	OCEAN_F3,
-	CHR_T1,
-	CHR_T2,
-	CHR_T3,
+	MEGASAVE_T1,
+	MEGASAVE_T2,
+	MEGASAVE_T3,
 	RASTER,
 	CYBER_F1,
 	CYBER_F2,
@@ -238,7 +238,7 @@ enum {
 	LID_FREE=1,
 	LID_ODE,
 	LID_BLEEP,
-	LID_CHR,
+	LID_MEGASAVE,
 	LID_BURN,
 	LID_WILD,
 	LID_USG,
@@ -457,7 +457,6 @@ enum {
 	nobleep,
 	noburner,
 	noburnervar,
-	nochr,
 	nochuckie,
 	nocsparks,
 	nocreatures,
@@ -479,6 +478,7 @@ enum {
 	nohitec,
 	noik,
 	nojet,
+	nomegasave,
 	nomicro,
 	nomsx,
 	nonova,

@@ -1,34 +1,43 @@
 /*
- * chr.c (CHR Tape)
+ * chr.c (rewritten by Luigi Di Fraia, Sep 2017)
  *
- * Part of project "Final TAP". 
+ * Handles all 3 threshold types: Mega-Save Mega-Speed, Ultra-Speed, Hyper-Speed
+ * (aka. Cauldron, Hewson, Rainbird)
  *
- * A Commodore 64 tape remastering and data extraction utility.
+ * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * (C) 2001-2006 Stewart Wilson, Subchrist Software.
+ * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
  *
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 2 of the License, or (at your option) any later 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
- *
- * Notes...
- *
- * Handles all 3 threshold types, CHR T1, CHR T2, CHR T3
- * (aka. Cauldron, Hewson, Rainbird)
  *
  */
 
+/*
+ * Status: Beta
+ *
+ * CBM inspection needed: No
+ * Single on tape: No
+ * Sync: Sequence (bytes)
+ * Header: Yes
+ * Data: Continuous
+ * Checksum: Yes
+ * Post-data: No
+ * Trailer: No
+ * Trailer homogeneous: N/A
+ */
 
 #include "../mydefs.h"
 #include "../main.h"
@@ -37,26 +46,50 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define PREPILOTVALUE	0x20
-#define HDSZ 10
+#define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
+#define PREPILOTVALUE	0x20	/* value found before pilot */
+
+#define SYNCSEQSIZE	156	/* amount of sync bytes */
+
+#define HEADERSIZE	10	/* size of block header */
+
+#define LOADOFFSETH	1	/* load location (MSB) offset inside header */
+#define LOADOFFSETL	0	/* load location (LSB) offset inside header */
+#define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
+#define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
+#define EXECOFFSETH	5	/* execution address (MSB) offset inside header */
+#define EXECOFFSETL	4	/* execution address (LSB) offset inside header */
+
+#define EXEFLAG1OFFSET	6	/* execution flag #1 offset inside header */
+#define EXEFLAG2OFFSET	7	/* execution flag #2 offset inside header */
 
 void chr_search(void)
 {
-	int i, j, z, sof, sod, eod, eof;
-	int x, hd[HDSZ];
-	int en, tp, sp, lp, sv, ld, type;
+	int i, h;			/* counters */
+	int sof, sod, eod, eof, eop;	/* file offsets */
+	int hd[HEADERSIZE];		/* buffer to store block header info */
+
+	int en, tp, sp, lp, sv;		/* encoding parameters */
+
+	unsigned int s, e;		/* block locations referred to C64 memory */
+	unsigned int x; 		/* block size */
+
+	int ld, type;
+
+	int xinfo;			/* extra info used in addblockdef() */
+
 
 	for (type = 1; type <= 3; type++) {
 		switch (type) {
 			case 1:
-				ld = CHR_T1;	/* Cauldron */
+				ld = MEGASAVE_T1;	/* Cauldron */
 				break;
 			case 2:
-				ld = CHR_T2;	/* Hewson */
+				ld = MEGASAVE_T2;	/* Hewson titles */
 				break;
 			default:
-				ld = CHR_T3;	/* Rainbird */
+				ld = MEGASAVE_T3;	/* Rainbird titles */
 		}
 
 		en = ft[ld].en;
@@ -66,59 +99,79 @@ void chr_search(void)
 		sv = ft[ld].sv;
 
 		if (!quiet) {
-			sprintf(lin, "  CHR Loader T%d", type);
+			sprintf(lin, "  Mega-Save T%d", type);
 			msgout(lin);
 		}
 
-		for (i = 20; i < tap.len - 100; i++) {
+		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+			eop = find_pilot(i, ld);
 
-			if ((z = find_pilot(i, ld)) > 0) {
+			if (eop > 0) {
+				/* Valid pilot found, mark start of file */
 				sof = i;
-				i = z;
+				i = eop;
 
-				if (readttbyte(i, lp, sp, tp, en) == sv) {
-
-					/* look for sequence $64...$FF */
-
-					j = 0;
-					while (readttbyte(i + (j * 8), lp, sp, tp, en) == sv + j)
-						j++;
-
-					if (j != 156)	/* whole sequence (156 bytes) exists?  */
-						continue;
-
-					sod = i + (157 * 8);
-
-					/* now just just trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
-
-					while (readttbyte(sof - 8, lp, sp, tp, en) == PREPILOTVALUE)
-						sof -= 8;
-
-					/* to find the last pulse, we look in the header for the start/end addresses... */
-
-					for (j = 0; j < HDSZ; j++) {	/* decode the header...  */
-						hd[j] = readttbyte(sod + (j * 8), lp, sp, tp, en);
-						if (hd[j] == -1)
-							break;
-					}
-					if (j != HDSZ)
-						continue;
-
-					/* find block length */
-
-					x = (hd[2] + (hd[3] << 8)) - (hd[0] + (hd[1] << 8));	/* end-start */
-
-					if (x <= 0)
-						continue;
-
-					eod = sod + (x * 8) + 80;
-					eof = eod + 7;
-					addblockdef(ld, sof, sod, eod, eof, 0);
-					i = eof;	/* optimize search  */
+				/* Check sync train ($64 up to to $FF) */
+				for (h = 0; h < SYNCSEQSIZE; h++) {
+					if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sv + h)
+						break;
 				}
+				if (h != SYNCSEQSIZE)
+					continue;
+
+				/* Plausibility check: a $01 must follow the sync sequence */
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != 0x01)
+					continue;
+
+				/* Valid sync train found, mark start of data after the byte following the sync sequence */
+				sod = i + SYNCSEQSIZE * BITSINABYTE + BITSINABYTE;
+
+				/* Read header */
+				for (h = 0; h < HEADERSIZE; h++) {
+					hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+					if (hd[h] == -1)
+						break;
+				}
+				if (h != HEADERSIZE)
+					continue;
+
+				/* Extract load and end locations */
+				s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+				e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+				/* Prevent int wraparound when subtracting 1 from end location
+				   to get the location of the last loaded byte */
+				if (e == 0)
+					e = 0xFFFF;
+				else
+					e--;
+
+				/* Plausibility check */
+				if (e < s)
+					continue;
+
+				/* Compute size */
+				x = e - s + 1;
+
+				/* Point to the first pulse of the checkbyte (that's final) */
+				eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+
+				/* Point to the last pulse of the checkbyte */
+				eof = eod + BITSINABYTE - 1;
+
+				/* Trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
+				xinfo = 0;
+				while (readttbyte(sof - BITSINABYTE, lp, sp, tp, en) == PREPILOTVALUE) {
+					sof -= BITSINABYTE;
+					xinfo++;
+				}
+
+				if (addblockdef(ld, sof, sod, eod, eof, xinfo) >= 0)
+					i = eof;	/* Search for further files starting from the end of this one */
+
 			} else {
-				if (z < 0)	/* find_pilot failed (too few/many), set i to failure point. */
-					i = (-z);
+				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
+					i = (-eop);
 			}
 		}
 	}
@@ -126,68 +179,114 @@ void chr_search(void)
 
 int chr_describe(int row)
 {
-	int i, s, b, hd[HDSZ], rd_err, cb;
+	int i, s;
+	int hd[HEADERSIZE];
 	int en, tp, sp, lp;
+	int cb;
 
-	en = ft[CHR_T1].en;
-  
-	if (blk[row]->lt == CHR_T1) {
-		sp = ft[CHR_T1].sp;
-		lp = ft[CHR_T1].lp;
-		tp = ft[CHR_T1].tp;
-	}
-	if (blk[row]->lt == CHR_T2) {
-		sp = ft[CHR_T2].sp;
-		lp = ft[CHR_T2].lp;
-		tp = ft[CHR_T2].tp;
-	}
-	if (blk[row]->lt == CHR_T3) {
-		sp = ft[CHR_T3].sp;
-		lp = ft[CHR_T3].lp;
-		tp = ft[CHR_T3].tp;
-	}
+	int b, rd_err;
 
-	/* decode the header... */
 
+	en = ft[blk[row]->lt].en;
+	tp = ft[blk[row]->lt].tp;
+	sp = ft[blk[row]->lt].sp;
+	lp = ft[blk[row]->lt].lp;
+
+	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row]->p2;
-	for (i = 0; i < HDSZ; i++)
-	hd[i] = readttbyte(s + (i * 8), lp, sp, tp, en);
 
-	blk[row]->cs = hd[0] + (hd[1] << 8);
-	blk[row]->ce = hd[2] + (hd[3] << 8) - 1;
-	blk[row]->cx = (blk[row]->ce - blk[row]->cs) + 1;
+	/* Read header (it's safe to read it here for it was already decoded during the search stage) */
+	for (i = 0; i < HEADERSIZE; i++)
+		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	/* get pilot & trailer lengths */
+	/* Extract load and end locations */
+	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+	blk[row]->ce = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) >> 3;
-	blk[row]->trail_len = (blk[row]->p4 - blk[row]->p3 - 7) >> 3;
+	/* Prevent int wraparound when subtracting 1 from end location
+	   to get the location of the last loaded byte */
+	if (blk[row]->ce == 0)
+		blk[row]->ce = 0xFFFF;
+	else
+		(blk[row]->ce)--;
 
-	/* extract data and test checksum... */
+	/* Compute size */
+	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
+	/* Compute pilot & trailer lengths */
+
+	/* pilot is in bytes... */
+	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
+
+	/* ... trailer in pulses */
+	/* Note: No trailer has been documented, but we are not pretending it
+	         here, just checking for it is future-proof */
+	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
+
+	/* if there IS pilot then disclude the sync sequence */
+	if (blk[row]->pilot_len > 0)
+		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Exclude pre-pilot bytes from the count too */
+	blk[row]->pilot_len -= blk[row]->xi;
+
+	/* Extract data and test checksum... */
 	rd_err = 0;
 	cb = 0;
-	s = (blk[row]->p2) + (HDSZ * 8);
+
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
+
 	blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
-   
+
 	for (i = 0; i < blk[row]->cx; i++) {
-		b = readttbyte(s + (i * 8), lp, sp, tp, en);
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 		cb ^= b;
-		if (b == -1) {
+
+		if (b != -1) {
+			blk[row]->dd[i] = b;
+		} else {
+			blk[row]->dd[i] = 0x69;  /* error code */
 			rd_err++;
-			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * 8), i + 2);
+
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
 			strcat(info, lin);
 		}
-		blk[row]->dd[i] = b;
 	}
-	b = readttbyte(s + (i * 8), lp, sp, tp, en);
+
+	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+	if (b == -1) {
+		/* Even if not within data, we cannot validate data reliably if
+		   checksum is unreadable, so that increase read errors */
+		rd_err++;
+
+		/* for experts only */
+		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
+		strcat(info, lin);
+	}
+
+	sprintf(lin, "\n - Pre-pilot byte count : %d", blk[row]->xi);
+	strcat(info, lin);
+	sprintf(lin, "\n - Re-execute loader : %s", hd[EXEFLAG1OFFSET] ? "Yes" : "No");
+	strcat(info, lin);
+	if (!hd[EXEFLAG1OFFSET]) {
+		if (hd[EXEFLAG2OFFSET]) {
+			unsigned int exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
+
+			sprintf(lin, "\n - Execution by : JMP $%04X (SYS %d)", exec, exec);
+			strcat(info, lin);
+		} else {
+			sprintf(lin, "\n - Execution by : BASIC RUN");
+			strcat(info, lin);
+		}
+	}
 
 	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = b;
+	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
 
-	return 0;
+	return(rd_err);
 }
-

@@ -6,6 +6,9 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for additional loaders
 
+v0.36
+	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
+
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order
 	 to extract loading parameters and supports multiple titles on the

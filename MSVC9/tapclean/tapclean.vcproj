@@ -392,10 +392,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\chr.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\cyberload_f1.c"
 					>
 				</File>
@@ -673,6 +669,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\burner.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\chr.c"
 					>
 				</File>
 				<File

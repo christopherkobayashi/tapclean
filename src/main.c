@@ -91,7 +91,6 @@ struct ldrswt_t ldrswt[] = {
 	{"Bleepload"			,"bleep"	,FALSE},
 	{"Burner"			,"burner"	,FALSE},
 	{"Burner Variant"		,"burnervar"	,FALSE},
-	{"CHR"				,"chr"		,FALSE},
 	{"Chuckie Egg"			,"chuckie"	,FALSE},
 	{"Creative Sparks"		,"csparks"	,FALSE},
 	{"Creatures"			,"creatures"	,FALSE},
@@ -113,6 +112,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Hi-Tec"			,"hitec"	,FALSE},
 	{"IK"				,"ik"		,FALSE},
 	{"Jetload"			,"jet"		,FALSE},
+	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"MSX"				,"msx"		,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
@@ -224,9 +224,9 @@ struct fmt_t ft[] = {
 	{"OCEAN/IMAGINE F1"	,LSbF, 0x3B, 0x24, NA,   0x56, 0,    1,    3000, 13000, CSNO},
 	{"OCEAN/IMAGINE F2"	,LSbF, 0x3B, 0x24, NA,   0x56, 0,    1,    3000, 13000, CSNO},
 	{"OCEAN/IMAGINE F3"	,LSbF, 0x3B, 0x24, NA,   0x56, 0,    1,    3000, 13000, CSNO},
-	{"CHR TAPE T1"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x63, 0x64, 50,   NA,    CSYES},
-	{"CHR TAPE T2"		,MSbF, 0x2D, 0x26, NA,   0x36, 0x63, 0x64, 50,   NA,    CSYES},
-	{"CHR TAPE T3"		,MSbF, 0x3E, 0x36, NA,   0x47, 0x63, 0x64, 50,   NA,    CSYES},
+	{"MEGA-SAVE T1"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x63, 0x64, 50,   NA,    CSYES},
+	{"MEGA-SAVE T2"		,MSbF, 0x2D, 0x26, NA,   0x36, 0x63, 0x64, 50,   NA,    CSYES},
+	{"MEGA-SAVE T3"		,MSbF, 0x3E, 0x36, NA,   0x47, 0x63, 0x64, 50,   NA,    CSYES},
 	{"RASTERLOAD"		,MSbF, 0x3F, 0x26, NA,   0x58, 0x80, 0xFF, 20,   NA,    CSYES},
 	{"CYBERLOAD F1"		,MSbF, VV,   VV,   VV,   VV,   VV,   VV,   50,   NA,    CSNO},
 	{"CYBERLOAD F2"		,MSbF, VV,   VV,   VV,   VV,   VV,   VV,   20,   NA,    CSNO},
@@ -365,7 +365,7 @@ const char knam[][32] = {
 	{"Freeload (or clone)"},
 	{"Odeload"},
 	{"Bleepload"},
-	{"CHR loader"},
+	{"Mega-Save"},
 	{"Burner"},
 	{"Wildload"},
 	{"US Gold loader"},
@@ -931,7 +931,7 @@ static void search_tap(void)
 			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (tap.cbmid == LID_CHR 	&& ldrswt[nochr		].exclude == FALSE && !database_is_full)
+			if (tap.cbmid == LID_MEGASAVE 	&& ldrswt[nomegasave	].exclude == FALSE && !database_is_full)
 				chr_search();
 
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
@@ -1159,7 +1159,7 @@ static void search_tap(void)
 			if (ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
 
-			if (ldrswt[nochr	].exclude == FALSE && !database_is_full && !aborted)
+			if (ldrswt[nomegasave	].exclude == FALSE && !database_is_full && !aborted)
 				chr_search();
 
 			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
@@ -1434,11 +1434,11 @@ static void describe_file(int row)
 					break;
 		case CULT:		cult_describe(row);
 					break;
-		case CHR_T1:		chr_describe(row);
+		case MEGASAVE_T1:	chr_describe(row);
 					break;
-		case CHR_T2:		chr_describe(row);
+		case MEGASAVE_T2:	chr_describe(row);
 					break;
-		case CHR_T3:		chr_describe(row);
+		case MEGASAVE_T3:	chr_describe(row);
 					break;
 		case NOVA:		nova_describe(row);
 					break;

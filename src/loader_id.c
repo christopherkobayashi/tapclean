@@ -92,7 +92,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xE24E270C, LID_BLEEP},
 		{0xCD8D92EE, LID_BLEEP},
 
-		{0x366784C8, LID_CHR},
+		{0x366784C8, LID_MEGASAVE},
 
 		{0xD09BF46F, LID_BURN},
 		{0x8D6E30E7, LID_BURN},
