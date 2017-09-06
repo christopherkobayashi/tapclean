@@ -123,7 +123,7 @@ void chr_search(void)
 				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != 0x01)
 					continue;
 
-				/* Valid sync train found, mark start of data after the byte following the sync sequence */
+				/* Valid post-sync value found, mark start of data after */
 				sod = i + SYNCSEQSIZE * BITSINABYTE + BITSINABYTE;
 
 				/* Read header */
@@ -226,6 +226,9 @@ int chr_describe(int row)
 	/* if there IS pilot then disclude the sync sequence */
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Exclude the post-sync byte from the count too */
+	blk[row]->pilot_len -= 1;
 
 	/* Exclude pre-pilot bytes from the count too */
 	blk[row]->pilot_len -= blk[row]->xi;
