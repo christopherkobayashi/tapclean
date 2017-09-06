@@ -227,9 +227,8 @@ void msx_search (int variant)
 					state = STATE_SEARCH_DATA;
 				}
 			} else {
-				if (eop < 0) {
+				if (eop < 0)
 					i = (-eop);
-				}
 			}
 		} else {
 			lt = variant == 0 ? MSX_DATA : MSX_DATA_FAST;
@@ -399,9 +398,8 @@ void msx_search (int variant)
 						break;
 				}
 			} else {
-				if (eop < 0) {
+				if (eop < 0)
 					i = (-eop);
-				}
 			}
 		}
 	}
