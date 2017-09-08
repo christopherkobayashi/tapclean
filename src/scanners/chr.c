@@ -119,11 +119,11 @@ void chr_search(void)
 				if (h != SYNCSEQSIZE)
 					continue;
 
-				/* Plausibility check: a $01 must follow the sync sequence */
-				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != 0x01)
+				/* Plausibility check: a non-zero value is expected after the sync sequence */
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) == 0x00)
 					continue;
 
-				/* Valid post-sync value found, mark start of data after */
+				/* Valid post-sync value found, mark start of data */
 				sod = i + SYNCSEQSIZE * BITSINABYTE + BITSINABYTE;
 
 				/* Read header */
