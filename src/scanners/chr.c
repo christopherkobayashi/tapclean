@@ -271,8 +271,17 @@ int chr_describe(int row)
 		strcat(info, lin);
 	}
 
+	blk[row]->cs_exp = cb & 0xFF;
+	blk[row]->cs_act = b  & 0xFF;
+	blk[row]->rd_err = rd_err;
+
 	sprintf(lin, "\n - Pre-pilot byte count : %d", blk[row]->xi);
 	strcat(info, lin);
+
+	b = readttbyte(blk[row]->p2 - BITSINABYTE, lp, sp, tp, en);
+	sprintf(lin, "\n - Post-sync value : $%02X", b);
+	strcat(info, lin);
+
 	sprintf(lin, "\n - Re-execute loader : %s", hd[EXEFLAG1OFFSET] ? "Yes" : "No");
 	strcat(info, lin);
 	if (!hd[EXEFLAG1OFFSET]) {
@@ -286,10 +295,6 @@ int chr_describe(int row)
 			strcat(info, lin);
 		}
 	}
-
-	blk[row]->cs_exp = cb & 0xFF;
-	blk[row]->cs_act = b  & 0xFF;
-	blk[row]->rd_err = rd_err;
 
 	return(rd_err);
 }
