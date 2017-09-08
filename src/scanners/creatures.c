@@ -60,7 +60,7 @@
 #define FILEIDOFFSET	0	/* file ID offset inside header */
 
 struct creatures_level_table_s {
-	unsigned char id;	/* filename */
+	unsigned char id;	/* file ID */
 	unsigned int s;		/* load address of block */
 	unsigned int e;		/* end address + 1 */
 	int checkbyte;		/* pre-calculated XOR checkbytes (not part of the game/loader) */
