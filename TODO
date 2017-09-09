@@ -1,8 +1,11 @@
-Note: tasks are marked as per below. Completed tasks are still included here
+Note: tasks are marked as per below. Completed tasks are still included here 
       as there's often a dependency on them within tasks not yet completed.
+      Some older tasks (at the bottom) might not be applicable any longer but 
+      are kept here for reference.
 
- o = Task completed
  - = Task planned
+ ~ = Task in progress
+ o = Task completed
 
  o The "Visiload" scanner should extract initial loader parameters from the CBM 
    Data block as these were configurable at mastering time, as shown by early 
@@ -47,12 +50,12 @@ Note: tasks are marked as per below. Completed tasks are still included here
  - "Cult tape" should be renamed to "Freeze Machine tape" (Ziggy72)
  - "FF Tape" stands for "Freeze Frame" (SLC) which later became "Freeze Machine" 
    (Ziggy72)
- - "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, 
+ o "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, 
    (C) 1984 Choice, each supported type is referred to as:
     CHR T1 : Mega-Speed  x9 (fastest)
     CHR T2 : Ultra-Speed x7 (medium)
     CHR T3 : Hyper-Speed x5 (slowest)
-   (Ziggy72)
+   The scanner should be renamed (Ziggy72)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - The code that starts with:
@@ -96,8 +99,8 @@ Note: tasks are marked as per below. Completed tasks are still included here
  - The size of the trailing silence should be overridable as "Hunchback at the 
    Olympics" does not properly execute if the tape runs out before the unpacker 
    has finished processing all data (Luigi - reported by Peepo and Ziggy72)
- o Burner uses a hardcoded execution address and a hardcoded count of files to 
-   load from tape, as opposite to its predecessor, the Mastertronic variant.
+ o "Burner" uses a hardcoded execution address and a hardcoded count of files 
+   to load from tape, as opposite to its predecessor, the Mastertronic variant.
    However, "Hunchback at the Olympics" shows 15 bits post the data block, 
    which might have been written by the masterer as dummy information that 
    should at least be considered file trailer in order to be retained for 
@@ -134,13 +137,13 @@ Note: tasks are marked as per below. Completed tasks are still included here
  - Rewrite: burner.c (requires some decrypting), chr.c, 
    firebird.c, freeload.c, hitec.c, hitload.c, ikloader.c, 
    jetload.c, microload.c, oceannew1t*.c, oceannew2.c, rasterload.c, snake*.c, 
-   turbotape.c, usgold.c, virgin.c (check size of pilots/trailers as well on 
-   tapes using each of these) (Luigi)
+   turbotape.c, usgold.c, virgin.c (also document the size of pilots/trailers 
+   in tapes using each of these) (Luigi)
  - There doesn't appear to be any reason for abandoning search when nova_f1 
    block header contains broken bytes. Proceed with validation and further 
    scanning (Luigi)
- ~ The block header validation recently (0.27) added to Freeload and Ocean New 
-   scanners by fabbo should be added to old scanners, wherever appropriate 
+ ~ The block header validation recently (0.27) added to "Freeload" and "Ocean 
+   New" scanners by fabbo should be added to old scanners, wherever appropriate 
    (Luigi)
     Done for most scanners. TODO: superpav.c, supertape.c. Leave wildload.c as 
     it is (chain of files without individual pilot+sync: if one is broken we 
@@ -175,8 +178,8 @@ Note: tasks are marked as per below. Completed tasks are still included here
  - It must be responsibility of the cleaning process to reconstruct the last 
    bit of the last byte of pattern found in Ash+Dave trailer, 0x77, not of the 
    scanner. Move the reconstruction there. (Luigi)
- o Gremlin F2 should be split in T1 (Krakout, Bulldog) and T2 (Avenger).
-   Possibly even more Tn variants each with its own Threshold counter. (Luigi)
+ o "Gremlin F2" should be split in T1 (Krakout, Bulldog) and T2 (Avenger).
+   Possibly even more Tn variants each with its own threshold value. (Luigi)
     Done. Splitted into F1 and F2 due to the structural loader differences.
  ~ Make some templates for the xxx_search() and xxx_describe() functions. (Luigi)
     Done to some extent.
