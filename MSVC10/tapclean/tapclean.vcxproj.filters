@@ -162,10 +162,7 @@
     <ClCompile Include="..\..\src\scanners\seuck.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\snakeload50t1.c">
-      <Filter>Source Files\scanners</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\scanners\snakeload50t2.c">
+    <ClCompile Include="..\..\src\scanners\snakeload50.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\snakeload51.c">

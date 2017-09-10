@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=103
+UnitCount=102
 Type=1
 Ver=1
 ObjFiles=
@@ -459,37 +459,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit46]
-FileName=..\src\scanners\snakeload50t1.c
-CompileCpp=0
-Folder=scanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit47]
-FileName=..\src\scanners\snakeload50t2.c
-CompileCpp=0
-Folder=scanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit48]
-FileName=..\src\scanners\snakeload51.c
-CompileCpp=0
-Folder=scanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit49]
 FileName=..\src\scanners\superpav.c
 CompileCpp=0
 Folder=scanners
@@ -499,7 +469,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit50]
+[Unit48]
 FileName=..\src\scanners\supertape.c
 CompileCpp=0
 Folder=scanners
@@ -509,7 +479,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit51]
+[Unit49]
 FileName=..\src\scanners\tdi.c
 CompileCpp=0
 Folder=scanners
@@ -519,7 +489,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit52]
+[Unit50]
 FileName=..\src\scanners\turbotape.c
 CompileCpp=0
 Folder=scanners
@@ -529,7 +499,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit53]
+[Unit51]
 FileName=..\src\scanners\turrican.c
 CompileCpp=0
 Folder=rewritten
@@ -539,7 +509,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit54]
+[Unit52]
 FileName=..\src\scanners\usgold.c
 CompileCpp=0
 Folder=scanners
@@ -549,7 +519,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit55]
+[Unit53]
 FileName=..\src\scanners\virgin.c
 CompileCpp=0
 Folder=rewritten
@@ -559,7 +529,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit56]
+[Unit54]
 FileName=..\src\scanners\visiload.c
 CompileCpp=0
 Folder=scanners
@@ -569,7 +539,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit57]
+[Unit55]
 FileName=..\src\scanners\alternativewg.c
 CompileCpp=0
 Folder=scanners
@@ -579,7 +549,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit58]
+[Unit56]
 FileName=..\src\scanners\burner_var.c
 CompileCpp=0
 Folder=newscanners
@@ -589,8 +559,28 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit59]
+[Unit57]
 FileName=..\src\scanners\oceannew4.c
+CompileCpp=0
+Folder=newscanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit58]
+FileName=..\src\scanners\odeload.c
+CompileCpp=0
+Folder=newscanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit59]
+FileName=..\src\scanners\rainbowarts_f2.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
@@ -618,7 +608,7 @@ ProductVersion=
 AutoIncBuildNr=0
 
 [Unit63]
-FileName=..\src\scanners\trilogic.c
+FileName=..\src\scanners\biturbo.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
@@ -628,7 +618,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit64]
-FileName=..\src\scanners\tdi_f2.c
+FileName=..\src\scanners\t108DE0A5.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
@@ -638,9 +628,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit66]
-FileName=..\src\scanners\t108DE0A5.c
+FileName=..\src\tap2audio.h
 CompileCpp=0
-Folder=newscanners
+Folder=headers
 Compile=1
 Link=1
 Priority=1000
@@ -658,7 +648,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit61]
-FileName=..\src\scanners\rainbowarts_f2.c
+FileName=..\src\scanners\trilogic.c
 CompileCpp=0
 Folder=newscanners
 Compile=1
@@ -668,36 +658,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit65]
-FileName=..\src\scanners\biturbo.c
-CompileCpp=0
-Folder=newscanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit60]
-FileName=..\src\scanners\odeload.c
-CompileCpp=0
-Folder=newscanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit62]
-FileName=..\src\scanners\rainbowarts_f1.c
-CompileCpp=0
-Folder=newscanners
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit67]
 FileName=..\src\scanners\actionreplay.c
 CompileCpp=0
 Folder=newscanners
@@ -707,17 +667,27 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit68]
-FileName=..\src\tap2audio.h
+[Unit60]
+FileName=..\src\scanners\rainbowarts_f1.c
 CompileCpp=0
-Folder=headers
+Folder=newscanners
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit69]
+[Unit62]
+FileName=..\src\scanners\tdi_f2.c
+CompileCpp=0
+Folder=newscanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit67]
 FileName=..\src\database.h
 CompileCpp=0
 Folder=headers
@@ -727,7 +697,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit70]
+[Unit68]
 FileName=..\src\filesearch.h
 CompileCpp=0
 Folder=headers
@@ -737,7 +707,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit71]
+[Unit69]
 FileName=..\src\main.h
 CompileCpp=0
 Folder=headers
@@ -747,7 +717,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit72]
+[Unit70]
 FileName=..\src\mydefs.h
 CompileCpp=0
 Folder=headers
@@ -757,7 +727,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit73]
+[Unit71]
 FileName=..\src\crc32.h
 CompileCpp=0
 Folder=headers
@@ -767,7 +737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit74]
+[Unit72]
 FileName=..\src\scanners\_scanners.h
 CompileCpp=0
 Folder=headers
@@ -777,7 +747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit75]
+[Unit73]
 FileName=..\src\scanners\ashdave.c
 CompileCpp=0
 Folder=newscanners
@@ -787,7 +757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit76]
+[Unit74]
 FileName=..\src\scanners\freeslow.c
 CompileCpp=0
 Folder=newscanners
@@ -797,7 +767,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit77]
+[Unit75]
 FileName=..\src\dc2nconv.c
 CompileCpp=0
 Folder=
@@ -807,7 +777,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit78]
+[Unit76]
 FileName=..\src\dc2nconv.h
 CompileCpp=0
 Folder=headers
@@ -817,7 +787,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit79]
+[Unit77]
 FileName=..\src\scanners\goforgold.c
 CompileCpp=0
 Folder=newscanners
@@ -827,7 +797,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit80]
+[Unit78]
 FileName=..\src\scanners\fastevil.c
 CompileCpp=0
 Folder=newscanners
@@ -837,7 +807,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit81]
+[Unit79]
 FileName=..\src\skewadapt.c
 CompileCpp=0
 Folder=
@@ -847,7 +817,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit82]
+[Unit80]
 FileName=..\src\skewadapt.h
 CompileCpp=0
 Folder=headers
@@ -857,7 +827,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit83]
+[Unit81]
 FileName=..\src\scanners\fftape.c
 CompileCpp=0
 Folder=newscanners
@@ -867,7 +837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit84]
+[Unit82]
 FileName=..\src\scanners\tes.c
 CompileCpp=0
 Folder=newscanners
@@ -877,7 +847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit85]
+[Unit83]
 FileName=..\src\scanners\tequila.c
 CompileCpp=0
 Folder=newscanners
@@ -887,7 +857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit86]
+[Unit84]
 FileName=..\src\scanners\alternativesw.c
 CompileCpp=0
 Folder=newscanners
@@ -897,7 +867,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit87]
+[Unit85]
 FileName=..\src\scanners\chuckie_egg.c
 CompileCpp=0
 Folder=newscanners
@@ -907,7 +877,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit88]
+[Unit86]
 FileName=..\src\scanners\alternativedk.c
 CompileCpp=0
 Folder=newscanners
@@ -917,7 +887,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit89]
+[Unit87]
 FileName=..\src\scanners\powerload.c
 CompileCpp=0
 Folder=newscanners
@@ -927,7 +897,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit90]
+[Unit88]
 FileName=..\src\scanners\gremlin_f2.c
 CompileCpp=0
 Folder=newscanners
@@ -937,7 +907,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit91]
+[Unit89]
 FileName=..\src\scanners\gremlin_f1.c
 CompileCpp=0
 Folder=newscanners
@@ -947,7 +917,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit92]
+[Unit90]
 FileName=..\src\scanners\amaction.c
 CompileCpp=0
 Folder=newscanners
@@ -957,7 +927,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit93]
+[Unit91]
 FileName=..\src\scanners\creatures.c
 CompileCpp=0
 Folder=newscanners
@@ -967,7 +937,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit94]
+[Unit92]
 FileName=..\src\scanners\rainbowislands.c
 CompileCpp=0
 Folder=newscanners
@@ -977,7 +947,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit95]
+[Unit93]
 FileName=..\src\scanners\oceannew3.c
 CompileCpp=0
 Folder=newscanners
@@ -987,7 +957,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit96]
+[Unit94]
 FileName=..\src\persistence.c
 CompileCpp=0
 Folder=
@@ -997,7 +967,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit97]
+[Unit95]
 FileName=..\src\persistence.h
 CompileCpp=0
 Folder=headers
@@ -1007,7 +977,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit98]
+[Unit96]
 FileName=..\src\scanners\easytape.c
 CompileCpp=0
 Folder=newscanners
@@ -1017,7 +987,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit99]
+[Unit97]
 FileName=..\src\scanners\turbo220.c
 CompileCpp=0
 Folder=newscanners
@@ -1027,7 +997,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit100]
+[Unit98]
 FileName=..\src\scanners\creativesparks.c
 CompileCpp=0
 Folder=newscanners
@@ -1037,7 +1007,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit101]
+[Unit99]
 FileName=..\src\scanners\msx.c
 CompileCpp=0
 Folder=newscanners
@@ -1047,10 +1017,30 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit102]
+[Unit100]
 FileName=..\src\scanners\ddesign.c
 CompileCpp=0
 Folder=newscanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit101]
+FileName=..\src\scanners\oceannew1.c
+CompileCpp=0
+Folder=rewritten
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit102]
+FileName=..\src\scanners\snakeload50.c
+CompileCpp=0
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000
@@ -1079,6 +1069,16 @@ BuildCmd=
 
 [Unit38]
 FileName=..\src\scanners\oceannew2.c
+CompileCpp=0
+Folder=scanners
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit46]
+FileName=..\src\scanners\snakeload51.c
 CompileCpp=0
 Folder=scanners
 Compile=1

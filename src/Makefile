@@ -26,8 +26,8 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/oceannew3.o scanners/oceannew4.o scanners/palace_f1.o \
 	scanners/palace_f2.o scanners/pause.o scanners/pavloda.o \
 	scanners/rackit.o scanners/rainbowarts_f1.o scanners/rainbowarts_f2.o \
-	scanners/rasterload.o scanners/seuck.o scanners/snakeload50t1.o \
-	scanners/snakeload50t2.o scanners/snakeload51.o scanners/superpav.o \
+	scanners/rasterload.o scanners/seuck.o scanners/snakeload50.o \
+	scanners/snakeload51.o scanners/superpav.o \
 	scanners/supertape.o scanners/tdi.o scanners/tdi_f2.o \
 	scanners/trilogic.o scanners/turbotape.o scanners/biturbo.o \
 	scanners/turrican.o scanners/usgold.o scanners/virgin.o \

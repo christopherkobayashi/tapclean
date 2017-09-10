@@ -1004,10 +1004,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
 
-			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted) {
-				snakeload50t1_search();
-				snakeload50t2_search();
-			}
+			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted)
+				snakeload50_search(0);
 
 			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
@@ -1118,10 +1116,8 @@ static void search_tap(void)
 			 * higher than ocean).
 			 */
 
-			if (ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted) {
-				snakeload50t1_search();
-				snakeload50t2_search();
-			}
+			if (ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted)
+				snakeload50_search(0);
 
 			if (ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
@@ -1548,9 +1544,9 @@ static void describe_file(int row)
 					break;
 		case SNAKE51:		snakeload51_describe(row);
 					break;
-		case SNAKE50_T1:		snakeload50t1_describe(row);
+		case SNAKE50_T1:	snakeload50_describe(row);
 					break;
-		case SNAKE50_T2:		snakeload50t2_describe(row);
+		case SNAKE50_T2:	snakeload50_describe(row);
 					break;
 		case PAL_F1:		palacef1_describe(row);
 					break;

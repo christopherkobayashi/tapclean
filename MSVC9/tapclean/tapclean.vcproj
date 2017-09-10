@@ -472,14 +472,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\snakeload50t1.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\snakeload50t2.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\snakeload51.c"
 					>
 				</File>
@@ -689,6 +681,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\rackit.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\snakeload50.c"
 					>
 				</File>
 				<File

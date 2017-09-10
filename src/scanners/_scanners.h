@@ -145,11 +145,8 @@ int atlantis_describe(int row);
 void snakeload51_search(void);
 int snakeload51_describe(int);
 
-void snakeload50t1_search(void);
-int snakeload50t1_describe(int);
-
-void snakeload50t2_search(void);
-int snakeload50t2_describe(int);
+void snakeload50_search(int);
+int snakeload50_describe(int);
 
 void palacef1_search(void);
 int palacef1_describe(int);
