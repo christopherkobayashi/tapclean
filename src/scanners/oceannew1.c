@@ -1,5 +1,5 @@
 /*
- * oceannew1.c (rewritten by Luigi Di Fraia, Mar 2017)
+ * oceannew1.c (rewritten by Luigi Di Fraia, Sep 2017)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
