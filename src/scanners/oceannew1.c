@@ -128,8 +128,6 @@ static void oceannew1_search_core (int lt)
 			eof = eod + BITSINABYTE - 1;
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-			/* Note: No trailer has been documented, but we are not strictly
-				 requiring one here, just checking for it is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&
@@ -205,8 +203,6 @@ int oceannew1_describe(int row)
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1) / BITSINABYTE;
 
 	/* ... trailer in pulses */
-	/* Note: No trailer has been documented, but we are not pretending it
-	         here, just checking for it is future-proof */
 	blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 	/* if there IS pilot then disclude the sync sequence */
