@@ -33,7 +33,7 @@ Note: tasks are marked as per below. Completed tasks are still included here
    In all cases, looking at the first CBM file only makes sense when a title 
    is not part of a compilation: by using cbm_header[]/cbm_program[] directly 
    in idloader() we lose room for future flexibility (Luigi)
- ~ There is just one reason for which "Ocean New" T1/T2 and "Snakeload 5.0" T1/T2 
+ o There is just one reason for which "Ocean New" T1/T2 and "Snakeload 5.0" T1/T2 
    should not be handled by the same module, as it happens with all other 
    scanners. The reason is that one might want to only exclude one type at a
    given time in order to avoid mis- or cross-detection. However, there is way
