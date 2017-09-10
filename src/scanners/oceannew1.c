@@ -152,7 +152,7 @@ void oceannew1_search (int lt)
 		int type, types[] = { OCNEW1_T1, OCNEW1_T2 };
 
 		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
-			oceannew1_search_core (types[type]);
+			oceannew1_search_core(types[type]);
 		}
 	}
 }
