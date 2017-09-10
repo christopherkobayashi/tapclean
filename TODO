@@ -39,6 +39,10 @@ Note: tasks are marked as per below. Completed tasks are still included here
    given time in order to avoid mis- or cross-detection. However, there is way
    too much code duplication unless both types are processed by the same
    scanner (Luigi)
+ - "Ocean New" and "Snakeload 5.0" introduce a modular approach to support Tx
+   variants: Roll it out to applicable scanners too, e.g. "Mega-Save" (Luigi)
+ - "Snakeload 5.0" simplifies the sync sequence matching logic: Roll it out to
+   applicable scanners too (Luigi)
  - Titles using the "Alternative Software" loader were mastered by "The Graphic 
    Adventure Creator", in fact they are all text adventures with graphics
    (Ziggy72)
