@@ -10,6 +10,8 @@ v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
 	Code quality: Implemented a number of rationalisations across the
 	 board (Luigi)
+	Improvement: Consolidated "Ocean New F1" T1/T2 scanners into a single
+	 one, entirely rewritten (Luigi)
 
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order

@@ -25,17 +25,20 @@ Note: tasks are marked as per below. Completed tasks are still included here
    read tolerance value? A similar approach could be used for "CHR", "Visi", 
    "Ocean New", "Snakeload 5.0", and "Freeload Slowload". For backward 
    compatibility: if no Tx pattern is found then the code should cycle through 
-   all Tx variants (Luigi)
- - In fact, the above could be performed in idloader() when the CRC search 
+   all Tx variants.
+   In fact, the above could be performed in idloader() when the CRC search 
    fails, so that a LID_<loader>_Tx id could be returned to be used as parameter 
    to the <loader>_search() function, instructing it to only try the Tx variant
    instead of all variants.
    In all cases, looking at the first CBM file only makes sense when a title 
    is not part of a compilation: by using cbm_header[]/cbm_program[] directly 
    in idloader() we lose room for future flexibility (Luigi)
- - There is no reason for which "Ocean New" and "Snakeload 5.0" T1 and T2 
+ ~ There is just one reason for which "Ocean New" T1/T2 and "Snakeload 5.0" T1/T2 
    should not be handled by the same module, as it happens with all other 
-   scanners; otherwise there is way too much code duplication there (Luigi)
+   scanners. The reason is that one might want to only exclude one type at a
+   given time in order to avoid mis- or cross-detection. However, there is way
+   too much code duplication unless both types are processed by the same
+   scanner (Luigi)
  - Titles using the "Alternative Software" loader were mastered by "The Graphic 
    Adventure Creator", in fact they are all text adventures with graphics
    (Ziggy72)

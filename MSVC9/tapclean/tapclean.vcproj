@@ -444,14 +444,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\oceannew1t1.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\oceannew1t2.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\oceannew2.c"
 					>
 				</File>
@@ -689,6 +681,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\hitec.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\oceannew1.c"
 					>
 				</File>
 				<File

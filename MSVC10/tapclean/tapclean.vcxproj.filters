@@ -135,10 +135,7 @@
     <ClCompile Include="..\..\src\scanners\ocean.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\oceannew1t1.c">
-      <Filter>Source Files\scanners</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\scanners\oceannew1t2.c">
+    <ClCompile Include="..\..\src\scanners\oceannew1.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\oceannew2.c">

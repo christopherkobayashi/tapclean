@@ -117,8 +117,7 @@ struct ldrswt_t ldrswt[] = {
 	{"MSX"				,"msx"		,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
 	{"Ocean"			,"ocean"	,FALSE},
-	{"Ocean F1"			,"oceannew1t1"	,FALSE},
-	{"Ocean F2"			,"oceannew1t2"	,FALSE},
+	{"Ocean New 1"			,"oceannew1"	,FALSE},
 	{"Ocean New 2"			,"oceannew2"	,FALSE},
 	{"Ocean New 3"			,"oceannew3"	,FALSE},
 	{"Ocean New 4"			,"oceannew4"	,FALSE},
@@ -996,11 +995,11 @@ static void search_tap(void)
 			if (tap.cbmid == LID_HTEC 	&& ldrswt[nohitec	].exclude == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (tap.cbmid == LID_OCNEW1_T1	&& ldrswt[nooceannew1t1	].exclude == FALSE && !database_is_full && !aborted)
-				oceannew1t1_search();
+			if (tap.cbmid == LID_OCNEW1_T1	&& ldrswt[nooceannew1	].exclude == FALSE && !database_is_full && !aborted)
+				oceannew1_search(tap.cbmid);
 
-			if (tap.cbmid == LID_OCNEW1_T2	&& ldrswt[nooceannew1t2	].exclude == FALSE && !database_is_full && !aborted)
-				oceannew1t2_search();
+			if (tap.cbmid == LID_OCNEW1_T2	&& ldrswt[nooceannew1	].exclude == FALSE && !database_is_full && !aborted)
+				oceannew1_search(tap.cbmid);
 
 			if (tap.cbmid == LID_OCNEW2	&& ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
@@ -1071,10 +1070,10 @@ static void search_tap(void)
 				powerload_search();
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[noGREMLIN_F2	].exclude == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].exclude == FALSE  && !database_is_full && !aborted)
 				GREMLIN_F2_search();
 
-			if (tap.cbmid == LID_GREMLIN	&& ldrswt[noGREMLIN_F1	].exclude == FALSE  && !database_is_full && !aborted)
+			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].exclude == FALSE  && !database_is_full && !aborted)
 				GREMLIN_F1_search();
 
 			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].exclude == FALSE && !database_is_full && !aborted)
@@ -1219,11 +1218,8 @@ static void search_tap(void)
 			if (ldrswt[notdif1	].exclude == FALSE && !database_is_full && !aborted)
 				tdi_search();
 
-			if (ldrswt[nooceannew1t1].exclude == FALSE && !database_is_full && !aborted)
-				oceannew1t1_search();
-
-			if (ldrswt[nooceannew1t2].exclude == FALSE && !database_is_full && !aborted)
-				oceannew1t2_search();
+			if (ldrswt[nooceannew1	].exclude == FALSE && !database_is_full && !aborted)
+				oceannew1_search(0);
 
 			if (ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
@@ -1343,10 +1339,10 @@ static void search_tap(void)
 			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();
 
-			//if (ldrswt[noGREMLIN_F1].exclude == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[nogremlinf1].exclude == FALSE  && !database_is_full && !aborted)
 			//	GREMLIN_F1_search();
 
-			//if (ldrswt[noGREMLIN_F2].exclude == FALSE  && !database_is_full && !aborted)
+			//if (ldrswt[nogremlinf2].exclude == FALSE  && !database_is_full && !aborted)
 			//	GREMLIN_F2_search();
 
 			//if (ldrswt[nocsparks	].exclude == FALSE && !database_is_full && !aborted)
@@ -1544,9 +1540,9 @@ static void describe_file(int row)
 					break;
 		case TDI_F1:		tdi_describe(row);
 					break;
-		case OCNEW1_T1:		oceannew1t1_describe(row);
+		case OCNEW1_T1:		oceannew1_describe(row);
 					break;
-		case OCNEW1_T2:		oceannew1t2_describe(row);
+		case OCNEW1_T2:		oceannew1_describe(row);
 					break;
 		case ATLAN:		atlantis_describe(row);
 					break;

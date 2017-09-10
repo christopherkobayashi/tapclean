@@ -136,11 +136,8 @@ int hitec_describe(int);
 void tdi_search(void);
 int tdi_describe(int);
 
-void oceannew1t1_search(void);
-int oceannew1t1_describe(int);
-
-void oceannew1t2_search(void);
-int oceannew1t2_describe(int);
+void oceannew1_search(int);
+int oceannew1_describe(int);
 
 void atlantis_search(void);
 int atlantis_describe(int row);
