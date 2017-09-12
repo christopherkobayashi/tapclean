@@ -303,6 +303,10 @@ int GREMLIN_F1_describe (int row)
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
+	/* Extract and log extra useful info from this block */
+	sprintf(lin, "\n - Exe Address (in CBM data) : $%04X (SYS %d)", blk[row]->meta1, blk[row]->meta1);
+	strcat(info, lin);
+
 	/* Extract data and test checksum... */
 	rd_err = 0;
 	cb = 0;
@@ -377,9 +381,6 @@ int GREMLIN_F1_describe (int row)
 		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
 		strcat(info, lin);
 	}
-
-	sprintf(lin, "\n - Exe Address (in CBM data) : $%04X (SYS %d)", blk[row]->meta1, blk[row]->meta1);
-	strcat(info, lin);
 
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b  & 0xFF;

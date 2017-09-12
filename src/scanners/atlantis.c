@@ -206,6 +206,15 @@ int atlantis_describe (int row)
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
+	/* Extract and log extra useful info from this block */
+	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
+
+	/* $036F is default and means return from custom Load RAM, so it's of no interest */
+	if (exec != 0x036F) {
+		sprintf(lin, "\n - Execution address : $%04X (SYS %d)", exec, exec);
+		strcat(info, lin);
+	}
+
 	/* Extract data and test checksum... */
 	rd_err = 0;
 	cb = 0;
@@ -241,13 +250,6 @@ int atlantis_describe (int row)
 
 		/* for experts only */
 		sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
-		strcat(info, lin);
-	}
-
-	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
-	/* $036F is default and means return from custom Load RAM, so it's of no interest */
-	if (exec != 0x036F) {
-		sprintf(lin, "\n - Execution address : $%04X (SYS %d)", exec, exec);
 		strcat(info, lin);
 	}
 

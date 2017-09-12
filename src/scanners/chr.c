@@ -235,6 +235,28 @@ int chr_describe(int row)
 	/* Exclude pre-pilot bytes from the count too */
 	blk[row]->pilot_len -= blk[row]->xi;
 
+	/* Extract and log extra useful info from this block */
+	sprintf(lin, "\n - Pre-pilot byte count : %d", blk[row]->xi);
+	strcat(info, lin);
+
+	b = readttbyte(blk[row]->p2 - BITSINABYTE, lp, sp, tp, en);
+	sprintf(lin, "\n - Post-sync value : $%02X", b);
+	strcat(info, lin);
+
+	sprintf(lin, "\n - Re-execute loader : %s", hd[EXEFLAG1OFFSET] ? "Yes" : "No");
+	strcat(info, lin);
+	if (!hd[EXEFLAG1OFFSET]) {
+		if (hd[EXEFLAG2OFFSET]) {
+			unsigned int exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
+
+			sprintf(lin, "\n - Execution by : JMP $%04X (SYS %d)", exec, exec);
+			strcat(info, lin);
+		} else {
+			sprintf(lin, "\n - Execution by : BASIC RUN");
+			strcat(info, lin);
+		}
+	}
+
 	/* Extract data and test checksum... */
 	rd_err = 0;
 	cb = 0;
@@ -276,27 +298,6 @@ int chr_describe(int row)
 	blk[row]->cs_exp = cb & 0xFF;
 	blk[row]->cs_act = b  & 0xFF;
 	blk[row]->rd_err = rd_err;
-
-	sprintf(lin, "\n - Pre-pilot byte count : %d", blk[row]->xi);
-	strcat(info, lin);
-
-	b = readttbyte(blk[row]->p2 - BITSINABYTE, lp, sp, tp, en);
-	sprintf(lin, "\n - Post-sync value : $%02X", b);
-	strcat(info, lin);
-
-	sprintf(lin, "\n - Re-execute loader : %s", hd[EXEFLAG1OFFSET] ? "Yes" : "No");
-	strcat(info, lin);
-	if (!hd[EXEFLAG1OFFSET]) {
-		if (hd[EXEFLAG2OFFSET]) {
-			unsigned int exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
-
-			sprintf(lin, "\n - Execution by : JMP $%04X (SYS %d)", exec, exec);
-			strcat(info, lin);
-		} else {
-			sprintf(lin, "\n - Execution by : BASIC RUN");
-			strcat(info, lin);
-		}
-	}
 
 	return(rd_err);
 }

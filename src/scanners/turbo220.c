@@ -195,11 +195,6 @@ int turbo220_describe(int row)
 	/* Compute size */
 	blk[row]->cx = blk[row]->ce - blk[row]->cs + 1;
 
-	/* Extract execution address and print it out */
-	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
-	sprintf(lin, "\n - Exe Address : $%04X (SYS %d)", exec, exec);
-	strcat(info, lin);
-
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in bytes... */
@@ -213,6 +208,11 @@ int turbo220_describe(int row)
 	/* if there IS pilot then disclude the sync sequence */
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Extract execution address and print it out */
+	exec = hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8);
+	sprintf(lin, "\n - Exe Address : $%04X (SYS %d)", exec, exec);
+	strcat(info, lin);
 
 	/* Extract data */
 	rd_err = 0;
