@@ -206,7 +206,7 @@ int ar_describe_data(int);
 void ashdave_search(void);
 int ashdave_describe(int);
 
-void freeslow_search(void);
+void freeslow_search(int);
 int freeslow_describe(int);
 
 void goforgold_search(void);

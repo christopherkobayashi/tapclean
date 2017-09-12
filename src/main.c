@@ -1038,7 +1038,7 @@ static void search_tap(void)
 				t108DE0A5_search();
 
 			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
-				freeslow_search();
+				freeslow_search(0);
 
 			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].exclude == FALSE && !database_is_full && !aborted)
 				goforgold_search();
@@ -1269,7 +1269,7 @@ static void search_tap(void)
 				ashdave_search();
 
 			if (ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
-				freeslow_search();
+				freeslow_search(0);
 
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting

@@ -55,7 +55,7 @@
 #define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
-void freeslow_search (void)
+void freeslow_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -66,92 +66,94 @@ void freeslow_search (void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int type, variant;
 
-	for (type = 1; type <= 2; type++) {
-		switch (type) {
-			case 1:
-				variant = FREE_SLOW_T1;
-				break;
-			default:
-				variant = FREE_SLOW_T2;
-		}
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	lp = ft[lt].lp;
+	sv = ft[lt].sv;
 
-		en = ft[variant].en;
-		tp = ft[variant].tp;
-		sp = ft[variant].sp;
-		lp = ft[variant].lp;
-		sv = ft[variant].sv;
+	if (!quiet) {
+		sprintf(lin, "  Freeload Slowload T%d", (lt == FREE_SLOW_T1) ? 1 : 2);
+		msgout(lin);
+	}
 
-		if (!quiet) {
-			sprintf(lin, "  Freeload Slowload T%d", type);
-			msgout(lin);
-		}
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, lt);
 
-		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-			eop = find_pilot(i, variant);
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
 
-			if (eop > 0) {
-				/* Valid pilot found, mark start of file */
-				sof = i;
-				i = eop;
+			/* Check if there's a valid sync byte for this loader */
+			if (readttbyte(i, lp, sp, tp, en) != sv)
+				continue;
 
-				/* Check if there's a valid sync byte for this loader */
-				if (readttbyte(i, lp, sp, tp, en) != sv)
-					continue;
+			/* Valid sync found, mark start of data */
+			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
-				/* Valid sync found, mark start of data */
-				sod = i + SYNCSEQSIZE * BITSINABYTE;
-
-				/* Read header */
-				for (h = 0; h < HEADERSIZE; h++) {
-					hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
-					if (hd[h] == -1)
-						break;
-				}
-				if (h != HEADERSIZE)
-					continue;
-
-				/* Extract load and end locations */
-				s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-				e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
-
-				/* Prevent int wraparound when subtracting 1 from end location
-				   to get the location of the last loaded byte */
-				if (e == 0)
-					e = 0xFFFF;
-				else
-					e--;
-
-				/* Plausibility check */
-				if (e < s)
-					continue;
-
-				/* Compute size */
-				x = e - s + 1;
-
-				/* Point to the first pulse of the checkbyte (that's final) */
-				eod = sod + (HEADERSIZE + x) * BITSINABYTE;
-
-				/* Initially point to the last pulse of the checkbyte */
-				eof = eod + BITSINABYTE - 1;
-
-				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-				/* Note: No trailer has been documented, but we are not strictly
-					 requiring one here, just checking for it is future-proof */
-				h = 0;
-				while (eof < tap.len - 1 &&
-						h++ < MAXTRAILER &&
-						readttbit(eof + 1, lp, sp, tp) >= 0)
-					eof++;
-
-				if (addblockdef(variant, sof, sod, eod, eof, 0) >= 0)
-					i = eof;	/* Search for further files starting from the end of this one */
-
-			} else {
-				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
-					i = (-eop);
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
 			}
+			if (h != HEADERSIZE)
+				continue;
+
+			/* Extract load and end locations */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			/* Prevent int wraparound when subtracting 1 from end location
+			   to get the location of the last loaded byte */
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
+
+			/* Plausibility check */
+			if (e < s)
+				continue;
+
+			/* Compute size */
+			x = e - s + 1;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+
+			/* Initially point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			/* Note: No trailer has been documented, but we are not strictly
+				 requiring one here, just checking for it is future-proof */
+			h = 0;
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, lp, sp, tp) >= 0)
+				eof++;
+
+			if (addblockdef(lt, sof, sod, eod, eof, 0) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
+		} else {
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
+				i = (-eop);
+		}
+	}
+}
+
+void freeslow_search(int lt)
+{
+	if (lt > 0) {
+		freeslow_search_core(lt);
+	} else {
+		int type, types[] = { FREE_SLOW_T1, FREE_SLOW_T2 };
+
+		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
+			freeslow_search_core(types[type]);
 		}
 	}
 }
@@ -165,13 +167,13 @@ int freeslow_describe(int row)
 
 	int b, rd_err;
 
-	int variant = blk[row]->lt;
+	int lt = blk[row]->lt;
 
 
-	en = ft[variant].en;
-	tp = ft[variant].tp;
-	sp = ft[variant].sp;
-	lp = ft[variant].lp;
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	lp = ft[lt].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row]->p2;
