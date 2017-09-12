@@ -14,6 +14,11 @@ v0.36
 	 single one, entirely rewritten (Luigi)
 	Improvement: Consolidated "Snakeload 5.0" T1/T2 scanners into a
 	 single one, entirely rewritten (Luigi)
+	Code quality: Simplified the sync sequence matching logic in a
+	 number of scanners (Luigi)
+	Code quality: Modularised the Tx scan in "Mega-Save", "Freeload
+	 Slowload", "Alternative SW (DK)" (Luigi)
+	Improvement: "Freeload" scanner rewritten (Luigi)
 
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order
