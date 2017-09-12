@@ -102,6 +102,8 @@ static void chr_search_core(int lt)
 				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sv + h)
 					break;
 			}
+
+			/* Sync train doesn't match */
 			if (h != SYNCSEQSIZE)
 				continue;
 
@@ -118,6 +120,8 @@ static void chr_search_core(int lt)
 				if (hd[h] == -1)
 					break;
 			}
+
+			/* Bail out if there was an error reading the block header */
 			if (h != HEADERSIZE)
 				continue;
 
