@@ -74,8 +74,8 @@ static void freeslow_search_core(int lt)
 	sv = ft[lt].sv;
 
 	if (!quiet) {
-		sprintf(lin, "  Freeload Slowload T%d", (lt == FREE_SLOW_T1) ? 1 : 2);
-		msgout(lin);
+		msgout("  Freeload Slowload T");
+		msgout((lt == FREE_SLOW_T1) ? "1" : "2");
 	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {

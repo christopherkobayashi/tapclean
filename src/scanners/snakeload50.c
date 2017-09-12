@@ -80,8 +80,8 @@ static void snakeload50_search_core(int lt)
 	sv = ft[lt].sv;
 
 	if(!quiet) {
-		sprintf(lin, "  Snakeload 5.0 T%d", (lt == SNAKE50_T1) ? 1 : 2);
-		msgout(lin);
+		msgout("  Snakeload 5.0 T");
+		msgout((lt == SNAKE50_T1) ? "1" : "2");
 	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {

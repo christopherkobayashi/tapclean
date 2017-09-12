@@ -75,8 +75,8 @@ static void oceannew1_search_core(int lt)
 	sv = ft[lt].sv;
 
 	if(!quiet) {
-		sprintf(lin, "  New Ocean Tape 1 T%d", (lt == OCNEW1_T1) ? 1 : 2);
-		msgout(lin);
+		msgout("  New Ocean Tape 1 T");
+		msgout((lt == OCNEW1_T1) ? "1" : "2");
 	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
