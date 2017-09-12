@@ -200,9 +200,6 @@ int accolade_describe (int row)
 	if ((blk[row]->cx) % 256)
 		blocks++;
 
-	sprintf(lin, "\n - Sub-blocks : %d", blocks);
-	strcat(info, lin);
-
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in bytes... */
@@ -228,6 +225,10 @@ int accolade_describe (int row)
 		sprintf(lin, "\n - Header checkbyte : FAILED (expected=$%02X, actual=$%02X)", b, cb);
 		strcat(info, lin);
 	}
+
+	/* Print out the number of blocks */
+	sprintf(lin, "\n - Sub-blocks : %d", blocks);
+	strcat(info, lin);
 
 	/* Test all sub-block checksums individually */
 	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);

@@ -194,9 +194,6 @@ int creativesparks_describe(int row)
 	if ((blk[row]->cx) % 256)
 		blocks++;
 
-	sprintf(lin, "\n - Sub-blocks : %d", blocks);
-	strcat(info, lin);
-
 	/* Compute pilot & trailer lengths */
 
 	/* pilot is in bytes... */
@@ -208,6 +205,10 @@ int creativesparks_describe(int row)
 	/* if there IS pilot then disclude the sync byte */
 	if (blk[row]->pilot_len > 0) 
 		blk[row]->pilot_len -= SYNCSEQSIZE;
+
+	/* Print out the number of blocks */
+	sprintf(lin, "\n - Sub-blocks : %d", blocks);
+	strcat(info, lin);
 
 	/* Test all sub-block checksums individually */
 	s = blk[row]->p2;
