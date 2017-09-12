@@ -17,7 +17,7 @@ v0.36
 	Code quality: Simplified the sync sequence matching logic in a
 	 number of scanners (Luigi)
 	Code quality: Modularised the Tx scan in "Mega-Save", "Freeload
-	 Slowload", "Alternative SW (DK)" (Luigi)
+	 Slowload", "Alternative SW (DK)", and "MSX Tape" (Luigi)
 	Improvement: "Freeload" scanner rewritten (Luigi)
 
 v0.35
