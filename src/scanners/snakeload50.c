@@ -79,7 +79,7 @@ static void snakeload50_search_core(int lt)
 	lp = ft[lt].lp;
 	sv = ft[lt].sv;
 
-	if(!quiet) {
+	if (!quiet) {
 		msgout("  Snakeload 5.0 T");
 		msgout((lt == SNAKE50_T1) ? "1" : "2");
 	}

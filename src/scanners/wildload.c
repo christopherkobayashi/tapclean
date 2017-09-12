@@ -79,7 +79,7 @@ void wild_search(void)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	if(!quiet)
+	if (!quiet)
 		msgout("  Wildload");
          
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {

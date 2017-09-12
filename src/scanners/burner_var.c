@@ -206,7 +206,7 @@ void burnervar_search (void)
 	ft[THISLOADER].sv = sv;	/* is this really needed by find_pilot()? */
 	ft[THISLOADER].en = en;
 
-	if(!quiet) {
+	if (!quiet) {
 #ifdef ENABLE_LEGACY_BURNER_SUPPORT
 		sprintf(lin, "  Burner format found: pv=$%02X, sv=$%02X, en=%s",
 			pv,
