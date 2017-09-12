@@ -100,6 +100,8 @@ static void oceannew1_search_core(int lt)
 				if (hd[h] == -1)
 					break;
 			}
+
+			/* Bail out if there was an error reading the block header */
 			if (h != HEADERSIZE)
 				continue;
 

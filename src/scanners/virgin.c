@@ -102,6 +102,8 @@ void virgin_search (void)
 				if (hd[h] == -1)
 					break;
 			}
+
+			/* Bail out if there was an error reading the block header */
 			if (h != HEADERSIZE)
 				continue;
 
