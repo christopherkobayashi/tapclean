@@ -931,7 +931,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (tap.cbmid == LID_MEGASAVE 	&& ldrswt[nomegasave	].exclude == FALSE && !database_is_full)
-				chr_search();
+				chr_search(0);
 
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1155,7 +1155,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (ldrswt[nomegasave	].exclude == FALSE && !database_is_full && !aborted)
-				chr_search();
+				chr_search(0);
 
 			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();

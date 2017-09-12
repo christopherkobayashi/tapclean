@@ -64,7 +64,7 @@
 #define EXEFLAG1OFFSET	6	/* execution flag #1 offset inside header */
 #define EXEFLAG2OFFSET	7	/* execution flag #2 offset inside header */
 
-void chr_search(void)
+static void chr_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -75,104 +75,102 @@ void chr_search(void)
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int ld, type;
-
 	int xinfo;			/* extra info used in addblockdef() */
 
 
-	for (type = 1; type <= 3; type++) {
-		switch (type) {
-			case 1:
-				ld = MEGASAVE_T1;	/* Cauldron */
-				break;
-			case 2:
-				ld = MEGASAVE_T2;	/* Hewson titles */
-				break;
-			default:
-				ld = MEGASAVE_T3;	/* Rainbird titles */
-		}
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	lp = ft[lt].lp;
+	sv = ft[lt].sv;
 
-		en = ft[ld].en;
-		tp = ft[ld].tp;
-		sp = ft[ld].sp;
-		lp = ft[ld].lp;
-		sv = ft[ld].sv;
+	if (!quiet) {
+		sprintf(lin, "  Mega-Save T%d", type);
+		msgout(lin);
+	}
 
-		if (!quiet) {
-			sprintf(lin, "  Mega-Save T%d", type);
-			msgout(lin);
-		}
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = find_pilot(i, lt);
 
-		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-			eop = find_pilot(i, ld);
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
 
-			if (eop > 0) {
-				/* Valid pilot found, mark start of file */
-				sof = i;
-				i = eop;
-
-				/* Check sync train ($64 up to to $FF) */
-				for (h = 0; h < SYNCSEQSIZE; h++) {
-					if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sv + h)
-						break;
-				}
-				if (h != SYNCSEQSIZE)
-					continue;
-
-				/* Plausibility check: a non-zero value is expected after the sync sequence */
-				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) == 0x00)
-					continue;
-
-				/* Valid post-sync value found, mark start of data */
-				sod = i + SYNCSEQSIZE * BITSINABYTE + BITSINABYTE;
-
-				/* Read header */
-				for (h = 0; h < HEADERSIZE; h++) {
-					hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
-					if (hd[h] == -1)
-						break;
-				}
-				if (h != HEADERSIZE)
-					continue;
-
-				/* Extract load and end locations */
-				s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
-				e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
-
-				/* Prevent int wraparound when subtracting 1 from end location
-				   to get the location of the last loaded byte */
-				if (e == 0)
-					e = 0xFFFF;
-				else
-					e--;
-
-				/* Plausibility check */
-				if (e < s)
-					continue;
-
-				/* Compute size */
-				x = e - s + 1;
-
-				/* Point to the first pulse of the checkbyte (that's final) */
-				eod = sod + (HEADERSIZE + x) * BITSINABYTE;
-
-				/* Point to the last pulse of the checkbyte */
-				eof = eod + BITSINABYTE - 1;
-
-				/* Trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
-				xinfo = 0;
-				while (readttbyte(sof - BITSINABYTE, lp, sp, tp, en) == PREPILOTVALUE) {
-					sof -= BITSINABYTE;
-					xinfo++;
-				}
-
-				if (addblockdef(ld, sof, sod, eod, eof, xinfo) >= 0)
-					i = eof;	/* Search for further files starting from the end of this one */
-
-			} else {
-				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */	/* find_pilot failed (too few/many), set i to failure point. */
-					i = (-eop);
+			/* Check sync train ($64 up to to $FF) */
+			for (h = 0; h < SYNCSEQSIZE; h++) {
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sv + h)
+					break;
 			}
+			if (h != SYNCSEQSIZE)
+				continue;
+
+			/* Plausibility check: a non-zero value is expected after the sync sequence */
+			if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) == 0x00)
+				continue;
+
+			/* Valid post-sync value found, mark start of data */
+			sod = i + SYNCSEQSIZE * BITSINABYTE + BITSINABYTE;
+
+			/* Read header */
+			for (h = 0; h < HEADERSIZE; h++) {
+				hd[h] = readttbyte(sod + h * BITSINABYTE, lp, sp, tp, en);
+				if (hd[h] == -1)
+					break;
+			}
+			if (h != HEADERSIZE)
+				continue;
+
+			/* Extract load and end locations */
+			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
+			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
+
+			/* Prevent int wraparound when subtracting 1 from end location
+			   to get the location of the last loaded byte */
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
+
+			/* Plausibility check */
+			if (e < s)
+				continue;
+
+			/* Compute size */
+			x = e - s + 1;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + (HEADERSIZE + x) * BITSINABYTE;
+
+			/* Point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace back from sof through any PREPILOTVALUE bytes (pre-leader) */
+			xinfo = 0;
+			while (readttbyte(sof - BITSINABYTE, lp, sp, tp, en) == PREPILOTVALUE) {
+				sof -= BITSINABYTE;
+				xinfo++;
+			}
+
+			if (addblockdef(lt, sof, sod, eod, eof, xinfo) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
+		} else {
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */	/* find_pilot failed (too few/many), set i to failure point. */
+				i = (-eop);
+		}
+	}
+}
+
+void chr_search(int lt)
+{
+	if (lt > 0) {
+		chr_search_core(lt);
+	} else {
+		int type, types[] = { MEGASAVE_T1, MEGASAVE_T2, MEGASAVE_T3 };
+
+		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
+			chr_search_core(types[type]);
 		}
 	}
 }
