@@ -52,7 +52,7 @@ int aces_describe(int);
 void wild_search(void);
 int wild_describe(int);
 
-void chr_search(void);
+void chr_search(int);
 int chr_describe(int);
 
 void ocean_search(void);

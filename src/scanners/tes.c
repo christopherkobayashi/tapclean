@@ -64,7 +64,6 @@ void testape_search (void)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
-	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
 	int en, tp, sp, lp;		/* encoding parameters */
@@ -76,7 +75,6 @@ void testape_search (void)
 	static int sypat[SYNCSEQSIZE] = {
 		0x52, 0x42
 	};
-	int match;			/* condition variable */
 
 
 	en = ft[THISLOADER].en;
@@ -96,20 +94,13 @@ void testape_search (void)
 			i = eop;
 
 			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
-			for (h = 0; h < SYNCSEQSIZE; h++)
-				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
-
-			/* Note: no need to check if readttbyte is returning -1, for
-				 the following comparison (DONE ON ALL READ BYTES)
-				 will fail all the same in that case */
-
-			/* Check sync train. We may use the find_seq() facility too */
-			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
-				if (pat[h] != sypat[h])
-					match = 0;
+			for (h = 0; h < SYNCSEQSIZE; h++) {
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sypat[h])
+					break;
+			}
 
 			/* Sync train doesn't match */
-			if (!match)
+			if (h != SYNCSEQSIZE)
 				continue;
 
 			/* Valid sync train found, mark start of data */

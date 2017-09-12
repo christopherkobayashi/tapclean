@@ -63,7 +63,6 @@ void powerload_search (void)
 {
 	int i, h, post;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
-	int pat[SYNCSEQSIZE];		/* buffer to store a sync train */
 	int ib;				/* condition variable */
 
 	int en, tp, sp, lp;		/* encoding parameters */
@@ -75,7 +74,6 @@ void powerload_search (void)
 	static int sypat[SYNCSEQSIZE] = {
 		0x09,0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00
 	};
-	int match;			/* condition variable */
 
 	int xinfo, meta1;		/* extra info used in addblockdef() */
 
@@ -140,20 +138,13 @@ void powerload_search (void)
 			i = eop;
 
 			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
-			for (h = 0; h < SYNCSEQSIZE; h++)
-				pat[h] = readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en);
-
-			/* Note: no need to check if readttbyte is returning -1, for
-			         the following comparison (DONE ON ALL READ BYTES)
-			         will fail all the same in that case */
-
-			/* Check sync train. We may use the find_seq() facility too */
-			for (match = 1, h = 0; h < SYNCSEQSIZE; h++)
-				if (pat[h] != sypat[h])
-					match = 0;
+			for (h = 0; h < SYNCSEQSIZE; h++) {
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sypat[h])
+					break;
+			}
 
 			/* Sync train doesn't match */
-			if (!match)
+			if (h != SYNCSEQSIZE)
 				continue;
 
 			/* Valid sync train found, mark start of data */
