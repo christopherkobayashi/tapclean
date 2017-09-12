@@ -230,7 +230,7 @@ int alternativesw_describe(int);
 void chuckieegg_search(void);
 int chuckieegg_describe(int);
 
-void alternativedk_search(void);
+void alternativedk_search(int);
 int alternativedk_describe(int);
 
 void powerload_search(void);

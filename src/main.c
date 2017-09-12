@@ -1062,7 +1062,7 @@ static void search_tap(void)
 				chuckieegg_search();
 
 			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
-				alternativedk_search();
+				alternativedk_search(0);
 
 			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 				powerload_search();
@@ -1330,7 +1330,7 @@ static void search_tap(void)
 			//	alternativesw_search();
 
 			//if (ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
-			//	alternativedk_search();
+			//	alternativedk_search(0);
 
 			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();

@@ -83,7 +83,7 @@ static int alternativedk_find_pilot (int variant, int pos)
 	return 0;
 }
 
-void alternativedk_search (void)
+static void alternativedk_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -93,92 +93,88 @@ void alternativedk_search (void)
 	unsigned int s;			/* block location referred to C64 memory */
 	unsigned int x; 		/* block size */
 
-	int type, variant;
-
 	int xinfo;			/* extra info used in addblockdef() */
 
-	for (type = 1; type <= 4; type++) {
-		switch (type) {
-			case 1:
-				variant = ALTERDK_T1;
-				break;
-			case 2:
-				variant = ALTERDK_T2;
-				break;
-			case 3:
-				variant = ALTERDK_T3;
-				break;
-			default:
-				variant = ALTERDK_T4;
+
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	mp = ft[lt].mp;
+	sv = ft[lt].sv;
+
+	if (!quiet) {
+		sprintf(lin, "  Alternative SW (DK) T%d", lt - ALTERDK_T1 + 1);
+		msgout(lin);
+	}
+
+	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+		eop = alternativedk_find_pilot(lt, i);
+
+		if (eop > 0) {
+			/* Valid pilot found, mark start of file */
+			sof = i;
+			i = eop;
+
+			/* Check if there's a valid sync bit for this loader */
+			if (readttbit(i, mp, sp, tp) != sv)
+				continue;
+
+			/* Check for 2 valid bits to finish off the sync sequence */
+			if (readttbit(i, mp, sp, tp) < 0)
+				continue;
+
+			if (readttbit(i, mp, sp, tp) < 0)
+				continue;
+
+			/* Take into account sync bits */
+			i += SYNCSEQSIZEBITS;
+
+			/* Valid sync train found, mark start of data */
+			sod = i;
+
+			/* Read load address MSB */
+			s = readttbyte(sod, mp, sp, tp, en);
+			if (s == -1)
+				continue;
+
+			/* Set size */
+			x = 0x100;
+
+			/* Point to the first pulse of the checkbyte (that's final) */
+			eod = sod + x * BITSINABYTE;
+
+			/* Initially point to the last pulse of the checkbyte */
+			eof = eod + BITSINABYTE - 1;
+
+			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+			h = 0;
+			while (eof < tap.len - 1 &&
+					h++ < MAXTRAILER &&
+					readttbit(eof + 1, mp, sp, tp) >= 0)
+				eof++;
+
+			/* Store the load address MSB as extra-info */
+			xinfo = (int) s;
+
+			if (addblockdef(lt, sof, sod, eod, eof, xinfo) >= 0)
+				i = eof;	/* Search for further files starting from the end of this one */
+
+		} else {
+			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
+				i = (-eop);
 		}
+	}
+}
 
-		en = ft[variant].en;
-		tp = ft[variant].tp;
-		sp = ft[variant].sp;
-		mp = ft[variant].mp;
-		sv = ft[variant].sv;
+void alternativedk_search(int lt)
+{
+	if (lt > 0) {
+		alternativedk_search_core(lt);
+	} else {
+		int type, types[] = { ALTERDK_T1, ALTERDK_T2, ALTERDK_T3, ALTERDK_T4 };
 
-		if (!quiet) {
-			sprintf(lin, "  Alternative SW (DK) T%d", type);
-			msgout(lin);
-		}
-
-		for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-			eop = alternativedk_find_pilot(variant, i);
-
-			if (eop > 0) {
-				/* Valid pilot found, mark start of file */
-				sof = i;
-				i = eop;
-
-				/* Check if there's a valid sync bit for this loader */
-				if (readttbit(i, mp, sp, tp) != sv)
-					continue;
-
-				/* Check for 2 valid bits to finish off the sync sequence */
-				if (readttbit(i, mp, sp, tp) < 0)
-					continue;
-
-				if (readttbit(i, mp, sp, tp) < 0)
-					continue;
-
-				/* Take into account sync bits */
-				i += SYNCSEQSIZEBITS;
-
-				/* Valid sync train found, mark start of data */
-				sod = i;
-
-				/* Read load address MSB */
-				s = readttbyte(sod, mp, sp, tp, en);
-				if (s == -1)
-					continue;
-
-				/* Set size */
-				x = 0x100;
-
-				/* Point to the first pulse of the checkbyte (that's final) */
-				eod = sod + x * BITSINABYTE;
-
-				/* Initially point to the last pulse of the checkbyte */
-				eof = eod + BITSINABYTE - 1;
-
-				/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-				h = 0;
-				while (eof < tap.len - 1 &&
-						h++ < MAXTRAILER &&
-						readttbit(eof + 1, mp, sp, tp) >= 0)
-					eof++;
-
-				/* Store the load address MSB as extra-info */
-				xinfo = (int) s;
-
-				if (addblockdef(variant, sof, sod, eod, eof, xinfo) >= 0)
-					i = eof;	/* Search for further files starting from the end of this one */
-
-			} else {
-				if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
-					i = (-eop);
-			}
+		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
+			alternativedk_search_core(types[type]);
 		}
 	}
 }
