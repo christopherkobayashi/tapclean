@@ -85,7 +85,7 @@ static void chr_search_core(int lt)
 	sv = ft[lt].sv;
 
 	if (!quiet) {
-		sprintf(lin, "  Mega-Save T%d", type);
+		sprintf(lin, "  Mega-Save T%d", lt - MEGASAVE_T1 + 1);
 		msgout(lin);
 	}
 
