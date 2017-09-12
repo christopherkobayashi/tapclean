@@ -68,7 +68,7 @@ static void snakeload50_search_core(int lt)
 	unsigned int x; 		/* block size */
 
 	/* Expected sync pattern ("eilyK", i.e. "Kylie" read backwards) */
-	int sypat[SYNCSEQSIZE] = {
+	static int sypat[SYNCSEQSIZE] = {
 		0x65, 0x69, 0x6C, 0x79, 0x4B
 	};
 
