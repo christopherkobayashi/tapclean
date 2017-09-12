@@ -56,7 +56,7 @@
 #define ENDOFFSETH	4	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	3	/* end  location (LSB) offset inside header */
 
-static void oceannew1_search_core (int lt)
+static void oceannew1_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -144,7 +144,7 @@ static void oceannew1_search_core (int lt)
 	}
 }
 
-void oceannew1_search (int lt)
+void oceannew1_search(int lt)
 {
 	if (lt > 0) {
 		oceannew1_search_core(lt);
