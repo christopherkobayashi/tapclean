@@ -931,7 +931,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (tap.cbmid == LID_MEGASAVE 	&& ldrswt[nomegasave	].exclude == FALSE && !database_is_full)
-				chr_search(0);
+				chr_search(0);	/* T1/T2 */
 
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1005,7 +1005,7 @@ static void search_tap(void)
 				oceannew2_search();
 
 			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted)
-				snakeload50_search(0);
+				snakeload50_search(0);	/* T1/T2 */
 
 			if (tap.cbmid == LID_SNAKE	&& ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
@@ -1038,7 +1038,7 @@ static void search_tap(void)
 				t108DE0A5_search();
 
 			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
-				freeslow_search(0);
+				freeslow_search(0); /* T1/T2 */
 
 			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].exclude == FALSE && !database_is_full && !aborted)
 				goforgold_search();
@@ -1062,7 +1062,7 @@ static void search_tap(void)
 				chuckieegg_search();
 
 			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
-				alternativedk_search(0);
+				alternativedk_search(0);	/* T1-T4 */
 
 			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 				powerload_search();
@@ -1117,7 +1117,7 @@ static void search_tap(void)
 			 */
 
 			if (ldrswt[nosnake50	].exclude == FALSE && !database_is_full && !aborted)
-				snakeload50_search(0);
+				snakeload50_search(0);	/* T1/T2 */
 
 			if (ldrswt[nosnake51	].exclude == FALSE && !database_is_full && !aborted)
 				snakeload51_search();
@@ -1155,7 +1155,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (ldrswt[nomegasave	].exclude == FALSE && !database_is_full && !aborted)
-				chr_search(0);
+				chr_search(0);	/* T1/T2 */
 
 			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1215,7 +1215,7 @@ static void search_tap(void)
 				tdi_search();
 
 			if (ldrswt[nooceannew1	].exclude == FALSE && !database_is_full && !aborted)
-				oceannew1_search(0);
+				oceannew1_search(0);	/* T1/T2 */
 
 			if (ldrswt[nooceannew2	].exclude == FALSE && !database_is_full && !aborted)
 				oceannew2_search();
@@ -1269,7 +1269,7 @@ static void search_tap(void)
 				ashdave_search();
 
 			if (ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
-				freeslow_search(0);
+				freeslow_search(0);	/* T1/T2 */
 
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting
@@ -1294,10 +1294,8 @@ static void search_tap(void)
 			if (ldrswt[noddesign	].exclude == FALSE && !database_is_full && !aborted)
 				ddesign_search();
 
-			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted) {
-				msx_search(0);	/* Standard */
-				msx_search(1);	/* Fast */
-			}
+			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
+				msx_search(0);	/* Standard/Fast */
 
 			/*
 			 * Find a mechanism that enables the following scans just upon detecting
@@ -1330,7 +1328,7 @@ static void search_tap(void)
 			//	alternativesw_search();
 
 			//if (ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
-			//	alternativedk_search(0);
+			//	alternativedk_search(0);	/* T1-T4 */
 
 			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();

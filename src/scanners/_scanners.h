@@ -52,7 +52,7 @@ int aces_describe(int);
 void wild_search(void);
 int wild_describe(int);
 
-void chr_search(int);
+void chr_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int chr_describe(int);
 
 void ocean_search(void);
@@ -136,7 +136,7 @@ int hitec_describe(int);
 void tdi_search(void);
 int tdi_describe(int);
 
-void oceannew1_search(int);
+void oceannew1_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int oceannew1_describe(int);
 
 void atlantis_search(void);
@@ -145,7 +145,7 @@ int atlantis_describe(int row);
 void snakeload51_search(void);
 int snakeload51_describe(int);
 
-void snakeload50_search(int);
+void snakeload50_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int snakeload50_describe(int);
 
 void palacef1_search(void);
@@ -206,7 +206,7 @@ int ar_describe_data(int);
 void ashdave_search(void);
 int ashdave_describe(int);
 
-void freeslow_search(int);
+void freeslow_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int freeslow_describe(int);
 
 void goforgold_search(void);
@@ -230,7 +230,7 @@ int alternativesw_describe(int);
 void chuckieegg_search(void);
 int chuckieegg_describe(int);
 
-void alternativedk_search(int);
+void alternativedk_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int alternativedk_describe(int);
 
 void powerload_search(void);
@@ -266,6 +266,5 @@ int creativesparks_describe(int);
 void ddesign_search(void);
 int ddesign_describe(int);
 
-int msx_read_byte(int, int);
-void msx_search(int);
+void msx_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int msx_describe(int);

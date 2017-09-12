@@ -77,7 +77,7 @@ enum {
 #define EA_BLOCKSIZE	256
 #define EA_EOF		0x1a
 
-int msx_read_byte (int pos, int lt)
+static int msx_read_byte (int pos, int lt)
 {
 	int i, bit_count, valid, pulse, bit, byte;
 
@@ -155,18 +155,19 @@ int msx_find_pilot (int pos, int lt)
 	return 0;
 }
 
-void msx_search (int variant)
+static void msx_search_core (int lt)
 {
 	int i, h, pcount;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[H_HEADERSIZE];		/* buffer to store block header info */
 	int sn[D3_SENTINELSIZE];	/* buffer to store sentinel for BASIC file */
 	int dh[D0_HEADERSIZE];		/* buffer to store dump data header info */
-	int lt;				/* loader type (standard or fast) */
 	int b, b1;			/* byte values */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
+
+	int lt_data;			/* loader type for a corresponding DATA file */
 
 	int ftype;			/* type of file */
 
@@ -177,15 +178,13 @@ void msx_search (int variant)
 
 	if (!quiet) {
 		msgout("  MSX Tape ");
-		msgout(variant ? "Fast" : "Standard");
+		msgout((lt == MSX_HEAD) ? "Standard" : "Fast");
 	}
 
 	state = STATE_SEARCH_HEADER;	/* Initially search for a header */
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		if (state == STATE_SEARCH_HEADER) {
-			lt = variant == 0 ? MSX_HEAD : MSX_HEAD_FAST;
-
 			eop = msx_find_pilot(i, lt);
 
 			if (eop > 0) {
@@ -231,9 +230,9 @@ void msx_search (int variant)
 					i = (-eop);
 			}
 		} else {
-			lt = variant == 0 ? MSX_DATA : MSX_DATA_FAST;
+			lt_data = (lt == MSX_HEAD) ? MSX_DATA : MSX_DATA_FAST;
 
-			eop = msx_find_pilot(i, lt);
+			eop = msx_find_pilot(i, lt_data);
 			
 			if (eop > 0) {
 				/* Valid pilot found, mark start of data file */
@@ -249,7 +248,7 @@ void msx_search (int variant)
 							sn[h] = -1;
 
 						for (h = 0, pcount = 0;; h++) {
-							b = msx_read_byte(sod + pcount, lt);
+							b = msx_read_byte(sod + pcount, lt_data);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -284,7 +283,7 @@ void msx_search (int variant)
 
 						xinfo = x;
 
-						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt_data, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 
 						/* Back to searching for header even if we failed adding block here */
@@ -295,7 +294,7 @@ void msx_search (int variant)
 					case FILE_TYPE_D0_MEM_DUMP:
 						/* Read data header header */
 						for (h = 0, pcount = 0; h < D0_HEADERSIZE; h++) {
-							b = msx_read_byte(sod + pcount, lt);
+							b = msx_read_byte(sod + pcount, lt_data);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -330,7 +329,7 @@ void msx_search (int variant)
 
 						/* Parse all data in file in order to point to its end */
 						for (h = 0; h < (int)x; h++) {
-							b = msx_read_byte(sod + pcount, lt);
+							b = msx_read_byte(sod + pcount, lt_data);
 							/* For now we don't try to find the next start bit in order to continue reading */
 							if (b == -1)
 								break;
@@ -345,14 +344,14 @@ void msx_search (int variant)
 						eof = eod + (b1 >> 8) - 1;
 
 						/* Extra byte after data (its meaning is yet unknown) */
-						b = msx_read_byte(sod + pcount, lt);
+						b = msx_read_byte(sod + pcount, lt_data);
 						if (b != -1)
 							eof += b >> 8;
 
 						/* Store the info read from header as extra-info so we don't need to extract it again at the describe stage */
 						xinfo = s + (e << 16);
 
-						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt_data, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;
 
 						/* Back to searching for header even if we failed adding block here */
@@ -363,7 +362,7 @@ void msx_search (int variant)
 					case FILE_TYPE_EA_DATA:
 						/* Parse all data in file in order to point to its end */
 						for (h = 0, pcount = 0; h < EA_BLOCKSIZE; h++) {
-							b = msx_read_byte(sod + pcount, lt);
+							b = msx_read_byte(sod + pcount, lt_data);
 							if (b == -1)
 								break;
 							pcount += b >> 8;
@@ -390,7 +389,7 @@ void msx_search (int variant)
 
 						xinfo = x;
 
-						if (addblockdefex(lt, sof, sod, eod, eof, xinfo, ftype) >= 0)
+						if (addblockdefex(lt_data, sof, sod, eod, eof, xinfo, ftype) >= 0)
 							i = eof;	/* Search for further files starting from the end of this one */
 						else
 							state = STATE_SEARCH_HEADER;
@@ -404,6 +403,19 @@ void msx_search (int variant)
 		}
 	}
 
+}
+
+void msx_search(int lt)
+{
+	if (lt > 0) {
+		msx_search_core(lt);
+	} else {
+		int type, types[] = { MSX_HEAD, MSX_HEAD_FAST };
+
+		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
+			msx_search_core(types[type]);
+		}
+	}
 }
 
 int msx_describe (int row)
