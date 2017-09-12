@@ -55,7 +55,7 @@
 #define ENDOFFSETH	3	/* end  location (MSB) offset inside header */
 #define ENDOFFSETL	2	/* end  location (LSB) offset inside header */
 
-void freeslow_search_core(int lt)
+static void freeslow_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
