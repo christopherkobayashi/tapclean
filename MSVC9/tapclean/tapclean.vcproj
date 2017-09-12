@@ -412,10 +412,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\freeload.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\hitload.c"
 					>
 				</File>
@@ -669,6 +665,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\flashload.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\freeload.c"
 					>
 				</File>
 				<File
