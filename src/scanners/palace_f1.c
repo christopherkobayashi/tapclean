@@ -38,7 +38,9 @@ void palacef1_search(void)
    int i,j,k,sof,sod,eod,eof,tmp,blocks;
    int z;
    int fsync[4]= {0x4A,0x50,0x47,0x29};    /* file sync sequence. */
+   int fsync_b2[4]= {XX,0x45,0x44,0x29};   /* file sync sequence for Barbarian II side B. */
    int bsync[5]= {0x4A,0x50,0x47,0x10};    /* block sync sequence. followed by block #. */
+   int bsync_b2[5]= {0x42,0x4C,0x4B,0x10}; /* block sync sequence. followed by block # for Barbarian II side B. */
 
    if(!quiet)
       msgout("  Palace Tape F1");
@@ -50,12 +52,21 @@ void palacef1_search(void)
       {
          sof=i;
          i=z;
-         if(readttbyte(i, ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==ft[PAL_F1].sv)
+         /* Check the invariant byte of the file sync sequence first for plausibility */
+         if(readttbyte(i+(3*8), ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==fsync[3])
          {
             for(j=0,k=0; j<4; j++)  /* check file sync sequence... */
             {
                if(readttbyte(i+(j*8), ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==fsync[j])
                   k++;
+            }
+            if (k<4)
+            {
+               for(j=1,k=1; j<4; j++)  /* check file sync sequence for Barbarian II... */
+               {
+                  if(readttbyte(i+(j*8), ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==fsync_b2[j])
+                     k++;
+               }
             }
 
             if(k==4)  /* file syncs are present, check block sync sequence... */
@@ -70,6 +81,14 @@ void palacef1_search(void)
                   {
                      if(readttbyte(tmp+(j*8), ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==bsync[j])
                         k++;
+                  }
+                  if (k<4)
+                  {
+                     for(j=0,k=0; j<4; j++)  /* check block sync sequence for Barbarian II... */
+                     {
+                        if(readttbyte(tmp+(j*8), ft[PAL_F1].lp, ft[PAL_F1].sp, ft[PAL_F1].tp, ft[PAL_F1].en)==bsync_b2[j])
+                           k++;
+                     }
                   }
                   if(k==4)    /* block syncs are present... */
                   {
