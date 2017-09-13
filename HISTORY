@@ -19,6 +19,8 @@ v0.36
 	Code quality: Modularised the Tx scan in "Mega-Save", "Freeload
 	 Slowload", "Alternative SW (DK)", and "MSX Tape" (Luigi)
 	Improvement: "Freeload" scanner rewritten (Luigi)
+	Improvement: Added support for "Barbarian II" in "Palace Tape F1"
+	 (Luigi)
 
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order
