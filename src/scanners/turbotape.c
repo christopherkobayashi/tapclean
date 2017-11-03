@@ -56,6 +56,8 @@ further notes:-
 #define SYNC 0x09
 #define HDSZ 21
 
+#define DATA_FILENAME_SUFFIX "_DATA"
+
 /*---------------------------------------------------------------------------
 */
 void turbotape_search(void)
@@ -182,8 +184,8 @@ int turbotape_describe(int row)
    int hd[HDSZ+1];  /* +1 coz I save the ID byte here too */
    char ftype[32];
    char fn[256];
-   char str[2000];
 
+   static char _str[256]; /* ASCII filename */
    static /*long*/ int _db_start=0,_db_end=0; /* DATA BLOCK start/end addresses
                                          these are set by header block describe
                                          for use by a following data block describe. */
@@ -226,13 +228,7 @@ int turbotape_describe(int row)
          fn[i]= hd[6+i];
       fn[i]=0;
       trim_string(fn);
-      pet2text(str,fn);
-
-      if(blk[row]->fn!=NULL)
-         free(blk[row]->fn);
-      blk[row]->fn = (char*)malloc(strlen(str)+1);
-
-      strcpy(blk[row]->fn, str);
+      pet2text(_str,fn);
 
       sprintf(lin,"\n - Header Size : %d bytes", blk[row]->xi);
       strcat(info,lin);
@@ -247,6 +243,14 @@ int turbotape_describe(int row)
    }
 
    /* common code for both headers and data files... */
+
+   /* set filename */
+   if(blk[row]->fn!=NULL)
+      free(blk[row]->fn);
+   blk[row]->fn = (char*)malloc(strlen(_str)+((type==0)?strlen(DATA_FILENAME_SUFFIX):0)+1);
+   strcpy(blk[row]->fn, _str);
+   if(type==0)
+      strcat(blk[row]->fn, DATA_FILENAME_SUFFIX);
 
    /* get pilot trailer lengths... */
    blk[row]->pilot_len= blk[row]->p2- blk[row]->p1 -80;
