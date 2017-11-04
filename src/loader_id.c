@@ -257,6 +257,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xC039C251, LID_OCNEW1_T2},
 		{0x7FFB98B2, LID_OCNEW2},	/* Ocean New 2   (Shadow Warriors) */
 		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (Klax) */
+		{0xF96B0635, LID_OCNEW2},	/* Ocean New 2   (Hero Quest) */
 
 		{0x5622E174, LID_ATLAN},	/* Atlantis loader. */
 
