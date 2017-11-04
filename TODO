@@ -7,6 +7,8 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
+ - Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2"
+   so the latter should be extended with multiple Tx variants.
  o The "Visiload" scanner should extract initial loader parameters from the CBM 
    Data block as these were configurable at mastering time, as shown by early 
    tapes. A similar change was done when rewriting "Rack-It" (Luigi)
