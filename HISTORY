@@ -6,6 +6,13 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for additional loaders
 
+v0.37
+	Improvement: The filename occurring within a "Turbotape 250" header
+	 file is also embedded in the PRG filename of its data counterpart
+	 (Luigi)
+	Improvement: Added signature of the "Ocean New F2" instances used
+	 by "Hero Quest", and "World Championship Boxing Manager" (Luigi)
+
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
 	Code quality: Implemented a number of rationalisations across the
