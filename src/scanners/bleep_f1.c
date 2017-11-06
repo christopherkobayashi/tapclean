@@ -54,18 +54,18 @@ void bleep_search(void)
 
    if(!quiet)
       msgout("  Bleepload");
-         
 
    plt=0x0F;  /* set inital pilot value. */
 
-   for(i=20; i<tap.len; i++)
+   for(i=20; i<tap.len - 8; i++)
    {
       byt=readttbyte(i, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);  /* look for a pilot byte */
       if(byt==plt)
       {
          sof=i;
+         i+=8;
 
-         zcnt=0;
+         zcnt=1;
          while(readttbyte(i, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en)==plt)   /* look for a sequence of at least x... */
          {
             i+=8;
@@ -78,11 +78,14 @@ void bleep_search(void)
                sod = i+16;  /* points to 1st byte after 2nd sync (same as pilot byte) */
 
                /* decode and set new pilot value...  */
-               plt = readttbyte(sod, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
+               tmp = readttbyte(sod, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
+               if (tmp < 0) continue;
+               plt = tmp;
 
                /* decode block number to discover data size... */
                /* block 00 is 64 bytes, others are 256.        */
                tmp = readttbyte(sod+8, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
+               if (tmp < 0) continue;
                if(tmp==0)
                {
                   len = 64 +4;   /* +4 accounts for header  */
@@ -100,11 +103,11 @@ void bleep_search(void)
 
                /* now get dummy byte count... */
                tmp = readttbyte(eod+8, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en);
+               if (tmp < 0) continue;
                eof = eod+((tmp+1)*8)+24+7;  /* tmp+1 accounts for the count itself   */
                                             /*+24 accounts for exe address and spare byte */
 
                addblockdef(BLEEP, sof,sod,eod,eof, tmp); /* note: last param is dummy byte count. */
-
 
                /* check for presence of final trigger block (8 bytes)   */
                if(readttbyte(eof+1, ft[BLEEP].lp, ft[BLEEP].sp, ft[BLEEP].tp, ft[BLEEP].en)==0)
