@@ -453,7 +453,7 @@ void visiload_search(void)
                      {
                         sprintf(lin,"\nFATAL : read error in Visiload header! ($%04X).",j+(hcnt*(8+ab)));
                         msgout(lin);
-                        sprintf(lin,"\nHeader begins at $%04X and should hold %d bytes.",j,HDSZ+ah);
+                        sprintf(lin,"\nHeader begins at $%04X and should hold %d bytes (%d bits per byte).",j,HDSZ+ah,8+ab);
                         msgout(lin);
 
                         sprintf(lin,"\nVisiload search was aborted.");
