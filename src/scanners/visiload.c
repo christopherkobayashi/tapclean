@@ -470,8 +470,9 @@ void visiload_search(void)
                   }
                }
 
+               /* Break out from the current loop when there's a read error in Visiload header */
                if (hcnt != HDSZ+ah+1)
-               	break;
+                  break;
 
                start= (hd[2+ah]<<8) + hd[3+ah];  /* start address is at offsets 2,3 */
                end= (hd[0+ah]<<8) + hd[1+ah];    /* end address is at offsets 0,1 */
@@ -601,6 +602,10 @@ void visiload_search(void)
                sod= j;
             }
             while(j<slice_end-100);
+
+            /* Break out from the current loop when there's a read error in Visiload header */
+            if (hcnt != HDSZ+ah+1)
+               break;
 
          }
       }
