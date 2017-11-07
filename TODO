@@ -7,6 +7,7 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
+ - Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
  - Allow a few more non-reserved characters in PRG filenames (Fredric)
  - Rewrite Bleepload scanners and make them usable with the "skewadapt" option
    as "bleep_f2.c" seems to struggle with it (Luigi)
