@@ -222,8 +222,8 @@ int ashdave_describe (int row)
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	sprintf(lin,"\n - Block ID : $%02X", hd[BLKNUMOFFSET]);
-	strcat(info,lin);
+	sprintf(lin, "\n - Block ID : $%02X", hd[BLKNUMOFFSET]);
+	strcat(info, lin);
 
 	/* Extract load and end locations */
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);

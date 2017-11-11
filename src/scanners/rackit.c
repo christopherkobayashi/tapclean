@@ -255,7 +255,8 @@ void rackit_search (void)
 	if (cypher_value == -1)
 		return;
 
-	sprintf(lin,"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
+	sprintf(lin,
+		"  Rack-It variables found and set: pv=$%02X, sv=$%02X, en=%s", 
 		ft[THISLOADER].pv, 
 		ft[THISLOADER].sv, 
 		ENDIANNESS_TO_STRING(ft[THISLOADER].en));

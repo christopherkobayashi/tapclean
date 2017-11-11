@@ -266,7 +266,7 @@ int turrican_describe(int row)
 
 	/* Read file type */
 	ftype = blk[row]->meta1;
-	sprintf(lin,"\n - FILE type : $%02X", ftype);
+	sprintf(lin, "\n - FILE type : $%02X", ftype);
 	strcat(info, lin);
 
 	lt = blk[row]->lt;
