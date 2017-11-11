@@ -9,7 +9,7 @@ Note: tasks are marked as per below. Completed tasks are still included here
 
  - Replace FILEIDOFFSET with BLOCKIDOFFSET for consistency; consequently
    amend the comment "file ID offset inside header" (Luigi)
- - Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
+ o Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
