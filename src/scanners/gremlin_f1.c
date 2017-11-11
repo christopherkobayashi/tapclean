@@ -53,7 +53,7 @@
 
 #define HEADERSIZE	4	/* size of block header */
 
-#define BLOCKIDOFFSET	0	/* block ID offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	1	/* load location (LSB) offset inside header */
 #define DATAOFFSETL	3	/* data size (LSB) offset inside header */
@@ -193,7 +193,7 @@ void gremlin_f1_search (void)
 					break;
 
 				/* Extract current sub-block ID, load location, and size */
-				current_id = hd[BLOCKIDOFFSET];
+				current_id = hd[BLKNUMOFFSET];
 				current_s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 				current_x = hd[DATAOFFSETL];
 
@@ -327,7 +327,7 @@ int GREMLIN_F1_describe (int row)
 			hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 		/* Extract current sub-block ID, load location, and size */
-		current_id = hd[BLOCKIDOFFSET];
+		current_id = hd[BLKNUMOFFSET];
 		current_s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 		current_x = hd[DATAOFFSETL];
 

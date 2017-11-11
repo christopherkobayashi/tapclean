@@ -50,7 +50,7 @@
 
 #define HEADERSIZE	5	/* size of block header */
 
-#define BLOCKIDOFFSET	0	/* block ID offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	1	/* load location (LSB) offset inside header */
 #define ENDOFFSETH	4	/* end  location (MSB) offset inside header */
@@ -227,7 +227,7 @@ int snakeload50_describe(int row)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract block ID and print it out */
-	sprintf(lin, "\n - Block ID : $%02X", hd[BLOCKIDOFFSET]);
+	sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
 	strcat(info, lin);
 
 	/* Extract data and test checksum... */

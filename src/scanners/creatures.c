@@ -57,7 +57,7 @@
 
 #define HEADERSIZE	1	/* size of block header */
 
-#define FILEIDOFFSET	0	/* file ID offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 
 struct creatures_level_table_s {
 	unsigned char id;	/* file ID */
@@ -160,7 +160,7 @@ void creatures_search (void)
 
 			/* Lookup load and end addresses from level table by matching ID */
 			for (j = 0; j < CREATURES_TABLE_SIZE; j++) {
-				if (hd[FILEIDOFFSET] == creatures_level_table[j].id) {
+				if (hd[BLKNUMOFFSET] == creatures_level_table[j].id) {
 					s = creatures_level_table[j].s;
 					e = creatures_level_table[j].e;
 

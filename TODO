@@ -7,17 +7,17 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
- - Replace FILEIDOFFSET with BLOCKIDOFFSET for consistency; consequently
+ o Replace FILEIDOFFSET with BLKNUMOFFSET for consistency; consequently
    amend the comment "file ID offset inside header" (Luigi)
  o Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
+ - Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2"
+   so the latter should be extended with multiple Tx variants (Luigi)
  - Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
  - Allow a few more non-reserved characters in PRG filenames (Fredric)
  - Rewrite Bleepload scanners and make them usable with the "skewadapt" option
    as "bleep_f2.c" seems to struggle with it (Luigi)
- - Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2"
-   so the latter should be extended with multiple Tx variants (Luigi)
  o The "Visiload" scanner should extract initial loader parameters from the CBM 
    Data block as these were configurable at mastering time, as shown by early 
    tapes. A similar change was done when rewriting "Rack-It" (Luigi)

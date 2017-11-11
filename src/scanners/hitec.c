@@ -52,7 +52,7 @@
 
 #define HEADERSIZE	8	/* size of block header */
 
-#define BLOCKIDOFFSET	0	/* block ID offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	3	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	2	/* load location (LSB) offset inside header */
 #define ENDOFFSETH	5	/* end  location (MSB) offset inside header */
@@ -201,7 +201,7 @@ int hitec_describe(int row)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract block ID and execution address and print these out */
-	sprintf(lin, "\n - Block Number : $%02X", hd[BLOCKIDOFFSET]);
+	sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
 	strcat(info, lin);
 	sprintf(lin, "\n - Exe Address : $%04X", hd[EXECOFFSETL] + (hd[EXECOFFSETH] << 8));
 	strcat(info, lin);

@@ -55,7 +55,7 @@
 
 #define HEADERSIZE	4	/* size of block header */
 
-#define FILEIDOFFSET	1	/* filename offset inside header */
+#define BLKNUMOFFSET	1	/* block number offset inside header */
 #define CHKBYOFFSET	3	/* chekcbyte offset inside header */
 
 
@@ -110,7 +110,7 @@ void oceannew3_search (void)
 				continue;
 
 			/* Set load and end locations (work in progress) */
-			s = 0x0D00 + 256 * hd[FILEIDOFFSET];
+			s = 0x0D00 + 256 * hd[BLKNUMOFFSET];
 			e = s + 0x0100;
 
 			/* Prevent int wraparound when subtracting 1 from end location
@@ -165,11 +165,11 @@ int oceannew3_describe (int row)
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i] = readttbyte(s + i * BITSINABYTE, mp, sp, tp, en);
 
-	sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
-	strcat(info,lin);
+	sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
+	strcat(info, lin);
 
 	/* Extract load and end locations */
-	blk[row]->cs = 0x0D00 + 256 * hd[FILEIDOFFSET];
+	blk[row]->cs = 0x0D00 + 256 * hd[BLKNUMOFFSET];
 	blk[row]->ce = blk[row]->cs + 0x0100;
 
 	/* Prevent int wraparound when subtracting 1 from end location

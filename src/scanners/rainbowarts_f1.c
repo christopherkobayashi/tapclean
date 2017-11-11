@@ -53,7 +53,7 @@
 
 #define HEADERSIZE	5	/* size of block header */
 
-#define FILEIDOFFSET	0	/* filename offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	1	/* load location (LSB) offset inside header */
 #define DATAOFFSETH	4	/* data size (MSB) offset inside header */
@@ -172,8 +172,8 @@ int rainbowf1_describe (int row)
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
-	strcat(info,lin);
+	sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
+	strcat(info, lin);
 
 	/* Read/compute C64 memory location for load/end address, and read data size */
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);

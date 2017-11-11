@@ -53,7 +53,7 @@
 
 #define HEADERSIZE	5	/* size of block header */
 
-#define FILEIDOFFSET	0	/* file ID offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	1	/* load location (LSB) offset inside header */
 #define ENDOFFSETH	4	/* end  location (MSB) offset inside header */
@@ -222,7 +222,7 @@ int ashdave_describe (int row)
 	for (i = 0; i < HEADERSIZE; i++)
 		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-	sprintf(lin,"\n - Block ID : $%02X", hd[FILEIDOFFSET]);
+	sprintf(lin,"\n - Block ID : $%02X", hd[BLKNUMOFFSET]);
 	strcat(info,lin);
 
 	/* Extract load and end locations */

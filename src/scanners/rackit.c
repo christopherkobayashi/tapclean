@@ -60,7 +60,7 @@
 #define ENDOFFSETL	4	/* end  location (LSB) offset inside header */
 #define LOADOFFSETH	5	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	6	/* load location (LSB) offset inside header */
-#define FILEIDOFFSET	7	/* file ID offset inside header */
+#define BLKNUMOFFSET	7	/* block number offset inside header */
 
 /* For the variant that uses a 7-byte header (Marauder, Netherworld, Scorpion) */
 #define HEADERSIZEV1	7	/* size of block header */
@@ -71,7 +71,7 @@
 #define ENDOFFSETLV1	3	/* end  location (LSB) offset inside header */
 #define LOADOFFSETHV1	4	/* load location (MSB) offset inside header */
 #define LOADOFFSETLV1	5	/* load location (LSB) offset inside header */
-#define FILEIDOFFSETV1	6	/* file ID offset inside header */
+#define BLKNUMOFFSETV1	6	/* block number offset inside header */
 
 #define RACKIT_CBM_DATA_LOAD_ADDRESS	0x0316
 
@@ -436,10 +436,10 @@ int rackit_describe (int row)
 
 		xor = hd[XOROFFSET];
 
-		sprintf(lin,"\n - Header Size : %d bytes", HEADERSIZE);
-		strcat(info,lin);
-		sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSET]);
-		strcat(info,lin);
+		sprintf(lin, "\n - Header Size : %d bytes", HEADERSIZE);
+		strcat(info, lin);
+		sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
+		strcat(info, lin);
 		sprintf(lin, "\n - XOR cypher value : $%02X", xor);
 		strcat(info, lin);
 
@@ -518,10 +518,10 @@ int rackit_describe (int row)
 		for (i = 0; i < HEADERSIZEV1; i++)
 			hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
-		sprintf(lin,"\n - Header Size : %d bytes", HEADERSIZEV1);
-		strcat(info,lin);
-		sprintf(lin,"\n - Block Number : $%02X", hd[FILEIDOFFSETV1]);
-		strcat(info,lin);
+		sprintf(lin, "\n - Header Size : %d bytes", HEADERSIZEV1);
+		strcat(info, lin);
+		sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSETV1]);
+		strcat(info, lin);
 
 		/* Extract load and end locations */
 		blk[row]->cs = hd[LOADOFFSETLV1] + (hd[LOADOFFSETHV1] << 8);

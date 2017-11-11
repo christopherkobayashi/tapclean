@@ -57,7 +57,7 @@
 
 #define HEADERSIZE	5	/* size of block header */
 
-#define FILEIDOFFSET	0	/* filename offset inside header */
+#define BLKNUMOFFSET	0	/* block number offset inside header */
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	1	/* load location (LSB) offset inside header */
 #define ENDOFFSETH	4	/* end  location (MSB) offset inside header */
@@ -199,9 +199,9 @@ int tequila_describe(int row)
 		hd[i] = readttbyte(s + i * BITSINABYTE, lp, sp, tp, LSbF);
 
 	/* Endianness is MSbF up to File ID so we decode File ID on its own */
-	hd_id = readttbyte(s, lp, sp, tp, en);
-	sprintf(lin,"\n - File ID : $%02X", hd_id);
-	strcat(info,lin);
+	hd_id = readttbyte(s + BLKNUMOFFSET * BITSINABYTE, lp, sp, tp, en);
+	sprintf(lin, "\n - Block Number : $%02X", hd_id);
+	strcat(info, lin);
 
 	/* Extract load and end locations */
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);

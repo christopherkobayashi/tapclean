@@ -13,6 +13,8 @@ v0.37
 	Improvement: Added signature of the "Ocean New F2" instances used
 	 by "Hero Quest", and "World Championship Boxing Manager" (Luigi)
 	Improvement: "Bleepload" scanner rewritten (Luigi)
+	Code quality: Consistently refer to "block number" as such, instead
+	 of also using "block ID" or "file ID" (Luigi)
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)

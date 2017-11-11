@@ -55,7 +55,7 @@
 #define LOADOFFSETL	2	/* load location (LSB) offset inside header */
 #define LOADOFFSETH	3	/* load location (MSB) offset inside header */
 #define NEXTPILOTOFFSET	0	/* next block pilot value offset inside header */
-#define BLOCKIDOFFSET	1	/* file ID offset inside header */
+#define BLKNUMOFFSET	1	/* block number offset inside header */
 
 void bleep_search(void)
 {
@@ -127,7 +127,7 @@ void bleep_search(void)
 				continue;
 
 			/* Set size: 64 bytes for file with ID 0, 256 for others */
-			if (hd[BLOCKIDOFFSET] == 0)
+			if (hd[BLKNUMOFFSET] == 0)
 				x = 0x40;
 			else
 				x = 0x100;
@@ -231,7 +231,7 @@ int bleep_describe(int row)
 	blk[row]->cs = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 
 	/* Set size: 64 bytes for file with ID 0, 256 for others */
-	if (hd[BLOCKIDOFFSET] == 0)
+	if (hd[BLKNUMOFFSET] == 0)
 		blk[row]->cx = 0x40;
 	else
 		blk[row]->cx = 0x100;
@@ -254,7 +254,7 @@ int bleep_describe(int row)
 		blk[row]->pilot_len -= SYNCSEQSIZE;
 
 	/* Extract block ID and pilot value and print them out */
-	sprintf(lin, "\n - Block ID : $%02X", hd[BLOCKIDOFFSET]);
+	sprintf(lin, "\n - Block Number : $%02X", hd[BLKNUMOFFSET]);
 	strcat(info, lin);
 	sprintf(lin, "\n - Pilot value for next block : $%02X", hd[NEXTPILOTOFFSET]);
 	strcat(info, lin);
