@@ -127,10 +127,15 @@ void bleep_search(void)
 				continue;
 
 			/* Set size: 64 bytes for file with ID 0, 256 for others */
-			if (hd[BLKNUMOFFSET] == 0)
+			if (hd[BLKNUMOFFSET] == 0) {
 				x = 0x40;
-			else
+
+				/* Also include bit 1 pulse leader for block 0 */
+				while (readttbit(sof - 1, lp, sp, tp) == 1)
+					sof--;
+			} else {
 				x = 0x100;
+			}
 
 			/* Point to the first pulse of the last data byte (that's final) */
 			eod = sod + (HEADERSIZE + x - 1) * BITSINABYTE;
