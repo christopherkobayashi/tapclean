@@ -192,7 +192,7 @@ int bleep_describe(int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	if(blk[row]->lt == BLEEP_TRIG) {
+	if (blk[row]->lt == BLEEP_TRIG) {
 		s = blk[row]->p2;
 
 		/* set pilot/trailer lengths... */
