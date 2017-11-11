@@ -122,6 +122,10 @@ void bleep_search(void)
 			/* Extract pilot value for next block */
 			pv = hd[NEXTPILOTOFFSET];
 
+			/* Plausibility check: if 0, this could actually be Bleepload Special */
+			if (pv == 0)
+				continue;
+
 			/* Set size: 64 bytes for file with ID 0, 256 for others */
 			if (hd[BLOCKIDOFFSET] == 0)
 				x = 0x40;
