@@ -312,11 +312,11 @@ void gremlin_f2_search (void)
 			/* Check if we had a premature exit */
 			if (current_id != 1) {
 				if (!quiet) {
-					sprintf(lin,"\nFATAL : read error in Gremlin F2 header!");
+					sprintf(lin, "\nFATAL : read error in Gremlin F2 header!");
 					msgout(lin);
-					sprintf(lin,"\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
+					sprintf(lin, "\nGremlin F2 search was aborted at $%04X.", current_sod + h * BITSINABYTE);
 					msgout(lin);
-					sprintf(lin,"\nIncreasing read tolerance should allow detection of Gremlin F2 files. ");
+					sprintf(lin, "\nIncreasing read tolerance should allow detection of Gremlin F2 files. ");
 					msgout(lin);
 				}
 				continue;
@@ -434,11 +434,11 @@ int GREMLIN_F2_describe (int row)
 			current_x = 0x100;
 
 #ifdef DEBUG
-		sprintf(lin,"\n - Block Number : $%02X", current_id);
+		sprintf(lin, "\n - Block Number : $%02X", current_id);
 		strcat(info, lin);
-		sprintf(lin,"\n - Load address : $%04X", current_s);
+		sprintf(lin, "\n - Load address : $%04X", current_s);
 		strcat(info, lin);
-		sprintf(lin,"\n - Block size (bytes) : $%02X\n", current_x);
+		sprintf(lin, "\n - Block size (bytes) : $%02X\n", current_x);
 		strcat(info, lin);
 #endif
 

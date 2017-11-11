@@ -460,7 +460,7 @@ int msx_describe (int row)
 		blk[row]->cx = 0;
 		blk[row]->ce = 0;
 
-		sprintf(lin,"\n - DATA FILE type : $%02X", hd[0]);
+		sprintf(lin, "\n - DATA FILE type : $%02X", hd[0]);
 		strcat(info, lin);
 		switch(hd[0]) {
 			case FILE_TYPE_D3_BASIC:

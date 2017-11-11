@@ -259,7 +259,7 @@ int accolade_describe (int row)
 		} while (!done);
 	} while (s + boff + (cnt * BITSINABYTE) < blk[row]->p3 - BITSINABYTE);
 
-	sprintf(lin,"\n - Verified sub-block checkbytes : %d of %d", good, blocks);
+	sprintf(lin, "\n - Verified sub-block checkbytes : %d of %d", good, blocks);
 	strcat(info, lin);
 
 	/* In case of multiple checksums in a file, use counts instead of a checksum pair */

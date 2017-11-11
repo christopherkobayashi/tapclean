@@ -118,7 +118,8 @@ void burner_search (void)
 	ft[THISLOADER].sv = sv;	/* is this really needed by find_pilot()? */
 	ft[THISLOADER].en = en;
 
-	sprintf(lin,"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s",
+	sprintf(lin,
+		"  Burner variables found and set: pv=$%02X, sv=$%02X, en=%s",
 		pv,
 		sv,
 		ENDIANNESS_TO_STRING(en));
