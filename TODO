@@ -7,6 +7,11 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
+ - Replace FILEIDOFFSET with BLOCKIDOFFSET for consistency; consequently
+   amend the comment "file ID offset inside header" (Luigi)
+ - Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
+ - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
+   mastered by the same program with different settings (Luigi)
  - Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
  - Allow a few more non-reserved characters in PRG filenames (Fredric)
  - Rewrite Bleepload scanners and make them usable with the "skewadapt" option
@@ -69,8 +74,6 @@ Note: tasks are marked as per below. Completed tasks are still included here
     CHR T2 : Ultra-Speed x7 (medium)
     CHR T3 : Hyper-Speed x5 (slowest)
    The scanner should be renamed (Ziggy72)
- - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
-   mastered by the same program with different settings (Luigi)
  - The code that starts with:
     find_decode_block(CBM_DATA, 1);
    could be replaced with a lookup within the cbm_program[] array as it is 
