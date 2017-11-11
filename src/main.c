@@ -1069,10 +1069,10 @@ static void search_tap(void)
 
 			/* Keep the order of Gremlin scanners to F2 first and then F1 */
 			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf2	].exclude == FALSE  && !database_is_full && !aborted)
-				GREMLIN_F2_search();
+				gremlin_f2_search();
 
 			if (tap.cbmid == LID_GREMLIN	&& ldrswt[nogremlinf1	].exclude == FALSE  && !database_is_full && !aborted)
-				GREMLIN_F1_search();
+				gremlin_f1_search();
 
 			if (tap.cbmid == LID_EASYTAPE	&& ldrswt[noeasytape	].exclude == FALSE && !database_is_full && !aborted)
 				easytape_search();
@@ -1334,10 +1334,10 @@ static void search_tap(void)
 			//	powerload_search();
 
 			//if (ldrswt[nogremlinf1].exclude == FALSE  && !database_is_full && !aborted)
-			//	GREMLIN_F1_search();
+			//	gremlin_f1_search();
 
 			//if (ldrswt[nogremlinf2].exclude == FALSE  && !database_is_full && !aborted)
-			//	GREMLIN_F2_search();
+			//	gremlin_f2_search();
 
 			//if (ldrswt[nocsparks	].exclude == FALSE && !database_is_full && !aborted)
 			//	creativesparks_search();

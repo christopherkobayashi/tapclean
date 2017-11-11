@@ -196,7 +196,7 @@ static int GREMLIN_F2_find_variant (int cbm_index)
 	return variant;
 }
 
-void GREMLIN_F2_search (void)
+void gremlin_f2_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */

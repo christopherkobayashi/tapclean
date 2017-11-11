@@ -89,7 +89,7 @@ static int GREMLIN_F1_decrypt (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-void GREMLIN_F1_search (void)
+void gremlin_f1_search (void)
 {
 	int i, h, blk_count;		/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
