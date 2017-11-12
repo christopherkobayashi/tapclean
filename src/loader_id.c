@@ -70,27 +70,45 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xD5961DB0, LID_ODE},
 
 		{0xAD318CC4, LID_BLEEP},
-		{0x230936D6, LID_BLEEP},
-		{0x39B7A588, LID_BLEEP},
-		{0x2277F4DD, LID_BLEEP},
-		{0x4CF069E0, LID_BLEEP},
-		{0x3B4A219E, LID_BLEEP},
-		{0xAFD39E15, LID_BLEEP},
-		{0x9B898EF1, LID_BLEEP},
-		{0xAEAD5C1E, LID_BLEEP},
-		{0x8B5FA78A, LID_BLEEP},
+		{0x230936D6, LID_BLEEP},	/* Bubble Bobble, Rock'n Wrestle */
+		{0x39B7A588, LID_BLEEP},	/* Code Hunter */
+		{0x2277F4DD, LID_BLEEP},	/* Druid */
+		{0x4CF069E0, LID_BLEEP},	/* Force One */
+		{0x3B4A219E, LID_BLEEP},	/* Flying Shark, Graphic Editor, Gunstar, Twinky Goes Hiking, ICUPS, Mission A.D., Scorpius, UFO */
+		{0xAFD39E15, LID_BLEEP},	/* Gothik, Halls of the Things, IO, Pandora, Rainbow Dragon */
+		{0x9B898EF1, LID_BLEEP},	/* Harvey Headbanger */
+		{0xAEAD5C1E, LID_BLEEP},	/* I, Ball */
+		{0x8B5FA78A, LID_BLEEP},	/* Spiky Harold */
 		{0x09A49BB4, LID_BLEEP},
-		{0x58583B59, LID_BLEEP},
+		{0x58583B59, LID_BLEEP},	/* Park Patrol, Starglider, "Sentinel, The" */
 		{0xF33ED7A2, LID_BLEEP},
-		{0x4825AB54, LID_BLEEP},
+		{0x4825AB54, LID_BLEEP},	/* Thrust */
 		{0x5DD93BE5, LID_BLEEP},
-		{0xEB752E5F, LID_BLEEP},
-		{0x1EB8DA0A, LID_BLEEP},
+		{0xEB752E5F, LID_BLEEP},	/* "Willow Pattern Adventure, The" */
+		{0x1EB8DA0A, LID_BLEEP},	/* Samurai Warrior - The Battles Of Usagi Yojimbo */
 		{0x2BF72881, LID_BLEEP},
-		{0x59142D65, LID_BLEEP},
-		{0x723AD943, LID_BLEEP},
-		{0xE24E270C, LID_BLEEP},
-		{0xCD8D92EE, LID_BLEEP},
+		{0x59142D65, LID_BLEEP},	/* Star Trek - The Rebel Universe */
+		{0x723AD943, LID_BLEEP},	/* Imagination */
+		{0xE24E270C, LID_BLEEP},	/* Captain Fizz Meets The Blaster-Trons */
+		{0xCD8D92EE, LID_BLEEP},	/* Decathlon */
+		{0x9359531D, LID_BLEEP},	/* Ballistix */
+		{0xA415CDE9, LID_BLEEP},	/* Batman - The Caped Crusader */
+		{0x6D21D6E4, LID_BLEEP},	/* Batman - The Caped Crusader */
+		{0x48BB8D93, LID_BLEEP},	/* Blood Money */
+		{0x8D76173D, LID_BLEEP},	/* Cloud Kingdom */
+		{0x35DEBB4F, LID_BLEEP},	/* Freak Factory */
+		{0x2EF41AFB, LID_BLEEP},	/* Raging Beast */
+		{0x001FE8ED, LID_BLEEP},	/* Seabase Delta */
+		{0xC22F5F57, LID_BLEEP},	/* "Happiest Days Of Your Life, The" */
+		{0xF858A7FA, LID_BLEEP},	/* Thunderbirds */
+		{0x42D47C30, LID_BLEEP},	/* War Cars Construction Set */
+		{0x05788B5F, LID_BLEEP},	/* Zolyx */
+		{0xF8F0B452, LID_BLEEP},	/* American Road Race*/
+		{0x83936DEA, LID_BLEEP},	/* Dynamic Duo */
+		{0x7975553E, LID_BLEEP},	/* "Mystery Of The Nile, The" */
+		{0x2989DE57, LID_BLEEP},	/* "OCP Art Studio, The" */
+		{0xF206B18C, LID_BLEEP},	/* "OCP Art Studio, The" */
+		{0x8B6D73BD, LID_BLEEP},	/* "Prince, The" */
 
 		{0x366784C8, LID_MEGASAVE},
 
