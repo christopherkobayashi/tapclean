@@ -51,6 +51,7 @@
 #define MAXTRAILER	2040	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
+#define TRIGGERSIZE	8	/* size of trigger */
 
 #define LOADOFFSETL	2	/* load location (LSB) offset inside header */
 #define LOADOFFSETH	3	/* load location (MSB) offset inside header */
@@ -158,8 +159,8 @@ void bleep_search(void)
 				if (readttbyte(eof + 1, lp, sp, tp, en) == 0) {
 					sof = eof + 1;
 					sod = sof;
-					eod = sof + 7 * BITSINABYTE;
-					eof = sof + 8 * BITSINABYTE - 1;
+					eod = sof + (TRIGGERSIZE - 1) * BITSINABYTE;
+					eof = sof + TRIGGERSIZE * BITSINABYTE - 1;
 
 					/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 					h = 0;
@@ -198,31 +199,43 @@ int bleep_describe(int row)
 	lp = ft[THISLOADER].lp;
 
 	if (blk[row]->lt == BLEEP_TRIG) {
+		int trigger[TRIGGERSIZE];
+
 		s = blk[row]->p2;
 
 		/* set pilot/trailer lengths... */
 		blk[row]->pilot_len = 0;
 		blk[row]->trail_len = blk[row]->p4 - (blk[row]->p3 + BITSINABYTE - 1);
 
-		sprintf(lin, "\n - Data length : 8 bytes (always)");
-		strcat(info, lin);
-
-		strcat(info, "\n - Contents : ");
-		for (i = 0; i < 8; i++) {
+		rd_err = 0;
+		for (i = 0; i < TRIGGERSIZE; i++) {
 			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
-			// Do NOT increase read errors for this one is not within DATA
-			if (b == -1)
-				strcat(info, "-- ");
-			else {
-				sprintf(lin, "%02X ", b);
+			if (b == -1) {
+				rd_err++;
+
+				/* for experts only */
+				sprintf(lin, "\n - Read Error on byte @$%X (trigger offset: $%04X)", s + (i * BITSINABYTE), i);
 				strcat(info, lin);
+			} else {
+				trigger[i] = b;
 			}
 		}
 
-		blk[row]->rd_err = 0;
+		if (!rd_err) {
+			sprintf(lin, "\n - Cipher Address : $%04X", trigger[0] | (trigger[1] << 8));
+			strcat(info, lin);
+			sprintf(lin, "\n - Start Address : $%04X", trigger[2] | (trigger[3] << 8));
+			strcat(info, lin);
+			sprintf(lin, "\n - End Address : $%04X", trigger[4] | (trigger[5] << 8));
+			strcat(info, lin);
+			sprintf(lin, "\n - Exe Address : $%04X", trigger[6] | (trigger[7] << 8));
+			strcat(info, lin);
+		}
 
-		return 0;
+		blk[row]->rd_err = rd_err;
+
+		return(rd_err);
 	}
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
