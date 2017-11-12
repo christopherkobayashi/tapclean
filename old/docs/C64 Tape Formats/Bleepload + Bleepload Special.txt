@@ -51,13 +51,13 @@ I call this small file "Bleepload Trigger".
 
 Structure... 
 
-8 bytes... 
+2 bytes : Start address of cipher (LSBF)
+2 bytes : Start address of RAM to decipher (LSBF)
+2 bytes : End+1 address of RAM to decipher (LSBF)
+2 bytes : Execution address (LSBF, CPU jumps here after block is deciphered)
 
-!!!! <insert structure here> !!!! 
-
-This 8 byte file is read in when the final 'proper' block executes. It appears to be 
-encrypted and is responsible for triggering some activity in the program, ie. displaying 
-bitmap or starting the game. It is typically read into zero page for deciphering. 
+This 8 byte file is read in when the final 'proper' block executes. It is typically read 
+into zero page for deciphering and executing further code.
 
 
 
