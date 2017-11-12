@@ -330,8 +330,8 @@ int bleep_describe(int row)
 	if (b != -1) {
 		exe_address = b;
 	} else {
-		/* Even if not within data, we cannot validate data reliably if
-		   checksum is unreadable, so that increase read errors */
+		/* Even if not within data, we cannot execute data reliably if
+		   exe address is unreadable, so that increase read errors */
 		rd_err++;
 		exe_address = 0;
 
@@ -344,8 +344,8 @@ int bleep_describe(int row)
 	if (b != -1) {
 		exe_address |= (b << 8);
 	} else {
-		/* Even if not within data, we cannot validate data reliably if
-		   checksum is unreadable, so that increase read errors */
+		/* Even if not within data, we cannot execute data reliably if
+		   exe address is unreadable, so that increase read errors */
 		rd_err++;
 		exe_address = 0;
 
