@@ -95,7 +95,7 @@ void bleep_spc_search(void)
    }
 
    if(pi==0)
-      p[pi++]=0x47;  /* insert a default pb if we didnt find any ($47=Thrust) */
+      p[pi++]=0x47;  /* insert a default pb if we didnt find any */
 
 
    /* now scan the tap for bleepload special chains using each of the pilot
@@ -153,7 +153,7 @@ void bleep_spc_search(void)
                               eof++;
                         }
 
-                        dr =addblockdef(BLEEP_SPC, sof,sod,eod,eof, 0);
+                        dr =addblockdef(BLEEP_SPC, sof,sod,eod,eof, plt);
                         tmp++; /* bump to look for next block number..  */
                         cnt+=2208;
                         done=0;
@@ -175,6 +175,9 @@ int bleep_spc_describe(int row)
 {
    int s,i;
    int hd[8],b,rd_err,cb;
+
+   sprintf(lin,"\n - Pilot byte : $%02X", blk[row]->xi);
+   strcat(info,lin);
 
    s= blk[row]->p2;  /* get first data offset   */
 
