@@ -158,8 +158,8 @@ void bleep_search(void)
 				if (readttbyte(eof + 1, lp, sp, tp, en) == 0) {
 					sof = eof + 1;
 					sod = sof;
-					eod = sof + 56;
-					eof = sof + 63;
+					eod = sof + 7 * BITSINABYTE;
+					eof = sof + 8 * BITSINABYTE - 1;
 
 					/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 					h = 0;
