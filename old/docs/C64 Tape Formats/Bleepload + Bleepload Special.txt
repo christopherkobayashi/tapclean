@@ -32,15 +32,15 @@ Sync  : pb XOR $FF, pb.
 n bytes : Data (default size is 256 bytes, but first block (number 0) is 64 bytes long)
 1 byte  : Dummy byte count (d)
 d bytes : Dummies (all ignored)
-1 byte  : Checksum (XOR of all n data bytes)
+1 byte  : Checksum (0 XOR all n data bytes)
 2 bytes : Execution address (LSBF, CPU jumps here after block is loaded)
-1 byte  : unknown. 
 
 
 Notes:- 
 
 The first block in a chain has pilot tone which is a number of bit 1's (around 2000) there 
-is often corruption in this during first 100+ pulses. 
+is often corruption in this during first 60(ish) pulses due to the datassette motor getting 
+up to speed.
 
 The final block of a chain appears to have an extra 8 bytes (64 pulses) at the end before 
 trailing tone begins, this is actually another file type, it consists of 8 bytes and usually
@@ -55,9 +55,9 @@ Structure...
 
 !!!! <insert structure here> !!!! 
 
-This 8 byte file is read in when the final 'proper' block executes. it appears to be 
+This 8 byte file is read in when the final 'proper' block executes. It appears to be 
 encrypted and is responsible for triggering some activity in the program, ie. displaying 
-bitmap or starting the game. it is typically read into zero page for deciphering. 
+bitmap or starting the game. It is typically read into zero page for deciphering. 
 
 
 
@@ -79,26 +79,33 @@ Each sub-block has the following structure...
 Pilot : pb (*10) (the value of 'pb' can vary between chains and tapes).
 Sync  : pb XOR $FF, pb.
 
-1 byte    : block no. (they start at 0) 
-2 bytes   : load address (LSBF)
+1 byte    : Block number (they begin at 0 and increase by 1)
+2 bytes   : Load address (LSBF)
 1 byte    : ignored
-1 byte    : if equal to load address high +1, this is last block.
-2 bytes   : execution address (LSBF)
-256 bytes : data. 
-1 byte    : checksum (0 XOR all 256 data bytes)
+1 byte    : if equal to load address high +1, this is last block
+2 bytes   : Execution address (LSBF)
+256 bytes : Data
+1 byte    : Checksum (0 XOR all 256 data bytes)
 
 Note: You can tell the difference between "Bleepload" and "Bleepload Special" by looking at
       the 1st byte after the 'sync byte 2' if its 0 then its Bleepload Special. 
 
 Example pb's... 
 
+- Back to the Future : $3D, $3E
+- Ballistix : $48, $49, $52, $53
+- Batman - The Caped Crusader : $3E-$41
+- Bubble Bobble : $34, $35
 - Thrust : $50
-- Park Patrol : $2A 
+- Park Patrol : $2A
+- I, Ball : $47, $48
+- Flying Shark : $65, $01-$16
 
 Notes:- 
 
-The first block in a chain has leading tone which is a number of bit 1's (around 2000), 
-it is often corrupted at the beginning. 
+The first block in a chain has pilot tone which is a number of bit 1's (around 2000) there 
+is often corruption in this during first 60(ish) pulses due to the datassette motor getting 
+up to speed.
 
 
 
