@@ -329,36 +329,31 @@ int bleep_describe(int row)
 	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 	if (b != -1) {
 		exe_address = b;
+
+		i++;
+		b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
+		if (b != -1) {
+			exe_address |= (b << 8);
+
+			sprintf(lin, "\n - Exe Address : $%04X", exe_address);
+			strcat(info, lin);
+		} else {
+			/* Even if not within data, we cannot execute data reliably if
+			   exe address is unreadable, so that increase read errors */
+			rd_err++;
+	
+			/* for experts only */
+			sprintf(lin, "\n - Read Error on MSB of execution address @$%X", s + (i * BITSINABYTE));
+			strcat(info, lin);
+		}
 	} else {
 		/* Even if not within data, we cannot execute data reliably if
 		   exe address is unreadable, so that increase read errors */
 		rd_err++;
-		exe_address = 0;
 
 		/* for experts only */
 		sprintf(lin, "\n - Read Error on LSB of execution address @$%X", s + (i * BITSINABYTE));
 		strcat(info, lin);
-	}
-	i++;
-	b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
-	if (b != -1) {
-		exe_address |= (b << 8);
-	} else {
-		/* Even if not within data, we cannot execute data reliably if
-		   exe address is unreadable, so that increase read errors */
-		rd_err++;
-		exe_address = 0;
-
-		/* for experts only */
-		sprintf(lin, "\n - Read Error on LSB of execution address @$%X", s + (i * BITSINABYTE));
-		strcat(info, lin);
-	}
-
-	if (exe_address) {
-		sprintf(lin, "\n - Exe Address : $%04X", exe_address);
-		strcat(info, lin);
-	} else {
-		strcat(info, "\n - Exe Address : (corrupted)");
 	}
 
 	blk[row]->cs_exp = cb & 0xFF;
