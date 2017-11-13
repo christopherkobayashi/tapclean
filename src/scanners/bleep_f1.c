@@ -201,11 +201,12 @@ int bleep_describe(int row)
 	if (blk[row]->lt == BLEEP_TRIG) {
 		int trigger[TRIGGERSIZE];
 
+		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 		s = blk[row]->p2;
 
 		/* set pilot/trailer lengths... */
 		blk[row]->pilot_len = 0;
-		blk[row]->trail_len = blk[row]->p4 - (blk[row]->p3 + BITSINABYTE - 1);
+		blk[row]->trail_len = blk[row]->p4 - blk[row]->p3 - (BITSINABYTE - 1);
 
 		rd_err = 0;
 		for (i = 0; i < TRIGGERSIZE; i++) {
