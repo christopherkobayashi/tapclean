@@ -80,15 +80,15 @@ int bleep_spc_search_core(int first_sof, int pv)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
+	ft[THISLOADER].pv = pv;
+	ft[THISLOADER].sv = pv ^ 0xFF;
+	ft[THISLOADER].pmin = 5;
+	ft[THISLOADER].pmax = NA;
+
 	sypat[0] = pv ^ 0xFF;
 	sypat[1] = pv;
 
 	for (last_eof = first_sof, i = first_sof; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		ft[THISLOADER].pv = pv;
-		ft[THISLOADER].sv = pv ^ 0xFF;
-		ft[THISLOADER].pmin = 5;
-		ft[THISLOADER].pmax = NA;
-
 		eop = find_pilot(i, THISLOADER);
 
 		if (eop > 0) {
