@@ -192,7 +192,7 @@ BuildCmd=
 [Unit17]
 FileName=..\src\scanners\bleep_f2.c
 CompileCpp=0
-Folder=scanners
+Folder=rewritten
 Compile=1
 Link=1
 Priority=1000

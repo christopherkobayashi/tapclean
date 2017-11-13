@@ -380,10 +380,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\bleep_f2.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\c64tape.c"
 					>
 				</File>
@@ -645,6 +641,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\bleep_f1.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\bleep_f2.c"
 					>
 				</File>
 				<File
