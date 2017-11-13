@@ -240,60 +240,54 @@ void visiload_search(void)
 
 		} else if ((unsigned int) blk[ib]->cx == VISILOAD_CBM_DATA_SIZE) {
 
-			int *buf, bufsz;
+			int buf[VISILOAD_CBM_DATA_SIZE];
 
-			bufsz = blk[ib]->cx;
+			int seq_endianness_and_bpb[12] = {
+				0xAD, 0x0D, 0xDD, 0x4A, 0x2C, 0x0D, 0xDC, XX, 0xFC, 0x60, 0xA2, XX
+			};
 
-			buf = (int *) malloc (bufsz * sizeof(int));
-			if (buf != NULL) {
-				int seq_endianness_and_bpb[12] = {
-					0xAD, 0x0D, 0xDD, 0x4A, 0x2C, 0x0D, 0xDC, XX, 0xFC, 0x60, 0xA2, XX
-				};
+			int seq_header_bytes[] = {
+				0xA0, XX, 0x20, XX, 0x03, 0x99, 0xAC, 0x00, 0x88, 0x10, 0xF7
+			};
 
-				int seq_header_bytes[] = {
-					0xA0, XX, 0x20, XX, 0x03, 0x99, 0xAC, 0x00, 0x88, 0x10, 0xF7
-				};
+			int seq_pulse_threshold[] = {
+				0xA9, XX, 0x8D, 0x04, 0xDD, 0xA9, XX, 0x8D, 0x05, 0xDD
+			};
 
-				int seq_pulse_threshold[] = {
-					0xA9, XX, 0x8D, 0x04, 0xDD, 0xA9, XX, 0x8D, 0x05, 0xDD
-				};
+			int index, offset;
 
-				int index, offset;
+			/* Make an 'int' copy for use in find_seq() */
+			for (index = 0; index < VISILOAD_CBM_DATA_SIZE; index++)
+				buf[index] = blk[ib]->dd[index];
 
-				/* Make an 'int' copy for use in find_seq() */
-				for (index = 0; index < bufsz; index++)
-					buf[index] = blk[ib]->dd[index];
+			/* We now look for invariants to extract loader parameters */
 
-				/* We now look for invariants to extract loader parameters */
+			match = 1;
 
-				match = 1;
-
-				offset = find_seq (buf, bufsz, seq_endianness_and_bpb, sizeof(seq_endianness_and_bpb) / sizeof(seq_endianness_and_bpb[0]));
-				if (offset == -1) {
-					match = 0;
-				} else {
-					en = (buf[offset + 7] == OPC_ROL) ? MSbF : LSbF;
-					ab = buf[offset + 11] - 8;
-				}
-
-				offset = find_seq (buf, bufsz, seq_header_bytes, sizeof(seq_header_bytes) / sizeof(seq_header_bytes[0]));
-				if (offset == -1) {
-					match = 0;
-				} else {
-					ah = buf[offset + 1] - 3;
-				}
-
-				offset = find_seq (buf, bufsz, seq_pulse_threshold, sizeof(seq_pulse_threshold) / sizeof(seq_pulse_threshold[0]));
-				if (offset == -1) {
-					match = 0;
-				} else {
-					threshold = buf[offset + 1] + 256 * buf[offset + 6];
-				}
-
-				slice_start = blk[ib]->p4 + 1;	/* Set to CBM Dta end + 1 */
-
-				free (buf);
+			offset = find_seq(buf, VISILOAD_CBM_DATA_SIZE, seq_endianness_and_bpb, sizeof(seq_endianness_and_bpb) / sizeof(seq_endianness_and_bpb[0]));
+			if (offset == -1) {
+				match = 0;
+			} else {
+				en = (buf[offset + 7] == OPC_ROL) ? MSbF : LSbF;
+				ab = buf[offset + 11] - 8;
 			}
+
+			offset = find_seq(buf, VISILOAD_CBM_DATA_SIZE, seq_header_bytes, sizeof(seq_header_bytes) / sizeof(seq_header_bytes[0]));
+			if (offset == -1) {
+				match = 0;
+			} else {
+				ah = buf[offset + 1] - 3;
+			}
+
+			offset = find_seq(buf, VISILOAD_CBM_DATA_SIZE, seq_pulse_threshold, sizeof(seq_pulse_threshold) / sizeof(seq_pulse_threshold[0]));
+			if (offset == -1) {
+				match = 0;
+			} else {
+				threshold = buf[offset + 1] + 256 * buf[offset + 6];
+			}
+
+			slice_start = blk[ib]->p4 + 1;	/* Set to CBM Dta end + 1 */
+
 		}
 
 		/* Parameter extraction successful? */
