@@ -1,4 +1,5 @@
 Makefile.win
+TAPClean.layout
 *.o
 *.exe
 tcreport.txt
