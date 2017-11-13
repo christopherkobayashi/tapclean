@@ -132,10 +132,8 @@ int bleep_spc_search_core(int first_sof, int pv)
 				e--;
 
 			/* Plausibility check */
-			if (e < s) {
-				printf("\ne < s: %x < %x", e, s);
+			if (e < s)
 				continue;
-			}
 
 			/* Set size (remember e is the end address of the whole chain) */
 			x = 0x100;
