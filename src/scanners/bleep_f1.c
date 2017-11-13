@@ -48,7 +48,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	2	/* amount of sync bytes */
-#define MAXTRAILER	2040	/* max amount of trailer pulses read in */
+#define MAXTRAILER	2048	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	4	/* size of block header */
 #define TRIGGERSIZE	8	/* size of trigger */
