@@ -48,7 +48,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	2	/* amount of sync bytes */
-#define MAXTRAILER	2040	/* max amount of trailer pulses read in */
+#define MAXTRAILER	2048	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	7	/* size of block header */
 
@@ -124,10 +124,20 @@ int bleep_spc_search_core(int first_sof, int pv)
 			s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 			e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-			if (e < s)
-				continue;
+			/* Prevent int wraparound when subtracting 1 from end location
+			   to get the location of the last loaded byte */
+			if (e == 0)
+				e = 0xFFFF;
+			else
+				e--;
 
-			/* Set size */
+			/* Plausibility check */
+			if (e < s) {
+				printf("\ne < s: %x < %x", e, s);
+				continue;
+			}
+
+			/* Set size (remember e is the end address of the whole chain) */
 			x = 0x100;
 
 			/* Point to the first pulse of the checkbyte (that's final) */
@@ -141,7 +151,7 @@ int bleep_spc_search_core(int first_sof, int pv)
 				sof = first_sof;
 
 			/* Include trailer if this is the last block */
-			if (e - s == 0x100) {
+			if (e - s == 0x00FF) {
 				/* Trace 'eof' to end of trailer (bit 1 pulses only) */
 				h = 0;
 				while (eof < tap.len - 1 &&
@@ -218,7 +228,14 @@ void bleep_spc_search(void)
 			if (readttbyte(i, lp, sp, tp, en) != 0x00)
 				continue;
 
-			i = bleep_spc_search_core(sof, pv);
+			//printf("\nMight have found Bleepload Special @$%X, pv=$%02X", sof, pv);
+
+			sof = bleep_spc_search_core(sof, pv);
+
+			if (sof > i)
+				i = sof;
+
+			//printf("\nResuming search @$%X", i);
 
 		} else {
 			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
