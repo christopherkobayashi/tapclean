@@ -219,31 +219,31 @@ void powerload_search (void)
 
 						index = 0;
 
-						offset = find_seq (buf, bufsz, seq_load_lsb, sizeof(seq_load_lsb) / sizeof(seq_load_lsb[0]));
+						offset = find_seq(buf, bufsz, seq_load_lsb, sizeof(seq_load_lsb) / sizeof(seq_load_lsb[0]));
 						if (offset != -1) {
 							index |= 1;
 							next_s = buf[offset + 1];
 						}
 
-						offset = find_seq (buf, bufsz, seq_load_msb, sizeof(seq_load_msb) / sizeof(seq_load_msb[0]));
+						offset = find_seq(buf, bufsz, seq_load_msb, sizeof(seq_load_msb) / sizeof(seq_load_msb[0]));
 						if (offset != -1) {
 							index |= 2;
 							next_s |= buf[offset + 1] << 8;
 						}
 
-						offset = find_seq (buf, bufsz, seq_end_lsb, sizeof(seq_end_lsb) / sizeof(seq_end_lsb[0]));
+						offset = find_seq(buf, bufsz, seq_end_lsb, sizeof(seq_end_lsb) / sizeof(seq_end_lsb[0]));
 						if (offset != -1) {
 							index |= 4;
 							next_e = buf[offset + 1];
 						}
 
-						offset = find_seq (buf, bufsz, seq_end_msb, sizeof(seq_end_msb) / sizeof(seq_end_msb[0]));
+						offset = find_seq(buf, bufsz, seq_end_msb, sizeof(seq_end_msb) / sizeof(seq_end_msb[0]));
 						if (offset != -1) {
 							index |= 8;
 							next_e |= buf[offset + 1] << 8;
 						}
 
-						offset = find_seq (buf, bufsz, seq_exec, sizeof(seq_exec) / sizeof(seq_exec[0]));
+						offset = find_seq(buf, bufsz, seq_exec, sizeof(seq_exec) / sizeof(seq_exec[0]));
 						if (offset != -1) {
 							index |= 16;
 							next_meta1 = (next_e << 16) | buf[offset + 5] | (buf[offset + 6] << 8);

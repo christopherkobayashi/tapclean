@@ -157,7 +157,7 @@ void rackit_search (void)
 			for (index = 0; index < bufsz; index++)
 				buf[index] = blk[ib]->dd[index];
 
-			offset = find_seq (buf, bufsz, seq_decrypt1, sizeof(seq_decrypt1) / sizeof(seq_decrypt1[0]));
+			offset = find_seq(buf, bufsz, seq_decrypt1, sizeof(seq_decrypt1) / sizeof(seq_decrypt1[0]));
 			if (offset != -1) {
 				switch (buf[offset + 1]) {
 					case 0x79:
@@ -175,7 +175,7 @@ void rackit_search (void)
 #endif
 			}
 
-			offset = find_seq (buf, bufsz, seq_decrypt2, sizeof(seq_decrypt2) / sizeof(seq_decrypt2[0]));
+			offset = find_seq(buf, bufsz, seq_decrypt2, sizeof(seq_decrypt2) / sizeof(seq_decrypt2[0]));
 			if (offset != -1) {
 				cypher_value = buf[offset + 1];
 
@@ -213,14 +213,14 @@ void rackit_search (void)
 					buf[index] ^= cypher_value;
 
 				/* We now look for invariants to extract loader parameters */
-				offset = find_seq (buf, bufsz, seq_endianness, sizeof(seq_endianness) / sizeof(seq_endianness[0]));
+				offset = find_seq(buf, bufsz, seq_endianness, sizeof(seq_endianness) / sizeof(seq_endianness[0]));
 				if (offset == -1) {
 					cypher_value = -1;	/* Fail the extraction */
 				} else {
 					ft[THISLOADER].en = (buf[offset + 8] == OPC_ROL) ? MSbF : LSbF;
 				}
 
-				offset = find_seq (buf, bufsz, seq_pilot_sync, sizeof(seq_pilot_sync) / sizeof(seq_pilot_sync[0]));
+				offset = find_seq(buf, bufsz, seq_pilot_sync, sizeof(seq_pilot_sync) / sizeof(seq_pilot_sync[0]));
 				if (offset == -1) {
 					cypher_value = -1;	/* Fail the extraction */
 				} else {
@@ -228,7 +228,7 @@ void rackit_search (void)
 					ft[THISLOADER].sv = buf[offset + 5];
 					
 					/* Check what the start value of the Data checkbyte should be */
-					offset = find_seq (buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
+					offset = find_seq(buf, bufsz, seq_inital_xor_value, sizeof(seq_inital_xor_value) / sizeof(seq_inital_xor_value[0]));
 					if (offset == -1)
 						xinfo = 0x80;
 					else
@@ -237,7 +237,7 @@ void rackit_search (void)
 					printf ("\nInitial checkbyte value: %02X", xinfo);
 #endif
 					/* Check if the variant with a shorter header is used (Marauder, Netherworld, Scorpion) */
-					offset = find_seq (buf, bufsz, seq_hdr_store, sizeof(seq_hdr_store) / sizeof(seq_hdr_store[0]));
+					offset = find_seq(buf, bufsz, seq_hdr_store, sizeof(seq_hdr_store) / sizeof(seq_hdr_store[0]));
 					if (offset == -1)
 						variant = 0;
 					else

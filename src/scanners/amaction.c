@@ -124,7 +124,7 @@ void amaction_search (void)
 				continue;
 
 			/* Figure out filename length */
-			xinfo = find_seq (hd, HEADERSIZE + MAXFILENAME, s_default, 2);
+			xinfo = find_seq(hd, HEADERSIZE + MAXFILENAME, s_default, 2);
 			if (xinfo == -1) {
 				xinfo = 2;
 			} else {

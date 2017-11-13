@@ -120,8 +120,8 @@ static inline void get_enigma_addresses (int *buf, int bufsz, int entrypointoffs
 	do {
 		sumoffsets += (minoffset + deltaoffset);
 
-		offset1 = find_seq (buf + sumoffsets, bufsz - sumoffsets, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
-		offset2 = find_seq (buf + sumoffsets, bufsz - sumoffsets, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
+		offset1 = find_seq(buf + sumoffsets, bufsz - sumoffsets, seq_load_type1, sizeof(seq_load_type1) / sizeof(seq_load_type1[0]));
+		offset2 = find_seq(buf + sumoffsets, bufsz - sumoffsets, seq_load_type2, sizeof(seq_load_type2) / sizeof(seq_load_type2[0]));
 
 #ifdef ENIGMA_DEBUG
 		printf ("\nScanning for seq at: %d, ofst1 = %d, ofst2 = %d", sumoffsets, offset1, offset2);
@@ -304,7 +304,7 @@ void enigma_search(void)
 			for (index = 0; index < bufsz; index++)
 				buf[index] = blk[ib]->dd[index];
 
-			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first1, sizeof(seq_load_addr_and_exec_first1) / sizeof(seq_load_addr_and_exec_first1[0]));
+			offset = find_seq(buf, bufsz, seq_load_addr_and_exec_first1, sizeof(seq_load_addr_and_exec_first1) / sizeof(seq_load_addr_and_exec_first1[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
@@ -333,7 +333,7 @@ void enigma_search(void)
 				}
 			}
 
-			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first2, sizeof(seq_load_addr_and_exec_first2) / sizeof(seq_load_addr_and_exec_first2[0]));
+			offset = find_seq(buf, bufsz, seq_load_addr_and_exec_first2, sizeof(seq_load_addr_and_exec_first2) / sizeof(seq_load_addr_and_exec_first2[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
@@ -351,7 +351,7 @@ void enigma_search(void)
 #endif
 			}
 
-			offset = find_seq (buf, bufsz, seq_load_addr_and_exec_first3, sizeof(seq_load_addr_and_exec_first3) / sizeof(seq_load_addr_and_exec_first3[0]));
+			offset = find_seq(buf, bufsz, seq_load_addr_and_exec_first3, sizeof(seq_load_addr_and_exec_first3) / sizeof(seq_load_addr_and_exec_first3[0]));
 			if (offset != -1) {
 				/* Update s and e for the first block if info was found */
 				s  = buf[offset + 4];
