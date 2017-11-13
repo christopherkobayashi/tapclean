@@ -1,3 +1,5 @@
 Makefile.win
 *.o
 *.exe
+tcreport.txt
+tcbatch.txt
