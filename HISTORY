@@ -15,6 +15,7 @@ v0.37
 	Improvement: "Bleepload" scanner rewritten (Luigi)
 	Code quality: Consistently refer to "block number" as such, instead
 	 of also using "block ID" or "file ID" (Luigi)
+	Improvement: "Bleepload Special" scanner rewritten (Luigi)
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
