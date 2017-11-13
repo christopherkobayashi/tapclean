@@ -169,8 +169,11 @@ void bleep_search(void)
 							readttbit(eof + 1, lp, sp, tp) == 1)
 						eof++;
 
-					if (addblockdef(BLEEP_TRIG, sof, sod, eod, eof, 0) >= 0)
-						i = eof;
+					if (addblockdef(BLEEP_TRIG, sof, sod, eod, eof, 0) >= 0) {
+						i = eof;	/* Search for further files starting from the end of this one */
+
+						pv = 0x0F;	/* reset pilot value  for next chain */
+					}
 				}
 			}
 
