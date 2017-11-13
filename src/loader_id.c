@@ -109,6 +109,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x2989DE57, LID_BLEEP},	/* "OCP Art Studio, The" */
 		{0xF206B18C, LID_BLEEP},	/* "OCP Art Studio, The" */
 		{0x8B6D73BD, LID_BLEEP},	/* "Prince, The" */
+		{0xDC128049, LID_BLEEP},	/* Mad Nurse */
 
 		{0x366784C8, LID_MEGASAVE},
 
