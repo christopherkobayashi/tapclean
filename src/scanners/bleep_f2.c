@@ -60,7 +60,7 @@
 #define EXECOFFSETL	5	/* execution address (LSB) offset inside header */
 #define EXECOFFSETH	6	/* execution address (MSB) offset inside header */
 
-int bleep_spc_search_core(int first_sof, int pv)
+static int bleep_spc_search_core(int first_sof, int pv)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -172,18 +172,57 @@ int bleep_spc_search_core(int first_sof, int pv)
 	return last_eof;
 }
 
-void bleep_spc_search(void)
+static int bleep_spc_find_first_pilot_byte(int eop, int *pv)
 {
-	int i;				/* counter */
-	int sof, eop;			/* file offsets */
+	int i, j;
 
-	int en, tp, sp, lp, pv, sv;	/* encoding parameters */
+	int en, tp, sp, lp, sv;		/* encoding parameters */
 
 
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
+
+	for (j = eop - 7; j <= eop; j++) {
+		i = j;
+
+		*pv = readttbyte(i, lp, sp, tp, en);
+
+		if (*pv <= 0)
+			continue;
+
+		do {
+			i += BITSINABYTE;
+		} while (readttbyte(i, lp, sp, tp, en) == *pv);
+				
+		sv = readttbyte(i, lp, sp, tp, en);
+
+		if (sv < 0 || sv != (*pv ^ 0xFF))
+			continue;
+
+		i += BITSINABYTE;
+
+		if (readttbyte(i, lp, sp, tp, en) != *pv)
+			continue;
+
+		i += BITSINABYTE;
+
+		if (readttbyte(i, lp, sp, tp, en) != 0x00)
+			continue;
+
+		return i;
+	}
+
+	return 0;
+}
+
+void bleep_spc_search(void)
+{
+	int i;				/* counter */
+	int sof, sod, eof, eop;		/* file offsets */
+
+	int pv;				/* encoding parameters */
 
 	if (!quiet)
 		msgout("  Bleepload Special");
@@ -199,39 +238,20 @@ void bleep_spc_search(void)
 		if (eop > 0) {
 			/* Valid pilot found, mark start of file */
 			sof = i;
-			i = eop;
 
-			pv = readttbyte(i, lp, sp, tp, en);
-
-			if (pv <= 0)
+			sod = bleep_spc_find_first_pilot_byte(eop, &pv);
+			
+			if (!sod)
 				continue;
 
-			do {
-				i += BITSINABYTE;
-			} while (readttbyte(i, lp, sp, tp, en) == pv);
-				
-
-			sv = readttbyte(i, lp, sp, tp, en);
-
-			if (sv < 0 || sv != (pv ^ 0xFF))
-				continue;
-
-			i += BITSINABYTE;
-
-			if (readttbyte(i, lp, sp, tp, en) != pv)
-				continue;
-
-			i += BITSINABYTE;
-
-			if (readttbyte(i, lp, sp, tp, en) != 0x00)
-				continue;
+			i = sod;
 
 			//printf("\nMight have found Bleepload Special @$%X, pv=$%02X", sof, pv);
 
-			sof = bleep_spc_search_core(sof, pv);
+			eof = bleep_spc_search_core(sof, pv);
 
-			if (sof > i)
-				i = sof;
+			if (eof > i)
+				i = eof;
 
 			//printf("\nResuming search @$%X", i);
 
