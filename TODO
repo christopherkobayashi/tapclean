@@ -7,16 +7,13 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
- o Replace FILEIDOFFSET with BLKNUMOFFSET for consistency; consequently
-   amend the comment "file ID offset inside header" (Luigi)
- o Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
  - Consider the unification of "Hi-Tech" and "Virgin" if they appear to be 
    mastered by the same program with different settings (Luigi)
  - Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2"
    so the latter should be extended with multiple Tx variants (Luigi)
  - Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
  - Allow a few more non-reserved characters in PRG filenames (Fredric)
- - Rewrite Bleepload scanners and make them usable with the "skewadapt" option
+ o Rewrite Bleepload scanners and make them usable with the "skewadapt" option
    as "bleep_f2.c" seems to struggle with it (Luigi)
  o The "Visiload" scanner should extract initial loader parameters from the CBM 
    Data block as these were configurable at mastering time, as shown by early 
@@ -38,14 +35,14 @@ Note: tasks are marked as per below. Completed tasks are still included here
    compatibility: if no Tx pattern is found then the code should cycle through 
    all Tx variants.
    In fact, the above could be performed in idloader() when the CRC search 
-   fails, so that a LID_<loader>_Tx id could be returned to be used as parameter 
+   fails, so that a LID_<loader>_Tx id could be returned and used as parameter 
    to the <loader>_search() function, instructing it to only try the Tx variant
    instead of all variants.
    In all cases, looking at the first CBM file only makes sense when a title 
    is not part of a compilation: by using cbm_header[]/cbm_program[] directly 
    in idloader() we lose room for future flexibility (Luigi)
- o There is just one reason for which "Ocean New" T1/T2 and "Snakeload 5.0" T1/T2 
-   should not be handled by the same module, as it happens with all other 
+ o There is just one reason for which "Ocean New" T1/T2 and "Snakeload 5.0" 
+   T1/T2 should not be handled by the same module, as it happens with all other 
    scanners. The reason is that one might want to only exclude one type at a
    given time in order to avoid mis- or cross-detection. However, there is way
    too much code duplication unless both types are processed by the same
@@ -54,6 +51,9 @@ Note: tasks are marked as per below. Completed tasks are still included here
    variants: Roll it out to applicable scanners too, e.g. "Mega-Save" (Luigi)
  o "Snakeload 5.0" simplifies the sync sequence matching logic: Roll it out to
    applicable scanners too (Luigi)
+ o Replace FILEIDOFFSET with BLKNUMOFFSET for consistency; consequently
+   amend the comment "file ID offset inside header" (Luigi)
+ o Rename GREMLIN_F1_search() to gremlin_f1_search() and so on (Luigi)
  - Titles using the "Alternative Software" loader were mastered by "The Graphic 
    Adventure Creator", in fact they are all text adventures with graphics
    (Ziggy72)
