@@ -184,11 +184,13 @@ static int bleep_spc_find_first_pilot_byte(int eop, int *pv)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
+	/* In case the pv has any of the MSbits set, we need to include some bit 1 pulses too */
 	for (j = eop - 7; j <= eop; j++) {
 		i = j;
 
 		*pv = readttbyte(i, lp, sp, tp, en);
 
+		/* We want a non-zero pilot byte */
 		if (*pv <= 0)
 			continue;
 
@@ -198,16 +200,19 @@ static int bleep_spc_find_first_pilot_byte(int eop, int *pv)
 				
 		sv = readttbyte(i, lp, sp, tp, en);
 
+		/* Followed by a sync byte = pilot byte ^ 0xFF */
 		if (sv < 0 || sv != (*pv ^ 0xFF))
 			continue;
 
 		i += BITSINABYTE;
 
+		/* Followed by another sync byte = pilot byte */
 		if (readttbyte(i, lp, sp, tp, en) != *pv)
 			continue;
 
 		i += BITSINABYTE;
 
+		/* As there's a pilot tone, this must be the first block, #0 */
 		if (readttbyte(i, lp, sp, tp, en) != 0x00)
 			continue;
 
@@ -236,14 +241,13 @@ void bleep_spc_search(void)
 		eop = find_pilot(i, THISLOADER);
 
 		if (eop > 0) {
-			/* Valid pilot found, mark start of file */
-			sof = i;
-
 			sod = bleep_spc_find_first_pilot_byte(eop, &pv);
 			
 			if (!sod)
 				continue;
 
+			/* Valid pilot found, mark start of file */
+			sof = i;
 			i = sod;
 
 			//printf("\nMight have found Bleepload Special @$%X, pv=$%02X", sof, pv);
