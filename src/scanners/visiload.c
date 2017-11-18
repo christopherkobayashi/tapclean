@@ -197,17 +197,249 @@ static int visiload_readbyte(int pos, int endi, int abits, int allow_known_overs
 }
 /*---------------------------------------------------------------------------
 */
-void visiload_search(void)
+static void visiload_search_core(int slice_start, int slice_end, int ah, int ab, int en)
 {
    int i,sof,sod,eod,eof,zcnt;
    int j,start,end,len;
-   int b,att,ah,ab,en,pt,db1;
+   int b,att,pt,db1;
    int hd[200],hcnt;
-   
+
+	for (i = slice_start; i < slice_end-100; i++) {
+
+			/* ---------------- Legacy code ---------------- */
+      b= visiload_readbyte(i,en,ab,0);   /* look for a pilot byte... */
+      if(b== ft[visi_type].pv)
+      {
+         sof= i;
+         zcnt=0;
+         while(visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0)==ft[visi_type].pv) /* step thru all pilot bytes.. */
+            zcnt++;
+
+         b= visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0); /* should be a sync */
+
+         if(b==ft[visi_type].sv && zcnt>ft[visi_type].pmin)    /* got enough pilots + sync?... */
+         {
+            /* Application->MessageBox("at least 100 visi pilots +sync found","",MB_OK);   ok, appears just once. */
+
+            sod= i+((zcnt+1)*(8+ab));    /* set start of data on byte after sync. */
+            j= sod;
+            pt=0;
+
+            /* Found 1st block, now find all others... */
+            do
+            {
+               if(pt==1)  /* pilot required?, read in pilot tone and sync if required... */
+               {
+                  do  /* find a first pilot byte... */
+                  {
+                     b= visiload_readbyte(j,en,ab,0);
+                     j++;
+                  }
+                  while(b!=ft[visi_type].pv && j<slice_end-100);
+                  j--;
+                  sof= j;
+                  do  /* read thru all pilot bytes... */
+                  {
+                     b= visiload_readbyte(j,en,ab,0);
+                     j+=(8+ab);
+                  }
+                  while(b==ft[visi_type].pv && j<slice_end-100);
+                  j-=(8+ab);
+
+                  /* ! should check pilot count here?, theres usually only 2 or 3 pilots ! */
+
+                  /* check sync byte... */
+                  b= visiload_readbyte(j, en, ab, 0);
+                  if(b!=ft[visi_type].sv)
+                  {
+                     if(!quiet)
+                     {
+                        sprintf(lin," * Sync byte failed @ %04X. Visiload search was aborted.", j);
+                        msgout(lin);
+                     }
+                     return;   /* abort search if sync fails. */
+                  }
+                  sod= j+(8+ab);
+                  pt=0;
+               }
+
+               /* pilot sync are found or none were required... */
+
+               /* decode header... (taking into account additional header bytes) */
+               for(hcnt=0; hcnt<HDSZ+ah+1; hcnt++)  /* note: +1 reads 1 data byte too. */
+               {
+                 /* 
+                  * Allow correction of oversized bit 1 pulses in Visiload T1 header
+                  * Correction is not allowed anywhere else
+                  */
+                  hd[hcnt]= visiload_readbyte(sod+(hcnt*(8+ab)), en, ab, 1);
+
+                  if(hd[hcnt]==-1)   /* 27/8/2002 : this may stop the crashes */
+                  {
+                     if(!quiet)
+                     {
+                        sprintf(lin,"\nFATAL : read error in Visiload header! ($%04X).",j+(hcnt*(8+ab)));
+                        msgout(lin);
+                        sprintf(lin,"\nHeader begins at $%04X and should hold %d bytes (%d bits per byte).",j,HDSZ+ah,8+ab);
+                        msgout(lin);
+
+                        sprintf(lin,"\nVisiload search was aborted.");
+                        msgout(lin);
+                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of more Visiload files. ");
+                        msgout(lin);
+                        sprintf(lin,"Typically the pulse found there will be too large to register as a Visiload LONG or the data-stream may ");
+                        msgout(lin);
+                        sprintf(lin,"contain an unexpected pause.");
+                        msgout(lin);
+                        msgout("");
+                     }
+                     return;
+                  }
+               }
+
+               start= (hd[2+ah]<<8) + hd[3+ah];  /* start address is at offsets 2,3 */
+               end= (hd[0+ah]<<8) + hd[1+ah];    /* end address is at offsets 0,1 */
+               len= end-start;
+               if(len==0)
+                  len=1;  /* NOTE: if START==END then 1 byte will STILL be sent! */
+
+               db1= hd[HDSZ+ah];    /* read first data byte. */
+               
+               eod= sod+(len+4+ah-1)*(8+ab);   /* same thing as above. */
+               eof= eod+(8+ab)-1;
+
+             /* create an attribute value for this block...
+                att value...
+                bit 7: endianness (1=msbf)
+                bit 6: unused.
+                bit 5: additional header bytes, bit 2
+                bit 4: additional header bytes, bit 1
+                bit 3: additional header bytes, bit 0
+                bit 2: additional bits per byte, bit 2
+                bit 1: additional bits per byte, bit 1
+                bit 0: additional bits per byte, bit 0
+
+                note : maximum ah and ab is 7.   */
+
+               att= (en<<7)+(ah<<3)+ab;
+               addblockdef(visi_type, sof,sod,eod,eof,att);
+
+               j= eof+1;   /* very important to set this correctly  */
+                           /* next header will be decoded immediately */
+                           /* on next iteration. (unless block has pilot) */
+
+               i= j;     /* optimize search (theres usually only 1 chain though). */
+                
+               /* set formatting parameters for next block... */
+               if(start==0x034B)
+                  ab= db1-8;   /* first data byte holds no.of bits per byte for next block */
+               if(start==0x03A4)
+                  ah= db1-3;   /* first data byte holds no.of add header bytes +3 for next block */
+
+               if(start==0x0347) /* if First DATA byte is $26 then next block will be MSbF else LSbF */
+               {
+                  if(db1==0x26)
+                     en= MSbF;
+                  else
+                     en= LSbF;
+               }
+               if(start==0x03BB) /* Next block WILL have PILOT tone before it (ANY number , can be 1 !) */
+               {
+                  pt=1;
+
+                  /* Narco Police requires loader parameter reset every so often */
+                  if (end == 0x03DB && !strncmp((char *) &cbm_header[5], "NARCO POLICE", 12))
+                  {
+                     #define NARCO_POLICE_MODIFIER_SZ 0x20
+
+                     int data_offset;
+                     unsigned char modifier_block[NARCO_POLICE_MODIFIER_SZ];
+                     int m_index;
+                     unsigned int crc;
+
+                     data_offset = sod+(ah+HDSZ)*(8+ab);
+
+                     /* We have to extract data here and check it; no other option possible */
+                     for (m_index = 0; m_index < NARCO_POLICE_MODIFIER_SZ; m_index++)
+                     {
+                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
+#ifdef DEBUG
+                        if (m_index % 16 ==0)
+                           printf ("\n%06X: ", data_offset);
+                        printf ("%02X ", modifier_block[m_index]);
+#endif
+                     }
+
+                     crc = crc32_compute_crc(modifier_block, NARCO_POLICE_MODIFIER_SZ);
+
+                     switch (crc)
+                     {
+                        case 0x22CA1A6A:  /* Loads the title screen */
+                        case 0x7DF3B6CE:  /* Loads the menu */
+                        case 0x50D31A06:
+                        case 0x0AD70202:
+
+                           en= MSbF;      /* Reset loader to use MSbF... */
+                           ab= 1;         /* ... 1 extra bit per byte... */
+                           ah= 0;         /* ... and no extra header bytes... */
+                           break;
+                     }
+                  }
+                  else if (end == 0x03EB && !strncmp((char *) &cbm_header[5], "PUFFY", 5))
+                  {
+                     #define PUFFYS_SAGA_MODIFIER_SZ 0x30
+
+                     int data_offset;
+                     unsigned char modifier_block[PUFFYS_SAGA_MODIFIER_SZ];
+                     int m_index;
+                     unsigned int crc;
+
+                     data_offset = sod+(ah+HDSZ)*(8+ab);
+
+                     /* We have to extract data here and check it; no other option possible */
+                     for (m_index = 0; m_index < PUFFYS_SAGA_MODIFIER_SZ; m_index++)
+                     {
+                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
+#ifdef DEBUG
+                        if (m_index % 16 ==0)
+                           printf ("\n%06X: ", data_offset);
+                        printf ("%02X ", modifier_block[m_index]);
+#endif
+                     }
+
+                     crc = crc32_compute_crc(modifier_block, PUFFYS_SAGA_MODIFIER_SZ);
+
+                     switch (crc)
+                     {
+                        case 0x82D152D1:
+
+                           en= MSbF;      /* Reset loader to use MSbF... */
+                           ab= 1;         /* ... 1 extra bit per byte... */
+                           ah= 0;         /* ... and no extra header bytes... */
+                           break;
+                     }
+                  }
+               }
+
+               sof= j;   /* set these ready for next block */
+               sod= j;
+            }
+            while(j<slice_end-100);
+         }
+      }
+			/* ---------------- End of legacy code ---------------- */
+
+	}
+}
+
+void visiload_search(void)
+{
+	int ah, ab, en;
+
 	int cbm_index = 1;
 
-   if(!quiet)
-      msgout("  Visiload");
+	if(!quiet)
+		msgout("  Visiload");
 
 	for (;;) {
 
@@ -371,241 +603,7 @@ void visiload_search(void)
 			slice_end);
 		msgout(lin);
 
-		for (i = slice_start; i < slice_end-100; i++) {
-
-			/* ---------------- Existing code ---------------- */
-      b= visiload_readbyte(i,en,ab,0);   /* look for a pilot byte... */
-      if(b== ft[visi_type].pv)
-      {
-         sof= i;
-         zcnt=0;
-         while(visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0)==ft[visi_type].pv) /* step thru all pilot bytes.. */
-            zcnt++;
-
-         b= visiload_readbyte(i+(zcnt*(8+ab)), en, ab, 0); /* should be a sync */
-
-         if(b==ft[visi_type].sv && zcnt>ft[visi_type].pmin)    /* got enough pilots + sync?... */
-         {
-            /* Application->MessageBox("at least 100 visi pilots +sync found","",MB_OK);   ok, appears just once. */
-
-            sod= i+((zcnt+1)*(8+ab));    /* set start of data on byte after sync. */
-            j= sod;
-            pt=0;
-
-            /* Found 1st block, now find all others... */
-            do
-            {
-               if(pt==1)  /* pilot required?, read in pilot tone and sync if required... */
-               {
-                  do  /* find a first pilot byte... */
-                  {
-                     b= visiload_readbyte(j,en,ab,0);
-                     j++;
-                  }
-                  while(b!=ft[visi_type].pv && j<slice_end-100);
-                  j--;
-                  sof= j;
-                  do  /* read thru all pilot bytes... */
-                  {
-                     b= visiload_readbyte(j,en,ab,0);
-                     j+=(8+ab);
-                  }
-                  while(b==ft[visi_type].pv && j<slice_end-100);
-                  j-=(8+ab);
-
-                  /* ! should check pilot count here?, theres usually only 2 or 3 pilots ! */
-
-                  /* check sync byte... */
-                  b= visiload_readbyte(j, en, ab, 0);
-                  if(b!=ft[visi_type].sv)
-                  {
-                     if(!quiet)
-                     {
-                        sprintf(lin," * Visiload sync byte failed @ %04X, search aborted.", j);
-                        msgout(lin);
-                     }
-                     break;   /* abort search if sync fails. */
-                  }
-                  sod= j+(8+ab);
-                  pt=0;
-               }
-
-               /* pilot sync are found or none were required... */
-
-               /* decode header... (taking into account additional header bytes) */
-               for(hcnt=0; hcnt<HDSZ+ah+1; hcnt++)  /* note: +1 reads 1 data byte too. */
-               {
-                 /* 
-                  * Allow correction of oversized bit 1 pulses in Visiload T1 header
-                  * Correction is not allowed anywhere else
-                  */
-                  hd[hcnt]= visiload_readbyte(sod+(hcnt*(8+ab)), en, ab, 1);
-
-                  if(hd[hcnt]==-1)   /* 27/8/2002 : this may stop the crashes */
-                  {
-                     if(!quiet)
-                     {
-                        sprintf(lin,"\nFATAL : read error in Visiload header! ($%04X).",j+(hcnt*(8+ab)));
-                        msgout(lin);
-                        sprintf(lin,"\nHeader begins at $%04X and should hold %d bytes (%d bits per byte).",j,HDSZ+ah,8+ab);
-                        msgout(lin);
-
-                        sprintf(lin,"\nVisiload search was aborted.");
-                        msgout(lin);
-                        sprintf(lin,"\nExperts note : Manual correction of this location should allow detection of more Visiload files. ");
-                        msgout(lin);
-                        sprintf(lin,"Typically the pulse found there will be too large to register as a Visiload LONG or the data-stream may ");
-                        msgout(lin);
-                        sprintf(lin,"contain an unexpected pause.");
-                        msgout(lin);
-                        msgout("");
-                     }
-                     break;
-                  }
-               }
-
-               /* Break out from the current loop when there's a read error in Visiload header */
-               if (hcnt != HDSZ+ah+1)
-                  break;
-
-               start= (hd[2+ah]<<8) + hd[3+ah];  /* start address is at offsets 2,3 */
-               end= (hd[0+ah]<<8) + hd[1+ah];    /* end address is at offsets 0,1 */
-               len= end-start;
-               if(len==0)
-                  len=1;  /* NOTE: if START==END then 1 byte will STILL be sent! */
-
-               db1= hd[HDSZ+ah];    /* read first data byte. */
-               
-               eod= sod+(len+4+ah-1)*(8+ab);   /* same thing as above. */
-               eof= eod+(8+ab)-1;
-
-             /* create an attribute value for this block...
-                att value...
-                bit 7: endianness (1=msbf)
-                bit 6: unused.
-                bit 5: additional header bytes, bit 2
-                bit 4: additional header bytes, bit 1
-                bit 3: additional header bytes, bit 0
-                bit 2: additional bits per byte, bit 2
-                bit 1: additional bits per byte, bit 1
-                bit 0: additional bits per byte, bit 0
-
-                note : maximum ah and ab is 7.   */
-
-               att= (en<<7)+(ah<<3)+ab;
-               addblockdef(visi_type, sof,sod,eod,eof,att);
-
-               j= eof+1;   /* very important to set this correctly  */
-                           /* next header will be decoded immediately */
-                           /* on next iteration. (unless block has pilot) */
-
-               i= j;     /* optimize search (theres usually only 1 chain though). */
-                
-               /* set formatting parameters for next block... */
-               if(start==0x034B)
-                  ab= db1-8;   /* first data byte holds no.of bits per byte for next block */
-               if(start==0x03A4)
-                  ah= db1-3;   /* first data byte holds no.of add header bytes +3 for next block */
-
-               if(start==0x0347) /* if First DATA byte is $26 then next block will be MSbF else LSbF */
-               {
-                  if(db1==0x26)
-                     en= MSbF;
-                  else
-                     en= LSbF;
-               }
-               if(start==0x03BB) /* Next block WILL have PILOT tone before it (ANY number , can be 1 !) */
-               {
-                  pt=1;
-
-                  /* Narco Police requires loader parameter reset every so often */
-                  if (end == 0x03DB && !strncmp((char *) &cbm_header[5], "NARCO POLICE", 12))
-                  {
-                     #define NARCO_POLICE_MODIFIER_SZ 0x20
-
-                     int data_offset;
-                     unsigned char modifier_block[NARCO_POLICE_MODIFIER_SZ];
-                     int m_index;
-                     unsigned int crc;
-
-                     data_offset = sod+(ah+HDSZ)*(8+ab);
-
-                     /* We have to extract data here and check it; no other option possible */
-                     for (m_index = 0; m_index < NARCO_POLICE_MODIFIER_SZ; m_index++)
-                     {
-                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
-#ifdef DEBUG
-                        if (m_index % 16 ==0)
-                           printf ("\n%06X: ", data_offset);
-                        printf ("%02X ", modifier_block[m_index]);
-#endif
-                     }
-
-                     crc = crc32_compute_crc(modifier_block, NARCO_POLICE_MODIFIER_SZ);
-
-                     switch (crc)
-                     {
-                        case 0x22CA1A6A:  /* Loads the title screen */
-                        case 0x7DF3B6CE:  /* Loads the menu */
-                        case 0x50D31A06:
-                        case 0x0AD70202:
-
-                           en= MSbF;      /* Reset loader to use MSbF... */
-                           ab= 1;         /* ... 1 extra bit per byte... */
-                           ah= 0;         /* ... and no extra header bytes... */
-                           break;
-                     }
-                  }
-                  else if (end == 0x03EB && !strncmp((char *) &cbm_header[5], "PUFFY", 5))
-                  {
-                     #define PUFFYS_SAGA_MODIFIER_SZ 0x30
-
-                     int data_offset;
-                     unsigned char modifier_block[PUFFYS_SAGA_MODIFIER_SZ];
-                     int m_index;
-                     unsigned int crc;
-
-                     data_offset = sod+(ah+HDSZ)*(8+ab);
-
-                     /* We have to extract data here and check it; no other option possible */
-                     for (m_index = 0; m_index < PUFFYS_SAGA_MODIFIER_SZ; m_index++)
-                     {
-                        modifier_block[m_index] = visiload_readbyte(data_offset+m_index*(8+ab), en, ab, 0);
-#ifdef DEBUG
-                        if (m_index % 16 ==0)
-                           printf ("\n%06X: ", data_offset);
-                        printf ("%02X ", modifier_block[m_index]);
-#endif
-                     }
-
-                     crc = crc32_compute_crc(modifier_block, PUFFYS_SAGA_MODIFIER_SZ);
-
-                     switch (crc)
-                     {
-                        case 0x82D152D1:
-
-                           en= MSbF;      /* Reset loader to use MSbF... */
-                           ab= 1;         /* ... 1 extra bit per byte... */
-                           ah= 0;         /* ... and no extra header bytes... */
-                           break;
-                     }
-                  }
-               }
-
-               sof= j;   /* set these ready for next block */
-               sod= j;
-            }
-            while(j<slice_end-100);
-
-            /* Break out from the current loop when there's a read error in Visiload header */
-            if (hcnt != HDSZ+ah+1)
-               break;
-
-         }
-      }
-			/* ---------------- End of existing code ---------------- */
-
-		}
+		visiload_search_core(slice_start, slice_end, ah, ab, en);
 	}
 }
 /*---------------------------------------------------------------------------
