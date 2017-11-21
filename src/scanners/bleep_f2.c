@@ -235,7 +235,7 @@ void bleep_spc_search(void)
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		ft[THISLOADER].pv = 1;
 		ft[THISLOADER].sv = 0;
-		ft[THISLOADER].pmin = 1024;
+		ft[THISLOADER].pmin = 512;
 		ft[THISLOADER].pmax = NA;
 
 		eop = find_pilot(i, THISLOADER);
