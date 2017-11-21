@@ -1,5 +1,5 @@
 
 "cd src"
-"make" (on MAC OSX use "OS=MACOSX make") 
+"make"
 Copy tapclean or tapclean.exe to a suitable directory (it requires write access)
 Make sure the directory is in your system PATH if you want to execute tapclean from any location
