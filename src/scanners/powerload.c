@@ -185,7 +185,7 @@ void powerload_search (void)
 					break;
 				}
 
-				/* Failed to find the CBM data block for this Biturbo file (maybe CBM part is unrecognized) */
+				/* Failed to find the CBM data block for this Power Load file (maybe CBM part is unrecognized) */
 				if (!match)
 					continue;
 			}
