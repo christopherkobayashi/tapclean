@@ -165,6 +165,9 @@ void biturbo_search (void)
 				if (e < s)
 					continue;
 
+				/* Move past this one as it's being used */
+				cbm_index++;
+
 				break;
 			}
 
