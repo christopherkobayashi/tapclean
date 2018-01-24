@@ -20,8 +20,10 @@ v0.37
 	 order to speedup scanning (Luigi)
 	Improvement: The "Bleepload" scanner now supports multiple titles on
 	 the same tape image (Luigi)
-	Improvement: Added signature of the "Power Load" instances used
-	 by "Mini Office" (Luigi)
+	Improvement: Added signature of the "Power Load" instance used by
+	 "Mini Office" (Luigi)
+	Improvement: The "Power Load" scanner now supports multiple titles
+	 on the same tape image (Luigi)
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
