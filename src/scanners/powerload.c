@@ -81,6 +81,7 @@ void powerload_search (void)
 
 	int match;			/* condition variable */
 	int cbm_index;			/* Index of the CBM data block to get info from */
+	int cbm_skip_inspection_count;	/* Skip CBM file inspection for chained Power Load files, e.g. Rocket Rogers */
 
 	int xinfo, meta1;		/* extra info used in addblockdef() */
 
@@ -94,6 +95,7 @@ void powerload_search (void)
 		msgout("  Power Load");
 
 	cbm_index = 3;
+	cbm_skip_inspection_count = 0;
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -116,73 +118,77 @@ void powerload_search (void)
 			/* Valid sync train found, mark start of data */
 			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
-			/* Now we try to retrieve the Power Load variables from the corresponding CBM
-			   Data block ('FIRST' instance).
-			   We search for the CBM data block whose start offset in the TAP file is not
-			   too much far from where we found the actual Power Load file */
+			if (cbm_skip_inspection_count) {
+				cbm_skip_inspection_count--;
+			} else {
+				/* Now we try to retrieve the Power Load variables from the corresponding CBM
+				   Data block ('FIRST' instance).
+				   We search for the CBM data block whose start offset in the TAP file is not
+				   too much far from where we found the actual Power Load file */
 
-			match = 1;
+				match = 1;
 
-			for (;; cbm_index += 4) {
-				ib = find_decode_block(CBM_DATA, cbm_index);
-				if (ib == -1)
-					return;		/* failed to locate CBM data for this one and any further Power Load file. */
-
-				/* Percy Pigeon has an extra CBM file before the main loader */
-				if (blk[ib]->cx == 0x83) {
-					cbm_index += 2;
+				for (;; cbm_index += 4) {
 					ib = find_decode_block(CBM_DATA, cbm_index);
 					if (ib == -1)
-						return;		/* failed to locate CBM data. */
-				}
+						return;		/* failed to locate CBM data for this one and any further Power Load file. */
 
-				/* Plausibility checks. Here since we track the CBM part for each
-				   of them, in case of multiple Power Load files on the same tape:
-				   there may be some programs using Power Load, some others using another loader,
-				   so that the n-th Power Load file may not come just after the n-th CBM file. */
-				if (blk[ib]->p1 < sof - MAXCBMBACKTRACE)
-					continue;	/* Not yet the right CBM data block */
+					/* Percy Penguin has an extra CBM file before the main loader */
+					if (blk[ib]->cx == 0x83) {
+						cbm_index += 2;
+						ib = find_decode_block(CBM_DATA, cbm_index);
+						if (ib == -1)
+							return;		/* failed to locate CBM data. */
+					}
 
-				if (blk[ib]->p1 > sof) {
-					match = 0;	/* Too far ahead: failed to locate CBM data for this Power Load file only. */
-					cbm_index -= 4;	/* Make the last checked CBM data instance available to the following Power Load files, if any */
+					/* Plausibility checks. Here since we track the CBM part for each
+					   of them, in case of multiple Power Load files on the same tape:
+					   there may be some programs using Power Load, some others using another loader,
+					   so that the n-th Power Load file may not come just after the n-th CBM file. */
+					if (blk[ib]->p1 < sof - MAXCBMBACKTRACE)
+						continue;	/* Not yet the right CBM data block */
+
+					if (blk[ib]->p1 > sof) {
+						match = 0;	/* Too far ahead: failed to locate CBM data for this Power Load file only. */
+						cbm_index -= 4;	/* Make the last checked CBM data instance available to the following Power Load files, if any */
+						break;
+					}
+
+					/* Basic validation before accessing array elements */
+					if (blk[ib]->cx < ENDOFFSETL + 1)
+						return;
+
+					s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
+					e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+
+					/* Save the real end address for later display */
+					meta1 = e << 16;
+
+					/* Look for a jump to the execution address (not mandatory) */
+					if (blk[ib]->cx >= EXECOFFSETH + 1 && blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
+						meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
+
+					/* Prevent int wraparound when subtracting 1 from end location
+					   to get the location of the last loaded byte */
+					if (e == 0)
+						e = 0xFFFF;
+					else
+						e--;
+
+					/* Plausibility check */
+					if (e < s)
+						continue;
+
+					/* Move past this one as it's being used */
+					cbm_index += 4;
+
 					break;
 				}
 
-				/* Basic validation before accessing array elements */
-				if (blk[ib]->cx < ENDOFFSETL + 1)
-					return;
-
-				s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
-				e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
-
-				/* Save the real end address for later display */
-				meta1 = e << 16;
-
-				/* Look for a jump to the execution address (not mandatory) */
-				if (blk[ib]->cx >= EXECOFFSETH + 1 && blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
-					meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
-
-				/* Prevent int wraparound when subtracting 1 from end location
-				   to get the location of the last loaded byte */
-				if (e == 0)
-					e = 0xFFFF;
-				else
-					e--;
-
-				/* Plausibility check */
-				if (e < s)
+				/* Failed to find the CBM data block for this Biturbo file (maybe CBM part is unrecognized) */
+				if (!match)
 					continue;
-
-				/* Move past this one as it's being used */
-				cbm_index += 4;
-
-				break;
 			}
-
-			/* Failed to find the CBM data block for this Biturbo file (maybe CBM part is unrecognized) */
-			if (!match)
-				continue;
 
 			/* Compute size */
 			x = e - s + 1;
@@ -287,6 +293,8 @@ void powerload_search (void)
 						if ((index & 15) == 15) {
 							s = next_s;
 							e = next_e;
+
+							cbm_skip_inspection_count = 1;
 						}
 
 						/* Set execution address for next block if info was found */
