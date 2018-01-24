@@ -121,11 +121,6 @@ void powerload_search (void)
 			   We search for the CBM data block whose start offset in the TAP file is not
 			   too much far from where we found the actual Power Load file */
 
-			/* Note: it could be cbm_index += 2 so we skip the "REPEATED" instances of
-			         CBM data blocks, but in case the "FIRST" instance of any CBM
-			         Data blocks is not recognized, that would cause a misalignment, and
-			         the CBM data block of non Power Load files could be accidentally used */
-
 			match = 1;
 
 			for (;; cbm_index += 4) {
@@ -179,7 +174,7 @@ void powerload_search (void)
 				if (e < s)
 					continue;
 
-				/* Write this one off as it's been used */
+				/* Move past this one as it's being used */
 				cbm_index += 4;
 
 				break;
