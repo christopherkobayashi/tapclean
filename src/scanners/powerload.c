@@ -94,7 +94,7 @@ void powerload_search (void)
 	if (!quiet)
 		msgout("  Power Load");
 
-	cbm_index = 3;
+	cbm_index = 1;
 	cbm_skip_inspection_count = 0;
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
@@ -128,19 +128,11 @@ void powerload_search (void)
 
 				match = 1;
 
-				for (;; cbm_index += 4) {
+				for (;; cbm_index++) {
 					ib = find_decode_block(CBM_DATA, cbm_index);
 					if (ib == -1)
 						return;		/* failed to locate CBM data for this one and any further Power Load file. */
-
-					/* Percy Penguin has an extra CBM file before the main loader */
-					if (blk[ib]->cx == 0x83) {
-						cbm_index += 2;
-						ib = find_decode_block(CBM_DATA, cbm_index);
-						if (ib == -1)
-							return;		/* failed to locate CBM data. */
-					}
-
+printf("\n%d, %d", blk[ib]->p1, sof);
 					/* Plausibility checks. Here since we track the CBM part for each
 					   of them, in case of multiple Power Load files on the same tape:
 					   there may be some programs using Power Load, some others using another loader,
@@ -150,7 +142,7 @@ void powerload_search (void)
 
 					if (blk[ib]->p1 > sof) {
 						match = 0;	/* Too far ahead: failed to locate CBM data for this Power Load file only. */
-						cbm_index -= 4;	/* Make the last checked CBM data instance available to the following Power Load files, if any */
+						cbm_index--;	/* Make the last checked CBM data instance available to the following Power Load files, if any */
 						break;
 					}
 
@@ -180,7 +172,7 @@ void powerload_search (void)
 						continue;
 
 					/* Move past this one as it's being used */
-					cbm_index += 4;
+					cbm_index++;
 
 					break;
 				}
