@@ -24,6 +24,10 @@ v0.37
 	 "Mini Office" (Luigi)
 	Improvement: The "Power Load" scanner now supports multiple titles
 	 on the same tape image (Luigi)
+	Improvement: Added signature of the "Power Load" instance used by
+	 "World Cup II" (Luigi)
+	Improvement: Added signature of the "Power Load" variant used by
+	 "Bombo", "Ian Botham's Test Match", and "Euro Games 64" (Luigi)
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)

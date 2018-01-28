@@ -330,7 +330,11 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xD407EAA3, LID_POWERLOAD},	/* Power Load: Felix in the factory, Ghouls, Jet Power Jack, Stock Car */
 		{0xA217E2B1, LID_POWERLOAD},	/* Mr Wiz, Smuggler, U.K. Geography, World Geography */
 		{0xCD358874, LID_POWERLOAD},	/* Percy Penguin */
-		{0xE553098E, LID_POWERLOAD},	/* Mini Office */
+		{0xE553098E, LID_POWERLOAD},	/* Mini Office, World Cup II */
+		{0xC95F137D, LID_POWERLOAD},	/* World Cup II (other source) */
+
+		{0x71345F31, LID_POWERLOAD},	/* Power Load variant: Bombo */
+		{0x84A332B3, LID_POWERLOAD},	/* Ian Botham's Test Match, Euro Games 64 */
 
 		{0xAD9ABE1C, LID_GREMLIN},	/* Gremlin tape F1 and F2 */
 		{0xC721D847, LID_GREMLIN},
