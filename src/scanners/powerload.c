@@ -132,7 +132,7 @@ void powerload_search (void)
 					ib = find_decode_block(CBM_DATA, cbm_index);
 					if (ib == -1)
 						return;		/* failed to locate CBM data for this one and any further Power Load file. */
-printf("\n%d, %d", blk[ib]->p1, sof);
+
 					/* Plausibility checks. Here since we track the CBM part for each
 					   of them, in case of multiple Power Load files on the same tape:
 					   there may be some programs using Power Load, some others using another loader,
