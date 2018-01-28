@@ -147,18 +147,35 @@ void powerload_search (void)
 					}
 
 					/* Basic validation before accessing array elements */
-					if (blk[ib]->cx < ENDOFFSETL + 1)
+					if (blk[ib]->cx < 3)
 						return;
 
-					s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
-					e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+					/* Check if this is the variant found in e.g. Bombo */
+					if (blk[ib]->dd[0] == 0xA0 && blk[ib]->dd[1] == 0x00 && blk[ib]->dd[2] == 0x4C) {
+						/* Basic validation before accessing array elements */
+						if (blk[ib]->cx < 0x1B + 1)
+							return;
 
-					/* Save the real end address for later display */
-					meta1 = e << 16;
+						s = blk[ib]->dd[0x07] + (blk[ib]->dd[0x08] << 8);
+						e = blk[ib]->dd[0x1B] + (blk[ib]->dd[0x1C] << 8);
 
-					/* Look for a jump to the execution address (not mandatory) */
-					if (blk[ib]->cx >= EXECOFFSETH + 1 && blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
-						meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
+						/* Save the real end address for later display */
+						meta1 = e << 16 | 0xA7BE;
+					} else {
+						/* Basic validation before accessing array elements */
+						if (blk[ib]->cx < ENDOFFSETH + 1)
+							return;
+
+						s = blk[ib]->dd[LOADOFFSETL] + (blk[ib]->dd[LOADOFFSETH] << 8);
+						e = blk[ib]->dd[ENDOFFSETL] + (blk[ib]->dd[ENDOFFSETH] << 8);
+
+						/* Save the real end address for later display */
+						meta1 = e << 16;
+
+						/* Look for a jump to the execution address (not mandatory) */
+						if (blk[ib]->cx >= EXECOFFSETH + 1 && blk[ib]->dd[EXECOFFSETL-1] == 0x4C)
+							meta1 |= blk[ib]->dd[EXECOFFSETL] + (blk[ib]->dd[EXECOFFSETH] << 8);
+					}
 
 					/* Prevent int wraparound when subtracting 1 from end location
 					   to get the location of the last loaded byte */
@@ -227,7 +244,7 @@ void powerload_search (void)
 			if (addblockdefex(THISLOADER, sof, sod, eod, eof, xinfo, meta1) >= 0) {
 				i = eof;	/* Search for further files starting from the end of this one */
 
-				/* Non-standard Power Loader (Rocket Roger loads an extra turbo block) */
+				/* Non-standard Power Loader ("Rocket Roger" and "World Cup II" load an extra turbo block) */
 				if ((meta1 & 0xFFFF) == 0) {
 					int *buf, bufsz;
 
