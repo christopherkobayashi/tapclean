@@ -280,6 +280,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (Klax) */
 		{0xF96B0635, LID_OCNEW2},	/* Ocean New 2   (Hero Quest) */
 		{0x908BEB44, LID_OCNEW2},	/* Ocean New 2   (World Championship Boxing Manager) */
+		{0x7E4A9653, LID_OCNEW2},	/* Ocean New 2   (Jahangir Khan World Championship Squash) */
 
 		{0x5622E174, LID_ATLAN},	/* Atlantis loader. */
 
