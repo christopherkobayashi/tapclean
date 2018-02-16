@@ -161,6 +161,20 @@ void powerload_search (void)
 
 						/* Save the real end address for later display */
 						meta1 = e << 16 | 0xA7BE;
+					/* Check if this is the variant found in e.g. Jack Charltons Fishing */
+					} else if (blk[ib]->dd[0] == 0xA9 && blk[ib]->dd[1] == 0x37 && blk[ib]->dd[2] == 0x85) {
+						/* Basic validation before accessing array elements */
+						if (blk[ib]->cx < 0x2B + 1)
+							return;
+
+						if (blk[ib]->dd[0x10] != 0xA0 || blk[ib]->dd[0x11] != 0x00 || blk[ib]->dd[0x12] != 0x4C)
+							return;
+
+						s = blk[ib]->dd[0x17] + (blk[ib]->dd[0x18] << 8);
+						e = blk[ib]->dd[0x2B] + (blk[ib]->dd[0x2C] << 8);
+
+						/* Save the real end address for later display */
+						meta1 = e << 16 | 0xA7BE;
 					} else {
 						/* Basic validation before accessing array elements */
 						if (blk[ib]->cx < ENDOFFSETH + 1)
