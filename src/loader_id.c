@@ -336,6 +336,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x71345F31, LID_POWERLOAD},	/* Power Load variant: Bombo */
 		{0x84A332B3, LID_POWERLOAD},	/* Ian Botham's Test Match, Euro Games 64 */
+		{0x8C61AFE2, LID_POWERLOAD},	/* Jack Charltons Fishing */
 
 		{0xAD9ABE1C, LID_GREMLIN},	/* Gremlin tape F1 and F2 */
 		{0xC721D847, LID_GREMLIN},
