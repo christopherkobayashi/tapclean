@@ -1,9 +1,9 @@
 /*
  * fftape.c (by Luigi Di Fraia, Oct 2009)
+ * Based on biturbo.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on biturbo.c, which is part of "TAPClean".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

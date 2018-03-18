@@ -1,10 +1,10 @@
 /*
  * tequila.c (by Luigi Di Fraia, Feb 2010)
  * Takes its name from the text "TEQUILA SUNRISE BELGIUM BRUSSELS  1984"
+ * Based on anirog.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on anirog.c, which is part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

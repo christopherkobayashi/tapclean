@@ -1,9 +1,9 @@
 /*
  * rainbowarts_f2.c (by Luigi Di Fraia, Aug 2006)
+ * Based on virgin.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on virgin.c, part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

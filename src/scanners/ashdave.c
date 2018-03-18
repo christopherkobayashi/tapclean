@@ -1,9 +1,9 @@
 /*
  * ashdave.c (by Luigi Di Fraia, May 2008)
+ * Based on burner.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on burner.c, which is part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

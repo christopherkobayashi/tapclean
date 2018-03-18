@@ -1,9 +1,9 @@
 /*
  * creatures.c (by Luigi Di Fraia, Aug 2006)
+ * Based on cyberload_f4.c, turrican.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on cyberload_f4.c, turrican.c, that are part of "Final TAP".
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

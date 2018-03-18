@@ -1,9 +1,9 @@
 /*
  * powerload.c (by Luigi Di Fraia, May 2011)
+ * Based on biturbo.c and cult.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on biturbo.c and cult.c.
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

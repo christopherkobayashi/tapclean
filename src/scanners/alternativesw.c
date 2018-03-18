@@ -1,9 +1,9 @@
 /*
  * alternativesw.c (by Luigi Di Fraia, Feb 2011)
+ * Based on ashdave.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on ashdave.c.
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

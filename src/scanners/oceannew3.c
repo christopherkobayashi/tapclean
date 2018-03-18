@@ -1,9 +1,9 @@
 /*
  * oceannew3.c (by Luigi Di Fraia, Jan 2013)
+ * Based on oceannew4.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on oceannew4.c.
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

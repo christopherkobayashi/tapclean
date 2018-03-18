@@ -1,9 +1,9 @@
 /*
  * gremlin_f2.c (by Luigi Di Fraia, May 2011)
+ * Based on accolade.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on accolade.c.
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *

@@ -1,9 +1,9 @@
 /*
  * alternativedk.c (by Luigi Di Fraia, May 2011)
+ * Based on alternativesw.c and chr.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
- * Based on alternativesw.c and chr.c.
  * Final TAP is (C) 2001-2006 Stewart Wilson, Subchrist Software.
  *
  *
