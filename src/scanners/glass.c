@@ -171,7 +171,7 @@ void glass_search (void)
 
 					/* Compute C64 memory location of the _LAST loaded byte_ */
 					e = s + x - 1;
-printf("\nStart: %x, End: %x", s, e);
+//printf("\nStart: %x, End: %x", s, e);
 					/* Plausibility check */
 					if (e > 0xFFFF)
 						continue;
@@ -184,7 +184,7 @@ printf("\nStart: %x, End: %x", s, e);
 
 					/* Point to the last pulse of the checkbyte */
 					eof = eod + BITSINABYTE - 1;
-printf("\nHeader! sof = %x, eof = %x\n", sof, eof);
+//printf("\nHeader! sof = %x, eof = %x\n", sof, eof);
 
 					if (addblockdefex(GLASS_HEAD, sof, sod, eod, eof, xinfo, ftype) >= 0) {
 						state = STATE_SEARCH_DATA;
@@ -213,7 +213,7 @@ printf("\nHeader! sof = %x, eof = %x\n", sof, eof);
 
 					/* Initially point to the last pulse of the checkbyte */
 					eof = eod + BITSINABYTE - 1;
-printf("\nData! sof = %x, eof = %x\n", sof, eof);
+//printf("\nData! sof = %x, eof = %x\n", sof, eof);
 
 					if (addblockdefex(GLASS_DATA, sof, sod, eod, eof, xinfo, ftype) >= 0)
 						i = eof;	/* Search for further files starting from the end of this one */
@@ -292,7 +292,7 @@ int glass_describe (int row)
 		stopflag = hd[HEADERSIZE + STOPFLAGOFFSET];
 
 		/* Set load and end locations and size */
-		blk[row]->cs = 0x0100;
+		blk[row]->cs = 0x090D;
 		blk[row]->ce = blk[row]->cs + HEADERSIZE + HDRPAYLOADSIZE - 1;
 		blk[row]->cx = HEADERSIZE + HDRPAYLOADSIZE;
 
