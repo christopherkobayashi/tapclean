@@ -28,10 +28,14 @@ v0.37
 	 "World Cup II" (Luigi)
 	Improvement: Added signature of the "Power Load" variant used by
 	 "Bombo", "Ian Botham's Test Match", and "Euro Games 64" (Luigi)
-	Improvement: Added signature of the "Ocean New F2" instance used
-	 by "Jahangir Khan World Championship Squash" (Luigi)
+	Improvement: Added initial multi-turbo-file support for "Power Load"
+	 (Luigi)
+	Improvement: Added signature of the "Ocean New F2" instance used by
+	 "Jahangir Khan World Championship Squash" (Luigi)
 	New: Added support for "Glass Tape", used in a number of titles
 	 supplied by Paul Jones (Luigi)
+	Fix: Corrected offset in the error message within the "Turrican"
+	 scanner (Luigi)
 
 v0.36
 	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
