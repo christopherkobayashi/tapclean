@@ -176,10 +176,10 @@ void turrican_search(void)
 					/* Store the info read from payload as extra-info */
 					xinfo = s + (e << 16);
 
-					/* Point to the first pulse of the last payload byte (that's final) */
-					eod = sod + (HEADERSIZE + HDRPAYLOADSIZE) * BITSINABYTE;
+					/* Point to the first pulse of the post-payload byte (that's final) */
+					eod = sod + (HEADERSIZE + HDRPAYLOADSIZE - 1 + 1 /* Include an extra post-payload byte, 0x02 */) * BITSINABYTE;
 
-					/* Point to the last pulse of the last payload byte */
+					/* Point to the last pulse of the post-payload byte */
 					eof = eod + BITSINABYTE - 1;
 
 					if (addblockdefex(TURR_HEAD, sof, sod, eod, eof, xinfo, ftype) >= 0) {
@@ -270,6 +270,7 @@ int turrican_describe(int row)
 	strcat(info, lin);
 
 	lt = blk[row]->lt;
+
 	if (lt == TURR_HEAD) {
 		int dfs, dfe;
 		int hdrpayload[HDRPAYLOADSIZE];
@@ -347,7 +348,7 @@ int turrican_describe(int row)
 				rd_err++;
 
 				/* for experts only */
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i + 2);
 				strcat(info, lin);
 			}
 		}
