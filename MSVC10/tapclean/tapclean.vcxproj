@@ -161,6 +161,7 @@
     <ClCompile Include="..\..\src\scanners\fastevil.c" />
     <ClCompile Include="..\..\src\scanners\fftape.c" />
     <ClCompile Include="..\..\src\scanners\freeslow.c" />
+    <ClCompile Include="..\..\src\scanners\glass.c" />
     <ClCompile Include="..\..\src\scanners\goforgold.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />

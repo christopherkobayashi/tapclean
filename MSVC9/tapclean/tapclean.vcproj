@@ -556,6 +556,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\glass.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\goforgold.c"
 					>
 				</File>

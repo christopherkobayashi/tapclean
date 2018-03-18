@@ -105,6 +105,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Flashload"			,"flash"	,FALSE},
 	{"Freeload"			,"free"		,FALSE},
 	{"Freeload Slowload"		,"frslow"	,FALSE},
+	{"Glass Tape"			,"glass"	,FALSE},
 	{"Go For The Gold"		,"goforgold"	,FALSE},
 	{"Gremlin F1"			,"GREMLIN_F1"	,FALSE},
 	{"Gremlin F2"			,"GREMLIN_F2"	,FALSE},
@@ -334,6 +335,9 @@ struct fmt_t ft[] = {
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x02, 0x09, 64,   NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,   0x33, 0x01, 0xFF, 64,   NA,    CSYES},
 	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,   0x42, 0x80, 0x40, 100,  NA,    CSNO},
+
+	{"GLASS TAPE HEADER"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x800,NA,    CSYES},
+	{"GLASS TAPE DATA"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x300,NA,    CSYES},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -1294,6 +1298,9 @@ static void search_tap(void)
 			if (ldrswt[noddesign	].exclude == FALSE && !database_is_full && !aborted)
 				ddesign_search();
 
+			if (ldrswt[noglass	].exclude == FALSE && !database_is_full && !aborted)
+				glass_search();
+
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
 				msx_search(0);	/* Standard/Fast */
 
@@ -1633,6 +1640,10 @@ static void describe_file(int row)
 		case CSPARKS:		creativesparks_describe(row);
 					break;
 		case DIGITAL_DESIGN:	ddesign_describe(row);
+					break;
+		case GLASS_HEAD:	glass_describe(row);
+					break;
+		case GLASS_DATA:	glass_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

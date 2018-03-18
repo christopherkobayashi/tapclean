@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.37-pre-18"
+#define VERSION_STR	"0.37-pre-19"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -222,6 +222,8 @@ enum {
 	TURBO220,
 	CSPARKS,
 	DIGITAL_DESIGN,
+	GLASS_HEAD,
+	GLASS_DATA,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -471,6 +473,7 @@ enum {
 	noflash,
 	nofree,
 	nofrslow,
+	noglass,
 	nogoforgold,
 	nogremlinf1,
 	nogremlinf2,

@@ -266,5 +266,8 @@ int creativesparks_describe(int);
 void ddesign_search(void);
 int ddesign_describe(int);
 
+void glass_search(void);
+int glass_describe(int);
+
 void msx_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int msx_describe(int);
