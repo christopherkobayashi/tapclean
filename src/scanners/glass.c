@@ -53,7 +53,8 @@ enum {
 
 enum {
 	STOP_FLAG_LAST = 0x03,
-	STOP_FLAG_MORE_TO_COME = 0x07
+	STOP_FLAG_MORE_TO_COME = 0x07,
+	STOP_FLAG_SPECTRUM = 0x00
 };
 
 enum {
@@ -159,10 +160,11 @@ void glass_search (void)
 					/* In case of read error we cannot trust the contents so give up on this Header file */
 					if (h != HDRPAYLOADSIZE)
 						continue;
-
+//printf("\nStop flag: $%02X", hdrpayload[STOPFLAGOFFSET]);
 					/* Plausibility check */
 					if (hdrpayload[STOPFLAGOFFSET] != STOP_FLAG_LAST && 
-							hdrpayload[STOPFLAGOFFSET] != STOP_FLAG_MORE_TO_COME)
+							hdrpayload[STOPFLAGOFFSET] != STOP_FLAG_MORE_TO_COME &&
+							hdrpayload[STOPFLAGOFFSET] != STOP_FLAG_SPECTRUM)
 						continue;
 
 					/* Extract load location and size */
