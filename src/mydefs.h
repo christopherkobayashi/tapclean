@@ -295,6 +295,7 @@ enum {
 	LID_EASYTAPE,
 	LID_CSPARKS,
 	LID_TRILOGIC,
+	LID_GLASS
 };
 
 /*

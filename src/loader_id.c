@@ -356,6 +356,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 						   Kentucky Racing, Merlin, Metranaut,
 						   Strike Force, Superted */
 
+		{0x114EEF5B, LID_GLASS},	/* Pyramid, The */
+		{0x606B287D, LID_GLASS},	/* Cliff Hanger */
+
 		{0, 0}				/* List terminator/cap */
 	};
 
