@@ -454,6 +454,20 @@ void clean_files(void)
 			e = blk[i]->p3;		/* move block end backwards, ready for the following cleaning code */
 		}
 
+		/* clean Glass Tape pilots */
+		if (t == GLASS_HEAD || t == GLASS_DATA) {
+			int start_pilot, end_pilot;
+
+			start_pilot = blk[i]->p1;	/* get pilot start */
+			end_pilot   = blk[i]->p2 - 2;
+
+			for (j = start_pilot; j < end_pilot; j++) {
+				b = tap.tmem[j];
+				if (b > 0x76 && b < 0xA0 + limit)
+					tap.tmem[j] = 0xA0;
+			}
+		}
+
 		/* clean... (threshold IS available)... */
 
 		if (t > PAUSE && tp != NA) {
@@ -486,7 +500,7 @@ void clean_files(void)
 
 	tap.changed = 1;
 
-	/* Flatten novaload trailers.. ie. gaps following NOVA blocks... */
+	/* Flatten Novaload/Digital Design trailers.. ie. gaps following turbo blocks... */
 	/* this works nicely...  but should move it elsewhere sometime. */
 
 	for (i = 0; blk[i]->lt != LT_NONE && blk[i + 1]->lt != LT_NONE; i++) {
