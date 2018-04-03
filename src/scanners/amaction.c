@@ -76,6 +76,9 @@ void amaction_search (void)
 	static int s_default[2] = {	/* default load address for most files */
 		0x08, 0x01
 	};
+	static int s_pointx[2] = {	/* load address for one of Point X files */
+		0x08, 0x20
+	};
 
 	int xinfo;			/* extra info used in addblockdef() */
 
@@ -124,9 +127,15 @@ void amaction_search (void)
 				continue;
 
 			/* Figure out filename length */
-			xinfo = find_seq(hd, HEADERSIZE + MAXFILENAME, s_default, 2);
+			xinfo = find_seq(hd, HEADERSIZE + MAXFILENAME, s_default, sizeof(s_default) / sizeof(s_default[0]));
 			if (xinfo == -1) {
-				xinfo = 2;
+				xinfo = find_seq(hd, HEADERSIZE + MAXFILENAME, s_pointx, sizeof(s_pointx) / sizeof(s_pointx[0]));
+				if (xinfo == -1) {
+					xinfo = 2;
+				} else {
+					/* Remove data size and flag from count */
+					xinfo -= 3;
+				}	
 			} else {
 				/* Remove data size and flag from count */
 				xinfo -= 3;

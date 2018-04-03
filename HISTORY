@@ -36,9 +36,12 @@ v0.37
 	 supplied by Paul Jones (Luigi)
 	Fix: Corrected offset in the error message within the "Turrican"
 	 scanner (Luigi)
+	Fix: Improved filename length detection in the "American Action"
+	 scanner for dealing with "Point X", submitted by Kim L. (Luigi)
 
 v0.36
-	Improvement: "CHR" scanner rewritten & renamed to "Mega-Save" (Luigi)
+	Improvement: The "CHR" scanner was rewritten & renamed to
+	 "Mega-Save" (Luigi)
 	Code quality: Implemented a number of rationalisations across the
 	 board (Luigi)
 	Improvement: Consolidated "Ocean New F1" T1/T2 scanners into a
@@ -49,7 +52,7 @@ v0.36
 	 number of scanners (Luigi)
 	Code quality: Modularised the Tx scan in "Mega-Save", "Freeload
 	 Slowload", "Alternative SW (DK)", and "MSX Tape" (Luigi)
-	Improvement: "Freeload" scanner rewritten (Luigi)
+	Improvement: The "Freeload" scanner was rewritten (Luigi)
 	Improvement: Added support for "Barbarian II" in "Palace Tape F1"
 	 (Luigi)
 
