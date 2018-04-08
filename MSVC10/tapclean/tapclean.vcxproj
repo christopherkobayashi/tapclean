@@ -121,8 +121,7 @@
     <ClCompile Include="..\..\src\scanners\nova_f1.c" />
     <ClCompile Include="..\..\src\scanners\nova_f2.c" />
     <ClCompile Include="..\..\src\scanners\ocean.c" />
-    <ClCompile Include="..\..\src\scanners\oceannew1t1.c" />
-    <ClCompile Include="..\..\src\scanners\oceannew1t2.c" />
+    <ClCompile Include="..\..\src\scanners\oceannew1.c" />
     <ClCompile Include="..\..\src\scanners\oceannew2.c" />
     <ClCompile Include="..\..\src\scanners\palace_f1.c" />
     <ClCompile Include="..\..\src\scanners\palace_f2.c" />
@@ -131,8 +130,7 @@
     <ClCompile Include="..\..\src\scanners\rackit.c" />
     <ClCompile Include="..\..\src\scanners\rasterload.c" />
     <ClCompile Include="..\..\src\scanners\seuck.c" />
-    <ClCompile Include="..\..\src\scanners\snakeload50t1.c" />
-    <ClCompile Include="..\..\src\scanners\snakeload50t2.c" />
+    <ClCompile Include="..\..\src\scanners\snakeload50.c" />
     <ClCompile Include="..\..\src\scanners\snakeload51.c" />
     <ClCompile Include="..\..\src\scanners\superpav.c" />
     <ClCompile Include="..\..\src\scanners\supertape.c" />
