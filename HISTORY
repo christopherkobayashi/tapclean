@@ -38,6 +38,8 @@ v0.37
 	 scanner (Luigi)
 	Fix: Improved filename length detection in the "American Action"
 	 scanner for dealing with "Point X", submitted by Kim L. (Luigi)
+	Improvement: Added signature of the "Power Load" instance used 
+	 by "Lighforce" (Luigi)
 
 v0.36
 	Improvement: The "CHR" scanner was rewritten & renamed to
