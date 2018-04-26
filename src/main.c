@@ -227,6 +227,7 @@ struct fmt_t ft[] = {
 	{"MEGA-SAVE T1"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x63, 0x64, 50,   NA,    CSYES},
 	{"MEGA-SAVE T2"		,MSbF, 0x2D, 0x26, NA,   0x36, 0x63, 0x64, 50,   NA,    CSYES},
 	{"MEGA-SAVE T3"		,MSbF, 0x3E, 0x36, NA,   0x47, 0x63, 0x64, 50,   NA,    CSYES},
+	{"MEGA-SAVE T4"		,MSbF, 0x6B, 0x54, NA,   0xA4, 0x63, 0x64, 50,   NA,    CSYES},
 	{"RASTERLOAD"		,MSbF, 0x3F, 0x26, NA,   0x58, 0x80, 0xFF, 20,   NA,    CSYES},
 	{"CYBERLOAD F1"		,MSbF, VV,   VV,   VV,   VV,   VV,   VV,   50,   NA,    CSNO},
 	{"CYBERLOAD F2"		,MSbF, VV,   VV,   VV,   VV,   VV,   VV,   20,   NA,    CSNO},
@@ -935,7 +936,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (tap.cbmid == LID_MEGASAVE 	&& ldrswt[nomegasave	].exclude == FALSE && !database_is_full)
-				chr_search(0);	/* T1/T2 */
+				chr_search(0);	/* All types */
 
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1159,7 +1160,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (ldrswt[nomegasave	].exclude == FALSE && !database_is_full && !aborted)
-				chr_search(0);	/* T1/T2 */
+				chr_search(0);	/* All types */
 
 			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();

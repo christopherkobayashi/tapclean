@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.37-pre-21"
+#define VERSION_STR	"0.37-pre-22"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -128,6 +128,7 @@ enum {
 	MEGASAVE_T1,
 	MEGASAVE_T2,
 	MEGASAVE_T3,
+	MEGASAVE_T4,
 	RASTER,
 	CYBER_F1,
 	CYBER_F2,

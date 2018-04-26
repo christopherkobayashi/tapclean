@@ -1,8 +1,8 @@
 /*
  * chr.c (rewritten by Luigi Di Fraia, Sep 2017)
  *
- * Handles all 3 threshold types: Mega-Save Mega-Speed, Ultra-Speed, Hyper-Speed
- * (aka. Cauldron, Hewson, Rainbird)
+ * Handles all known threshold types: Mega-Save Mega-Speed, Ultra-Speed, Hyper-Speed
+ * (aka. Cauldron, Hewson, Rainbird), and the "slow" clone
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
@@ -171,7 +171,7 @@ void chr_search(int lt)
 	if (lt > 0) {
 		chr_search_core(lt);
 	} else {
-		int type, types[] = { MEGASAVE_T1, MEGASAVE_T2, MEGASAVE_T3 };
+		int type, types[] = { MEGASAVE_T1, MEGASAVE_T2, MEGASAVE_T3, MEGASAVE_T4 };
 
 		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
 			chr_search_core(types[type]);
