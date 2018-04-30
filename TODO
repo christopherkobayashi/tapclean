@@ -7,6 +7,13 @@ Note: tasks are marked as per below. Completed tasks are still included here
  ~ = Task in progress
  o = Task completed
 
+ - Add an option to generate CRC-32 values using all possible bits of 
+   information within files on tape, in order to avoid cases like "Z" from 
+   "Action Pack 2": the execution address within the last turbo file on 
+   Side B (2404) was wrong (as it should have been 2304). However, as the 
+   execution address is part of the file header, it is not included in the 
+   file's CRC-32 calculation. Therefore, from an overall CRC-32 point, both
+   sides looked equivalent.
  - There are two multi-title support approaches at the moment that should 
    become the templates for multi-title support:
     1) The one used in "Biturbo" and "Power Load": applicable to those cases 
