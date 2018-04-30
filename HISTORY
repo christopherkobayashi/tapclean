@@ -40,6 +40,8 @@ v0.37
 	 scanner for dealing with "Point X", submitted by Kim L. (Luigi)
 	Improvement: Added signature of the "Power Load" instance used 
 	 by "Lighforce", supplied by Paul Jones (Luigi)
+	New: Added support for "Mega-Save T4", used in "Action Pack 2",
+	 supplied by Paul Jones (Luigi)
 
 v0.36
 	Improvement: The "CHR" scanner was rewritten & renamed to
@@ -57,8 +59,6 @@ v0.36
 	Improvement: The "Freeload" scanner was rewritten (Luigi)
 	Improvement: Added support for "Barbarian II" in "Palace Tape F1"
 	 (Luigi)
-	New: Added support for "Mega-Save T4", used in "Action Pack 2",
-	 supplied by Paul Jones (Luigi)
 
 v0.35
 	Improvement: The "Visiload" scanner now scans CBM files in order
