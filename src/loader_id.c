@@ -113,7 +113,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xBE6F5143, LID_BLEEP},	/* Chimera */
 		{0x2ABE21AA, LID_BLEEP},	/* Slap&Tick */
 
-		{0x366784C8, LID_MEGASAVE},
+		{0x366784C8, LID_MEGASAVE},	/* Formerly CHR */
 
 		{0xD09BF46F, LID_BURN},
 		{0x8D6E30E7, LID_BURN},
@@ -311,7 +311,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x565C0FCD, LID_GOFORGOLD},	/* Go For The Gold (Peepo's) */
 		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
 
-		{0x958D7E97, LID_FASTEVIL},	/* The Evil Dead (Peepo's & D-ram's) */
+		{0x958D7E97, LID_JIFFYLOAD},	/* The Evil Dead (Peepo's & D-ram's) */
 
 		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
 

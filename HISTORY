@@ -38,10 +38,12 @@ v0.37
 	 scanner (Luigi)
 	Fix: Improved filename length detection in the "American Action"
 	 scanner for dealing with "Point X", submitted by Kim L. (Luigi)
-	Improvement: Added signature of the "Power Load" instance used 
+	Improvement: Added signature of the "Power Load" instance used
 	 by "Lighforce", supplied by Paul Jones (Luigi)
 	New: Added support for "Mega-Save T4", used in "Action Pack 2",
 	 supplied by Paul Jones (Luigi)
+	Improvement: The "Fast Evil" scanner was renamed to "Jiffy Load"
+	 based on reports and sample tapes supplied by Paul Jones (Luigi)
 
 v0.36
 	Improvement: The "CHR" scanner was rewritten & renamed to

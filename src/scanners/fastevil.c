@@ -50,7 +50,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	FASTEVIL
+#define THISLOADER	JIFFYLOAD
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -87,7 +87,7 @@ void fastevil_search (void)
 	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
-		msgout("  Fast Evil");
+		msgout("  Jiffy Load");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
