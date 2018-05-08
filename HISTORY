@@ -21,17 +21,19 @@ v0.37
 	Improvement: The "Bleepload" scanner now supports multiple titles on
 	 the same tape image (Luigi)
 	Improvement: Added signature of the "Power Load" instance used by
-	 "Mini Office" (Luigi)
+	 "Mini Office", supplied by Paul Jones (Luigi)
 	Improvement: The "Power Load" scanner now supports multiple titles
 	 on the same tape image (Luigi)
 	Improvement: Added signature of the "Power Load" instance used by
-	 "World Cup II" (Luigi)
+	 "World Cup II", supplied by Paul Jones (Luigi)
 	Improvement: Added signature of the "Power Load" variant used by
-	 "Bombo", "Ian Botham's Test Match", and "Euro Games 64" (Luigi)
+	 "Bombo", "Ian Botham's Test Match", and "Euro Games 64", supplied
+	 by Paul Jones (Luigi)
 	Improvement: Added initial multi-turbo-file support for "Power Load"
 	 (Luigi)
 	Improvement: Added signature of the "Ocean New F2" instance used by
-	 "Jahangir Khan World Championship Squash" (Luigi)
+	 "Jahangir Khan World Championship Squash", supplied by Paul 
+	 Jones (Luigi)
 	New: Added support for "Glass Tape", used in a number of titles
 	 supplied by Paul Jones (Luigi)
 	Fix: Corrected offset in the error message within the "Turrican"
