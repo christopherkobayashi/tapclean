@@ -50,8 +50,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	JIFFYLOAD
-
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync bytes */
@@ -67,7 +65,7 @@
 #define POSTDATASIZE	256	/* size in bytes of the MANDATORY information
 				   that is found after file data */
 
-void fastevil_search (void)
+static void fastevil_search_core (int lt)
 {
 	int i, h;			/* counters */
 	unsigned char j;
@@ -80,17 +78,19 @@ void fastevil_search (void)
 	unsigned int x; 		/* block size */
 
 
-	en = ft[THISLOADER].en;
-	tp = ft[THISLOADER].tp;
-	sp = ft[THISLOADER].sp;
-	lp = ft[THISLOADER].lp;
-	sv = ft[THISLOADER].sv;
+	en = ft[lt].en;
+	tp = ft[lt].tp;
+	sp = ft[lt].sp;
+	lp = ft[lt].lp;
+	sv = ft[lt].sv;
 
-	if (!quiet)
-		msgout("  Jiffy Load");
+	if (!quiet) {
+		sprintf(lin, "  Jiffy Load T%d", lt - JIFFYLOAD_T1 + 1);
+		msgout(lin);
+	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = find_pilot(i, THISLOADER);
+		eop = find_pilot(i, lt);
 
 		if (eop > 0) {
 			/* Valid pilot found, mark start of file */
@@ -160,12 +160,25 @@ void fastevil_search (void)
 					readttbit(eof + 1, lp, sp, tp) >= 0)
 				eof++;
 
-			if (addblockdef(THISLOADER, sof, sod, eod, eof, 0) >= 0)
+			if (addblockdef(lt, sof, sod, eod, eof, 0) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
 
 		} else {
 			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
+		}
+	}
+}
+
+void fastevil_search (int lt)
+{
+	if (lt > 0) {
+		fastevil_search_core(lt);
+	} else {
+		int type, types[] = { JIFFYLOAD_T1, JIFFYLOAD_T2 };
+
+		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
+			fastevil_search_core(types[type]);
 		}
 	}
 }
@@ -179,10 +192,10 @@ int fastevil_describe (int row)
 	int b, rd_err;
 
 
-	en = ft[THISLOADER].en;
-	tp = ft[THISLOADER].tp;
-	sp = ft[THISLOADER].sp;
-	lp = ft[THISLOADER].lp;
+	en = ft[blk[row]->lt].en;
+	tp = ft[blk[row]->lt].tp;
+	sp = ft[blk[row]->lt].sp;
+	lp = ft[blk[row]->lt].lp;
 
 	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
 	s = blk[row]->p2;

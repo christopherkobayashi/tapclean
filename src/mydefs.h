@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.37-pre-23"
+#define VERSION_STR	"0.37-pre-24"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -202,7 +202,8 @@ enum {
 	FREE_SLOW_T1,
 	FREE_SLOW_T2,
 	GOFORGOLD,
-	JIFFYLOAD,
+	JIFFYLOAD_T1,
+	JIFFYLOAD_T2,
 	FFTAPE,
 	TESTAPE,
 	TEQUILA,

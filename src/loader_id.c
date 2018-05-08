@@ -311,7 +311,12 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x565C0FCD, LID_GOFORGOLD},	/* Go For The Gold (Peepo's) */
 		{0xE546B793, LID_GOFORGOLD},	/* Go For The Gold (Kevin's) */
 
-		{0x958D7E97, LID_JIFFYLOAD},	/* The Evil Dead (Peepo's & D-ram's) */
+		{0x958D7E97, LID_JIFFYLOAD},	/* T1: The Evil Dead (Peepo's & D-ram's) */
+		{0x34AAE466, LID_JIFFYLOAD},	/* T1: Special Operations */
+		{0xA86F2C56, LID_JIFFYLOAD},	/* T2: Robin to The Rescue, Munch Man */
+		{0x0B302531, LID_JIFFYLOAD},	/* T2: Jungle Quest */
+		{0x94EAA6AF, LID_JIFFYLOAD},	/* T2: Jungle Quest */
+		{0x7F7653E9, LID_JIFFYLOAD},	/* T2: Monkey Magic */
 
 		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
 

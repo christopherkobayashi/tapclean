@@ -42,8 +42,10 @@ v0.37
 	 by "Lighforce", supplied by Paul Jones (Luigi)
 	New: Added support for "Mega-Save T4", used in "Action Pack 2",
 	 supplied by Paul Jones (Luigi)
-	Improvement: The "Fast Evil" scanner was renamed to "Jiffy Load"
+	Improvement: The "Fast Evil" scanner was renamed to "Jiffy Load T1"
 	 based on reports and sample tapes supplied by Paul Jones (Luigi)
+	New: Added support for "Jiffy Load T2", used in a few titles by
+	 Solar Software, supplied by Paul Jones (Luigi)
 
 v0.36
 	Improvement: The "CHR" scanner was rewritten & renamed to

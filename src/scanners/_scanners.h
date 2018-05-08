@@ -212,7 +212,7 @@ int freeslow_describe(int);
 void goforgold_search(void);
 int goforgold_describe(int);
 
-void fastevil_search(void);
+void fastevil_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int fastevil_describe(int);
 
 void fftape_search(void);

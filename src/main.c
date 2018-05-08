@@ -308,7 +308,8 @@ struct fmt_t ft[] = {
 	{"FREELOAD SLOWLOAD T1"	,MSbF, 0x77, 0x5A, NA,   0x85, 0x40, 0x5A, 45,   400,   CSYES},
 	{"FREELOAD SLOWLOAD T2"	,MSbF, 0x9A, 0x66, NA,   0xCD, 0x40, 0x5A, 45,   400,   CSYES},
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,   0x42, 0x02, 0x11, 200,  NA,    CSYES},
-	{"JIFFY LOAD"		,MSbF, 0x1D, 0x17, NA,   0x21, 0x10, 0x20, 200,  NA,    CSNO},
+	{"JIFFY LOAD T1"	,MSbF, 0x1D, 0x17, NA,   0x21, 0x10, 0x20, 200,  NA,    CSNO},
+	{"JIFFY LOAD T2"	,MSbF, 0x27, 0x1F, NA,   0x30, 0x10, 0x20, 200,  NA,    CSNO},
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,   0x3F, 0,    1,    1500, NA,    CSNO},
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,   0x44, 0x02, 0x52, 100,  NA,    CSYES},
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,   0x28, 0x02, 0x09, 50,   NA,    CSNO},
@@ -1043,13 +1044,13 @@ static void search_tap(void)
 				t108DE0A5_search();
 
 			if (tap.cbmid == LID_FREE_SLOW	&& ldrswt[nofrslow	].exclude == FALSE && !database_is_full && !aborted)
-				freeslow_search(0); /* T1/T2 */
+				freeslow_search(0);	/* T1/T2 */
 
 			if (tap.cbmid == LID_GOFORGOLD	&& ldrswt[nogoforgold	].exclude == FALSE && !database_is_full && !aborted)
 				goforgold_search();
 
 			if (tap.cbmid == LID_JIFFYLOAD	&& ldrswt[nojiffyload	].exclude == FALSE && !database_is_full && !aborted)
-				fastevil_search();
+				fastevil_search(0);	/* T1/T2 */
 
 			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].exclude == FALSE && !database_is_full && !aborted)
 				fftape_search();
@@ -1213,7 +1214,8 @@ static void search_tap(void)
 			if (ldrswt[nohitec	].exclude == FALSE && !database_is_full && !aborted)
 				hitec_search();
 
-			if (ldrswt[notdif2	].exclude == FALSE && !database_is_full && !aborted) /* check f2 first (luigi) */
+			/* Check F2 first (Luigi) */
+			if (ldrswt[notdif2	].exclude == FALSE && !database_is_full && !aborted)
 				tdif2_search();
 
 			if (ldrswt[notdif1	].exclude == FALSE && !database_is_full && !aborted)
@@ -1362,7 +1364,7 @@ static void search_tap(void)
 			//	goforgold_search();
 
 			//if (ldrswt[nojiffyload	].exclude == FALSE && !database_is_full && !aborted)
-			//	fastevil_search();
+			//	fastevil_search(0);	/* T1/T2 */
 
 			//if (ldrswt[nochuckie		].exclude == FALSE && !database_is_full && !aborted)
 			//	chuckieegg_search();
@@ -1602,7 +1604,9 @@ static void describe_file(int row)
 					break;
 		case GOFORGOLD:		goforgold_describe(row);
 					break;
-		case JIFFYLOAD:		fastevil_describe(row);
+		case JIFFYLOAD_T1:	fastevil_describe(row);
+					break;
+		case JIFFYLOAD_T2:	fastevil_describe(row);
 					break;
 		case FFTAPE:		fftape_describe(row);
 					break;
