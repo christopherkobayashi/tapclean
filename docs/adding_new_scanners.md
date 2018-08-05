@@ -297,13 +297,13 @@ if (e > 0xFFFF)
 
 Data
 ----
-Data is usually a continuous sequence of bytes but sometimes it was splitted into sub-blocks inside the same turbo chunk, separated by a checksum value for each sub-block. In the latter case there's usually a checksum byte every each 256 bytes of data. So that the *search* section must take into account the overload produced by those checksums that results in a data section inside the chunk longer than data size.
-Turbo loaders that use sub-blocks, among the others: Accolade and Ocean new 4. An example of the overload calculation is provided below, from the accolade.c scanner.
+Data is usually a continuous sequence of bytes but sometimes it was splitted into sub-blocks inside the same turbo chunk, separated by a checksum value for each sub-block. In the latter case there's usually a checksum byte every each 256 bytes of data. So that the *search* section must take into account the overhead produced by those checksums that results in a data section inside the chunk longer than data size.
+Turbo loaders that use sub-blocks, among the others: Accolade and Ocean new 4. An example of the overhead calculation is provided below, from the accolade.c scanner.
 ```c
 /* Compute size */
 x = e - s + 1;
 
-/* Compute size overload due to internal checksums */
+/* Compute size overhead due to internal checksums */
 bso = x / 256;
 if (x % 256)
 	bso++;
