@@ -24,7 +24,7 @@ Let's assume each piece of information (i.e. different files) has been broken do
 The information (i.e. the files) can then be loaded into the computer memory for being used.
 
 Usually the loader itself has to be loaded into the computer memory from tape, so there must be a built-in loader into the computer's ROM that can load a standard chunk from tape and execute it. In turn, the newly loaded code can load subsequent chunks using a different keying mechanism (that's why this code is referred to as "tape loader" or "turbo loader", the latter due to the fact that a custom loader is used to load data faster than the built-in loader).
-The built-in loader is often referred to as "CBM tape loader" or "ROM Loader". It's the one loader that is executed when one types LOAD at the BASIC interpreter. It is beyond the scope of this document to illustrate how a turbo loader is stored inside a standard chunk and executed. If you are interested in that piece of information be sure to read the article about commercial turbo loaders (by Luigi Di Fraia).
+The built-in loader is often referred to as "CBM tape loader" or "CBM ROM Loader". It's the one loader that is executed when one types LOAD at the BASIC interpreter. It is beyond the scope of this document to illustrate how a turbo loader is stored inside a standard chunk and executed. If you are interested in that piece of information be sure to read the article about commercial turbo loaders (by Luigi Di Fraia).
 
 Scanner Design
 --------------
@@ -52,7 +52,7 @@ It is recommended **NOT** to set `xi` and `meta1` to pointers for data allocated
 Different scenarios
 -------------------
 Now we can talk about the different scenarios that are likely to be found when reverse engineering one of those turbo loaders and looking at the distribution of values within the tape image.
-What you should end up with, is a table of information like the following one specific for Accolade turbo loader:
+What you should end up with, is a table of information like the following one specific for "Accolade" turbo loader:
 
 **Threshold:** 0x01EA (490) **clock cycles** (TAP value: 0x3D)
 **Bit 0 pulse:** 0×29 (average value)
@@ -149,7 +149,7 @@ Yes, it is really **THAT** easy, and it is the reason for which I designed the n
 CBM inspection needed
 ---------------------
 One option for tape loader designers was to store both the turbo loader code and a table with information about how many files to load from tape (and where in RAM to load them) inside the standard chunk. That's one approach, and it causes us serious headaches if the table is encrypted or placed in a point inside the standard chunk that changes on a per tape basis rather than being loader specific. I.e.: different tapes may use the same encoding scheme, the same loader code, but they may store that table in different locations.
-The other (clever) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, which is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
+The other (clever) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, what is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
 A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
@@ -160,7 +160,7 @@ A snippet of code from cult.c follows:
 /* Store the info read from CBM part as extra-info */
 xinfo = s + (e << 16);
 ```
-A more complex scenario can be found in actionreplay.c, which shows this this field can be reused for different purposes:
+A more complex scenario can be found in actionreplay.c, that shows how this field can be reused for different purposes:
 ```c
 /* Pass details over to the describe stage */
 xinfo = dt << 24; /* threshold */
@@ -170,13 +170,13 @@ xinfo |= e; /* end address */
 
 Single on tape
 --------------
-Let's assume we are unlucky: the turbo chunks do not contain any header. All the information is inside the standard chunk. If the turbo chunk is unique on tape, we may find the information about it inside the standard chunk and that's it. But what if there are more than one standard chunk on the tape each followed by a turbo chunk whose load details are in its respective standard chunk? In FinalTAP and TAPClean, standard chunk are recognized on the first scan process and acknowledged, so that it may be harder at a later time when searching for a turbo chunk to know which is the standard chunk for that chunk.
+Let's assume we are unlucky: the turbo chunks do not contain any header. All the information is inside the standard chunk. If the turbo chunk is unique on tape, we may find the information about it inside the standard chunk and that's it. But what if there are more than one standard chunk on the tape each followed by a turbo chunk whose load details are in its respective standard chunk? In FinalTAP and TAPClean, standard chunk are recognized on the first scan process and acknowledged, so that it may be harder at a later time when searching for a turbo chunk to know which is the standard chunk for that turbo chunk.
 That's why we have to know if the turbo file is "Single on tape" or not.
-An example of the worst scenario occurs with Biturbo: CBM inspection is needed because there are usually multiple files on the same tape (usually magazine tapes). A brilliant technique has been developed to process this case: we don't need to create new (buggy) code for that.
+An example of the worst scenario occurs with "Biturbo": CBM inspection is needed because there are usually multiple files on the same tape (usually magazine tapes). A brilliant technique has been developed to process this case: we don't need to create new (buggy) code for that.
 
 Sync
 ----
-After the *lead-in sequence* has been read, a *sync pattern* is expected, so that if it's found the loader can reliably read in the following data, or even first read backwards and acknowledge a sequence of pre-pilot bytes (check the CHR scanner for an example).
+After the *lead-in sequence* has been read, a *sync pattern* is expected, so that if it's found the loader can reliably read in the following data, or even first read backwards and acknowledge a sequence of pre-pilot bytes (check the "Mega-Save" scanner for an example).
 If a *sync pattern* is not found, there's probably a disturb in the *lead-in sequence* that is not a *sync pattern*, not yet. Therefore the scanner (just as the loader code does itself) has to go back one step and try to read in the remaining part of the *lead-in sequence*. Eventually a *sync pattern* will be found.
 The *sync pattern* can be just a bit (usually it's the other value than the one used by a *lead-in sequence* that consists in a sequence of the same bit value repeated), or a byte, or a sequence of bytes (ie. 2 or more bytes).
 Since the code to read in those different *sync patterns* depends on the pattern itself, we have to specify if it is: a bit, a Byte, or a sequence (either of bits or Bytes). Then we can copy and paste the right code from an existing scanner to do the job.
@@ -298,7 +298,7 @@ if (e > 0xFFFF)
 Data
 ----
 Data is usually a continuous sequence of bytes but sometimes it was splitted into sub-blocks inside the same turbo chunk, separated by a checksum value for each sub-block. In the latter case there's usually a checksum byte every each 256 bytes of data. So that the *search* section must take into account the overhead produced by those checksums that results in a data section inside the chunk longer than data size.
-Turbo loaders that use sub-blocks, among the others: Accolade and Ocean new 4. An example of the overhead calculation is provided below, from the accolade.c scanner.
+Turbo loaders that use sub-blocks, among the others: "Accolade" and "New Ocean Tape 4". An example of the overhead calculation is provided below, from the accolade.c scanner.
 ```c
 /* Compute size */
 x = e - s + 1;
@@ -327,7 +327,7 @@ Some turbo chunks have additional bytes just after the data section and they are
 
 Trailer
 -------
-Wise loader designers put some lead-out bytes just after the data section, to be sure data was properly read in. We usually know which is the total amount of trailer bytes, so it's good to check for that number at most. The reason is that sometimes there may be no evident separator between the trailer of one chunk and the *lead-in sequence* of the following chunk. On a real C64 that's not a problem, because the trailer is not read in and decoded. FinalTAP and TAPClean have to read it in to acknowledge it, so that we have to care about reading in the correct amount of trailer **pulses**.
+Wise loader designers put some lead-out bytes just after the data section, to be sure data was properly read in. We usually know what is the total amount of trailer bytes, so it's good to check for that number at most. The reason is that sometimes there may be no evident separator between the trailer of one chunk and the *lead-in sequence* of the following chunk. On a real C64 that's not a problem, because the trailer is not read in and decoded. FinalTAP and TAPClean have to read it in to acknowledge it, so that we have to care about reading in the correct amount of trailer **pulses**.
 ```c
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 ```
