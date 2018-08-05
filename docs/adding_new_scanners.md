@@ -152,7 +152,7 @@ One option for tape loader designers was to store both the turbo loader code and
 The other (clever) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, which is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
-A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the blk structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
+A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
 The extra info field is a 32bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe* function. Expert designers may find it useful to pack different information as well.
 
 A snippet of code from cult.c follows:
@@ -223,7 +223,7 @@ Header
 As I told before, turbo chunks can have a small piece of information that may contain the file name/ID, load address, data size/end address, and additional information. If there's a header, there's a common code to read it in and some define(s) to describe its structure (length and contents).
 The presence of a header with load address and data size/end address may be crucial if there are multiple turbo files of the same type on one tape. If those files lack a header, it means the loader has a table of addresses that is used to load the turbo files in RAM. One part of this table may be inside the standard chunk, so that we can retrieve it easily, but other records may be anywhere in the following turbo files, in which case that information is too hard to retrieve.
 
-One example of header being inside each chink is given below:
+One example of header being inside each chunk is given below:
 ```c
 #define HEADERSIZE	4	/* size of block header */
 
