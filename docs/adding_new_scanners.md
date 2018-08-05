@@ -12,9 +12,9 @@ Introduction
 To be aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
 
 Basically, to encode data on a sequential media, the following things have to be provided:
-* a way to encode bits
-* a way to recognize the start of a chunk of data while reading it in from tape
-* a way to do a byte alignment while reading in a sequence of bits from tape
+- a way to encode bits
+- a way to recognize the start of a chunk of data while reading it in from tape
+- a way to do a byte alignment while reading in a sequence of bits from tape
 
 Usually, but not always, commercial tape loaders use a frequency shift keying (FSK) with just two frequencies. That is: bit 0 is encoded with a shorter duration (higher frequency) square wave and bit 1 with a longer duration (lower frequency) one.
 To break down information into a stream of bits and sequentially write these to tape, it is necessary to choose if it's the **M**ost **S**ignificant **b**it (MSb) that has to be written first and then each subsequent one, up to the **L**east **S**ignificant **b**it (LSb), or the other way round. That's usually referred to as endianness, and therefore endianness is either **MSb F**irst (MSbF) or **LSb F**irst (LSbF).
@@ -35,15 +35,15 @@ The *search* section attempts to recognize a turbo chunk by hunting for its know
 
 Once a chunk has been recognized, it has to be added to the internal database of recognized chunks by means of the function addblockdef(int lt, int sof, int sod, int eod, int eof, int xi). The meaning of those parameters is as per below:
 
-* **lt** is chunk type, as declared in an enum in mydefs.h
-* **sof** is the tape image offset of the first pulse that belongs to the chunk
-* **sod** is the tape image offset of the first pulse that belongs to data section
-* **eod** is the tape image offset of the pulse corresponding to the first bit of the last byte of the data section (that includes the data checksum, if any is present after data)
-* **eof** is the tape image offset of the last pulse that belongs to the chunk. That is usually the last pulse of the trailer if there's one, otherwise it equals to eod
-* **xi** is an extra information parameter, a 32bit value, used to pass information to the *describe* section.
+- **lt** is chunk type, as declared in an enum in mydefs.h
+- **sof** is the tape image offset of the first pulse that belongs to the chunk
+- **sod** is the tape image offset of the first pulse that belongs to data section
+- **eod** is the tape image offset of the pulse corresponding to the first bit of the last byte of the data section (that includes the data checksum, if any is present after data)
+- **eof** is the tape image offset of the last pulse that belongs to the chunk. That is usually the last pulse of the trailer if there's one, otherwise it equals to eod
+- **xi** is an extra information parameter, a 32bit value, used to pass information to the *describe* section.
 
 More recently (May 2011) the function addblockdefex() has been added, which takes an extra parameter: addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1). The extra parameter is described below:
-* **meta1** is used for additional information exchange between the *search* and *describe* stages where xi alone is not enough.
+- **meta1** is used for additional information exchange between the *search* and *describe* stages where xi alone is not enough.
 
 It is recommended **NOT** to set xi and meta1 to pointers for data allocated via malloc().
 
@@ -61,14 +61,14 @@ What you should end up with, is a table of information like the following one sp
 **Sync** byte: 0xAA
 
 **Header**
-* 16 bytes: Filename<
-* 02 bytes: Load address (LSBF)
-* 02 bytes: Data size (LSBF)
-* 01 byte : XOR Checksum of all Header bytes
+- 16 bytes: Filename<
+- 02 bytes: Load address (LSBF)
+- 02 bytes: Data size (LSBF)
+- 01 byte : XOR Checksum of all Header bytes
 
 **Data**
-* Data is split in sub-blocks of 256 bytes each, or less for the last one.
-* Each sub-block is followed by its XOR checksum byte. There are no pauses between sub-blocks.
+- Data is split in sub-blocks of 256 bytes each, or less for the last one.
+- Each sub-block is followed by its XOR checksum byte. There are no pauses between sub-blocks.
 
 **Trailer:** 8 Bit 0 pulses + 1 longer pulse.
 
@@ -78,16 +78,16 @@ The way we give FinalTAP and TAPClean the information contained above is by mean
 {"ACCOLADE", MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,    NA,   CSYES},
 ```
 Where:
-* **en** is endianness,
-* **tp** is threshold (TAP value)
-* **sp** is bit 0 pulse (or short pulse for those loaders that use 3 pulses to encode data)
-* **mp** is med pulse (only significant for those turbo loaders that use 3 pulses to encode data)
-* **lp** is bit 1 pulse (or long pulse for those loaders that use 3 pulses to encode data)
-* **pv** is pilot (i.e. *lead-in*) value, it may be a byte or a bit
-* **sv** is sync value, it may be a byte or a bit (note that this is just the first one in case there's a *sync pattern* made up of multiple bytes)
-* **pmin** is the minimum amount of pilot bytes requested for a chunk to be identified during the *search* stage. The suggested value for pmin is 1/2 of the pilot size usually found on TAPs for very short pilot sequences (e.g. 8 bytes) and 3/4 of the pilot size for longer pilot sequences.
-* **pmax** is the maximum number of pilot bytes to be used during the *search* stage. It is not usually used. Experienced designers can use this value to gather additional control over the*search* stage.
-* **has_cs** is the flag with which we tell the program if the chunk in question has got a data checksum, so that it can give us correct stats about failed checksum checks.
+- **en** is endianness,
+- **tp** is threshold (TAP value)
+- **sp** is bit 0 pulse (or short pulse for those loaders that use 3 pulses to encode data)
+- **mp** is med pulse (only significant for those turbo loaders that use 3 pulses to encode data)
+- **lp** is bit 1 pulse (or long pulse for those loaders that use 3 pulses to encode data)
+- **pv** is pilot (i.e. *lead-in*) value, it may be a byte or a bit
+- **sv** is sync value, it may be a byte or a bit (note that this is just the first one in case there's a *sync pattern* made up of multiple bytes)
+- **pmin** is the minimum amount of pilot bytes requested for a chunk to be identified during the *search* stage. The suggested value for pmin is 1/2 of the pilot size usually found on TAPs for very short pilot sequences (e.g. 8 bytes) and 3/4 of the pilot size for longer pilot sequences.
+- **pmax** is the maximum number of pilot bytes to be used during the *search* stage. It is not usually used. Experienced designers can use this value to gather additional control over the*search* stage.
+- **has_cs** is the flag with which we tell the program if the chunk in question has got a data checksum, so that it can give us correct stats about failed checksum checks.
 
 Each *search* section uses common code, thanks to the definition of THISLOADER. This means that a designer can safely copy and paste code from an existing scanner to a new one, without being concerned about moving scanner specific information into the new scanner. Usually there's no need to change this convenient way to do things. If your new scanner is going to support more than one variant, please use a variable (eg. **variant**) and some emums to describe the variants. THISLOADER has been introduced to index the ft array only.
 ```c
@@ -351,5 +351,5 @@ Recommendations
 Do not copy and paste code from the old scanners. If any feature you need in your own scanner is not available within the new scanners, just ask me to help with that. Old code is inconsistent and partly buggy.
 New code is consistent and robust. Consistent means that the same thing is done always the same way, variables have always the same name, scope, and usage, so that it is easier to read and debug the new code. Robust means we learned from who came before us, while fixings their bugs, so that we got rid of those bugs in the new code.
 If you end up with a scanner of your own by copying from old scanners, do NOT expect:
-* me to help with issues that arise with it or to debug your code, and
-* FinalTAP and TAPClean maintainers to insert it in the development trees
+- me to help with issues that arise with it or to debug your code, and
+- FinalTAP and TAPClean maintainers to insert it in the development trees
