@@ -6,6 +6,10 @@ Entries are of the following types (since release 0.21):
 	  frustration minimized)
 	- New: new features, such as support for additional loaders
 
+v0.38
+	Improvement: The first "Enigma" file in "Rik The Roadie" is now fully
+	 acknowledged - only 2 of 3 pages are loaded in RAM (Luigi)
+
 v0.37
 	Improvement: The filename occurring within a "Turbotape 250" header
 	 file is also embedded in the PRG filename of its data counterpart
