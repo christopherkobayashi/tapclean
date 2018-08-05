@@ -1,6 +1,6 @@
 Adding new scanners to TAPClean
 ===============================
-This is a cookbook intended to be used by FinalTAP and TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate your new scanner inside the above mentioned tools check the document about adding new scanners to FinalTAP (Stewart Wilson).
+This is a cookbook intended to be used by FinalTAP and TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate your new scanner inside the above mentioned tools check the document about adding new scanners to FinalTAP (by Stewart Wilson).
 
 Definition of Terms
 -------------------
@@ -12,18 +12,19 @@ Introduction
 To be aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
 
 Basically, to encode data on a sequential media, the following things have to be provided:
+
 - a way to encode bits
 - a way to recognize the start of a chunk of data while reading it in from tape
 - a way to do a byte alignment while reading in a sequence of bits from tape
 
 Usually, but not always, commercial tape loaders use a frequency shift keying (FSK) with just two frequencies. That is: bit 0 is encoded with a shorter duration (higher frequency) square wave and bit 1 with a longer duration (lower frequency) one.
-To break down information into a stream of bits and sequentially write these to tape, it is necessary to choose if it's the **M**ost **S**ignificant **b**it (MSb) that has to be written first and then each subsequent one, up to the **L**east **S**ignificant **b**it (LSb), or the other way round. That's usually referred to as endianness, and therefore endianness is either **MSb F**irst (MSbF) or **LSb F**irst (LSbF).
+To break down information into a stream of bits and sequentially write these to tape, it is necessary to choose if it's the **M**ost **S**ignificant **b**it (MSb) that has to be written first and then each subsequent one, up to the **L**east **S**ignificant **b**it (LSb), or the other way round. That's usually referred to as *endianness*, and therefore *endianness* is either **MSb F**irst (MSbF) or **LSb F**irst (LSbF).
 
 Let's assume each piece of information (i.e. different files) has been broken down into different streams of bits (i.e. different chunks) and saved to tape. How do we know where each chunk starts? The main part of loaders use a pattern that tells them a new chunk is beginning. That pattern is known as *lead-in sequence*. It can be a sequence of the same byte value repeated quite many times, or the same bit value. As soon as that value changes into some known value (referred to as *sync pattern*), the loader is said to have done a complete synchronization with the stream coming from tape. In other words, the loader can be sure that what follows is the information that had been previously saved to tape.
 The information (i.e. the files) can then be loaded into the computer memory for being used.
 
 Usually the loader itself has to be loaded into the computer memory from tape, so there must be a built-in loader into the computer's ROM that can load a standard chunk from tape and execute it. In turn, the newly loaded code can load subsequent chunks using a different keying mechanism (that's why this code is referred to as "tape loader" or "turbo loader", the latter due to the fact that a custom loader is used to load data faster than the built-in loader).
-The built-in loader is often referred to as "CBM tape loader" or "ROM Loader". It's the one loader that is executed when one types LOAD at the BASIC interpreter. It is beyond the scope of this document to illustrate how a turbo loader is stored inside a standard chunk and executed. If you are interested in that piece of information be sure to read the article about commercial turbo loaders.
+The built-in loader is often referred to as "CBM tape loader" or "ROM Loader". It's the one loader that is executed when one types LOAD at the BASIC interpreter. It is beyond the scope of this document to illustrate how a turbo loader is stored inside a standard chunk and executed. If you are interested in that piece of information be sure to read the article about commercial turbo loaders (by Luigi Di Fraia).
 
 Scanner Design
 --------------
@@ -33,7 +34,7 @@ A FinalTAP or TAPClean scanner is composed of two sections: a *search* section a
 
 The *search* section attempts to recognize a turbo chunk by hunting for its known structure within the whole TAP file data: *lead-in sequence* + *sync pattern*, and size of the chunk based on the file length retrieved from the chunk header or from the standard chunk.
 
-Once a chunk has been recognized, it has to be added to the internal database of recognized chunks by means of the function addblockdef(int lt, int sof, int sod, int eod, int eof, int xi). The meaning of those parameters is as per below:
+Once a chunk has been recognized, it has to be added to the internal database of recognized chunks by means of the function `addblockdef(int lt, int sof, int sod, int eod, int eof, int xi)`. The meaning of those parameters is as per below:
 
 - **lt** is chunk type, as declared in an enum in mydefs.h
 - **sof** is the tape image offset of the first pulse that belongs to the chunk
@@ -42,10 +43,11 @@ Once a chunk has been recognized, it has to be added to the internal database of
 - **eof** is the tape image offset of the last pulse that belongs to the chunk. That is usually the last pulse of the trailer if there's one, otherwise it equals to eod
 - **xi** is an extra information parameter, a 32bit value, used to pass information to the *describe* section.
 
-More recently (May 2011) the function addblockdefex() has been added, which takes an extra parameter: addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1). The extra parameter is described below:
-- **meta1** is used for additional information exchange between the *search* and *describe* stages where xi alone is not enough.
+More recently (May 2011) the function `addblockdefex()` has been added, which takes an extra parameter: `addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)`. The extra parameter is described below:
 
-It is recommended **NOT** to set xi and meta1 to pointers for data allocated via malloc().
+- **meta1** is used for additional information exchange between the *search* and *describe* stages where `xi` alone is not enough.
+
+It is recommended **NOT** to set `xi` and `meta1` to pointers for data allocated via `malloc()`.
 
 Different scenarios
 -------------------
@@ -61,12 +63,14 @@ What you should end up with, is a table of information like the following one sp
 **Sync** byte: 0xAA
 
 **Header**
-- 16 bytes: Filename<
+
+- 16 bytes: Filename
 - 02 bytes: Load address (LSBF)
 - 02 bytes: Data size (LSBF)
 - 01 byte : XOR Checksum of all Header bytes
 
 **Data**
+
 - Data is split in sub-blocks of 256 bytes each, or less for the last one.
 - Each sub-block is followed by its XOR checksum byte. There are no pauses between sub-blocks.
 
@@ -78,7 +82,8 @@ The way we give FinalTAP and TAPClean the information contained above is by mean
 {"ACCOLADE", MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,    NA,   CSYES},
 ```
 Where:
-- **en** is endianness,
+
+- **en** is *endianness*,
 - **tp** is threshold (TAP value)
 - **sp** is bit 0 pulse (or short pulse for those loaders that use 3 pulses to encode data)
 - **mp** is med pulse (only significant for those turbo loaders that use 3 pulses to encode data)
@@ -148,7 +153,7 @@ The other (clever) option was to place information about each file inside the ch
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
 A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the blk structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
-The extra info field is a 32bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe*function. Expert designers may find it useful to pack different information as well.
+The extra info field is a 32bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe* function. Expert designers may find it useful to pack different information as well.
 
 A snippet of code from cult.c follows:
 ```c
@@ -351,5 +356,6 @@ Recommendations
 Do not copy and paste code from the old scanners. If any feature you need in your own scanner is not available within the new scanners, just ask me to help with that. Old code is inconsistent and partly buggy.
 New code is consistent and robust. Consistent means that the same thing is done always the same way, variables have always the same name, scope, and usage, so that it is easier to read and debug the new code. Robust means we learned from who came before us, while fixings their bugs, so that we got rid of those bugs in the new code.
 If you end up with a scanner of your own by copying from old scanners, do NOT expect:
+
 - me to help with issues that arise with it or to debug your code, and
 - FinalTAP and TAPClean maintainers to insert it in the development trees
