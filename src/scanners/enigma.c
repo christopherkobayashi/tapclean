@@ -374,6 +374,20 @@ void enigma_search(void)
 		}
 	}
 
+	/* Rik The Roadie: the first file is 3 pages, only 2 of which are loaded */
+	if (ib != -1 && s && e == s + 0x200) {
+		unsigned int crc;
+
+		/*
+		 * At this stage the describe functions have not been invoked
+		 * yet, therefore we have to compute the CRC-32 on the fly.
+		 */
+		crc = crc32_compute_crc(blk[ib]->dd, blk[ib]->cx);
+
+		if (crc == 0xAA370E0D)
+			e += 0x100;
+	}
+
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
 
