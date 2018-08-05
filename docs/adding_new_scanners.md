@@ -240,6 +240,8 @@ for (h = 0; h < HEADERSIZE; h++) {
 	if (hd[h] == -1)
 		break;
 }
+
+/* Bail out if there was an error reading the block header */
 if (h != HEADERSIZE)
 	continue;
 
@@ -247,7 +249,8 @@ if (h != HEADERSIZE)
 s = hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8);
 e = hd[ENDOFFSETL]  + (hd[ENDOFFSETH]  << 8);
 
-// Prevent int wraparound when subtracting 1 from end location
+/* Prevent int wraparound when subtracting 1 from end location
+   to get the location of the last loaded byte */
 if (e == 0)
 	e = 0xFFFF;
 else
@@ -275,6 +278,8 @@ for (h = 0; h < HEADERSIZE; h++) {
 	if (hd[h] == -1)
 		break;
 }
+
+/* Bail out if there was an error reading the block header */
 if (h != HEADERSIZE)
 	continue;
 
