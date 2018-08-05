@@ -1,15 +1,15 @@
 Adding new scanners to TAPClean
 ===============================
-This is a cookbook intended to be used by FinalTAP and TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate your new scanner inside the above mentioned tools check the document about adding new scanners to FinalTAP (by Stewart Wilson).
+This is a reference intended to be used by FinalTAP and TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate a new scanner inside the above mentioned tools check the document about adding new scanners to FinalTAP (by Stewart Wilson).
 
 Definition of Terms
 -------------------
-*File*: plain data, ie. the information itself (a picture, a tune, a program, etc).
-*Chunk*: the wrapped version of a file, as found on tapes. Usually this means a stream of pulses made up of a *lead-in sequence*, a *sync pattern*, usually a *header* section, a *data* section, and possibly a *trailer*.
+*File* plain data, ie. the information itself (a picture, a tune, a program, etc).
+*Chunk* the wrapped version of a file, as found on tapes. Usually this means a stream of pulses made up of a *lead-in sequence*, a *sync pattern*, usually a *header* section, a *data* section, and possibly a *trailer*.
 
 Introduction
 ------------
-To be aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
+To be fully aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
 
 Basically, to encode data on a sequential media, the following things have to be provided:
 
@@ -142,12 +142,12 @@ Based on additional turbo chunk inspection, you should be able to provide the fo
  */
 ```
 That's it: if you need code for a new scanner that uses one sync byte, or that has a header, ot whose data is divided in sub blocks, just get the code from this file, both for the *search* and the *describe* sections.
-Yes, it is really **THAT** easy, and it is the reason for which I designed the new scanners the way they are.
+Yes, it really is **THAT** easy, and it is the reason for which I designed the new scanners the way they are.
 
 CBM inspection needed
 ---------------------
 One option for tape loader designers was to store both the turbo loader code and a table with information about how many files to load from tape (and where in RAM to load them) inside the standard chunk. That's one approach, and it causes us serious headaches if the table is encrypted or placed in a point inside the standard chunk that changes on a per tape basis rather than being loader specific. I.e.: different tapes may use the same encoding scheme, the same loader code, but they may store that table in different locations.
-The other (clever) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, what is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
+The other (neat) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, what is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
 A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
@@ -210,7 +210,7 @@ sod = i + BITSINABYTE * SYNCSEQSIZE;
 
 Header
 ------
-As I told before, turbo chunks can have a small piece of information that may contain the file name/ID, load address, data size/end address, and additional information. If there's a header, there's a common code to read it in and some define(s) to describe its structure (length and contents).
+As I wrote before, turbo chunks can have a small piece of information that may contain the file name/ID, load address, data size/end address, and additional information. If there's a header, there's a common code to read it in and some define(s) to describe its structure (length and contents).
 The presence of a header with load address and data size/end address may be crucial if there are multiple turbo files of the same type on one tape. If those files lack a header, it means the loader has a table of addresses that is used to load the turbo files in RAM. One part of this table may be inside the standard chunk, so that we can retrieve it easily, but other records may be anywhere in the following turbo files, in which case that information is too hard to retrieve.
 
 One example of header being inside each chunk is given below:
@@ -313,7 +313,7 @@ The presence of a checksum is crucial for once we find out all checksums in a ta
 
 Post-data
 ---------
-Some turbo chunks have additional bytes just after the data section and they are not checksums. Sometimes they are just padding bytes. Sometimes they can be used to detect when the data chunk finished, which is useful in those cases different loaders use a similar data structure, but just one has got those additional bytes (example: TDI F2 and TDI F1).
+Some turbo chunks have additional bytes just after the data section and they are not checksums. Sometimes they are just padding bytes. Sometimes they can be used to detect when the data chunk finished, which is useful in those cases different loaders use a similar data structure, but just one has got those additional bytes (example: "TDI F1" and "TDI F2").
 
 Trailer
 -------
