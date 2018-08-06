@@ -4,18 +4,18 @@ This is a reference intended to be used by FinalTAP and TAPClean scanner designe
 
 Definition of Terms
 -------------------
-*File* plain data, ie. the information itself (a picture, a tune, a program, etc).
-*Chunk* the wrapped version of a file, as found on tapes. Usually this means a stream of pulses made up of a *lead-in sequence*, a *sync pattern*, usually a *header* section, a *data* section, and possibly a *trailer*.
+*File* - plain data, ie. the information itself (a picture, a tune, a program, etc).
+*Chunk* - the wrapped version of a file, as found on tapes. Usually this means a stream of pulses made up of a *lead-in sequence*, a *sync pattern*, usually a *header* section, a *data* section, and possibly a *trailer*.
 
 Introduction
 ------------
 To be fully aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
 
-Basically, to encode data on a sequential media, the following things have to be provided:
+Basically, to encode data on a sequential medium, the following things have to be provided:
 
 - a way to encode bits
-- a way to recognize the start of a chunk of data while reading it in from tape
-- a way to do a byte alignment while reading in a sequence of bits from tape
+- a way to recognize the start of a chunk of data while reading it in
+- a way to do a byte alignment while reading in a sequence of bits
 
 Usually, but not always, commercial tape loaders use a frequency shift keying (FSK) with just two frequencies. That is: bit 0 is encoded with a shorter duration (higher frequency) square wave and bit 1 with a longer duration (lower frequency) one.
 To break down information into a stream of bits and sequentially write these to tape, it is necessary to choose if it's the **M**ost **S**ignificant **b**it (MSb) that has to be written first and then each subsequent one, up to the **L**east **S**ignificant **b**it (LSb), or the other way round. That's usually referred to as *endianness*, and therefore *endianness* is either **MSb F**irst (MSbF) or **LSb F**irst (LSbF).
@@ -41,7 +41,7 @@ Once a chunk has been recognized, it has to be added to the internal database of
 - **sod** is the tape image offset of the first pulse that belongs to data section
 - **eod** is the tape image offset of the pulse corresponding to the first bit of the last byte of the data section (that includes the data checksum, if any is present after data)
 - **eof** is the tape image offset of the last pulse that belongs to the chunk. That is usually the last pulse of the trailer if there's one, otherwise it equals to eod
-- **xi** is an extra information parameter, a 32bit value, used to pass information to the *describe* section.
+- **xi** is an extra information parameter, a 32-bit value, used to pass information to the *describe* section.
 
 More recently (May 2011) the function `addblockdefex()` has been added, which takes an extra parameter: `addblockdefex(int lt, int sof, int sod, int eod, int eof, int xi, int meta1)`. The extra parameter is described below:
 
@@ -52,7 +52,7 @@ It is recommended **NOT** to set `xi` and `meta1` to pointers for data allocated
 Different scenarios
 -------------------
 Now we can talk about the different scenarios that are likely to be found when reverse engineering one of those turbo loaders and looking at the distribution of values within the tape image.
-What you should end up with, is a table of information like the following one specific for "Accolade" turbo loader:
+What you should end up with, is a table of information like the following one specific for the "Accolade" turbo loader:
 
 **Threshold:** 0x01EA (490) **clock cycles** (TAP value: 0x3D)
 **Bit 0 pulse:** 0×29 (average value)
@@ -151,7 +151,7 @@ The other (neat) option was to place information about each file inside the chun
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
 A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
-The extra info field is a 32bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe* function. Expert designers may find it useful to pack different information as well.
+The extra info field is a 32-bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe* function. Expert designers may find it useful to pack different information as well.
 
 A snippet of code from cult.c follows:
 ```c
