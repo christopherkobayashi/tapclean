@@ -2,11 +2,9 @@ Integrating new scanners into TAPClean
 ======================================
 
 - Write the new scanner .c file with the following functions:
-
 	- `xxx_search()`
 	- `xxx_describe()`
 	- custom bit / byte reading functions, if `readttbit()` / `readttbyte()` are unsuitable
-
 - Save your new format's source file in the 'scanners' folder and add the function prototypes to scanners.h.
 - Add a definition for the format to the `ft[]` array (in main.c).
 - Add a capitalized constant name for the format to the enum in mydefs.h, which must match the formats position in the `ft[]` array.
