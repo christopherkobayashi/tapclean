@@ -1,6 +1,6 @@
 Adding new scanners to TAPClean
 ===============================
-This is a reference intended to be used by FinalTAP and TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate a new scanner inside the above mentioned tools check the document about adding new scanners to FinalTAP (by Stewart Wilson).
+This is a reference intended to be used by TAPClean scanner designers. It gives guidelines and code examples to follow when writing NEW scanners. To integrate a new scanner in TAPClean check the document integrating_new_scanners.md.
 
 Definition of Terms
 -------------------
