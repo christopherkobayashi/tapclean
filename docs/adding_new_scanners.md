@@ -30,7 +30,7 @@ Scanner Design
 --------------
 Bear in mind that a scanner is the product of reverse engineering of the turbo loader code **AND** inspection of the TAP file. You need to be proficient in 65xx ASM and CIA to do so. Again, check the article about commercial turbo loaders if you would like some help with that.
 
-A FinalTAP or TAPClean scanner is composed of two sections: a *search* section and a *describe* section. The *search* section of each active scanner is run first and used to identify the chunks within the TAP file that use each supported loader. In this way, identified chunks can be correctly decoded (or *described*) at a later stage.
+A scanner is composed of two sections: a *search* section and a *describe* section. The *search* section of each active scanner is run first and used to identify the chunks within the TAP file that use each supported loader. In this way, identified chunks can be correctly decoded (or *described*) at a later stage.
 
 The *search* section attempts to recognize a turbo chunk by hunting for its known structure within the whole TAP file data: *lead-in sequence* + *sync pattern*, and size of the chunk based on the file length retrieved from the chunk header or from the standard chunk.
 
@@ -76,7 +76,7 @@ What you should end up with, is a table of information like the following one sp
 
 **Trailer:** 8 Bit 0 pulses + 1 longer pulse.
 
-The way we give FinalTAP and TAPClean the information contained above is by means of a fmt array entry. Based on the above table, the entry for this loader inside the fmt array is the following one:
+The way we give TAPClean the information contained above is by means of a fmt array entry. Based on the above table, the entry for this loader inside the fmt array is the following one:
 ```c
 /* name,     en,   tp,   sp,   mp,  lp,   pv,   sv,   pmin, pmax, has_cs. */
 {"ACCOLADE", MSbF, 0x3D, 0x29, NA,  0x4A, 0x0F, 0xAA, 4,    NA,   CSYES},
@@ -150,7 +150,7 @@ One option for tape loader designers was to store both the turbo loader code and
 The other (neat) option was to place information about each file inside the chunk, thus providing what's often called a chunk "header" (it may also be in a chunk of its own, of course). That header can contain, as example, the name of the data file that follows, where in RAM to load it, and how many bytes to load (or, equivalently, what is the location of the last byte to load). If each file has got its header, we don't have to bother seeking table entries inside the standard chunk.
 We will refer to this different way to do things saying if "CBM inspection needed" is yes or no.
 
-A way to pass information from the *search* to the *describe* routines in FinalTAP and TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
+A way to pass information from the *search* to the *describe* routines in TAPClean is to use the extended info field of the `blk` structure (the single unit of the file database). So that, once we extract information from the standard chunk during the *search* stage, we do not have to extract it again in the *describe* stage.
 The extra info field is a 32-bit integer in which we can pack two 16 bit values. Of course it is mainly intended to pack together load address and end address to pass to the *describe* function. Expert designers may find it useful to pack different information as well.
 
 A snippet of code from cult.c follows:
@@ -168,7 +168,7 @@ xinfo |= e; /* end address */
 
 Single on tape
 --------------
-Let's assume we are unlucky: the turbo chunks do not contain any header. All the information is inside the standard chunk. If the turbo chunk is unique on tape, we may find the information about it inside the standard chunk and that's it. But what if there are more than one standard chunk on the tape each followed by a turbo chunk whose load details are in its respective standard chunk? In FinalTAP and TAPClean, standard chunk are recognized on the first scan process and acknowledged, so that it may be harder at a later time when searching for a turbo chunk to know which is the standard chunk for that turbo chunk.
+Let's assume we are unlucky: the turbo chunks do not contain any header. All the information is inside the standard chunk. If the turbo chunk is unique on tape, we may find the information about it inside the standard chunk and that's it. But what if there are more than one standard chunk on the tape each followed by a turbo chunk whose load details are in its respective standard chunk? In TAPClean, standard chunks are recognized on the first scan process and acknowledged, so that it may be harder at a later time when searching for a turbo chunk to know which is the standard chunk for that turbo chunk.
 That's why we have to know if the turbo file is "Single on tape" or not.
 An example of the worst scenario occurs with "Biturbo": CBM inspection is needed because there are usually multiple files on the same tape (usually magazine tapes). A brilliant technique has been developed to process this case: we don't need to create new (buggy) code for that.
 
@@ -317,7 +317,7 @@ Some turbo chunks have additional bytes just after the data section and they are
 
 Trailer
 -------
-Wise loader designers put some lead-out bytes just after the data section, to be sure data was properly read in. We usually know what is the total amount of trailer bytes, so it's good to check for that number at most. The reason is that sometimes there may be no evident separator between the trailer of one chunk and the *lead-in sequence* of the following chunk. On a real C64 that's not a problem, because the trailer is not read in and decoded. FinalTAP and TAPClean have to read it in to acknowledge it, so that we have to care about reading in the correct amount of trailer **pulses**.
+Wise loader designers put some lead-out bytes just after the data section, to be sure data was properly read in. We usually know what is the total amount of trailer bytes, so it's good to check for that number at most. The reason is that sometimes there may be no evident separator between the trailer of one chunk and the *lead-in sequence* of the following chunk. On a real C64 that's not a problem, because the trailer is not read in and decoded. TAPClean has to read it in to acknowledge it, so that we have to care about reading in the correct amount of trailer **pulses**.
 ```c
 #define MAXTRAILER	8	/* max amount of trailer pulses read in */
 ```
@@ -353,4 +353,4 @@ New code is consistent and robust. Consistent means that the same thing is done 
 If you end up with a scanner of your own by copying from old scanners, do NOT expect:
 
 - me to help with issues that arise with it or to debug your code, and
-- FinalTAP and TAPClean maintainers to insert it in the development trees
+- TAPClean maintainers to insert it in the development trees
