@@ -8,8 +8,10 @@ Some older tasks (at the bottom) might not be applicable any longer, but are kep
 
 - TODO: Add an option to generate CRC-32 values using all possible bits of information within files on tape, in order to avoid cases like "Z" from  "Action Pack 2": the execution address within the last turbo file on  Side B (2404) was wrong (as it should have been 2304). However, as the  execution address is part of the file header, it is not included in the  file's CRC-32 calculation. Therefore, from an overall CRC-32 point, both sides looked equivalent.
 - TODO: There are two multi-title support approaches at the moment that should become the templates for multi-title support:
+
 	- The one used in "Biturbo" and "Power Load": applicable to those cases when the encoding parameters are known (e.g. endianness, short pulse, long pulse, pilot/sync values) and it's just file details that are stored in the CBM part (RAM start address, end address, or file size); knowing encoding parameters we can cycle through each turbo file and then backtrace from there to hit each corresponding CBM file.
 	- The one used in "Visiload": applicable to those cases when encoding parameters are set in the CBM part and need extracting on a per file basis, so that each turbo file in between CBM sections can be decoded; in this case we need to cycle through CBM parts, and then extract the encoding parameters required to detect turbo parts in between.
+
 - TODO: Consider the unification of "Hi-Tech" and "Virgin" if they appear to be mastered by the same program with different settings (Luigi)
 - TODO: Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2" so the latter should be extended with multiple Tx variants (Luigi)
 - TODO: Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
@@ -32,9 +34,11 @@ In all cases, looking at the first CBM file only makes sense when a title is not
 - TODO: "Cult tape" should be renamed to "Freeze Machine tape" (Ziggy72)
 - TODO: "FF Tape" stands for "Freeze Frame" (SLC) which later became "Freeze Machine" (Ziggy72)
 - COMPLETED: "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, (C) 1984 Choice, each supported type is referred to as:
+
 	- CHR T1 : Mega-Speed  x9 (fastest)
 	- CHR T2 : Ultra-Speed x7 (medium)
 	- CHR T3 : Hyper-Speed x5 (slowest)
+
 The scanner should be renamed (Ziggy72)
 - TODO: The code that starts with:
 ```c
@@ -56,8 +60,10 @@ e = blk[i]->p3+7;		/* move block end backwards */
 ```
 The reason is that when `t == ACTIONREPLAY_STURBO` the trailer between p3+8 and p4 (inclusive) is cleaned using header pulses, so the rest goes from p1 to p3+7, where p3 the offset of first bit of the last data byte (Luigi)
 - TODO: Avoid repetition for scanner code:
+
 	- PRG data extraction and checkbyte calculation
 	- pilot & trailer length computation (Luigi)
+
 - TODO: Define a few MACROs for quicker access to data, e.g.:
 ```c
 #define HEADER_GET_LOAD_ADDRESS() (hd[LOADOFFSETL] + (hd[LOADOFFSETH] << 8))
@@ -99,7 +105,9 @@ while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
 - TODO: Rewrite: burner.c (requires some decrypting), chr.c, firebird.c, freeload.c, hitec.c, hitload.c, ikloader.c, jetload.c, microload.c, oceannew1t*.c, oceannew2.c, rasterload.c, snake*.c, turbotape.c, usgold.c, virgin.c (also document the size of pilots/trailers in tapes using each of these) (Luigi)
 - TODO: There doesn't appear to be any reason for abandoning search when nova_f1 block header contains broken bytes. Proceed with validation and further scanning (Luigi)
 - IN PROGRESS: The block header validation recently (0.27) added to "Freeload" and "Ocean New" scanners by fabbo should be added to old scanners, wherever appropriate (Luigi)
+
 	- Pending: superpav.c, supertape.c. Leave wildload.c as it is (chain of files without individual pilot+sync: if one is broken we have to give up)
+
 - TODO: `describe_file(i)` is used in `analyze()` (via `describe_blocks()` in order to calculate the overall CRC-32 value that is displayed in the summary) and in report() (via print_database()) thus producing an unnecessary overhead (PRG contents are generated twice) while scanning.
 `if (blk[row]->dd != NULL)` cannot always be used not to regenerate. We need the extra info and the error messages in the report that are produced while extracting PRG data (Luigi)
 
@@ -108,9 +116,11 @@ while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
 - TODO: Trailer length: make sure postdata and/or checkbyte lengths are consistently subtracted (or not subtracted) from the trailing sequence length in all new scanners. See entry below suggested by SLC too. (Luigi)
 - TODO: Allow partial EOFMARKER (i.e. only 7 valid pulses followed by a single over-stretched one) in tdi_f2.c. Last pulse is often corrupted. (Luigi)Code written, it is going to be tested.
 - TODO: Review Hi-Tec and Virgin loader. These should really be Hi-Tec/Mastertronic T1, T2, T3, where:
+
 	- CBM Data CRC32 0x895DCF44 -> T1 (Threshold 0x015E)
 	- CBM Data CRC32 0x342A2416 -> T2 (Threshold 0x016E)
 	- CBM Data CRC32 0xFADDF41C -> T3 (Threshold 0x017E)
+
 Disambiguation should be achieved by means of the fast scanning based on CBM Data CRC32. (Luigi)
 - TODO: When last pulse of a checkbyte is broken in Pavloda (either oversized or merged into a long pulse) the cleaning stage must fix it. The last pulse is 0x3F if no 0x1F preceeds it and it's 0x1F otherwise. (Luigi)
 - TODO: It must be responsibility of the cleaning process to reconstruct the last bit of the last byte of pattern found in Ash+Dave trailer, 0x77, not of the scanner. Move the reconstruction there. (Luigi)
@@ -121,8 +131,10 @@ Disambiguation should be achieved by means of the fast scanning based on CBM Dat
 - IN PROGRESS: Check for memory and filehandle leaks (error handling).
 - TODO: Add a portable strupr function for `sort_list()` in filesearch.c.
 - TODO: Add warning about "Gremlin Fastload" (if we add that loader) (Luigi)
+
 	- Only clean those if you know what you are doing.
 	- Certain pulses can be misdetected/converted.
+
 - TODO: Split the code into more manageable parts
 - TODO: Make the code more generic
 - TODO: Check start/end pilot/data/trailer. SLC says:
