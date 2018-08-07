@@ -205,7 +205,7 @@ v0.23
 - Fix: DC2N DMP to TAP conversion now initializes the TAP header (Luigi)
 - New: Added support for "Go for the gold" loader, contributed by Kevin  Palberg (Luigi)
 - Improvement: "Cyberload F4" scanner now recognizes Myth's F4 files (Kevin)
-- Code quality: changed trailer read block to use readttbit() in new scanners (Luigi)
+- Code quality: changed trailer read block to use `readttbit()` in new scanners (Luigi)
 - New: Added support for "Fast Evil" loader, found in "The Evil Dead" (Luigi)
 
 v0.22
@@ -214,7 +214,7 @@ v0.22
 - Fix: Added proper SEQ file support (Luigi)
 - Code quality: first attempt to make the source 64-bit safe in gcc compiler (Luigi)
 - Code quality: removed system calls after suggestion from iAN CooG (Luigi)
-- Improvement: moved prg file making from analyze() to report() (Luigi)
+- Improvement: moved prg file making from `analyze()` to `report()` (Luigi)
 - New: Added support for "Action Replay" and "Easytape" loaders, done by iAN CooG (Fabbo)
 - Improvement: "Pavload" scanner improved, but cleaning of tapes won't yet fix a problem with the last pulse, which is known to be 0x3F if broken and no 0x1F preceeds it, otherwise it's 0x1F (Luigi)
 - Fix: compilation fixes for Microsoft Visual C++ (Windows) and DJGPP (MS-DOS) (Fabbo)
