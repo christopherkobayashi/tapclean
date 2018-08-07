@@ -8,8 +8,8 @@ Some older tasks (at the bottom) might not be applicable any longer, but are kep
 
 - TODO: Add an option to generate CRC-32 values using all possible bits of information within files on tape, in order to avoid cases like "Z" from  "Action Pack 2": the execution address within the last turbo file on  Side B (2404) was wrong (as it should have been 2304). However, as the  execution address is part of the file header, it is not included in the  file's CRC-32 calculation. Therefore, from an overall CRC-32 point, both sides looked equivalent.
 - TODO: There are two multi-title support approaches at the moment that should become the templates for multi-title support:
-- The one used in "Biturbo" and "Power Load": applicable to those cases when the encoding parameters are known (e.g. endianness, short pulse, long pulse, pilot/sync values) and it's just file details that are stored in the CBM part (RAM start address, end address, or file size); knowing encoding parameters we can cycle through each turbo file and then backtrace from there to hit each corresponding CBM file.
-- The one used in "Visiload": applicable to those cases when encoding parameters are set in the CBM part and need extracting on a per file basis, so that each turbo file in between CBM sections can be decoded; in this case we need to cycle through CBM parts, and then extract the encoding parameters required to detect turbo parts in between.
+	- The one used in "Biturbo" and "Power Load": applicable to those cases when the encoding parameters are known (e.g. endianness, short pulse, long pulse, pilot/sync values) and it's just file details that are stored in the CBM part (RAM start address, end address, or file size); knowing encoding parameters we can cycle through each turbo file and then backtrace from there to hit each corresponding CBM file.
+	- The one used in "Visiload": applicable to those cases when encoding parameters are set in the CBM part and need extracting on a per file basis, so that each turbo file in between CBM sections can be decoded; in this case we need to cycle through CBM parts, and then extract the encoding parameters required to detect turbo parts in between.
 - TODO: Consider the unification of "Hi-Tech" and "Virgin" if they appear to be mastered by the same program with different settings (Luigi)
 - TODO: Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2" so the latter should be extended with multiple Tx variants (Luigi)
 - TODO: Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
@@ -35,7 +35,6 @@ In all cases, looking at the first CBM file only makes sense when a title is not
 	- CHR T1 : Mega-Speed  x9 (fastest)
 	- CHR T2 : Ultra-Speed x7 (medium)
 	- CHR T3 : Hyper-Speed x5 (slowest)
-
 The scanner should be renamed (Ziggy72)
 - TODO: The code that starts with:
 ```c
@@ -101,9 +100,9 @@ while (readttbit(eof + 1, lp, sp, tp) >= 0 && h < MAXTRAILER) {
 - TODO: There doesn't appear to be any reason for abandoning search when nova_f1 block header contains broken bytes. Proceed with validation and further scanning (Luigi)
 - IN PROGRESS: The block header validation recently (0.27) added to "Freeload" and "Ocean New" scanners by fabbo should be added to old scanners, wherever appropriate (Luigi)
 	- Pending: superpav.c, supertape.c. Leave wildload.c as it is (chain of files without individual pilot+sync: if one is broken we have to give up)
-
 - TODO: `describe_file(i)` is used in `analyze()` (via `describe_blocks()` in order to calculate the overall CRC-32 value that is displayed in the summary) and in report() (via print_database()) thus producing an unnecessary overhead (PRG contents are generated twice) while scanning.
 `if (blk[row]->dd != NULL)` cannot always be used not to regenerate. We need the extra info and the error messages in the report that are produced while extracting PRG data (Luigi)
+
 - TODO: Move WAV/AU file to same folder as source. (Luigi)
 - TODO: Make sure the sof, sod, eod, eof values have a consistent meaning across all scanners. eod: it should always include postdata and/or checkbyte for consistency. See entry below suggested by SLC too. (Luigi)
 - TODO: Trailer length: make sure postdata and/or checkbyte lengths are consistently subtracted (or not subtracted) from the trailing sequence length in all new scanners. See entry below suggested by SLC too. (Luigi)
