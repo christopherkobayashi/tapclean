@@ -9,7 +9,7 @@ Definition of Terms
 
 Introduction
 ------------
-To be fully aware of what's going on here, we need to make a step back and point out what loader designers had to bear in mind before writing their own loader.
+To be fully aware of what's going on here, we need to take a step back and point out what loader designers had to bear in mind before writing their own loader.
 
 Basically, to encode data on a sequential medium, the following things have to be provided:
 
@@ -20,7 +20,7 @@ Basically, to encode data on a sequential medium, the following things have to b
 Usually, but not always, commercial tape loaders use a frequency shift keying (FSK) with just two frequencies. That is: bit 0 is encoded with a shorter duration (higher frequency) square wave and bit 1 with a longer duration (lower frequency) one.
 To break down information into a stream of bits and sequentially write these to tape, it is necessary to choose if it's the **M**ost **S**ignificant **b**it (MSb) that has to be written first and then each subsequent one, up to the **L**east **S**ignificant **b**it (LSb), or the other way round. That's usually referred to as *endianness*, and therefore *endianness* is either **MSb F**irst (MSbF) or **LSb F**irst (LSbF).
 
-Let's assume each piece of information (i.e. different files) has been broken down into different streams of bits (i.e. different chunks) and saved to tape. How do we know where each chunk starts? The main part of loaders use a pattern that tells them a new chunk is beginning. That pattern is known as *lead-in sequence*. It can be a sequence of the same byte value repeated quite many times, or the same bit value. As soon as that value changes into some known value (referred to as *sync pattern*), the loader is said to have done a complete synchronization with the stream coming from tape. In other words, the loader can be sure that what follows is the information that had been previously saved to tape.
+Let's assume each piece of information (i.e. different files) has been broken down into different streams of bits (i.e. different chunks) and saved to tape. How do we know where each chunk starts? Most loaders use a pattern that tells them a new chunk is beginning. That pattern is known as *lead-in sequence*. It can be a sequence of the same byte value repeated quite many times, or the same bit value. As soon as that value changes into some known value (referred to as *sync pattern*), the loader is said to have done a complete synchronization with the stream coming from tape. In other words, the loader can be sure that what follows is the information that had been previously saved to tape.
 The information (i.e. the files) can then be loaded into the computer memory for being used.
 
 Usually the loader itself has to be loaded into the computer memory from tape, so there must be a built-in loader into the computer's ROM that can load a standard chunk from tape and execute it. In turn, the newly loaded code can load subsequent chunks using a different keying mechanism (that's why this code is referred to as "tape loader" or "turbo loader", the latter due to the fact that a custom loader is used to load data faster than the built-in loader).
@@ -83,8 +83,8 @@ The way we give TAPClean the information contained above is by means of a fmt ar
 ```
 Where:
 
-- **en** is *endianness*,
-- **tp** is threshold (TAP value)
+- **en** is *endianness*
+- **tp** is pulse threshold (TAP value)
 - **sp** is bit 0 pulse (or short pulse for those loaders that use 3 pulses to encode data)
 - **mp** is med pulse (only significant for those turbo loaders that use 3 pulses to encode data)
 - **lp** is bit 1 pulse (or long pulse for those loaders that use 3 pulses to encode data)
@@ -174,7 +174,7 @@ An example of the worst scenario occurs with "Biturbo": CBM inspection is needed
 
 Sync
 ----
-After the *lead-in sequence* has been read, a *sync pattern* is expected, so that if it's found the loader can reliably read in the following data, or even first read backwards and acknowledge a sequence of pre-pilot bytes (check the "Mega-Save" scanner for an example).
+After the *lead-in sequence* has been read in, a *sync pattern* is expected, so that if it's found the loader can reliably read in the following data, or even first read backwards and acknowledge a sequence of pre-pilot bytes (check the "Mega-Save" scanner for an example).
 If a *sync pattern* is not found, there's probably a disturb in the *lead-in sequence* that is not a *sync pattern*, not yet. Therefore the scanner (just as the loader code does itself) has to go back one step and try to read in the remaining part of the *lead-in sequence*. Eventually a *sync pattern* will be found.
 The *sync pattern* can be just a bit (usually it's the other value than the one used by a *lead-in sequence* that consists in a sequence of the same bit value repeated), or a byte, or a sequence of bytes (ie. 2 or more bytes).
 Since the code to read in those different *sync patterns* depends on the pattern itself, we have to specify if it is: a bit, a Byte, or a sequence (either of bits or Bytes). Then we can copy and paste the right code from an existing scanner to do the job.
@@ -308,12 +308,12 @@ eof = eod + BITSINABYTE - 1;
 
 Checksum
 --------
-Some loader designers decided to protect data with one or more checksums, so that if the calculated checksum is not matching the expected one, probably a problem occurred while loading data from tape. If a load error occurred, the data cannot be reliably used. Some loaders just cause a soft reset if a load error occurred, other ones give the user the chance to try and reload the file from its beginning.
+A few tape loader designers decided to provide data with one or more checksums, so that if the calculated checksum is not matching the expected one, probably a problem occurred while loading data from tape. If a load error occurred, the data cannot be reliably used. Some loaders just cause a soft reset if a load error occurred, other ones give the user the chance to try and reload the file from its beginning.
 The presence of a checksum is crucial for once we find out all checksums in a tape match the expected values, we can almost surely say that data integrity has not been compromised at any point of the digitalization process nor by time.
 
 Post-data
 ---------
-Some turbo chunks have additional bytes just after the data section and they are not checksums. Sometimes they are just padding bytes. Sometimes they can be used to detect when the data chunk finished, which is useful in those cases different loaders use a similar data structure, but just one has got those additional bytes (example: "TDI F1" and "TDI F2").
+Some turbo chunks have additional bytes just after the data section and they are not checksums. Sometimes they are just padding bytes. Sometimes they can be used to detect when the data chunk finished, which is useful in those cases different loaders use a similar data structure, but just one has got those additional bytes (practical example: deciding between "TDI F1" and "TDI F2").
 
 Trailer
 -------
