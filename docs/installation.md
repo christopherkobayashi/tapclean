@@ -10,4 +10,4 @@ Download and unzip the source archive. Build it with:
 
 Installation
 ------------
-Copy tapclean (or tapclean.exe) to a suitable directory (it requires write access) and make sure the directory is in your system PATH if you want to execute TAPClean from any location.
+Copy `tapclean` (or `tapclean.exe`) to a suitable directory (it requires write access) and make sure the directory is in your system PATH if you want to execute TAPClean from any location.
