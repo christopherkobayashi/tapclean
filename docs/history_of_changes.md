@@ -142,7 +142,7 @@ v0.28
 - Code quality: rewritten aces.c, anirog.c, atlantis.c, and flashload.c (Luigi)
 - New: Added support for "American Action" loader (Luigi)
 - New: Added support for "Creatures" and "Creatures 2" level files (Luigi)
-- Fix: Reported end address inclusive for CHR, as other formats (Luigi)
+- Fix: Reported end address inclusive for "CHR", as other formats (Luigi)
 - New: Added support for "Mayhem in Monsterland" level files (Luigi)
 - Fix: When there is a read error logged the PRG offset is not off by 2 anymore (applies to new and rewritten scanners) (Luigi)
 
