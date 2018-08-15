@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-1"
+#define VERSION_STR	"0.38-pre-2"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -226,6 +226,8 @@ enum {
 	DIGITAL_DESIGN,
 	GLASS_HEAD,
 	GLASS_DATA,
+	TT526_HEAD,
+	TT526_DATA,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
