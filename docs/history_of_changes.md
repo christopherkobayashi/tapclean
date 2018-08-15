@@ -107,14 +107,14 @@ v0.32
 - New: Added support for "Rack-It Variant" (Luigi)
 - New: Added support for single-file "Creative Sparks" tapes (Luigi)
 - Improvement: Acknowledge the last section of partially loaded files as trailer in "ACE 2" (Luigi)
-- Improvement: Corrected supertape_readbyte() to cater for the fact 8 bits might be made of less than 8 pulses (Luigi)
+- Improvement: Corrected `supertape_readbyte()` to cater for the fact 8 bits might be made of less than 8 pulses (Luigi)
 - Improvement: The cleaning stage can now fix Pavloda check bytes in all scenarios where a single pulse is missing (Luigi)
 
 v0.31
 -----
 
 - Improvement: Disabled "Alternative Software" and "Alternative Software DK" scanning in absence of their signature in CBM Data (Luigi)
-- Fix: Corrected and optimized V0 code in unify_pauses (Luigi)
+- Fix: Corrected and optimized V0 code in `unify_pauses()` (Luigi)
 - Fix: Corrected size of the expected data block in "Audiogenic" scanner (Luigi)
 - Improvement: Normalize block names in order to be used for PRG filename generation safely (Luigi)
 - Improvement: For "Cyberload F4" use the standard description process to handle block names so that these also propagate into PRG file names (Luigi)
@@ -307,9 +307,9 @@ v0.11
 -----
 
 - Additional fix inside "Audiogenic" scanner (Luigi)
-- Fixed "Bleepload" scanner. The backtracing of pre-pilot pulses was missing a call to is_pause_param(). Mad Nurse is now 100% recognized after cleaning (Luigi)
+- Fixed "Bleepload" scanner. The backtracing of pre-pilot pulses was missing a call to `is_pause_param()`. Mad Nurse is now 100% recognized after cleaning (Luigi)
 - Final revision of the "Accolade/EA (+clone)" scanner (Luigi)
-- Fixed is_pause_param() function in main.c The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager is now 100% recognized after cleaning (Luigi)
+- Fixed `is_pause_param()` function in main.c The default return value did not work correctly at the very beginning of a TAP file. Boxing Manager is now 100% recognized after cleaning (Luigi)
 - Some fixes to "Alien Syndrome" scanner (fabbo)
 
 v0.10
@@ -329,10 +329,10 @@ v0.08
 -----
 
 - batchscan.c: Removed `static const char tcbatchreportname[] = "tcbatch.txt";` for it's already defined in main.c (Luigi)
-- database.c/.h: I moved here the prg-related functions (`make_prgs()` and `save_prgs()`) from main.c and added `reset_prg_database()` to remove code duplication in main() and save_prgs() (Luigi)
-- main.c: I changed many variables to static, improved the code within get_exedir() function Improved code in `main()` too: the variables now have the minimum required scope (Luigi)
-- mydefs.h: this file reflects the above changes and contains the new OSAPI_xxx definitions which avoid the use of `#ifdef WIN32` inside the whole code where system() is called (Luigi)
-- Expanded main.c:display_usage() (bgk)
+- database.c/.h: I moved here the prg-related functions (`make_prgs()` and `save_prgs()`) from main.c and added `reset_prg_database()` to remove code duplication in `main()` and `save_prgs()` (Luigi)
+- main.c: I changed many variables to static, improved the code within `get_exedir()` function Improved code in `main()` too: the variables now have the minimum required scope (Luigi)
+- mydefs.h: this file reflects the above changes and contains the new OSAPI_xxx definitions which avoid the use of `#ifdef WIN32` inside the whole code where `system()` is called (Luigi)
+- Expanded `display_usage()` (bgk)
 - Added loader_id for "Cult" and removed for "Alien Syndrome" (bgk+Luigi)
 
 v0.07
@@ -351,7 +351,7 @@ Files changed: batchscan.c, database.c, database.h, main.c, mydefs.h, tap2audio.
 - Reinserted `temptcbatchreportname` definition in main.c. It proves to be an useful indicator while the bach scan is in progress. Declaration is _still_ in mydefs.h, it will be moved at a later time (Luigi)
 - Moved au and wav filename definitions to the tap2audio.c file. Declaration is in tap2audio.h (Luigi)
 - Removed `drawwavesquare()`, `drawwavesine()`, and `s_out()` prototypes from tap2audio.h, since those (PRIVATE) functions are not used outside the tap2audio.c file, and therefore they were made static there (Luigi)
-- Added 1 level of indentation in main.c/main() for the TAP test (Luigi)
+- Added 1 level of indentation in `main()` for the TAP test (Luigi)
 - Removed duplication of forward declarations of `addblockdef()` and `sort_blocks()` in main.h (Luigi)
 - Changed many (PRIVATE) functions in main.c to static and commented out the declarations from main.h (Luigi)
 - Added `#define HASNOTCHECKSUM -2` to database.h, thus eliminating the hardcoded value (Luigi)
@@ -377,7 +377,7 @@ Some small cleanups in filesearch.c (bgk)
 Removed global `FILE *fp` from tap2audio.c (bgk)
 Removed global `unsigned long bpos` from tap2audio.c (bgk)
 Removed last global `char *outbuf` from tap2audio.c (bgk)
-Removed 1 level of indentation in main.c::main() (bgk)
+Removed 1 level of indentation in `main()` (bgk)
 Converted scanners/hitec.c to new coding style (bgk)
 Converted scanners/microload.c to new coding style (bgk)
 Some small cleanups in scanners/microload.c (bgk)
@@ -387,23 +387,23 @@ Some small cleanups in scanners/enigma.c, oceannew1t1.c (bgk)
 v0.04
 Files changed: batchscan.c, database.c, main.c, mydefs.h
 
-Converted `opname` in main.c/main() to a char *. No memory usage and no strcpy anymore (Luigi)
+Converted `opname` in `main()` to a `char *`. No memory usage and no `strcpy()` anymore (Luigi)
 Fixed `opnames[12][32]` that contains just 11 entries by converting it to `opnames[][32]` (Luigi)
-Removed duplicated initialization of `tol` and `debug` inside main.c/main(). They are already initialized outside `main()` (Luigi)
-Fixed `create_database()` call in main.c/main() which was not checking for the return value (Luigi)
-Added a freeing of allocated resources in database.c/create_database() in case of `malloc()` failure (Luigi)
-Fixed `wav_write()` call in main.c/main() which was called using the au filename (Luigi)
+Removed duplicated initialization of `tol` and `debug` inside `main()`. They are already initialized outside `main()` (Luigi)
+Fixed `create_database()` call in `main()` which was not checking for the return value (Luigi)
+Added a freeing of allocated resources in `create_database()` in case of `malloc()` failure (Luigi)
+Fixed `wav_write()` call in `main()` which was called using the au filename (Luigi)
 Removed usage of `temptcreportname`. Probably just useful in the GUI version of Final Tap (Luigi)
 Converted `tcreportname`, `tcbatchreportname`, `temptcbatchreportname`, `tcinfoname`, `auoutname`, and `wavoutname` in main.c to static const char (Luigi)
-Converted `cleanedtapname` in main.c to static char (Luigi)
+Converted `cleanedtapname` in main.c to `static char` (Luigi)
 Removed `tcreportname`, `tcbatchreportname`, `temptcbatchreportname`, `tcinfoname`, `auoutname`, `wavoutname`, and `cleanedtapname` from mydefs.h. Just `exedir` (non-static) was kept (Luigi)
 Removed duplicated `BLKMAX`, `DBERR`, and `DBFULL` definitions from mydefs.h (Luigi)
 Added `MAXPATH` definition in mydefs.h for strings holding path and some filenames (`exedir`, and `tap_t`/`tap_tr` subfields). Uniform to this definition elsewhere too or use dynamic strings? (Luigi)
-Changed `strcmp` to `stricmp` in main.c/get_exedir() to avoid issues under Windows when using TAB from command line with the -b option (ie. "Tapclean -b" did not work) (Luigi)
-Changed the '\\', "\\", '/', "/" in main.c/get_exedir() to use the SLASH #definition (Luigi)
-Fixed drag&drop feature in main.c/main(). If you use "tapclean -b", `load_tap()` doesn't complain anymore (Luigi)
-Partly Fixed the getcwd() call in batchscan.c/batchscan() to make room for appending the `SLASH` and '\0'. See the TODO document (Luigi)
-Fixed the remaining-taps-counter in batchscan.c/batchscan() for batch scanning (Luigi)
+Changed `strcmp` to `stricmp` in `get_exedir()` to avoid issues under Windows when using TAB from command line with the -b option (ie. "Tapclean -b" did not work) (Luigi)
+Changed the '\\', "\\", '/', "/" in `get_exedir()` to use the SLASH #definition (Luigi)
+Fixed drag&drop feature in `main()`. If you use "tapclean -b", `load_tap()` doesn't complain anymore (Luigi)
+Partly Fixed the `getcwd()` call in `batchscan()` to make room for appending the `SLASH` and '\0'. See the TODO document (Luigi)
+Fixed the remaining-taps-counter in `batchscan()` for batch scanning (Luigi)
 
 v0.03
 -----
