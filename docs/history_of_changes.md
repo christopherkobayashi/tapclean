@@ -86,7 +86,7 @@ v0.33
 - New: Added initial support for MSX tape Data files (Luigi)
 - Code quality: Removed variables that were set but not used (Luigi)
 - Fix: Fixed the address at which the Tequila Sunrise PRG decoder starts extraction (Luigi)
-- Improvement: Use signature in CBM Data for "Trilogic" too (Luigi)
+- Improvement: Use signature in "CBM Data" for "Trilogic" too (Luigi)
 - Improvement: Added sequence numbers to the report (Luigi)
 - Improvement: Added signature of the "Power Load" instance used by "Mr Wiz", "Smuggler", "U.K. Geography", "World Geography", and "Percy Penguin" (Luigi)
 - Improvement: The "Power Load" scanner now fully supports "Mr Wiz", "Smuggler", and "U.K. Geography" (Luigi)
@@ -113,7 +113,7 @@ v0.32
 v0.31
 -----
 
-- Improvement: Disabled "Alternative Software" and "Alternative Software DK" scanning in absence of their signature in CBM Data (Luigi)
+- Improvement: Disabled "Alternative Software" and "Alternative Software DK" scanning in absence of their signature in "CBM Data" (Luigi)
 - Fix: Corrected and optimized V0 code in `unify_pauses()` (Luigi)
 - Fix: Corrected size of the expected data block in "Audiogenic" scanner (Luigi)
 - Improvement: Normalize block names in order to be used for PRG filename generation safely (Luigi)
@@ -142,9 +142,9 @@ v0.28
 - Code quality: rewritten aces.c, anirog.c, atlantis.c, and flashload.c (Luigi)
 - New: Added support for "American Action" loader (Luigi)
 - New: Added support for "Creatures" and "Creatures 2" level files (Luigi)
-- Fix: Reported end address inclusive for "CHR", as other formats (Luigi)
+- Fix: Reported end address inclusive for "CHR", as for other formats (Luigi)
 - New: Added support for "Mayhem in Monsterland" level files (Luigi)
-- Fix: When there is a read error logged the PRG offset is not off by 2 anymore (applies to new and rewritten scanners) (Luigi)
+- Fix: When there is a read error logged the PRG offset is not off by 2 anymore - applies to new and rewritten scanners (Luigi)
 
 v0.27
 -----
@@ -174,7 +174,7 @@ v0.25
 -----
 
 - New: Use MTAP conversion and Markus' extended TAP format by default when converting from DC2N DMP to TAP (Luigi)
-- Fix: proper calculation of end address of "FF Tape" block # 3 (Luigi)
+- Fix: proper calculation of end address of "FF Tape" block #3 (Luigi)
 - Fix: remove garbage at the beginning of the tape when cleaning (Luigi)
 - Fix: Cleaned DMP files have the "tap" extension now (Luigi)
 - Fix: Report now shows the cleaned file name after cleaning (Luigi)
@@ -195,7 +195,7 @@ v0.24
 - New: Added "skewadapt" patch submitted by Kevin Palberg (Luigi)
 - New: Added support for "FF Tape" loader (Luigi)
 - New: Added support for "TES tape" loader (Luigi)
-- Fix: Tape contents before the first CBM header block are not erased anymore (Luigi)
+- Fix: Tape contents before the first "CBM header" block are not erased anymore (Luigi)
 - New: Added Makefile.MAC (bgk)
 
 v0.23
@@ -216,7 +216,7 @@ v0.22
 - Code quality: first attempt to make the source 64-bit safe in gcc compiler (Luigi)
 - Code quality: removed system calls after suggestion from iAN CooG (Luigi)
 - Improvement: moved prg file making from `analyze()` to `report()` (Luigi)
-- New: Added support for "Action Replay" and "Easytape" loaders, done by iAN CooG (Fabbo)
+- New: Added support for "Action Replay" and "Easytape" loaders, developed by iAN CooG (Fabbo)
 - Improvement: "Pavload" scanner improved, but cleaning of tapes won't yet fix a problem with the last pulse, which is known to be 0x3F if broken and no 0x1F preceeds it, otherwise it's 0x1F (Luigi)
 - Fix: compilation fixes for Microsoft Visual C++ (Windows) and DJGPP (MS-DOS) (Fabbo)
 - Code quality: uniformed code and comments in the new scanners (Luigi)
@@ -227,8 +227,8 @@ v0.22
 - Fix: fixed pulse disambiguation check in c64tape.c (Fabbo)
 - New: Added support for "Freeload Slowload" loader (Luigi)
 - Fix: implemented integer wraparound prevention in new scanners (Luigi)
-- Fix: fixed recognition of CBM DATA blocks when data starts with 0x01...0x06, by requesting a plausibility check on load and end addresses. Those blocks should not be misrecognized as CBM HEADER ones anymore. "Maggotmania" is now recognized properly (Luigi)
-- Fix: fixed recognition of CBM HEADER blocks in "Ping Pong" (payload is 294 byte long) (Luigi)
+- Fix: fixed recognition of "CBM DATA" blocks when data starts with 0x01...0x06, by requesting a plausibility check on load and end addresses. Those blocks should not be misrecognized as "CBM HEADER" ones anymore. "Maggotmania" is now recognized properly (Luigi)
+- Fix: fixed recognition of "CBM HEADER" blocks in "Ping Pong" (payload is 294 byte long) (Luigi)
 
 v0.21
 -----
