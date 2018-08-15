@@ -6,6 +6,7 @@ Foreword
 Completed tasks are still included here as there's often a dependency on them within tasks not yet completed.
 Some older tasks (at the bottom) might not be applicable any longer, but are kept here for reference.
 
+- TODO: Consolidate the core processing in "Turbotape 250", "Turbotape 526", and "Turrican loader" as they use essentially the same file structure (192-byte header + data).
 - TODO: Add an option to generate CRC-32 values using all possible bits of information within files on tape, in order to avoid cases like "Z" from  "Action Pack 2": the execution address within the last turbo file on  Side B (2404) was wrong (as it should have been 2304). However, as the  execution address is part of the file header, it is not included in the  file's CRC-32 calculation. Therefore, from an overall CRC-32 point, both sides looked equivalent.
 - TODO: There are two multi-title support approaches at the moment that should become the templates for multi-title support:
 
