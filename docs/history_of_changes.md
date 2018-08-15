@@ -12,7 +12,7 @@ v0.38
 -----
 
 - Improvement: The first "Enigma" file in "Rik The Roadie", supplied by Paul Jones, is now fully acknowledged - only 2 of 3 pages are loaded in RAM (Luigi)
-- New: Added support for "Turbotape 526" (a.k.a. "Load'n'Run"), a slow clone of "Turbotape 250", used in a number of titles supplied by Walter (Luigi)
+- New: Added support for "Turbotape 526" (a.k.a. "Load'n'Run"), a slow clone of "Turbotape 250", used in a number of titles supplied by Walter A. (Luigi)
 
 v0.37
 -----
@@ -36,12 +36,12 @@ v0.37
 - Improvement: Added signature of the "Power Load" instance used by "Lighforce", supplied by Paul Jones (Luigi)
 - New: Added support for "Mega-Save T4", used in "Action Pack 2", supplied by Paul Jones (Luigi)
 - Improvement: The "Fast Evil" scanner was renamed to "Jiffy Load T1" based on reports and sample tapes supplied by Paul Jones (Luigi)
-- New: Added support for "Jiffy Load T2", used in a few titles by Solar Software, supplied by Paul Jones (Luigi)
+- New: Added support for "Jiffy Load T2", used in a few titles by "Solar Software", supplied by Paul Jones (Luigi)
 
 v0.36
 -----
 
-- Improvement: The "CHR" scanner was rewritten & renamed to "Mega-Save" (Luigi)
+- Improvement: The "CHR" scanner was rewritten and renamed to "Mega-Save" (Luigi)
 - Code quality: Implemented a number of rationalisations across the board (Luigi)
 - Improvement: Consolidated "Ocean New F1" T1/T2 scanners into a single one, entirely rewritten (Luigi)
 - Improvement: Consolidated "Snakeload 5.0" T1/T2 scanners into a single one, entirely rewritten (Luigi)
