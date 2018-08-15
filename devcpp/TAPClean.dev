@@ -1,7 +1,7 @@
 [Project]
 FileName=TAPClean.dev
 Name=TAPClean
-UnitCount=103
+UnitCount=104
 Type=1
 Ver=1
 ObjFiles=
@@ -1058,7 +1058,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit104]
-FileName=..\src\scanners\ddesign.c
+FileName=..\src\scanners\turbotape_526.c
 CompileCpp=0
 Folder=newscanners
 Compile=1

@@ -341,6 +341,9 @@ struct fmt_t ft[] = {
 	{"GLASS TAPE HEADER"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x800,NA,    CSYES},
 	{"GLASS TAPE DATA"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x300,NA,    CSYES},
 
+	{"TURBOTAPE 526 HEADER"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x100,NA,    CSNO},
+	{"TURBOTAPE 526 DATA"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x80, NA,    CSYES},
+
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
 	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,   0x60, 1,    0,    6000, NA,    CSNO},
@@ -1304,6 +1307,9 @@ static void search_tap(void)
 			if (ldrswt[noglass	].exclude == FALSE && !database_is_full && !aborted)
 				glass_search();
 
+			if (ldrswt[noturbo	].exclude == FALSE && !database_is_full && !aborted)
+				turbotape526_search();
+
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
 				msx_search(0);	/* Standard/Fast */
 
@@ -1651,6 +1657,10 @@ static void describe_file(int row)
 		case GLASS_HEAD:	glass_describe(row);
 					break;
 		case GLASS_DATA:	glass_describe(row);
+					break;
+		case TT526_HEAD:	turbotape526_describe(row);
+					break;
+		case TT526_DATA:	turbotape526_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

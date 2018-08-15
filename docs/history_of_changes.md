@@ -12,6 +12,7 @@ v0.38
 -----
 
 - Improvement: The first "Enigma" file in "Rik The Roadie" is now fully acknowledged - only 2 of 3 pages are loaded in RAM (Luigi)
+- New: Added support for "Turbotape 526", a slow clone of "Turbotape 250", used in a number of titles supplied by Walter (Luigi)
 
 v0.37
 -----

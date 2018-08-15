@@ -627,6 +627,10 @@
 					RelativePath="..\..\src\scanners\turbo220.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\scanners\turbotape_526.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="rewritten"

@@ -176,6 +176,7 @@
     <ClCompile Include="..\..\src\scanners\tes.c" />
     <ClCompile Include="..\..\src\scanners\trilogic.c" />
     <ClCompile Include="..\..\src\scanners\turbo220.c" />
+    <ClCompile Include="..\..\src\scanners\turbotape_526.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\scanners\_scanners.h" />
