@@ -204,7 +204,7 @@ int bleep_describe(int row)
 	if (blk[row]->lt == BLEEP_TRIG) {
 		int trigger[TRIGGERSIZE];
 
-		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+		/* Set read pointer to the beginning of the payload */
 		s = blk[row]->p2;
 
 		/* set pilot/trailer lengths... */
@@ -242,7 +242,7 @@ int bleep_describe(int row)
 		return(rd_err);
 	}
 
-	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	/* Set read pointer to the beginning of the payload */
 	s = blk[row]->p2;
 
 	/* Read header (it's safe to read it here for it was already decoded during the search stage) */

@@ -158,7 +158,7 @@ int oceannew3_describe (int row)
 	sp = ft[THISLOADER].sp;
 	mp = ft[THISLOADER].mp;
 
-	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	/* Set read pointer to the beginning of the payload */
 	s = blk[row]->p2;
 
 	/* Read header (it's safe to read it here for it was already decoded during the search stage) */

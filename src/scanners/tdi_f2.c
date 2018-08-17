@@ -207,7 +207,7 @@ int tdif2_describe (int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+	/* Set read pointer to the beginning of the payload */
 	s = blk[row]->p2;
 
 	/* Retrieve the measured filename size to know how long the header is */

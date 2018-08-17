@@ -433,7 +433,7 @@ int msx_describe (int row)
 
 	lt = blk[row]->lt;
 	if (lt == MSX_HEAD || lt == MSX_HEAD_FAST) {
-		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+		/* Set read pointer to the beginning of the payload */
 		s = blk[row]->p2;
 
 		/* Read header (it's safe to read it here for it was already decoded during the search stage) */
@@ -484,7 +484,7 @@ int msx_describe (int row)
 
 		rd_err = 0;
 	} else {
-		/* Note: addblockdef() is the glue between ft[] and blk[], so we can now read from blk[] */
+		/* Set read pointer to the beginning of the payload */
 		s = blk[row]->p2;
 
 		/* Extract data */
