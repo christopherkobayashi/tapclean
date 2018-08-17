@@ -263,7 +263,7 @@ int creativesparks_describe(int row)
 		if (b != -1) {
 			blk[row]->dd[tot] = b;
 		} else {
-			blk[row]->dd[tot] = 0x69;  /* error code */
+			blk[row]->dd[tot] = 0x69;	/* sentinel error value */
 			rd_err++;
 
 			/* for experts only */

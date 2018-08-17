@@ -441,7 +441,7 @@ int cyberload_f4_describe(int row)
          blk[row]->dd[tot]= b;
       else
       {
-         blk[row]->dd[tot] = 0x69;  /* error code */
+         blk[row]->dd[tot] = 0x69;	/* sentinel error value */
          rd_err++;
       }
       tot++;

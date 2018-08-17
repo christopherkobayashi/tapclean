@@ -455,7 +455,7 @@ int GREMLIN_F2_describe (int row)
 
 				cb ^= b;
 			} else {
-				blk[row]->dd[x] = 0x69;  /* error code */
+				blk[row]->dd[x] = 0x69;	/* sentinel error value */
 				rd_err++;
 
 				/* for experts only */

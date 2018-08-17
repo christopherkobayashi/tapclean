@@ -547,7 +547,7 @@ int msx_describe (int row)
 						pcount += b >> 8;
 						b1 = b;
 					} else {
-						blk[row]->dd[i] = 0x69;  /* error code */
+						blk[row]->dd[i] = 0x69;	/* sentinel error value */
 						rd_err++;
 
 						/* for experts only */
@@ -593,7 +593,7 @@ int msx_describe (int row)
 						pcount += b >> 8;
 						b1 = b;
 					} else {
-						blk[row]->dd[i] = 0x69;  /* error code */
+						blk[row]->dd[i] = 0x69;	/* sentinel error value */
 						rd_err++;
 
 						/* for experts only */

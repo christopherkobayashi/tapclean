@@ -242,7 +242,7 @@ int wild_describe(int row)
 			if (b != -1) {
 				blk[row]->dd[len - 1 - i] = b ^ (scnt & 0xFF);
 			} else {
-				blk[row]->dd[len - 1 - i] = 0x69;  /* error code */
+				blk[row]->dd[len - 1 - i] = 0x69;	/* sentinel error value */
 				rd_err++;
 
 				/* for experts only */

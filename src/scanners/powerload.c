@@ -385,7 +385,7 @@ int powerload_describe(int row)
 		if (b != -1) {
 			blk[row]->dd[i] = b;
 		} else {
-			blk[row]->dd[i] = 0x69;  /* error code */
+			blk[row]->dd[i] = 0x69;	/* sentinel error value */
 			rd_err++;
 
 			/* for experts only */

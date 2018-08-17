@@ -276,7 +276,7 @@ int tdif2_describe (int row)
 
 			blk[row]->dd[i] = b;
 		} else {
-			blk[row]->dd[i] = 0x69;  /* error code */
+			blk[row]->dd[i] = 0x69;	/* sentinel error value */
 			rd_err++;
 
 			/* for experts only */
