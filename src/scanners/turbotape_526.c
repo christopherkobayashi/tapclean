@@ -249,8 +249,8 @@ int turbotape526_describe(int row)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	/* Set read pointer to the beginning of the payload */
-	s = blk[row]->p2;
+	/* Set read pointer to the beginning of the data */
+	s = blk[row]->p2 + (HEADERSIZE * BITSINABYTE);
 
 	/* Compute pilot & trailer lengths */
 
@@ -278,7 +278,7 @@ int turbotape526_describe(int row)
 
 		/* Read Header payload (it's safe to read it here for it was already decoded during the search stage) */
 		for (i = 0; i < HDRPAYLOADSIZE; i++)
-			hdrpayload[i]= readttbyte(s + (HEADERSIZE + i) * BITSINABYTE, lp, sp, tp, en);
+			hdrpayload[i]= readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 
 		/* Read filename */
 		for (i = 0; i < NAMESIZE; i++)
@@ -338,7 +338,7 @@ int turbotape526_describe(int row)
 		blk[row]->dd = (unsigned char*)malloc(blk[row]->cx);
 
 		for (i = 0; i < blk[row]->cx; i++) {
-			b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
+			b = readttbyte(s + (i * BITSINABYTE), lp, sp, tp, en);
 			cb ^= b;
 
 			if (b != -1) {
@@ -348,19 +348,19 @@ int turbotape526_describe(int row)
 				rd_err++;
 
 				/* for experts only */
-				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + ((HEADERSIZE + i) * BITSINABYTE), i + 2);
+				sprintf(lin, "\n - Read Error on byte @$%X (prg data offset: $%04X)", s + (i * BITSINABYTE), i + 2);
 				strcat(info, lin);
 			}
 		}
 
-		b = readttbyte(s + ((HEADERSIZE + i) * BITSINABYTE), lp, sp, tp, en);
+		b = readttbyte(s + (i* BITSINABYTE), lp, sp, tp, en);
 		if (b == -1) {
 			/* Even if not within data, we cannot validate data reliably if
 			   checksum is unreadable, so that increase read errors */
 			rd_err++;
 
 			/* for experts only */
-			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + ((HEADERSIZE + i) * BITSINABYTE));
+			sprintf(lin, "\n - Read Error on checkbyte @$%X", s + (i * BITSINABYTE));
 			strcat(info, lin);
 		}
 
