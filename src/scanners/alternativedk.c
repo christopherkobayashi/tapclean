@@ -229,11 +229,11 @@ int alternativedk_describe (int row)
 	if (blk[row]->pilot_len > 0)
 		blk[row]->pilot_len -= SYNCSEQSIZEBITS;
 
-	/* Extract data */
+	/* Extract data and test checksum... */
 	rd_err = 0;
 	cb = 0;
 
-	s = blk[row]->p2 + BITSINABYTE;
+	s = blk[row]->p2 + BITSINABYTE;	/* Point to data, after load address MSB */
 
 	if (blk[row]->dd != NULL)
 		free(blk[row]->dd);
