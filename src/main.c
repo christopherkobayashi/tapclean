@@ -142,7 +142,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Tequila Sunrise"		,"tequila"	,FALSE},
 	{"TES Tape"			,"testape"	,FALSE},
 	{"Trilogic"			,"trilogic"	,FALSE},
-	{"Turbo 220"			,"tur220"	,FALSE},
+	{"Turbo 220"			,"turbo220"	,FALSE},
 	{"Turbotape 250"		,"turbo"	,FALSE},
 	{"Turbotape 526"		,"turbo526"	,FALSE},
 	{"Turrican"			,"turr"		,FALSE},
