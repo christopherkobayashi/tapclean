@@ -144,6 +144,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Trilogic"			,"trilogic"	,FALSE},
 	{"Turbo 220"			,"tur220"	,FALSE},
 	{"Turbotape 250"		,"turbo"	,FALSE},
+	{"Turbotape 526"		,"turbo526"	,FALSE},
 	{"Turrican"			,"turr"		,FALSE},
 	{"U.S. Gold"			,"usgold"	,FALSE},
 	{"Virgin"			,"virgin"	,FALSE},
@@ -1307,7 +1308,7 @@ static void search_tap(void)
 			if (ldrswt[noglass	].exclude == FALSE && !database_is_full && !aborted)
 				glass_search();
 
-			if (ldrswt[noturbo	].exclude == FALSE && !database_is_full && !aborted)
+			if (ldrswt[noturbo526	].exclude == FALSE && !database_is_full && !aborted)
 				turbotape526_search();
 
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)

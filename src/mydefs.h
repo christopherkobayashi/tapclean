@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-2"
+#define VERSION_STR	"0.38-pre-3"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -517,6 +517,7 @@ enum {
 	notrilogic,
 	noturbo220,
 	noturbo,
+	noturbo526,
 	noturr,
 	nousgold,
 	novirgin,
