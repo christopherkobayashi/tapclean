@@ -372,6 +372,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x2E8ADA25, LID_MICVAR},	/* Wulfpack, Hi-Q Quiz */
 		{0x69992CDE, LID_MICVAR},	/* Ice Hockey */
 		{0xA0AD37D3, LID_MICVAR},	/* Syntax, Ice Temple */
+		{0xC998B9EA, LID_MICVAR},	/* On The Bench (by Cult) */
 
 		{0, 0}				/* List terminator/cap */
 	};
