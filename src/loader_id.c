@@ -365,6 +365,14 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x114EEF5B, LID_GLASS},	/* Pyramid, The */
 		{0x606B287D, LID_GLASS},	/* Cliff Hanger */
 
+		{0xEBC00CA0, LID_MICVAR},	/* Snooker */
+		{0x90BA334E, LID_MICVAR},	/* MahJong */
+		{0x65E7E156, LID_MICVAR},	/* Pinball */
+		{0xE5CACA00, LID_MICVAR},	/* Video Card */
+		{0x2E8ADA25, LID_MICVAR},	/* Wulfpack, Hi-Q Quiz */
+		{0x69992CDE, LID_MICVAR},	/* Ice Hockey */
+		{0xA0AD37D3, LID_MICVAR},	/* Syntax, Ice Temple */
+
 		{0, 0}				/* List terminator/cap */
 	};
 
