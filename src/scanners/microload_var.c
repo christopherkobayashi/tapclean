@@ -27,13 +27,14 @@
  *
  * CBM inspection needed: No
  * Single on tape: No
- * Sync: Byte
+ * Pilot: Byte (0xA5, 256 of them)
+ * Sync: Sequence (bytes: 0x0A down to 0x01)
  * Header: Yes
  * Data: Continuous
  * Checksum: Yes
  * Post-data: No
- * Trailer: ?
- * Trailer homogeneous: ?
+ * Trailer: No
+ * Trailer homogeneous: N/A
  */
 
 #include "../mydefs.h"
