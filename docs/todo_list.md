@@ -7,6 +7,7 @@ Completed tasks are still included here as there's often a dependency on them wi
 Some older tasks (at the bottom) might not be applicable any longer, but are kept here for reference.
 
 - TODO: Find a way to automatically handle split pulses in Mega-Save pre-pilots, as found in "Lethal" and "Soccer Manager", supplied by (Ziggy72)
+- TODO: For all scanners, document pilot value and size within the source file. Same with sync and trailer. Started in microload.c and microload_var.c (Luigi)
 - TODO: Work out which games use any given signature, i.e. first CBM Data CRC value (Luigi)
 - TODO: Along with the `ft` array there should be a clear comment on how to choose `pmin`: The recommended value for `pmin` is 1/2 of the pilot size usually found on TAPs for very short pilot sequences (e.g. 8 bytes) and 3/4 of the pilot size for longer pilot sequences. Instead of `pmin` there could therefore be a `pavg` attribute representing the average amount of pilot pulses or bytes for each format and `pmin` could be worked out based on `pavg`, according to the given recommendation (Luigi)
 - TODO: Consolidate the core processing in "Turbotape 250", "Turbotape 526", and "Turrican loader" as they use essentially the same file structure, 192-byte header file + data file (Luigi)
