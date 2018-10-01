@@ -163,6 +163,7 @@
     <ClCompile Include="..\..\src\scanners\goforgold.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />
+    <ClCompile Include="..\..\src\scanners\microload_var.c" />
     <ClCompile Include="..\..\src\scanners\msx.c" />
     <ClCompile Include="..\..\src\scanners\oceannew3.c" />
     <ClCompile Include="..\..\src\scanners\oceannew4.c" />

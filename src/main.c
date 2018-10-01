@@ -72,7 +72,7 @@ char ntsc			= FALSE;
  * See enum for this table in mydefs.h: these must be kept in sync.
  */
 struct ldrswt_t ldrswt[] = {
-	/* description (max 23 chars),   parameter,     exclude? */
+	/* description (max 31 chars),   parameter (max 15 chars),     exclude? */
 	{"C64 ROM loader"		,"c64"		,FALSE},
 	{"108DE0A5"			,"108DE0A5"	,FALSE},
 	{"Accolade/EA"			,"accolade"	,FALSE},
@@ -115,6 +115,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Jetload"			,"jet"		,FALSE},
 	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
+	{"Microload Variant"		,"microvar"	,FALSE},
 	{"MSX"				,"msx"		,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
 	{"Ocean"			,"ocean"	,FALSE},
@@ -150,7 +151,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Virgin"			,"virgin"	,FALSE},
 	{"Visiload"			,"visi"		,FALSE},
 	{"Wildload"			,"wild"		,FALSE}
-	/* description (max 23 chars),   parameter,     exclude? */
+	/* description (max 31 chars),   parameter (max 15 chars),     exclude? */
 };
 
 static int read_errors[NUM_READ_ERRORS];	/* storage for 1st NUM_READ_ERRORS read error addresses */
@@ -345,6 +346,9 @@ struct fmt_t ft[] = {
 	{"TURBOTAPE 526 HEADER"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x100,NA,    CSNO},
 	{"TURBOTAPE 526 DATA"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x80, NA,    CSYES},
 
+	{"MICROLOAD VARIANT T1"	,LSbF, 0x2A, 0x1D, NA,   0x33, 0xA5, 0x0A, 64,   NA,    CSYES},
+	{"MICROLOAD VARIANT T2"	,LSbF, 0x34, 0x2A, NA,   0x42, 0xA5, 0x0A, 64,   NA,    CSYES},
+
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
 	{"MSX TAPE HEADER"	,LSbF, NA,   0x30, NA,   0x60, 1,    0,    6000, NA,    CSNO},
@@ -365,7 +369,7 @@ struct fmt_t ft[] = {
  * See enum for this table in mydefs.h: these must be kept in sync.
  */
 
-const char knam[][32] = {
+const char knam[][48] = {
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -429,6 +433,8 @@ const char knam[][32] = {
 	{"Easy-Tape System C"},
 	{"Creative Sparks"},
 	{"Trilogic"},
+	{"Glass Tape"},
+	{"Microload (Blue Ribbon Variant)"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -937,6 +943,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_MIC 	&& ldrswt[nomicro	].exclude == FALSE && !database_is_full && !aborted)
 				micro_search();
 
+			if (tap.cbmid == LID_MICVAR 	&& ldrswt[nomicrovar	].exclude == FALSE && !database_is_full && !aborted)
+				microloadvar_search(0);	/* All types */
+
 			if (tap.cbmid == LID_RAST 	&& ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
 
@@ -1160,6 +1169,9 @@ static void search_tap(void)
 
 			if (ldrswt[nomicro	].exclude == FALSE && !database_is_full && !aborted)
 				micro_search();
+
+			if (ldrswt[nomicrovar	].exclude == FALSE && !database_is_full && !aborted)
+				microloadvar_search(0);	/* All types */
 
 			if (ldrswt[noraster	].exclude == FALSE && !database_is_full && !aborted)
 				raster_search();
@@ -1502,6 +1514,10 @@ static void describe_file(int row)
 		case HITLOAD:		hitload_describe(row);
 					break;
 		case MICROLOAD:		micro_describe(row);
+					break;
+		case MICROLOADVAR_T1:	microloadvar_describe(row);
+					break;
+		case MICROLOADVAR_T2:	microloadvar_describe(row);
 					break;
 		case BURNER:		burner_describe(row);
 					break;

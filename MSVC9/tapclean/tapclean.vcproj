@@ -572,6 +572,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\microload_var.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\msx.c"
 					>
 				</File>

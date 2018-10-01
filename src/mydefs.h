@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-3"
+#define VERSION_STR	"0.38-pre-4"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -228,6 +228,8 @@ enum {
 	GLASS_DATA,
 	TT526_HEAD,
 	TT526_DATA,
+	MICROLOADVAR_T1,
+	MICROLOADVAR_T2,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -299,7 +301,8 @@ enum {
 	LID_EASYTAPE,
 	LID_CSPARKS,
 	LID_TRILOGIC,
-	LID_GLASS
+	LID_GLASS,
+	LID_MICVAR
 };
 
 /*
@@ -409,7 +412,7 @@ extern char c16;
 extern char c20;
 extern char c64;
 
-extern const char knam[100][32];
+extern const char knam[][48];
 
 extern int quiet;
 
@@ -438,8 +441,8 @@ extern char skewadapt;
 
 struct ldrswt_t		/* Loader -no/-do switches */
 {
-	char desc[24];	/* Human readable description of loader */
-	char par[12];	/* Whatever can follow the "-do" and "-no" prefixes
+	char desc[32];	/* Human readable description of loader */
+	char par[16];	/* Whatever can follow the "-do" and "-no" prefixes
 			   to include or exclude a loader */
 	char exclude;	/* Set to TRUE to exclude loader */
 };
@@ -488,6 +491,7 @@ enum {
 	nojet,
 	nomegasave,
 	nomicro,
+	nomicrovar,
 	nomsx,
 	nonova,
 	noocean,

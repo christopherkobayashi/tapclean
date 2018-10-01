@@ -272,5 +272,8 @@ int glass_describe(int);
 void turbotape526_search(void);
 int turbotape526_describe(int);
 
+void microloadvar_search(int);
+int microloadvar_describe(int);
+
 void msx_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int msx_describe(int);

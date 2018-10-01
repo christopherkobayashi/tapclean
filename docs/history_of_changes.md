@@ -13,6 +13,7 @@ v0.38 (WIP)
 
 - Improvement: The first non-standard 3-page "Enigma" file in "Rik The Roadie", supplied by Paul Jones, is now fully acknowledged - only 2 pages of such file are loaded in RAM (Luigi)
 - New: Added support for "Turbotape 526" (a.k.a. "Load'n'Run"), a slow clone of "Turbotape 250", used in a number of titles supplied by Walter A. (Luigi)
+- New: Added support for "Microload Blue Ribbon Variant", a more flexible version of "Microload", used in a number of titles supplied by Paul Jones (Luigi)
 
 v0.37
 -----
