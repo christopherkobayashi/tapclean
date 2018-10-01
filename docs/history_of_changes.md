@@ -16,6 +16,7 @@ v0.38 (WIP)
 - New: Added support for "Microload Blue Ribbon Variant", a more flexible version of "Microload", used in a number of titles supplied by Paul Jones (Luigi)
 - Fix: Added the missing entry for "Glass Tape" to the `knam` array (Luigi)
 - Improvement: The "Microload" scanner was rewritten (Luigi)
+- Improvement: Added a number of signatures for "Microload" titles in order to speedup scanning (Luigi)
 
 v0.37
 -----
