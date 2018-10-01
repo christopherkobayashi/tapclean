@@ -54,8 +54,8 @@
 
 #define LOADOFFSETH	2	/* load location (MSB) offset inside header */
 #define LOADOFFSETL	3	/* load location (LSB) offset inside header */
-#define DATAOFFSETH	0	/* data size (MSB) offset inside header */
-#define DATAOFFSETL	1	/* data size (LSB) offset inside header */
+#define DATAOFFSETH	0	/* two's complement of data size (MSB) offset inside header */
+#define DATAOFFSETL	1	/* two's complement of data size (LSB) offset inside header */
 #define CHKBYOFFSET	4	/* data read threshold (LSB) offset inside header */
 #define DATATHRESHL	6	/* data read threshold (LSB) offset inside header */
 
