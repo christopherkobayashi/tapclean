@@ -1,5 +1,5 @@
 /*
- * chr.c (rewritten by Luigi Di Fraia, Sep 2017)
+ * megasave.c (rewritten by Luigi Di Fraia, Sep 2017)
  *
  * Handles all known threshold types: Mega-Save Mega-Speed, Ultra-Speed, Hyper-Speed
  * (aka. Cauldron, Hewson, Rainbird), and the "slow" clone
@@ -64,7 +64,7 @@
 #define EXEFLAG1OFFSET	6	/* execution flag #1 offset inside header */
 #define EXEFLAG2OFFSET	7	/* execution flag #2 offset inside header */
 
-static void chr_search_core(int lt)
+static void megasave_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -166,20 +166,20 @@ static void chr_search_core(int lt)
 	}
 }
 
-void chr_search(int lt)
+void megasave_search(int lt)
 {
 	if (lt > 0) {
-		chr_search_core(lt);
+		megasave_search_core(lt);
 	} else {
 		int type, types[] = { MEGASAVE_T1, MEGASAVE_T2, MEGASAVE_T3, MEGASAVE_T4 };
 
 		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
-			chr_search_core(types[type]);
+			megasave_search_core(types[type]);
 		}
 	}
 }
 
-int chr_describe(int row)
+int megasave_describe(int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];

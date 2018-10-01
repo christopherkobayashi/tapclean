@@ -544,7 +544,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\fastevil.c"
+					RelativePath="..\..\src\scanners\jiffyload.c"
 					>
 				</File>
 				<File
@@ -664,7 +664,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\chr.c"
+					RelativePath="..\..\src\scanners\megasave.c"
 					>
 				</File>
 				<File

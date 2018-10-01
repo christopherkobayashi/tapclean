@@ -104,7 +104,7 @@
     <ClCompile Include="..\..\src\scanners\bleep_f2.c" />
     <ClCompile Include="..\..\src\scanners\burner.c" />
     <ClCompile Include="..\..\src\scanners\c64tape.c" />
-    <ClCompile Include="..\..\src\scanners\chr.c" />
+    <ClCompile Include="..\..\src\scanners\megasave.c" />
     <ClCompile Include="..\..\src\scanners\cyberload_f1.c" />
     <ClCompile Include="..\..\src\scanners\cyberload_f2.c" />
     <ClCompile Include="..\..\src\scanners\cyberload_f3.c" />
@@ -156,7 +156,7 @@
     <ClCompile Include="..\..\src\scanners\cult.c" />
     <ClCompile Include="..\..\src\scanners\ddesign.c" />
     <ClCompile Include="..\..\src\scanners\easytape.c" />
-    <ClCompile Include="..\..\src\scanners\fastevil.c" />
+    <ClCompile Include="..\..\src\scanners\jiffyload.c" />
     <ClCompile Include="..\..\src\scanners\fftape.c" />
     <ClCompile Include="..\..\src\scanners\freeslow.c" />
     <ClCompile Include="..\..\src\scanners\glass.c" />

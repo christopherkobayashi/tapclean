@@ -1,5 +1,5 @@
 /*
- * fastevil.c (by Luigi Di Fraia, Sep 2009)
+ * jiffyload.c (by Luigi Di Fraia, Sep 2009)
  * Based on ashdave.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
@@ -65,7 +65,7 @@
 #define POSTDATASIZE	256	/* size in bytes of the MANDATORY information
 				   that is found after file data */
 
-static void fastevil_search_core (int lt)
+static void jiffyload_search_core (int lt)
 {
 	int i, h;			/* counters */
 	unsigned char j;
@@ -170,20 +170,20 @@ static void fastevil_search_core (int lt)
 	}
 }
 
-void fastevil_search (int lt)
+void jiffyload_search (int lt)
 {
 	if (lt > 0) {
-		fastevil_search_core(lt);
+		jiffyload_search_core(lt);
 	} else {
 		int type, types[] = { JIFFYLOAD_T1, JIFFYLOAD_T2 };
 
 		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
-			fastevil_search_core(types[type]);
+			jiffyload_search_core(types[type]);
 		}
 	}
 }
 
-int fastevil_describe (int row)
+int jiffyload_describe (int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];

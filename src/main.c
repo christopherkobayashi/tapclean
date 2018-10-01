@@ -950,7 +950,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (tap.cbmid == LID_MEGASAVE 	&& ldrswt[nomegasave	].exclude == FALSE && !database_is_full)
-				chr_search(0);	/* All types */
+				megasave_search(0);	/* All types */
 
 			if (tap.cbmid == LID_BURN 	&& ldrswt[noburner 	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1063,7 +1063,7 @@ static void search_tap(void)
 				goforgold_search();
 
 			if (tap.cbmid == LID_JIFFYLOAD	&& ldrswt[nojiffyload	].exclude == FALSE && !database_is_full && !aborted)
-				fastevil_search(0);	/* T1/T2 */
+				jiffyload_search(0);	/* T1/T2 */
 
 			if (tap.cbmid == LID_FFTAPE	&& ldrswt[nofftape	].exclude == FALSE && !database_is_full && !aborted)
 				fftape_search();
@@ -1177,7 +1177,7 @@ static void search_tap(void)
 				raster_search();
 
 			if (ldrswt[nomegasave	].exclude == FALSE && !database_is_full && !aborted)
-				chr_search(0);	/* All types */
+				megasave_search(0);	/* All types */
 
 			if (ldrswt[noburner	].exclude == FALSE && !database_is_full && !aborted)
 				burner_search();
@@ -1383,7 +1383,7 @@ static void search_tap(void)
 			//	goforgold_search();
 
 			//if (ldrswt[nojiffyload	].exclude == FALSE && !database_is_full && !aborted)
-			//	fastevil_search(0);	/* T1/T2 */
+			//	jiffyload_search(0);	/* T1/T2 */
 
 			//if (ldrswt[nochuckie		].exclude == FALSE && !database_is_full && !aborted)
 			//	chuckieegg_search();
@@ -1453,13 +1453,13 @@ static void describe_file(int row)
 					break;
 		case CULT:		cult_describe(row);
 					break;
-		case MEGASAVE_T1:	chr_describe(row);
+		case MEGASAVE_T1:	megasave_describe(row);
 					break;
-		case MEGASAVE_T2:	chr_describe(row);
+		case MEGASAVE_T2:	megasave_describe(row);
 					break;
-		case MEGASAVE_T3:	chr_describe(row);
+		case MEGASAVE_T3:	megasave_describe(row);
 					break;
-		case MEGASAVE_T4:	chr_describe(row);
+		case MEGASAVE_T4:	megasave_describe(row);
 					break;
 		case NOVA:		nova_describe(row);
 					break;
@@ -1627,9 +1627,9 @@ static void describe_file(int row)
 					break;
 		case GOFORGOLD:		goforgold_describe(row);
 					break;
-		case JIFFYLOAD_T1:	fastevil_describe(row);
+		case JIFFYLOAD_T1:	jiffyload_describe(row);
 					break;
-		case JIFFYLOAD_T2:	fastevil_describe(row);
+		case JIFFYLOAD_T2:	jiffyload_describe(row);
 					break;
 		case FFTAPE:		fftape_describe(row);
 					break;

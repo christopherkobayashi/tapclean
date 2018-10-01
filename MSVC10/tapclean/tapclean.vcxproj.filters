@@ -84,7 +84,7 @@
     <ClCompile Include="..\..\src\scanners\c64tape.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\chr.c">
+    <ClCompile Include="..\..\src\scanners\megasave.c">
       <Filter>Source Files\scanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\cyberload_f1.c">
@@ -240,7 +240,7 @@
     <ClCompile Include="..\..\src\scanners\easytape.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\fastevil.c">
+    <ClCompile Include="..\..\src\scanners\jiffyload.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\fftape.c">
@@ -256,6 +256,9 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\microload_var.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\msx.c">

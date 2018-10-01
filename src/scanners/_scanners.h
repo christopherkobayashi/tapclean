@@ -52,8 +52,8 @@ int aces_describe(int);
 void wild_search(void);
 int wild_describe(int);
 
-void chr_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
-int chr_describe(int);
+void megasave_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
+int megasave_describe(int);
 
 void ocean_search(void);
 int ocean_describe(int);
@@ -212,8 +212,8 @@ int freeslow_describe(int);
 void goforgold_search(void);
 int goforgold_describe(int);
 
-void fastevil_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
-int fastevil_describe(int);
+void jiffyload_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
+int jiffyload_describe(int);
 
 void fftape_search(void);
 int fftape_describe(int);
@@ -272,7 +272,7 @@ int glass_describe(int);
 void turbotape526_search(void);
 int turbotape526_describe(int);
 
-void microloadvar_search(int);
+void microloadvar_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int microloadvar_describe(int);
 
 void msx_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
