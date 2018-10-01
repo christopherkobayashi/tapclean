@@ -167,17 +167,22 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x32935096, LID_USG},		/* Buckaroo Banzai and Strange Odyssey */
 
 		{0x0645F350, LID_MIC},
-		{0x78C43CB9, LID_MIC},
-		{0xE0035766, LID_MIC},
-		{0x0EA016C6, LID_MIC},
-		{0x92571C3D, LID_MIC},
-		{0x96677D19, LID_MIC},
+		{0x78C43CB9, LID_MIC},		/* Break Fever */
+		{0xE0035766, LID_MIC},		/* Chameleon */
+		{0x0EA016C6, LID_MIC},		/* Western Games */
+		{0x92571C3D, LID_MIC},		/* Dandy */
+		{0x96677D19, LID_MIC},		/* Fungus */
 		{0x9F20C2DB, LID_MIC},
 		{0xBC7F0E8D, LID_MIC},
-		{0xB1F027B4, LID_MIC},
+		{0xB1F027B4, LID_MIC},		/* Steve Davis Snooker */
 		{0x178977C3, LID_MIC},
 		{0x29DCB0D1, LID_MIC},
 		{0x91DC3707, LID_MIC},		/* Melon Mania */
+		{0x9909A462, LID_MIC},		/* Desert Hawk */
+		{0x54C129A6, LID_MIC},		/* Defender, China Miner */
+		{0x8906017D, LID_MIC},		/* Empire */
+		{0x5BC34E91, LID_MIC},		/* Brian Clough's Football Fortunes */
+		{0xFD993947, LID_MIC},		/* Velocipede */
 
 		{0x58EEE22A, LID_ACE},		/* Ace of Aces */
 		{0x915280DA, LID_ACE},
