@@ -15,6 +15,7 @@ v0.38 (WIP)
 - New: Added support for "Turbotape 526" (a.k.a. "Load'n'Run"), a slow clone of "Turbotape 250", used in a number of titles supplied by Walter A. (Luigi)
 - New: Added support for "Microload Blue Ribbon Variant", a more flexible version of "Microload", used in a number of titles supplied by Paul Jones (Luigi)
 - Fix: Added the missing entry for "Glass Tape" to the `knam` array (Luigi)
+- Improvement: The "Microload" scanner was rewritten (Luigi)
 
 v0.37
 -----
@@ -34,7 +35,7 @@ v0.37
 - Improvement: Added signature of the "Ocean New F2" instance used by "Jahangir Khan World Championship Squash", supplied by Paul  Jones (Luigi)
 - New: Added support for "Glass Tape", used in a number of titles supplied by Paul Jones (Luigi)
 - Fix: Corrected offset in the error message within the "Turrican" scanner (Luigi)
-- Fix: Improved filename length detection in the "American Action" scanner for dealing with "Point X", submitted by Kim L. (Luigi)
+- Improvement: Improved filename length detection in the "American Action" scanner for dealing with "Point X", submitted by Kim L. (Luigi)
 - Improvement: Added signature of the "Power Load" instance used by "Lighforce", supplied by Paul Jones (Luigi)
 - New: Added support for "Mega-Save T4", used in "Action Pack 2", supplied by Paul Jones (Luigi)
 - Improvement: The "Fast Evil" scanner was renamed to "Jiffy Load T1" based on reports and sample tapes supplied by Paul Jones (Luigi)
