@@ -878,7 +878,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit86]
-FileName=..\src\scanners\imagineincentive.c
+FileName=..\src\scanners\alternativedk.c
 CompileCpp=0
 Folder=newscanners
 Compile=1

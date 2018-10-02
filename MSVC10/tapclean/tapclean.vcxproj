@@ -144,6 +144,7 @@
     <ClCompile Include="..\..\src\scanners\t108DE0A5.c" />
     <ClCompile Include="..\..\src\scanners\accolade.c" />
     <ClCompile Include="..\..\src\scanners\actionreplay.c" />
+    <ClCompile Include="..\..\src\scanners\alternativedk.c" />
     <ClCompile Include="..\..\src\scanners\amaction.c" />
     <ClCompile Include="..\..\src\scanners\ashdave.c" />
     <ClCompile Include="..\..\src\scanners\biturbo.c" />
@@ -161,7 +162,6 @@
     <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />
-    <ClCompile Include="..\..\src\scanners\imagineincentive.c" />
     <ClCompile Include="..\..\src\scanners\jiffyload.c" />
     <ClCompile Include="..\..\src\scanners\microload_var.c" />
     <ClCompile Include="..\..\src\scanners\msx.c" />

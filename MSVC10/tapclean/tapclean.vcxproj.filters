@@ -204,6 +204,9 @@
     <ClCompile Include="..\..\src\scanners\actionreplay.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\alternativedk.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\amaction.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
@@ -235,9 +238,6 @@
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\scanners\imagineincentive.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\jiffyload.c">

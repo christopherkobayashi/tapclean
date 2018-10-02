@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-9"
+#define VERSION_STR	"0.38-pre-10"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -209,10 +209,10 @@ enum {
 	TEQUILA,
 	GRADVCREATOR,
 	CHUCKIEEGG,
-	IMAGINEINCENTIVE_T1,
-	IMAGINEINCENTIVE_T2,
-	IMAGINEINCENTIVE_T3,
-	IMAGINEINCENTIVE_T4,
+	ALTERDK_T1,
+	ALTERDK_T2,
+	ALTERDK_T3,
+	ALTERDK_T4,
 	POWERLOAD,
 	GREMLIN_F1,
 	GREMLIN_F2,
@@ -295,7 +295,7 @@ enum {
 	LID_TEQUILA,
 	LID_GRADVCREATOR,
 	LID_CHUCKIEEGG,
-	LID_IMAGINEINCENTIVE,
+	LID_ALTERDK,
 	LID_POWERLOAD,
 	LID_GREMLIN,
 	LID_EASYTAPE,
@@ -455,6 +455,7 @@ enum {
 	noaces,
 	noar,
 	noaliensy,
+	noalterdk,
 	noalterwg,
 	noamaction,
 	noanirog,
@@ -486,7 +487,6 @@ enum {
 	nohit,
 	nohitec,
 	noik,
-	noimgincentive,
 	nojet,
 	nojiffyload,
 	nomegasave,

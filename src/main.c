@@ -79,6 +79,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Ace of Aces"			,"aces"		,FALSE},
 	{"ActionReplay"			,"ar"		,FALSE},
 	{"Alien Syndrome"		,"aliensy"	,FALSE},
+	{"Alternative SW (DK)"		,"alterdk"	,FALSE},
 	{"Alternative World Games"	,"alterwg"	,FALSE},
 	{"American Action"		,"amaction"	,FALSE},
 	{"Anirog"			,"anirog"	,FALSE},
@@ -110,7 +111,6 @@ struct ldrswt_t ldrswt[] = {
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
 	{"IK"				,"ik"		,FALSE},
-	{"Imagine/Incentive tape"	,"imgincentive"	,FALSE},
 	{"Jetload"			,"jet"		,FALSE},
 	{"Jiffy Load"			,"jiffy"	,FALSE},
 	{"Mega-Save"			,"megasave"	,FALSE},
@@ -317,11 +317,11 @@ struct fmt_t ft[] = {
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,   0x28, 0x02, 0x09, 50,   NA,    CSNO},
 	{"GRAPHIC ADV. CREATOR"	,LSbF, NA,   0x3D, 0x52, 0x7E, 1,    0,    2000, NA,    CSNO},
 	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,   0x44, 0xFF, 0x00, 25,   NA,    CSYES},
-	{"IMAGINE/INCENTIVE T1"	,MSbF, NA,   0x2B, 0x64, 0xB5, 0,    1,    5,    NA,    CSYES},
-	{"IMAGINE/INCENTIVE T2"	,MSbF, NA,   0x21, 0x36, 0xA5, 0,    1,    5,    NA,    CSYES},
-//	{"IMAGINE/INCENTIVE T3"	,MSbF, NA,   0x44, 0x88, 0xAF, 0,    1,    5,    NA,    CSYES},
-	{"IMAGINE/INCENTIVE T3"	,MSbF, NA,   0x3F, 0x86, 0xAB, 0,    1,    5,    NA,    CSYES},
-	{"IMAGINE/INCENTIVE T4"	,MSbF, NA,   0x23, 0x52, 0xAB, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64, 0xB5, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36, 0xA5, 0,    1,    5,    NA,    CSYES},
+//	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x44, 0x88, 0xAF, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T3"	,MSbF, NA,   0x3F, 0x86, 0xAB, 0,    1,    5,    NA,    CSYES},
+	{"ALTERNATIVE SW DK T4"	,MSbF, NA,   0x23, 0x52, 0xAB, 0,    1,    5,    NA,    CSYES},
 	{"POWER LOAD"		,MSbF, 0x20, 0x1C, NA,   0x29, 0x02, 0x09, 400,  NA,    CSYES},
 	{"GREMLIN F1"		,LSbF, 0x30, 0x22, NA,   0x41, 0xE3, 0xED, 64,   NA,    CSYES},
 	{"GREMLIN F2"		,LSbF, 0x2C, 0x1E, NA,   0x3C, 0xE3, 0xED, 64,   NA,    CSYES},
@@ -332,20 +332,16 @@ struct fmt_t ft[] = {
 	 * version (to the best of our knowledge).
 	 */
 	{"CREATURES"		,MSbF, 0x3A, 0x2E, NA,   0x4C, 0xF0, 0x47, 64,   NA,    CSYES},
-
 	{"RAINBOW ISLANDS"	,MSbF, 0x2C, 0x24, NA,   0x42, 0x40, 0x5A, 45,   400,   CSYES},
 	{"OCEAN NEW TAPE F3"	,MSbF, NA,   0x2E, 0x49, 0x80, 1,    0,    32,   NA,    CSYES},
 	{"EASY-TAPE"		,LSbF, 0x30, 0x1D, NA,   0x40, 0x02, 0x52, 200,  NA,    CSYES},
 	{"TURBO 220"		,MSbF, 0x20, 0x1A, NA,   0x28, 0x02, 0x09, 64,   NA,    CSNO},
 	{"CREATIVE SPARKS"	,MSbF, 0x2A, 0x22, NA,   0x33, 0x01, 0xFF, 64,   NA,    CSYES},
 	{"DIGITAL DESIGN"	,MSbF, 0x2D, 0x20, NA,   0x42, 0x80, 0x40, 100,  NA,    CSNO},
-
 	{"GLASS TAPE HEADER"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x800,NA,    CSYES},
 	{"GLASS TAPE DATA"	,MSbF, 0x58, 0x3F, NA,   0x7D, 1,    0,    0x300,NA,    CSYES},
-
 	{"TURBOTAPE 526 HEADER"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x100,NA,    CSNO},
 	{"TURBOTAPE 526 DATA"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x80, NA,    CSYES},
-
 	{"MICROLOAD VARIANT T1"	,LSbF, 0x2A, 0x1D, NA,   0x33, 0xA5, 0x0A, 64,   NA,    CSYES},
 	{"MICROLOAD VARIANT T2"	,LSbF, 0x34, 0x2A, NA,   0x42, 0xA5, 0x0A, 64,   NA,    CSYES},
 
@@ -427,7 +423,7 @@ const char knam[][48] = {
 	{"Tequila Sunrise"},
 	{"Graphic Adv Creator tape"},
 	{"Chuckie Egg"},
-	{"Imagine/Incentive"},
+	{"Alternative SW (DK)"},
 	{"Power Load"},
 	{"Gremlin (F1/F2)"},
 	{"Easy-Tape System C"},
@@ -1080,8 +1076,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].exclude == FALSE && !database_is_full && !aborted)
 				chuckieegg_search();
 
-			if (tap.cbmid == LID_IMAGINEINCENTIVE	&& ldrswt[noimgincentive	].exclude == FALSE  && !database_is_full && !aborted)
-				imagineincentive_search(0);	/* T1-T4 */
+			if (tap.cbmid == LID_ALTERDK	&& ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
+				alternativedk_search(0);	/* T1-T4 */
 
 			if (tap.cbmid == LID_POWERLOAD	&& ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 				powerload_search();
@@ -1356,8 +1352,8 @@ static void search_tap(void)
 			//if (ldrswt[gradvcreator	].exclude == FALSE  && !database_is_full && !aborted)
 			//	graphicadventurecreator_search();
 
-			//if (ldrswt[noimgincentive	].exclude == FALSE  && !database_is_full && !aborted)
-			//	imagineincentive_search(0);	/* T1-T4 */
+			//if (ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
+			//	alternativedk_search(0);	/* T1-T4 */
 
 			//if (ldrswt[nopower	].exclude == FALSE  && !database_is_full && !aborted)
 			//	powerload_search();
@@ -1641,17 +1637,13 @@ static void describe_file(int row)
 					break;
 		case CHUCKIEEGG:	chuckieegg_describe(row);
 					break;
-		case IMAGINEINCENTIVE_T1:
-					imagineincentive_describe(row);
+		case ALTERDK_T1:	alternativedk_describe(row);
 					break;
-		case IMAGINEINCENTIVE_T2:
-					imagineincentive_describe(row);
+		case ALTERDK_T2:	alternativedk_describe(row);
 					break;
-		case IMAGINEINCENTIVE_T3:
-					imagineincentive_describe(row);
+		case ALTERDK_T3:	alternativedk_describe(row);
 					break;
-		case IMAGINEINCENTIVE_T4:
-					imagineincentive_describe(row);
+		case ALTERDK_T4:	alternativedk_describe(row);
 					break;
 		case POWERLOAD:		powerload_describe(row);
 					break;
