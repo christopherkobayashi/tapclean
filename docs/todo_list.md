@@ -78,7 +78,7 @@ The reason is that when `t == ACTIONREPLAY_STURBO` the trailer between p3+8 and 
 (Luigi)
 - COMPLETED: The "Turrican" scanner reads the checksum as part of the data block (SLC)
 - TODO: "Galactic Games" uses "Wildload" but pilot byte is 0x50 on level files (SLC)
-- TODO: "Barbarian II" uses a variant of the "Palace F1" loader with a different sync train. Also the first of the four sync bytes changes for every file, so it's a good idea to just match sync bytes 2-4 for identification. Same for the following "Martech" titles: "Brian Jack's Superstar Challenge" and "Eddie Kidd Jump Challenge" (SLC)
+- COMPLETED: "Barbarian II" uses a variant of the "Palace F1" loader with a different sync train. Also the first of the four sync bytes changes for every file, so it's a good idea to just match sync bytes 2-4 for identification. Same for the following "Martech" titles: "Brian Jack's Superstar Challenge" and "Eddie Kidd Jump Challenge" (SLC)
 - TODO: The corrupted bit of post-data in "Digital Design Tape" should be reconstructed as its absence in a cleaned TAP might be causing load to fail in "Scooby Doo and Scrabby Doo" (Luigi)
 - TODO: The size of the trailing silence should be overridable as "Hunchback at the Olympics" does not properly execute if the tape runs out before the unpacker has finished processing all data (Luigi - reported by Peepo and Ziggy72)
 - COMPLETED: "Burner" uses a hardcoded execution address and a hardcoded count of files to load from tape, as opposite to its predecessor, the Mastertronic variant.However, "Hunchback at the Olympics" shows 15 bits post the data block, which might have been written by the masterer as dummy information that should at least be considered file trailer in order to be retained for historical reasons (Luigi)
