@@ -500,10 +500,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\alternativedk.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\amaction.c"
 					>
 				</File>
@@ -541,6 +537,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\graphicadventurecreator.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\imagineincentive.c"
 					>
 				</File>
 				<File

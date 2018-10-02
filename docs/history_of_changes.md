@@ -17,6 +17,8 @@ v0.38 (WIP)
 - Fix: Added the missing entry for "Glass Tape" to the `knam` array (Luigi)
 - Improvement: The "Microload" scanner was rewritten (Luigi)
 - Improvement: Added a number of signatures for "Microload" titles in order to speedup scanning (Luigi)
+- Improvement: The "Alternative Software" scanner was renamed to "Graphic Adv Creator tape", as suggested by Paul Jones (Luigi)
+- Improvement: The "Alternative Software DK" scanner was renamed to "Imagine/Incentive tape", as suggested by Paul Jones (Luigi)
 
 v0.37
 -----

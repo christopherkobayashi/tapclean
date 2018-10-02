@@ -333,10 +333,10 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0xD7483CDA, LID_CHUCKIEEGG},	/* Chuckie Egg */
 
-		{0x057A87A2, LID_ALTERDK},	/* Early Alternative Software loader */
-		{0xDA74865F, LID_ALTERDK},	/* Arcade Classics (T3) */
-		{0x4A46B891, LID_ALTERDK},	/* Special Agent (T3) */
-		{0x1D3C3608, LID_ALTERDK},	/* Interdictor Pilot (T4) */
+		{0x057A87A2, LID_IMAGINEINCENTIVE},	/* Early Alternative Software loader */
+		{0xDA74865F, LID_IMAGINEINCENTIVE},	/* Arcade Classics (T3) */
+		{0x4A46B891, LID_IMAGINEINCENTIVE},	/* Special Agent (T3) */
+		{0x1D3C3608, LID_IMAGINEINCENTIVE},	/* Interdictor Pilot (T4) */
 
 		{0xD407EAA3, LID_POWERLOAD},	/* Power Load: Felix in the factory, Ghouls, Jet Power Jack, Stock Car */
 		{0xA217E2B1, LID_POWERLOAD},	/* Mr Wiz, Smuggler, U.K. Geography, World Geography */

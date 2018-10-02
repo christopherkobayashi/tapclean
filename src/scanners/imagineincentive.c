@@ -1,5 +1,5 @@
 /*
- * alternativedk.c (by Luigi Di Fraia, May 2011)
+ * imagineincentive.c (by Luigi Di Fraia, May 2011)
  * Based on graphicadventurecreator.c and chr.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
@@ -52,7 +52,7 @@
 /*
  * Find custom pilot sequence (lp x 0x1F, mp x 0x01)
  */
-static int alternativedk_find_pilot (int variant, int pos)
+static int imagineincentive_find_pilot (int variant, int pos)
 {
 	int z, lp, mp, tp, pmin;
 
@@ -83,7 +83,7 @@ static int alternativedk_find_pilot (int variant, int pos)
 	return 0;
 }
 
-static void alternativedk_search_core(int lt)
+static void imagineincentive_search_core(int lt)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -103,12 +103,12 @@ static void alternativedk_search_core(int lt)
 	sv = ft[lt].sv;
 
 	if (!quiet) {
-		sprintf(lin, "  Alternative SW (DK) T%d", lt - ALTERDK_T1 + 1);
+		sprintf(lin, "  Imagine/Incentive T%d", lt - IMAGINEINCENTIVE_T1 + 1);
 		msgout(lin);
 	}
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = alternativedk_find_pilot(lt, i);
+		eop = imagineincentive_find_pilot(lt, i);
 
 		if (eop > 0) {
 			/* Valid pilot found, mark start of file */
@@ -166,20 +166,20 @@ static void alternativedk_search_core(int lt)
 	}
 }
 
-void alternativedk_search(int lt)
+void imagineincentive_search(int lt)
 {
 	if (lt > 0) {
-		alternativedk_search_core(lt);
+		imagineincentive_search_core(lt);
 	} else {
-		int type, types[] = { ALTERDK_T1, ALTERDK_T2, ALTERDK_T3, ALTERDK_T4 };
+		int type, types[] = { IMAGINEINCENTIVE_T1, IMAGINEINCENTIVE_T2, IMAGINEINCENTIVE_T3, IMAGINEINCENTIVE_T4 };
 
 		for (type = 0; type < sizeof(types)/sizeof(types[0]); type++) {
-			alternativedk_search_core(types[type]);
+			imagineincentive_search_core(types[type]);
 		}
 	}
 }
 
-int alternativedk_describe (int row)
+int imagineincentive_describe (int row)
 {
 	int i, s;
 	int en, tp, sp, mp;

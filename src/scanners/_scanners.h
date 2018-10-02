@@ -230,8 +230,8 @@ int graphicadventurecreator_describe(int);
 void chuckieegg_search(void);
 int chuckieegg_describe(int);
 
-void alternativedk_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
-int alternativedk_describe(int);
+void imagineincentive_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
+int imagineincentive_describe(int);
 
 void powerload_search(void);
 int powerload_describe(int);
