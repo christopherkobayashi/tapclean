@@ -145,7 +145,6 @@
     <ClCompile Include="..\..\src\scanners\accolade.c" />
     <ClCompile Include="..\..\src\scanners\actionreplay.c" />
     <ClCompile Include="..\..\src\scanners\alternativedk.c" />
-    <ClCompile Include="..\..\src\scanners\alternativesw.c" />
     <ClCompile Include="..\..\src\scanners\amaction.c" />
     <ClCompile Include="..\..\src\scanners\ashdave.c" />
     <ClCompile Include="..\..\src\scanners\biturbo.c" />
@@ -156,6 +155,7 @@
     <ClCompile Include="..\..\src\scanners\cult.c" />
     <ClCompile Include="..\..\src\scanners\ddesign.c" />
     <ClCompile Include="..\..\src\scanners\easytape.c" />
+    <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c" />
     <ClCompile Include="..\..\src\scanners\jiffyload.c" />
     <ClCompile Include="..\..\src\scanners\fftape.c" />
     <ClCompile Include="..\..\src\scanners\freeslow.c" />

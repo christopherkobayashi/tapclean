@@ -79,7 +79,6 @@ struct ldrswt_t ldrswt[] = {
 	{"Ace of Aces"			,"aces"		,FALSE},
 	{"ActionReplay"			,"ar"		,FALSE},
 	{"Alien Syndrome"		,"aliensy"	,FALSE},
-	{"Alternative Software"		,"altersw"	,FALSE},
 	{"Alternative SW (DK)"		,"alterdk"	,FALSE},
 	{"Alternative World Games"	,"alterwg"	,FALSE},
 	{"American Action"		,"amaction"	,FALSE},
@@ -99,6 +98,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Digital Design"		,"ddesign"	,FALSE},
 	{"Easy-Tape"			,"easytape"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
+	{"Graphic Adv Creator tape"	,"gradvcreator"	,FALSE},
 	{"Jiffy Load"			,"jiffy"	,FALSE},
 	{"FF Tape"			,"fftape"	,FALSE},
 	{"Firebird"			,"fire"		,FALSE},
@@ -315,7 +315,7 @@ struct fmt_t ft[] = {
 	{"FF TAPE"		,LSbF, 0x34, 0x28, NA,   0x3F, 0,    1,    1500, NA,    CSNO},
 	{"TES TAPE"		,LSbF, 0x30, 0x1D, NA,   0x44, 0x02, 0x52, 100,  NA,    CSYES},
 	{"TEQUILA SUNRISE"	,MSbF, 0x22, 0x1A, NA,   0x28, 0x02, 0x09, 50,   NA,    CSNO},
-	{"ALTERNATIVE SOFTWARE"	,LSbF, NA,   0x3D, 0x52, 0x7E, 1,    0,    2000, NA,    CSNO},
+	{"GRAPHIC ADV. CREATOR"	,LSbF, NA,   0x3D, 0x52, 0x7E, 1,    0,    2000, NA,    CSNO},
 	{"CHUCKIE EGG"		,MSbF, NA,   0x28, NA,   0x44, 0xFF, 0x00, 25,   NA,    CSYES},
 	{"ALTERNATIVE SW DK T1"	,MSbF, NA,   0x2B, 0x64, 0xB5, 0,    1,    5,    NA,    CSYES},
 	{"ALTERNATIVE SW DK T2"	,MSbF, NA,   0x21, 0x36, 0xA5, 0,    1,    5,    NA,    CSYES},
@@ -409,7 +409,7 @@ const char knam[][48] = {
 	{"Supertape"},
 	{"Ocean New 1 T1"},
 	{"Ocean New 1 T2"},
-	{"Atlantis Loader"},
+	{"Atlantis loader"},
 	{"Snakeload"},
 	{"Ocean New 2"},
 	{"Audiogenic"},
@@ -425,7 +425,7 @@ const char knam[][48] = {
 	{"FF Tape"},
 	{"TES Tape"},
 	{"Tequila Sunrise"},
-	{"Alternative Software"},
+	{"Graphic Adv Creator tape"},
 	{"Chuckie Egg"},
 	{"Alternative SW (DK)"},
 	{"Power Load"},
@@ -1074,8 +1074,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_TEQUILA	&& ldrswt[notequila	].exclude == FALSE && !database_is_full && !aborted)
 				tequila_search();
 
-			if (tap.cbmid == LID_ALTERSW	&& ldrswt[noaltersw	].exclude == FALSE  && !database_is_full && !aborted)
-				alternativesw_search();
+			if (tap.cbmid == LID_GRADVCREATOR	&& ldrswt[nogradvcreator	].exclude == FALSE  && !database_is_full && !aborted)
+				graphicadventurecreator_search();
 
 			if (tap.cbmid == LID_CHUCKIEEGG	&& ldrswt[nochuckie	].exclude == FALSE && !database_is_full && !aborted)
 				chuckieegg_search();
@@ -1353,8 +1353,8 @@ static void search_tap(void)
 			//if (ldrswt[notequila	].exclude == FALSE && !database_is_full && !aborted)
 			//	tequila_search();
 
-			//if (ldrswt[noaltersw	].exclude == FALSE  && !database_is_full && !aborted)
-			//	alternativesw_search();
+			//if (ldrswt[gradvcreator	].exclude == FALSE  && !database_is_full && !aborted)
+			//	graphicadventurecreator_search();
 
 			//if (ldrswt[noalterdk	].exclude == FALSE  && !database_is_full && !aborted)
 			//	alternativedk_search(0);	/* T1-T4 */
@@ -1637,7 +1637,7 @@ static void describe_file(int row)
 					break;
 		case TEQUILA:		tequila_describe(row);
 					break;
-		case ALTERSW:		alternativesw_describe(row);
+		case GRADVCREATOR:	graphicadventurecreator_describe(row);
 					break;
 		case CHUCKIEEGG:	chuckieegg_describe(row);
 					break;

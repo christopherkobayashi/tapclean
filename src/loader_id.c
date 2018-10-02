@@ -329,7 +329,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x737CE3A9, LID_TEQUILA},	/* Tequila Sunrise */
 
-		{0x823DBD1F, LID_ALTERSW},	/* Alternative Software */
+		{0x823DBD1F, LID_GRADVCREATOR},	/* Graphic Adv Creator tape (was Alternative Software) */
 
 		{0xD7483CDA, LID_CHUCKIEEGG},	/* Chuckie Egg */
 

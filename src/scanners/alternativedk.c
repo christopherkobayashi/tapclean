@@ -1,6 +1,6 @@
 /*
  * alternativedk.c (by Luigi Di Fraia, May 2011)
- * Based on alternativesw.c and chr.c
+ * Based on graphicadventurecreator.c and chr.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

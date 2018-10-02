@@ -858,7 +858,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit84]
-FileName=..\src\scanners\alternativesw.c
+FileName=..\src\scanners\graphicadventurecreator.c
 CompileCpp=0
 Folder=newscanners
 Compile=1

@@ -1,5 +1,5 @@
 /*
- * alternativesw.c (by Luigi Di Fraia, Feb 2011)
+ * graphicadventurecreator.c (by Luigi Di Fraia, Feb 2011)
  * Based on ashdave.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	ALTERSW
+#define THISLOADER	GRADVCREATOR
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -61,7 +61,7 @@
 /*
  * Find custom pilot sequence (mp x 0x9FF, sp x 0x1)
  */
-static int alternativesw_find_pilot (int pos)
+static int graphicadventurecreator_find_pilot (int pos)
 {
 	int z, sp, mp, tp, pmin;
 
@@ -92,7 +92,7 @@ static int alternativesw_find_pilot (int pos)
 	return 0;
 }
 
-void alternativesw_search (void)
+void graphicadventurecreator_search (void)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -116,10 +116,10 @@ void alternativesw_search (void)
 	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
-		msgout("  Alternative Software");
+		msgout("  Graphic Adv Creator tape");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
-		eop = alternativesw_find_pilot(i);
+		eop = graphicadventurecreator_find_pilot(i);
 
 		if (eop > 0) {
 			/* Valid pilot found, mark start of file */
@@ -192,7 +192,7 @@ void alternativesw_search (void)
 	}
 }
 
-int alternativesw_describe (int row)
+int graphicadventurecreator_describe (int row)
 {
 	int i, s;
 	int hd[HEADERSIZE];

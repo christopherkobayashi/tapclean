@@ -224,8 +224,8 @@ int testape_describe(int);
 void tequila_search(void);
 int tequila_describe(int);
 
-void alternativesw_search(void);
-int alternativesw_describe(int);
+void graphicadventurecreator_search(void);
+int graphicadventurecreator_describe(int);
 
 void chuckieegg_search(void);
 int chuckieegg_describe(int);
