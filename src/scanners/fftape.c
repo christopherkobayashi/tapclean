@@ -138,7 +138,7 @@ void fftape_search (void)
 	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
-		msgout("  FF tape");
+		msgout("  Freeze Frame tape");
 
 	ff_index = 1;
 	ff3_e = 0x0001;
