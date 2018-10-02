@@ -64,17 +64,21 @@ void micro_search(void)
 	int sof, sod, eod, eof, eop;	/* file offsets */
 	int hd[HEADERSIZE];		/* buffer to store block header info */
 
-	int en, tp, sp, lp, sv;		/* encoding parameters */
+	int en, tp, sp, lp;		/* encoding parameters */
 
 	unsigned int s, e;		/* block locations referred to C64 memory */
 	unsigned int x; 		/* block size */
+
+	/* Expected sync pattern */
+	static int sypat[SYNCSEQSIZE] = {
+		0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01
+	};
 
 
 	en = ft[THISLOADER].en;
 	tp = ft[THISLOADER].tp;
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
-	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
 		msgout("  Microload");
@@ -87,11 +91,17 @@ void micro_search(void)
 			sof = i;
 			i = eop;
 
-			/* Check if there's a valid sync byte for this loader */
-			if (readttbyte(i, lp, sp, tp, en) != sv)
+			/* Decode a SYNCSEQSIZE byte sequence (possibly a valid sync train) */
+			for (h = 0; h < SYNCSEQSIZE; h++) {
+				if (readttbyte(i + (h * BITSINABYTE), lp, sp, tp, en) != sypat[h])
+					break;
+			}
+
+			/* Sync train doesn't match */
+			if (h != SYNCSEQSIZE)
 				continue;
 
-			/* Valid sync found, mark start of data */
+			/* Valid sync train found, mark start of data */
 			sod = i + SYNCSEQSIZE * BITSINABYTE;
 
 			/* Read header */
