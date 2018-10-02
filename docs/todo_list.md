@@ -36,7 +36,7 @@ In all cases, looking at the first CBM file only makes sense when a title is not
 - COMPLETED: Titles using the "Alternative Software" loader were mastered by "The Graphic  Adventure Creator", in fact they are all text adventures with graphics (Ziggy72)
 - COMPLETED: The loader known as "Alternative Software variant" and used by the "Graphic Adventure Creator" should be renamed to "Imagine/Incentive tape" and the loader used by games created with it, currently referred to as "Alternative Software tape", should be renamed to "Graphic Adv Creator tape" (Ziggy72)
 - TODO: "U.S. Gold tape" was mastered with a tool called "Pro Cass" as found out by SLC who managed to get in touch with some ex-employees: the latter also confirmed that wrong checkbytes were embedded into some tapes in order to fool crackers. TAPClean could alert on this (Ziggy72)
-- TODO: "Cult tape" should be renamed to "Freeze Machine tape" (Ziggy72)
+- COMPLETED: "Cult tape" should be renamed to "Freeze Machine tape" (Ziggy72)
 - TODO: "FF Tape" stands for "Freeze Frame" (SLC) which later became "Freeze Machine" (Ziggy72)
 - COMPLETED: "CHR" titles were mastered with a tool called "Mega-Save". In version 1.3, (C) 1984 Choice, each supported type is referred to as:
 

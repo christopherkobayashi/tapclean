@@ -230,7 +230,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit21]
-FileName=..\src\scanners\cult.c
+FileName=..\src\scanners\freezemachine.c
 CompileCpp=0
 Folder=rewritten
 Compile=1

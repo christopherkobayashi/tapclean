@@ -1,6 +1,6 @@
 /*
  * powerload.c (by Luigi Di Fraia, May 2011)
- * Based on biturbo.c and cult.c
+ * Based on biturbo.c and freezemachine.c
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *

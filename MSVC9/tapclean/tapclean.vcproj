@@ -668,10 +668,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\cult.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\enigma.c"
 					>
 				</File>
@@ -681,6 +677,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\freeload.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\freezemachine.c"
 					>
 				</File>
 				<File

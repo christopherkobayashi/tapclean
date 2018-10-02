@@ -92,20 +92,19 @@ struct ldrswt_t ldrswt[] = {
 	{"Chuckie Egg"			,"chuckie"	,FALSE},
 	{"Creative Sparks"		,"csparks"	,FALSE},
 	{"Creatures"			,"creatures"	,FALSE},
-	{"Cult"				,"cult"		,FALSE},
 	{"Cyberload"			,"cyber"	,FALSE},
 	{"Digital Design"		,"ddesign"	,FALSE},
 	{"Easy-Tape"			,"easytape"	,FALSE},
 	{"Enigma"			,"enigma"	,FALSE},
-	{"Graphic Adv Creator tape"	,"gradvcreator"	,FALSE},
-	{"Jiffy Load"			,"jiffy"	,FALSE},
 	{"FF Tape"			,"fftape"	,FALSE},
 	{"Firebird"			,"fire"		,FALSE},
 	{"Flashload"			,"flash"	,FALSE},
 	{"Freeload"			,"free"		,FALSE},
 	{"Freeload Slowload"		,"frslow"	,FALSE},
+	{"Freeze Machine tape"		,"frzmachine"	,FALSE},
 	{"Glass Tape"			,"glass"	,FALSE},
 	{"Go For The Gold"		,"goforgold"	,FALSE},
+	{"Graphic Adv Creator tape"	,"gradvcreator"	,FALSE},
 	{"Gremlin F1"			,"GREMLIN_F1"	,FALSE},
 	{"Gremlin F2"			,"GREMLIN_F2"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
@@ -113,6 +112,7 @@ struct ldrswt_t ldrswt[] = {
 	{"IK"				,"ik"		,FALSE},
 	{"Imagine/Incentive tape"	,"imgincentive"	,FALSE},
 	{"Jetload"			,"jet"		,FALSE},
+	{"Jiffy Load"			,"jiffy"	,FALSE},
 	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"Microload Variant"		,"microvar"	,FALSE},
@@ -216,7 +216,7 @@ struct fmt_t ft[] = {
 	{"TURBOTAPE-250 DATA"	,MSbF, 0x20, 0x1A, NA,   0x28, 0x02, 0x09, 50,   NA,    CSYES},
 	{"FREELOAD"		,MSbF, 0x2C, 0x24, NA,   0x42, 0x40, 0x5A, 45,   400,   CSYES},
 	{"ODELOAD"		,MSbF, 0x36, 0x25, NA,   0x50, 0x20, 0xDB, 40,   NA,    CSYES},
-	{"CULT"			,LSbF, 0x34, 0x27, NA,   0x3E, 0,    1,    1000, NA,    CSNO},
+	{"FREEZE MACHINE TAPE"	,LSbF, 0x34, 0x27, NA,   0x3E, 0,    1,    1000, NA,    CSNO},
 	{"US-GOLD TAPE"		,MSbF, 0x2C, 0x24, NA,   0x42, 0x20, 0xFF, 50,   NA,    CSYES},
 	{"ACE OF ACES TAPE"	,MSbF, 0x2C, 0x22, NA,   0x47, 0x80, 0xFF, 50,   NA,    CSYES},
 	{"WILDLOAD"		,LSbF, 0x3B, 0x30, NA,   0x47, 0xA0, 0x0A, 50,   NA,    CSYES},
@@ -413,7 +413,7 @@ const char knam[][48] = {
 	{"Snakeload"},
 	{"Ocean New 2"},
 	{"Audiogenic"},
-	{"Cult tape"},
+	{"Freeze Machine tape"},
 	{"Accolade (or clone)"},
 	{"Rainbow Arts (F1/F2)"},
 	{"Burner (Mastertronic Variant)"},
@@ -1035,8 +1035,8 @@ static void search_tap(void)
 			if (tap.cbmid == LID_AUDIOGENIC	&& ldrswt[noaudiogenic	].exclude == FALSE && !database_is_full && !aborted)
 				audiogenic_search();
 
-			if (tap.cbmid == LID_CULT	&& ldrswt[nocult	].exclude == FALSE && !database_is_full && !aborted)
-				cult_search();
+			if (tap.cbmid == LID_FRZMACHINE	&& ldrswt[nofrzmachine	].exclude == FALSE && !database_is_full && !aborted)
+				freezemachine_search();
 
 			if (tap.cbmid == LID_ACCOLADE	&& ldrswt[noaccolade	].exclude == FALSE && !database_is_full && !aborted)
 				accolade_search();
@@ -1125,8 +1125,8 @@ static void search_tap(void)
 			if (ldrswt[noode	].exclude == FALSE && !database_is_full && !aborted)
 				odeload_search();
 
-			if (ldrswt[nocult	].exclude == FALSE && !database_is_full && !aborted)
-				cult_search();
+			if (ldrswt[nofrzmachine	].exclude == FALSE && !database_is_full && !aborted)
+				freezemachine_search();
 
 			/*
 			 * Comes here to avoid ocean misdetections.
@@ -1451,7 +1451,7 @@ static void describe_file(int row)
 					break;
 		case ODELOAD:		odeload_describe(row);
 					break;
-		case CULT:		cult_describe(row);
+		case FREEZEMACHINE:	freezemachine_describe(row);
 					break;
 		case MEGASAVE_T1:	megasave_describe(row);
 					break;

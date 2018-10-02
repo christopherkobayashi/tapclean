@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-7"
+#define VERSION_STR	"0.38-pre-8"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -115,7 +115,7 @@ enum {
 	TT_DATA,
 	FREE,
 	ODELOAD,
-	CULT,
+	FREEZEMACHINE,
 	USGOLD,
 	ACES,
 	WILD,
@@ -281,7 +281,7 @@ enum {
 	LID_SNAKE,
 	LID_OCNEW2,
 	LID_AUDIOGENIC,
-	LID_CULT,
+	LID_FRZMACHINE,
 	LID_ACCOLADE,
 	LID_RAINBOWARTS,
 	LID_BURNERVAR,
@@ -468,20 +468,19 @@ enum {
 	nochuckie,
 	nocsparks,
 	nocreatures,
-	nocult,
 	nocyber,
 	noddesign,
 	noeasytape,
 	noenigma,
-	nogradvcreator,
-	nojiffyload,
 	nofftape,
 	nofire,
 	noflash,
 	nofree,
 	nofrslow,
+	nofrzmachine,
 	noglass,
 	nogoforgold,
+	nogradvcreator,
 	nogremlinf1,
 	nogremlinf2,
 	nohit,
@@ -489,6 +488,7 @@ enum {
 	noik,
 	noimgincentive,
 	nojet,
+	nojiffyload,
 	nomegasave,
 	nomicro,
 	nomicrovar,

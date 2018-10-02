@@ -291,7 +291,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 
 		{0x206A8B68, LID_AUDIOGENIC},	/* Audiogenic loader */
 
-		{0xF1D441D8, LID_CULT},		/* Cult loader */
+		{0xF1D441D8, LID_FRZMACHINE},	/* Freeze Machine tape, often used by Cult titles */
 
 		{0x9A447668, LID_ACCOLADE},	/* Accolade (Apollo 18, Miniputt) */
 		{0xF22D0DAB, LID_ACCOLADE},	/* Motor Massacre, Test Drive, Duel, The: Test Drive II */

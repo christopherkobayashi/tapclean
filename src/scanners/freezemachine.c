@@ -1,5 +1,5 @@
 /*
- * cult.c (rewritten from scratch by Luigi Di Fraia, Aug 2006)
+ * freezemachine.c (rewritten from scratch by Luigi Di Fraia, Aug 2006)
  *
  * Part of project "TAPClean". May be used in conjunction with "Final TAP".
  *
@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THISLOADER	CULT
+#define THISLOADER	FREEZEMACHINE
 
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
@@ -56,7 +56,7 @@
 #define ENDOFFSETH	0x1F	/* end location (MSB) offset inside CBM header */
 #define ENDOFFSETL	0x1B	/* end location (LSB) offset inside CBM header */
 
-void cult_search (void)
+void freezemachine_search (void)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -77,10 +77,10 @@ void cult_search (void)
 	sv = ft[THISLOADER].sv;
 
 	if (!quiet)
-		msgout("  Cult tape");
+		msgout("  Freeze Machine tape");
 
 	/*
-	 * First we retrieve the Cult variables from the CBM header and data.
+	 * First we retrieve loader variables from the CBM header and data.
 	 * We use CBM DATA index # 1 as we assume the tape image contains 
 	 * a single game.
 	 * For compilations we should search and find the relevant file 
@@ -119,16 +119,16 @@ void cult_search (void)
 	else
 		e--;
 
-	/* Plausibility checks (here since CULT is always just ONE TURBO file) */
+	/* Plausibility checks (here since FM is always just ONE TURBO file) */
 	/* Note: a plausibility check is on s == 0x0801 because load address
 		 is stored in CBM data, which is the very same file for all
-		 genuine Cult tapes! */
+		 genuine Freeze Machine tapes! */
 	if (e < s || s != 0x0801)
 		return;
 
 	/* Note: we may exit the "for" cycle if addblockdef() doesn't fail,
-	   since CULT is always just ONE turbo file. I didn't do that because
-	   we may have more than one game on the same tape using Cult loader,
+	   since FM is always just ONE turbo file. I didn't do that because
+	   we may have more than one game on the same tape using FM loader,
 	   but such in a case whe must retrieve CBM information from their
 	   respective CBM parts... Not done actually. */
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
@@ -179,7 +179,7 @@ void cult_search (void)
 
 			if (addblockdef(THISLOADER, sof, sod, eod, eof, xinfo) >= 0)
 				i = eof;	/* Search for further files starting from the end of this one */
-						/* Note: there's no further Cult file in a legacy Cult tape,
+						/* Note: there's no further file in a legacy FM tape,
 						         so we should just "return" here. */
 
 		} else {
@@ -189,7 +189,7 @@ void cult_search (void)
 	}
 }
 
-int cult_describe(int row)
+int freezemachine_describe(int row)
 {
 	int i, s;
 	int en, tp, sp, lp;

@@ -225,13 +225,13 @@
     <ClCompile Include="..\..\src\scanners\creatures.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\cult.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\scanners\ddesign.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\easytape.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\freezemachine.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c">
