@@ -540,14 +540,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\scanners\graphicadventurecreator.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\scanners\jiffyload.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\scanners\fftape.c"
 					>
 				</File>
@@ -564,11 +556,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\graphicadventurecreator.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\gremlin_f1.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\scanners\gremlin_f2.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\jiffyload.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\scanners\lexpeed.c"
 					>
 				</File>
 				<File

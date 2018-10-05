@@ -113,6 +113,7 @@ struct ldrswt_t ldrswt[] = {
 	{"IK"				,"ik"		,FALSE},
 	{"Jetload"			,"jet"		,FALSE},
 	{"Jiffy Load"			,"jiffy"	,FALSE},
+	{"Lexpeed"			,"lexpeed"	,FALSE},
 	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"Microload Variant"		,"microvar"	,FALSE},
@@ -201,6 +202,10 @@ long cps = C64_PAL_CPS;		/* CPU Cycles pr second. Default is C64 PAL */
  * pmin = minimum pilots that should be present.
  * pmax = maximum pilots that should be present.
  * has_cs = flag, provides checksums, 1=yes, 0=no.
+ *
+ * NOTE: the recommended value for pmin is 1/2 of the pilot size usually found 
+ * on TAPs for very short pilot sequences (e.g. 8 bytes) and 3/4 of the pilot 
+ * size for longer pilot sequences.
  */
 
 struct fmt_t ft[] = {
@@ -344,6 +349,7 @@ struct fmt_t ft[] = {
 	{"TURBOTAPE 526 DATA"	,MSbF, 0x42, 0x31, NA,   0x4B, 0x02, 0x09, 0x80, NA,    CSYES},
 	{"MICROLOAD VARIANT T1"	,LSbF, 0x2A, 0x1D, NA,   0x33, 0xA5, 0x0A, 64,   NA,    CSYES},
 	{"MICROLOAD VARIANT T2"	,LSbF, 0x34, 0x2A, NA,   0x42, 0xA5, 0x0A, 64,   NA,    CSYES},
+	{"LEXPEED"		,MSbF, 0x5E, 0x4C, NA,   0x72, 0x02, 0x09, 1000, NA,    CSYES},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -1319,6 +1325,9 @@ static void search_tap(void)
 			if (ldrswt[noturbo526	].exclude == FALSE && !database_is_full && !aborted)
 				turbotape526_search();
 
+			if (ldrswt[nolexpeed	].exclude == FALSE && !database_is_full && !aborted)
+				lexpeed_search();
+
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
 				msx_search(0);	/* Standard/Fast */
 
@@ -1674,6 +1683,8 @@ static void describe_file(int row)
 		case TT526_HEAD:	turbotape526_describe(row);
 					break;
 		case TT526_DATA:	turbotape526_describe(row);
+					break;
+		case LEXPEED:		lexpeed_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;
