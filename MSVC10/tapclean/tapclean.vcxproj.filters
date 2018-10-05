@@ -237,12 +237,6 @@
     <ClCompile Include="..\..\src\scanners\freezemachine.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\scanners\jiffyload.c">
-      <Filter>Source Files\newscanners</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\scanners\fftape.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
@@ -252,7 +246,16 @@
     <ClCompile Include="..\..\src\scanners\goforgold.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\jiffyload.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scanners\lexpeed.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c">

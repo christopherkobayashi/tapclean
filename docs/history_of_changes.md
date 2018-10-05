@@ -20,6 +20,7 @@ v0.38 (WIP)
 - Improvement: The "Alternative Software" scanner was renamed to "GAC Save tape", as suggested by Paul Jones (Luigi)
 - Improvement: The "Cult" scanner was renamed to "Freeze Machine tape", as suggested by Paul Jones (Luigi)
 - Improvement: The "FF tape" scanner is now referred to as "Freeze Frame tape", as suggested by SLC (Luigi)
+- New: Added support for "Lexpeed Fastsave System (Radarsoft)" (Luigi)
 
 v0.37
 -----

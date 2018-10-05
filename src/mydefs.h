@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-11"
+#define VERSION_STR	"0.38-pre-12"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -230,6 +230,7 @@ enum {
 	TT526_DATA,
 	MICROLOADVAR_T1,
 	MICROLOADVAR_T2,
+	LEXPEED,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -489,6 +490,7 @@ enum {
 	noik,
 	nojet,
 	nojiffyload,
+	nolexpeed,
 	nomegasave,
 	nomicro,
 	nomicrovar,
