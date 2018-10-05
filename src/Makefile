@@ -16,14 +16,14 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/anirog.o scanners/atlantis.o scanners/audiogenic.o \
 	scanners/bleep_f1.o scanners/bleep_f2.o scanners/burner.o \
 	scanners/burner_var.o scanners/c64tape.o scanners/chr.o \
-	scanners/cult.o scanners/cyberload_f1.o scanners/cyberload_f2.o \
+	scanners/cyberload_f1.o scanners/cyberload_f2.o \
 	scanners/cyberload_f3.o scanners/cyberload_f4.o scanners/enigma.o \
 	scanners/firebird.o scanners/flashload.o scanners/freeload.o \
-	scanners/odeload.o scanners/hitec.o scanners/hitload.o \
+	scanners/freezemachine.o scanners/hitec.o scanners/hitload.o \
 	scanners/ikloader.o scanners/jetload.o scanners/microload.o \
 	scanners/nova_f1.o scanners/nova_f2.o scanners/ocean.o \
-	scanners/oceannew1.o scanners/oceannew2.o \
-	scanners/oceannew3.o scanners/oceannew4.o scanners/palace_f1.o \
+	scanners/oceannew1.o scanners/oceannew2.o scanners/oceannew3.o \
+	scanners/oceannew4.o scanners/odeload.o scanners/palace_f1.o \
 	scanners/palace_f2.o scanners/pause.o scanners/pavloda.o \
 	scanners/rackit.o scanners/rainbowarts_f1.o scanners/rainbowarts_f2.o \
 	scanners/rasterload.o scanners/seuck.o scanners/snakeload50.o \
@@ -34,7 +34,7 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/visiload.o scanners/actionreplay.o scanners/ashdave.o \
 	scanners/freeslow.o scanners/goforgold.o scanners/fastevil.o \
 	scanners/fftape.o scanners/tes.o scanners/tequila.o \
-	scanners/alternativesw.o scanners/chuckie_egg.o \
+	scanners/graphicadventurecreator.o scanners/chuckie_egg.o \
 	scanners/alternativedk.o scanners/powerload.o scanners/gremlin_f1.o \
 	scanners/gremlin_f2.o scanners/amaction.o scanners/creatures.o \
 	scanners/rainbowislands.o scanners/easytape.o scanners/turbo220.o \
