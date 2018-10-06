@@ -62,6 +62,8 @@
 
 #define MASTERLOADSIZE	0x100	/* size in bytes of the first turbo file */
 
+#define LEXPEED_CBM_DATA_SIZE	0xB3	/* size in bytes of the CBM Data file */
+
 #ifdef _MSC_VER
 #define inline __inline
 #endif
@@ -99,7 +101,7 @@ static inline void get_lexpeed_addresses (int *buf, int bufsz, int blkindex, uns
 	}
 }
 
-void lexpeed_search(void)
+static void lexpeed_search_core(int slice_start, int slice_end)
 {
 	int i, h;			/* counters */
 	int sof, sod, eod, eof, eop;	/* file offsets */
@@ -130,12 +132,9 @@ void lexpeed_search(void)
 	sp = ft[THISLOADER].sp;
 	lp = ft[THISLOADER].lp;
 
-	if (!quiet)
-		msgout("  Lexpeed Fastsave System");
-
 	lexpeed_index = 0;
 
-	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
+	for (i = slice_start; i > 0 && i < slice_end - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
 
 		if (eop > 0) {
@@ -236,6 +235,92 @@ void lexpeed_search(void)
 			if (eop < 0)	/* find_pilot failed (too few/many), set i to failure point. */
 				i = (-eop);
 		}
+	}
+}
+
+void lexpeed_search(void)
+{
+	int cbm_index = 1;
+
+	if (!quiet)
+		msgout("  Lexpeed Fastsave System");
+
+	for (;;) {
+		int match;
+		int ib, slice_start, slice_end;
+
+		match = 0;
+
+		//find_decode_block(CBM_HEAD, cbm_index);	/* Required if we were to extract the load address */
+		ib  = find_decode_block(CBM_DATA, cbm_index);
+		if (ib == -1) {
+
+			break;	/* No further titles on this tape image */
+
+		} else if ((unsigned int) blk[ib]->cx == LEXPEED_CBM_DATA_SIZE) {
+
+			int buf[LEXPEED_CBM_DATA_SIZE];
+
+			int seq_vectors[10] = {
+				0x34, 0x03, 0xED, 0xF6, 0x3E, 0xF1, 0x2F, 0xF3, 0x66, 0xFE
+			};
+
+			int index, offset;
+
+			/* Make an 'int' copy for use in find_seq() */
+			for (index = 0; index < LEXPEED_CBM_DATA_SIZE; index++)
+				buf[index] = blk[ib]->dd[index];
+
+			/* We now look for invariants to confirm this is actually a Lexpeed instance */
+
+			match = 1;
+
+			offset = find_seq(buf, LEXPEED_CBM_DATA_SIZE, seq_vectors, sizeof(seq_vectors) / sizeof(seq_vectors[0]));
+			if (offset != 0)
+				match = 0;
+
+			slice_start = blk[ib]->p4 + 1;	/* Set to CBM Dta end + 1 */
+		}
+
+		/* Parameter extraction successful? */
+		if (match == 0) {
+			cbm_index += 2;
+			continue;
+		}
+
+		/* 
+		 * Search for the next set of CBM files, if any, because we only 
+		 * want to look for a Lexpeed file chain in between two CBM boots
+		 */
+		do {
+
+			ib = find_decode_block(CBM_HEAD, cbm_index + 2);
+			if (ib == -1)
+				slice_end = tap.len;
+			else
+				slice_end = blk[ib]->p1;
+
+			cbm_index += 2;
+
+		} while (slice_end < slice_start);
+
+		/*
+		 * Optimize search: If there's a CBM Data (repeated) file 
+		 * in between, then start scanning from its end
+		 */
+		ib  = find_decode_block(CBM_DATA, cbm_index - 1);
+		if (ib != -1) {
+			if (blk[ib]->p4 < slice_end)
+				slice_start = blk[ib]->p4 + 1;
+		}
+
+		sprintf(lin,
+			" - scanning from $%04X to $%04X\n", 
+			slice_start,
+			slice_end);
+		msgout(lin);
+
+		lexpeed_search_core(slice_start, slice_end);
 	}
 }
 
