@@ -15,7 +15,7 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/aces.o scanners/aliensyndrome.o scanners/alternativewg.o \
 	scanners/anirog.o scanners/atlantis.o scanners/audiogenic.o \
 	scanners/bleep_f1.o scanners/bleep_f2.o scanners/burner.o \
-	scanners/burner_var.o scanners/c64tape.o scanners/chr.o \
+	scanners/burner_var.o scanners/c64tape.o scanners/megasave.o \
 	scanners/cyberload_f1.o scanners/cyberload_f2.o \
 	scanners/cyberload_f3.o scanners/cyberload_f4.o scanners/enigma.o \
 	scanners/firebird.o scanners/flashload.o scanners/freeload.o \
@@ -32,14 +32,15 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/trilogic.o scanners/turbotape.o scanners/biturbo.o \
 	scanners/turrican.o scanners/usgold.o scanners/virgin.o \
 	scanners/visiload.o scanners/actionreplay.o scanners/ashdave.o \
-	scanners/freeslow.o scanners/goforgold.o scanners/fastevil.o \
+	scanners/freeslow.o scanners/goforgold.o scanners/jiffyload.o \
 	scanners/fftape.o scanners/tes.o scanners/tequila.o \
 	scanners/graphicadventurecreator.o scanners/chuckie_egg.o \
 	scanners/alternativedk.o scanners/powerload.o scanners/gremlin_f1.o \
 	scanners/gremlin_f2.o scanners/amaction.o scanners/creatures.o \
 	scanners/rainbowislands.o scanners/easytape.o scanners/turbo220.o \
 	scanners/creativesparks.o scanners/ddesign.o scanners/glass.o \
-	scanners/turbotape_526.o scanners/lexpeed.o scanners/msx.o tap2audio.o
+	scanners/turbotape_526.o scanners/microload_var.o scanners/lexpeed.o \
+	scanners/msx.o tap2audio.o
 
 all: $(BIN)
 
