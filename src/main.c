@@ -898,7 +898,7 @@ static void search_tap(void)
 		 * Also a crc32 of the data block is recorded in 'tap.cbmcrc'.
 		 */
 
-		/* try and id any loader stored in cbm_program[]... */
+		/* try and id any loader stored in cbm_header[] or cbm_program[]... */
 
 		tap.cbmid = idloader(tap.cbmcrc, tap.cbmdatalen);
 

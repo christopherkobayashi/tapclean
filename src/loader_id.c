@@ -39,6 +39,7 @@
  * of the particular loader family if a match is found, else return 0.
  * The crc passed should obviously be that of the first CBM program in the TAP, whose length
  * must be passed through len.
+ * If no match is found, then cbm_program[] and cbm_header[] are searched for known patterns.
  */
 
 int idloader(unsigned /*long*/ int crc, int len)
@@ -396,7 +397,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x75115ADC, LID_LEXPEED},	/* Radeloos */
 		{0x3C06E1A2, LID_LEXPEED},	/* Hopeless */
 		{0xB4E6A165, LID_LEXPEED},	/* Chip Nibbel, Dr.J */
-		{0x89B7C224, LID_LEXPEED},	/* Champ, SPrite Machine */
+		{0x89B7C224, LID_LEXPEED},	/* Champ, Sprite Machine */
 
 		{0, 0}				/* List terminator/cap */
 	};
@@ -410,10 +411,11 @@ int idloader(unsigned /*long*/ int crc, int len)
 			id = kcrc[i][1];
 	}
 
+	#define MAXBLOCKLOOKAHEAD 4 /* Max displacement of the array element that is read below */
+
 	/* crc search failed?... do a search in 'cbm_program[]' for loader ID strings... */
 
 	if (id == 0) {
-		#define MAXBLOCKLOOKAHEAD 4 /* Max displacement of the array element that is read below */
 
 		for (i = 0; i < len - MAXBLOCKLOOKAHEAD; i++) {
 
@@ -476,6 +478,27 @@ int idloader(unsigned /*long*/ int crc, int len)
 					cbm_program[i + 4] == 0x45) {
 
 				id = LID_SNAKE;
+
+				break;
+			}
+		}
+	}
+
+	/* crc search failed?... do a search in 'cbm_header[]' for loader ID strings... */
+
+	if (id == 0) {
+
+		for (i = 0; i < 192 - MAXBLOCKLOOKAHEAD; i++) {
+
+			/* look for L... EXPE (Lexpeed by Lex Boere - Radarsoft) */
+
+			if (cbm_header[i] == 0xCC &&
+					cbm_header[i + 1] == 0xC5 &&
+					cbm_header[i + 2] == 0xD8 &&
+					cbm_header[i + 3] == 0xD0 &&
+					cbm_header[i + 4] == 0xC5) {
+
+				id = LID_LEXPEED;
 
 				break;
 			}
