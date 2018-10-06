@@ -17,7 +17,7 @@ Some older tasks (at the bottom) might not be applicable any longer, but are kep
 	- The one used in "Biturbo" and "Power Load": applicable to those cases when the encoding parameters are known (e.g. endianness, short pulse, long pulse, pilot/sync values) and it's just file details that are stored in the CBM part (RAM start address, end address, or file size); knowing encoding parameters we can cycle through each turbo file and then backtrace from there to hit each corresponding CBM file.
 	- The one used in "Visiload": applicable to those cases when encoding parameters are set in the CBM part and need extracting on a per file basis, so that each turbo file in between CBM sections can be decoded; in this case we need to cycle through CBM parts, and then extract the encoding parameters required to detect turbo parts in between.
 
-- TODO: Consider the unification of "Hi-Tech" and "Virgin" if they appear to be mastered by the same program with different settings (Luigi)
+- TODO: Consider the unification of "Hi-Tech" and "Virgin" if they appear to be mastered by the same program with different settings. Also, there appear to be two Tx variants for "Virgin" ("Future Bike" thres=$016E, "Guardian II" thres=$015E) (Luigi)
 - TODO: Titles that use "New Hi-Tec tape" really use a Tx variant of "Ocean New F2" so the latter should be extended with multiple Tx variants (Luigi)
 - TODO: Refer to "additional bits" in "Visiload" as "stop bits" (Luigi)
 - TODO: Allow a few more non-reserved characters in PRG filenames (Fredric)
