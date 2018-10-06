@@ -23,6 +23,7 @@ v0.38 (WIP)
 - New: Added support for "Lexpeed Fastsave System (Radarsoft)" (Luigi)
 - Improvement: The "Lexpeed" scanner now supports multiple titles on the same tape image (Luigi)
 - Improvement: Added a number of signatures for "Lexpeed" titles in order to speedup scanning (Luigi)
+- Fix: Scanning of "Glass tape" occurs also when its signature is found and fast scan is enabled (Luigi)
 
 v0.37
 -----
