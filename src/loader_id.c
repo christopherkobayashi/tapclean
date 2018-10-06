@@ -406,9 +406,12 @@ int idloader(unsigned /*long*/ int crc, int len)
 	/* search crc table for alias... */
 
 	id = 0;
+
 	for (i = 0; kcrc[i][0] != 0; i++) {
-		if (crc == kcrc[i][0])
+		if (crc == kcrc[i][0]) {
 			id = kcrc[i][1];
+			break;
+		}
 	}
 
 	#define MAXBLOCKLOOKAHEAD 4 /* Max displacement of the array element that is read below */
