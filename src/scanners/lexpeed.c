@@ -315,7 +315,7 @@ void lexpeed_search(void)
 		}
 
 		sprintf(lin,
-			" - scanning from $%04X to $%04X\n", 
+			" - scanning from $%04X to $%04X", 
 			slice_start,
 			slice_end);
 		msgout(lin);
