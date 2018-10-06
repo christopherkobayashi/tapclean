@@ -436,7 +436,8 @@ const char knam[][48] = {
 	{"Creative Sparks"},
 	{"Trilogic"},
 	{"Glass Tape"},
-	{"Microload (Blue Ribbon Variant)"}
+	{"Microload (Blue Ribbon Variant)"},
+	{"Lexpeed Fastsave System"}
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!

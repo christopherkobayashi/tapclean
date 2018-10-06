@@ -39,11 +39,7 @@
 #define SLASH	'/'
 #endif
 
-<<<<<<< HEAD
-#define VERSION_STR	"0.38-pre-13"
-=======
-#define VERSION_STR	"0.38-pre-12"
->>>>>>> 3e3f60fbfb41e2851c86f6238051141e0f1f7ac9
+#define VERSION_STR	"0.38-pre-14"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -307,7 +303,8 @@ enum {
 	LID_CSPARKS,
 	LID_TRILOGIC,
 	LID_GLASS,
-	LID_MICVAR
+	LID_MICVAR,
+	LID_LEXPEED
 };
 
 /*

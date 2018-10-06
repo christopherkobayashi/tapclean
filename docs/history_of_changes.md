@@ -21,6 +21,8 @@ v0.38 (WIP)
 - Improvement: The "Cult" scanner was renamed to "Freeze Machine tape", as suggested by Paul Jones (Luigi)
 - Improvement: The "FF tape" scanner is now referred to as "Freeze Frame tape", as suggested by SLC (Luigi)
 - New: Added support for "Lexpeed Fastsave System (Radarsoft)" (Luigi)
+- Improvement: The "Lexpeed" scanner now supports multiple titles on the same tape image (Luigi)
+- Improvement: Added a number of signatures for "Lexpeed" titles in order to speedup scanning (Luigi)
 
 v0.37
 -----

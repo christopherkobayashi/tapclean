@@ -386,6 +386,18 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xA0AD37D3, LID_MICVAR},	/* Syntax, Ice Temple */
 		{0xC998B9EA, LID_MICVAR},	/* On The Bench (by Cult) */
 
+		{0x3C06E1A2, LID_LEXPEED},	/* De Sekte... */
+		{0x4B83F346, LID_LEXPEED},	/* Big Deal */
+		{0x13BB9826, LID_LEXPEED},	/* Nacht Wacht */
+		{0xAB5E53E9, LID_LEXPEED},	/* Het Spel En De Knikkers */
+		{0x44EB4695, LID_LEXPEED},	/* All Risks */
+		{0x8EEAE96E, LID_LEXPEED},	/* Endless, Floyd The Droid, Verkeersrally */
+		{0x197FBC99, LID_LEXPEED},	/* Hollanditis */
+		{0x75115ADC, LID_LEXPEED},	/* Radeloos */
+		{0x3C06E1A2, LID_LEXPEED},	/* Hopeless */
+		{0xB4E6A165, LID_LEXPEED},	/* Chip Nibbel, Dr.J */
+		{0x89B7C224, LID_LEXPEED},	/* Champ, SPrite Machine */
+
 		{0, 0}				/* List terminator/cap */
 	};
 
