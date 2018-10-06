@@ -283,17 +283,17 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x342A2416, LID_VIRG},		/* same as "Hi-Tec" loader but thres=$016E   Future Bike */
 		{0x895DCF44, LID_VIRG},		/* This is "Virgin Loader"  (thres=$015E)   Guardian II, Alcazar, Toy Bizarre, Hard Drivin */
 
-		{0xFADDF41C, LID_HTEC},		/* This is "Hi-Tec" Loader.  (thres=$017E)  Chevy Chase, Top Cat, Yogi */
+		{0xFADDF41C, LID_HTEC},		/* Chevy Chase, Top Cat, Yogi */
 
 		{0x8E027BD2, LID_FLASH},
 		{0x1754E006, LID_OCNEW1_T1},
-		{0x3A35F804, LID_OCNEW1_T1},	/* Ocean New 1 T1 (Adidas Soccer) */
+		{0x3A35F804, LID_OCNEW1_T1},	/* Adidas Soccer */
 		{0xC039C251, LID_OCNEW1_T2},
-		{0x7FFB98B2, LID_OCNEW2},	/* Ocean New 2   (Shadow Warriors) */
-		{0x9B132BD0, LID_OCNEW2},	/* Ocean New 2   (Klax) */
-		{0xF96B0635, LID_OCNEW2},	/* Ocean New 2   (Hero Quest) */
-		{0x908BEB44, LID_OCNEW2},	/* Ocean New 2   (World Championship Boxing Manager) */
-		{0x7E4A9653, LID_OCNEW2},	/* Ocean New 2   (Jahangir Khan World Championship Squash) */
+		{0x7FFB98B2, LID_OCNEW2},	/* Shadow Warriors */
+		{0x9B132BD0, LID_OCNEW2},	/* Klax */
+		{0xF96B0635, LID_OCNEW2},	/* Hero Quest */
+		{0x908BEB44, LID_OCNEW2},	/* World Championship Boxing Manager */
+		{0x7E4A9653, LID_OCNEW2},	/* Jahangir Khan World Championship Squash */
 
 		{0x5622E174, LID_ATLAN},	/* Atlantis loader. */
 
@@ -315,7 +315,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x4E56C97A, LID_OCNEW4},	/* Out Run Europa (Variant) */
 		{0x6B4A0009, LID_OCNEW4},	/* Liverpool (Variant) */
 
-		{0x108DE0A5, LID_108DE0A5},	/* REC magazine tapes (Italy) */
+		{0x108DE0A5, LID_108DE0A5},	/* REC magazine tapes (popular in Italy) */
 
 		{0xAE9A2682, LID_FREE_SLOW},	/* Freeload Slowload (Platoon) */
 		{0x0AC328F5, LID_FREE_SLOW},	/* Freeload Slowload (Rambo, Great Escape, Top Gun) */
@@ -331,7 +331,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x94EAA6AF, LID_JIFFYLOAD},	/* T2: Jungle Quest */
 		{0x7F7653E9, LID_JIFFYLOAD},	/* T2: Monkey Magic */
 
-		{0xE356E438, LID_FFTAPE},	/* Games whose CBM filename is "FF" */
+		{0xE356E438, LID_FFTAPE},	/* Freeze Frame (whose CBM filename is "FF") */
 
 		{0xDB93D097, LID_TESTAPE},	/* Special Program games */
 
