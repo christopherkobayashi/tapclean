@@ -24,6 +24,7 @@ v0.38 (WIP)
 - Improvement: The "Lexpeed" scanner now supports multiple titles on the same tape image (Luigi)
 - Improvement: Added a number of signatures for "Lexpeed" titles in order to speedup scanning (Luigi)
 - Fix: Scanning of "Glass tape" occurs also when its signature is found and fast scan is enabled (Luigi)
+- Improvement: Also look for identification strings in `cbm_header[]` in order to speedup scanning (Luigi)
 
 v0.37
 -----
