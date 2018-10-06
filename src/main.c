@@ -1105,6 +1105,12 @@ static void search_tap(void)
 			if (tap.cbmid == LID_TRILOGIC	&& ldrswt[notrilogic	].exclude == FALSE && !database_is_full && !aborted)
 				trilogic_search();
 
+			if (tap.cbmid == LID_GLASS	&& ldrswt[noglass	].exclude == FALSE && !database_is_full && !aborted)
+				glass_search();
+
+			if (tap.cbmid == LID_LEXPEED	&& ldrswt[nolexpeed	].exclude == FALSE && !database_is_full && !aborted)
+				lexpeed_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
