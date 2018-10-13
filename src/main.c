@@ -2267,7 +2267,10 @@ int main(int argc, char *argv[])
 								if (opnum >= OP_OPTIMIZE) {
 									char *tapnamepos, *cleanedtapnamefullpath;
 
-									strcpy(cleanedtapname, CLEANED_PREFIX);
+									if (opnum == OP_CONVERT_V0 || opnum == OP_CONVERT_V1)
+										strcpy(cleanedtapname, CONVERTED_PREFIX);
+									else
+										strcpy(cleanedtapname, CLEANED_PREFIX);
 									strcat(cleanedtapname, tap.name);
 									change_file_extention(cleanedtapname, "tap", MAXPATH);
 									cleanedtapnamefullpath = cleanedtapname;

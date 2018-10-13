@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-15"
+#define VERSION_STR	"0.38-pre-16"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -51,10 +51,11 @@
 #endif
 #define NUM_READ_ERRORS	100
 
-#define CLEANED_PREFIX	"clean."
+#define CLEANED_PREFIX		"clean."
+#define CONVERTED_PREFIX	"converted."
 
-#define TAP_HEADER_SIZE 20
-#define TAP_ID_STRING	"C64-TAPE-RAW"
+#define TAP_HEADER_SIZE 	20
+#define TAP_ID_STRING		"C64-TAPE-RAW"
 
 #define DC2N_HEADER_SIZE	20
 #define DC2N_ID_STRING		"DC2N-TAP-RAW"

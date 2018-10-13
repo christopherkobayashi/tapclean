@@ -25,6 +25,7 @@ v0.38 (WIP)
 - Improvement: Added a number of signatures for "Lexpeed" titles in order to speedup scanning (Luigi)
 - Fix: Scanning of "Glass tape" occurs also when its signature is found and fast scan is enabled (Luigi)
 - Improvement: Also look for identification strings in `cbm_header[]` in order to speedup scanning (Luigi)
+- Improvement: Use the prefix "converted." for converted files, rather than "cleaned." (Luigi)
 
 v0.37
 -----
