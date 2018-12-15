@@ -580,6 +580,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\mms.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\msx.c"
 					>
 				</File>

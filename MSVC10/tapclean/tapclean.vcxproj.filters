@@ -252,16 +252,19 @@
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\jiffyload.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\lexpeed.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
+    <ClCompile Include="..\..\src\scanners\microload_var.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\scanners\microload_var.c">
+    <ClCompile Include="..\..\src\scanners\mms.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\scanners\msx.c">

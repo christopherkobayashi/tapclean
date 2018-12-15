@@ -399,6 +399,9 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xB4E6A165, LID_LEXPEED},	/* Chip Nibbel, Dr.J */
 		{0x89B7C224, LID_LEXPEED},	/* Champ, Sprite Machine */
 
+		{0x14FA292E, LID_MMS},		/* Drip */
+		{0x1127DC9A, LID_MMS},		/* Dr. Mad */
+
 		{0, 0}				/* List terminator/cap */
 	};
 

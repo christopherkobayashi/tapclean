@@ -39,7 +39,7 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.38-pre-16"
+#define VERSION_STR	"0.38-pre-17"
 #define COPYRIGHT_STR	"(C)2006-2018 TC Team"
 #define BUILDER_STR	"ldf"
 
@@ -232,6 +232,7 @@ enum {
 	MICROLOADVAR_T1,
 	MICROLOADVAR_T2,
 	LEXPEED,
+	MMS,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -305,7 +306,8 @@ enum {
 	LID_TRILOGIC,
 	LID_GLASS,
 	LID_MICVAR,
-	LID_LEXPEED
+	LID_LEXPEED,
+	LID_MMS
 };
 
 /*
@@ -496,6 +498,7 @@ enum {
 	nomegasave,
 	nomicro,
 	nomicrovar,
+	nomms,
 	nomsx,
 	nonova,
 	noocean,

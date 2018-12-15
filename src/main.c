@@ -117,6 +117,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"Microload Variant"		,"microvar"	,FALSE},
+	{"MMS"				,"mms"		,FALSE},
 	{"MSX"				,"msx"		,FALSE},
 	{"Novaload"			,"nova"		,FALSE},
 	{"Ocean"			,"ocean"	,FALSE},
@@ -311,7 +312,7 @@ struct fmt_t ft[] = {
 	{"ACTIONREPLAY_TURBO"   ,LSbF, 0x3A, 0x23, NA,   0x53, NA,   NA,   NA,   NA,    CSYES},
 	{"ACTIONREPLAY_SUPERTURBO"
 				,LSbF, 0x22, 0x13, NA,   0x2B, NA,   NA,   NA,   NA,    CSYES},
-	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,   0x44, 0x80, 0x40, 200,  NA,    CSNO},
+	{"ASH AND DAVE"		,MSbF, 0x2D, 0x22, NA,   0x44, 0x80, 0x40, 100,  NA,    CSNO},
 	{"FREELOAD SLOWLOAD T1"	,MSbF, 0x77, 0x5A, NA,   0x85, 0x40, 0x5A, 45,   400,   CSYES},
 	{"FREELOAD SLOWLOAD T2"	,MSbF, 0x9A, 0x66, NA,   0xCD, 0x40, 0x5A, 45,   400,   CSYES},
 	{"GO FOR THE GOLD"	,LSbF, 0x2F, 0x1D, NA,   0x42, 0x02, 0x11, 200,  NA,    CSYES},
@@ -350,6 +351,7 @@ struct fmt_t ft[] = {
 	{"MICROLOAD VARIANT T1"	,LSbF, 0x2A, 0x1D, NA,   0x33, 0xA5, 0x0A, 64,   NA,    CSYES},
 	{"MICROLOAD VARIANT T2"	,LSbF, 0x34, 0x2A, NA,   0x42, 0xA5, 0x0A, 64,   NA,    CSYES},
 	{"LEXPEED"		,MSbF, 0x5E, 0x4C, NA,   0x72, 0x02, 0x09, 1000, NA,    CSYES},
+	{"MMS"			,MSbF, 0x21, 0x1B, NA,   0x28, 0x02, 0x07, 375,  NA,    CSYES},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -437,7 +439,8 @@ const char knam[][48] = {
 	{"Trilogic"},
 	{"Glass Tape"},
 	{"Microload (Blue Ribbon Variant)"},
-	{"Lexpeed Fastsave System"}
+	{"Lexpeed Fastsave System"},
+	{"MMS Tape"},
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1111,6 +1114,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_LEXPEED	&& ldrswt[nolexpeed	].exclude == FALSE && !database_is_full && !aborted)
 				lexpeed_search();
 
+			if (tap.cbmid == LID_MMS	&& ldrswt[nomms		].exclude == FALSE && !database_is_full && !aborted)
+				mms_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1334,6 +1340,9 @@ static void search_tap(void)
 
 			if (ldrswt[nolexpeed	].exclude == FALSE && !database_is_full && !aborted)
 				lexpeed_search();
+
+			if (ldrswt[nomms	].exclude == FALSE && !database_is_full && !aborted)
+				mms_search();
 
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
 				msx_search(0);	/* Standard/Fast */
@@ -1692,6 +1701,8 @@ static void describe_file(int row)
 		case TT526_DATA:	turbotape526_describe(row);
 					break;
 		case LEXPEED:		lexpeed_describe(row);
+					break;
+		case MMS:		mms_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

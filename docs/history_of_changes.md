@@ -20,12 +20,13 @@ v0.38 (WIP)
 - Improvement: The "Alternative Software" scanner was renamed to "GAC Save tape", as suggested by Paul Jones (Luigi)
 - Improvement: The "Cult" scanner was renamed to "Freeze Machine tape", as suggested by Paul Jones (Luigi)
 - Improvement: The "FF tape" scanner is now referred to as "Freeze Frame tape", as suggested by SLC (Luigi)
-- New: Added support for "Lexpeed Fastsave System (Radarsoft)" (Luigi)
+- New: Added support for "Lexpeed Fastsave System (Radarsoft)", used in a number of titles supplied by Paul Jones (Luigi)
 - Improvement: The "Lexpeed" scanner now supports multiple titles on the same tape image (Luigi)
 - Improvement: Added a number of signatures for "Lexpeed" titles in order to speedup scanning (Luigi)
 - Fix: Scanning of "Glass tape" occurs also when its signature is found and fast scan is enabled (Luigi)
 - Improvement: Also look for identification strings in `cbm_header[]` in order to speedup scanning (Luigi)
 - Improvement: Use the prefix "converted." for converted files, rather than "cleaned." (Luigi)
+- New: Added support for "MMS Tape", used in a few titles supplied by Pawel (Luigi)
 
 v0.37
 -----
