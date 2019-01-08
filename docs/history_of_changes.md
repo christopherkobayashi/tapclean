@@ -8,8 +8,8 @@ Entries are of the following types, since release 0.21:
 - Improvement: where end-user experience has been improved (or frustration minimized)
 - New: new features, such as support for additional loaders
 
-v0.38 (WIP)
------------
+v0.38
+-----
 
 - Improvement: The first non-standard 3-page "Enigma" file in "Rik The Roadie", supplied by Paul Jones, is now fully acknowledged - only 2 pages of such file are loaded in RAM (Luigi)
 - New: Added support for "Turbotape 526" (a.k.a. "Load'n'Run"), a slow clone of "Turbotape 250", used in a number of titles supplied by Walter A. (Luigi)
