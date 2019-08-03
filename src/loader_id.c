@@ -369,6 +369,7 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x63CDFCDA, LID_CSPARKS},	/* Mad Doctor */
 		{0x23EE788B, LID_CSPARKS},	/* Taskmaster */
 		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
+		{0xE14AA64D, LID_CSPARKS},	/* Java Jim in Square Shaped Trouble */
 
 		{0x848FD0AF, LID_TRILOGIC},	/* Additional releases: Double Dare,
 						   Fireman Sam, Hellfire Attack,
