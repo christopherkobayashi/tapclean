@@ -8,6 +8,11 @@ Entries are of the following types, since release 0.21:
 - Improvement: where end-user experience has been improved (or frustration minimized)
 - New: new features, such as support for additional loaders
 
+v0.39
+-----
+
+- Improvement: Added signature for the "Creative Sparks" instance used by "Java Jim in Square Shaped Trouble" (Luigi)
+
 v0.38
 -----
 
