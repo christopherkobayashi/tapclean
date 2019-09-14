@@ -6,6 +6,7 @@ Foreword
 Completed tasks are still included here as there's often a dependency on them within tasks not yet completed.
 Some older tasks (at the bottom) might not be applicable any longer, but are kept here for reference.
 
+- TODO: When cleaning the Pavloda title "Jet-Boot Jack" (English Software) two bit 1 pulses are wrongly removed at the end of the last file (Aki)
 - TODO: Find a way to automatically handle split pulses in Mega-Save pre-pilots, as found in "Lethal" and "Soccer Manager", supplied by (Ziggy72)
 - TODO: For all scanners, document pilot value and size within the source file. Same with sync and trailer. Started in microload.c and microload_var.c (Luigi)
 - TODO: Work out which games use any given signature, i.e. first CBM Data CRC value (Luigi)
