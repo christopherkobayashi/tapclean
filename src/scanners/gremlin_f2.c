@@ -60,9 +60,9 @@
 
 static int doffset;
 
-typedef int (*GREMLIN_F2decryptproc_t)(int, unsigned int);
+typedef int (*gremlin_f2_decryptproc_t)(int, unsigned int);
 
-static int GREMLIN_F2_decrypt_v1 (int byte, unsigned int dest_addr)
+static int gremlin_f2_decrypt_v1 (int byte, unsigned int dest_addr)
 {
 	/* Bulldog, Krakout, Pool, Snooker, and Westbank */
 	static unsigned char dblock[] = {
@@ -90,7 +90,7 @@ static int GREMLIN_F2_decrypt_v1 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-static int GREMLIN_F2_decrypt_v2 (int byte, unsigned int dest_addr)
+static int gremlin_f2_decrypt_v2 (int byte, unsigned int dest_addr)
 {
 	/* Auf Wiedersehen Monty */
 	static unsigned char dblock[] = {
@@ -119,7 +119,7 @@ static int GREMLIN_F2_decrypt_v2 (int byte, unsigned int dest_addr)
 	return byte;
 }
 
-static int GREMLIN_F2_decrypt_v3 (int byte, unsigned int dest_addr)
+static int gremlin_f2_decrypt_v3 (int byte, unsigned int dest_addr)
 {
 	/* One version of Footballer Of The Year */
 	static unsigned char dblock[] = {
@@ -155,7 +155,7 @@ static int GREMLIN_F2_decrypt_v3 (int byte, unsigned int dest_addr)
  *  - -1 if CBM data does not contain a known variant
  *  - variant number (> 0)
  */
-static int GREMLIN_F2_find_variant (int cbm_index)
+static int gremlin_f2_find_variant (int cbm_index)
 {
 	int variant = 0;
 
@@ -236,7 +236,7 @@ void gremlin_f2_search (void)
 	 */
 	cbm_index = 3;
 
-	variant = GREMLIN_F2_find_variant(cbm_index);
+	variant = gremlin_f2_find_variant(cbm_index);
 	if (variant <= 0)
 		return;
 
@@ -351,7 +351,7 @@ void gremlin_f2_search (void)
 	}
 }
 
-int GREMLIN_F2_describe (int row)
+int gremlin_f2_describe (int row)
 {
 	int i, s, x;
 	int hd[HEADERSIZE];
@@ -365,7 +365,7 @@ int GREMLIN_F2_describe (int row)
 	unsigned int current_s, current_x;
 	int current_id;
 
-	GREMLIN_F2decryptproc_t GREMLIN_F2_decrypt;
+	gremlin_f2_decryptproc_t gremlin_f2_decrypt;
 
 
 	en = ft[THISLOADER].en;
@@ -378,13 +378,13 @@ int GREMLIN_F2_describe (int row)
 
 	switch (variant) {
 		case 1:
-			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v1;
+			gremlin_f2_decrypt = gremlin_f2_decrypt_v1;
 			break;
 		case 2:
-			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v2;
+			gremlin_f2_decrypt = gremlin_f2_decrypt_v2;
 			break;
 		case 3:
-			GREMLIN_F2_decrypt = GREMLIN_F2_decrypt_v3;
+			gremlin_f2_decrypt = gremlin_f2_decrypt_v3;
 			break;
 	}
 
@@ -450,7 +450,7 @@ int GREMLIN_F2_describe (int row)
 			b = readttbyte(s + i * BITSINABYTE, lp, sp, tp, en);
 
 			if (b != -1) {
-				b = (GREMLIN_F2_decrypt)(b, current_s + i);
+				b = (gremlin_f2_decrypt)(b, current_s + i);
 				blk[row]->dd[x] = (unsigned char) b;
 
 				cb ^= b;

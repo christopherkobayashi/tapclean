@@ -237,10 +237,10 @@ void powerload_search(void);
 int powerload_describe(int);
 
 void gremlin_f1_search(void);
-int GREMLIN_F1_describe(int);
+int gremlin_f1_describe(int);
 
 void gremlin_f2_search(void);
-int GREMLIN_F2_describe(int);
+int gremlin_f2_describe(int);
 
 void amaction_search(void);
 int amaction_describe(int);

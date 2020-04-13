@@ -1672,9 +1672,9 @@ static void describe_file(int row)
 					break;
 		case POWERLOAD:		powerload_describe(row);
 					break;
-		case GREMLIN_F1:	GREMLIN_F1_describe(row);
+		case GREMLIN_F1:	gremlin_f1_describe(row);
 					break;
-		case GREMLIN_F2:	GREMLIN_F2_describe(row);
+		case GREMLIN_F2:	gremlin_f2_describe(row);
 					break;
 		case AMACTION:		amaction_describe(row);
 					break;
