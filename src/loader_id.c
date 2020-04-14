@@ -403,6 +403,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x14FA292E, LID_MMS},		/* Drip */
 		{0x1127DC9A, LID_MMS},		/* Dr. Mad */
 
+		{0xAFA566C3, LID_GREMLINGBH},	/* Impossamole */
+
 		{0, 0}				/* List terminator/cap */
 	};
 

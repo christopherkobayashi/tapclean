@@ -108,6 +108,7 @@ struct ldrswt_t ldrswt[] = {
 	{"GAC Save tape"		,"gradvcreator"	,FALSE},
 	{"Gremlin F1"			,"gremlinf1"	,FALSE},
 	{"Gremlin F2"			,"gremlinf2"	,FALSE},
+	{"Gremlin GBH"			,"gremlingbh"	,FALSE},
 	{"Hitload"			,"hit"		,FALSE},
 	{"Hi-Tec"			,"hitec"	,FALSE},
 	{"IK"				,"ik"		,FALSE},
@@ -352,6 +353,8 @@ struct fmt_t ft[] = {
 	{"MICROLOAD VARIANT T2"	,LSbF, 0x34, 0x2A, NA,   0x42, 0xA5, 0x0A, 64,   NA,    CSYES},
 	{"LEXPEED"		,MSbF, 0x5E, 0x4C, NA,   0x72, 0x02, 0x09, 1000, NA,    CSYES},
 	{"MMS"			,MSbF, 0x21, 0x1B, NA,   0x28, 0x02, 0x07, 375,  NA,    CSYES},
+	{"GREMLIN GBH HEADER"	,MSbF, NA,   0x2F, 0x49, 0x80, 1,    0,    512,  NA,    CSNO},
+	{"GREMLIN GBH DATA"	,MSbF, NA,   0x2F, 0x49, 0x80, 1,    0,    512,  NA,    CSNO},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -441,6 +444,7 @@ const char knam[][48] = {
 	{"Microload (Blue Ribbon Variant)"},
 	{"Lexpeed Fastsave System"},
 	{"MMS Tape"},
+	{"Gremlin GBH"},
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1117,6 +1121,9 @@ static void search_tap(void)
 			if (tap.cbmid == LID_MMS	&& ldrswt[nomms		].exclude == FALSE && !database_is_full && !aborted)
 				mms_search();
 
+			if (tap.cbmid == LID_GREMLINGBH	&& ldrswt[nogremlingbh	].exclude == FALSE && !database_is_full && !aborted)
+				gremlin_gbh_search();
+
 			/*
 			 * todo : TURRICAN
 			 * todo : SEUCK
@@ -1343,6 +1350,9 @@ static void search_tap(void)
 
 			if (ldrswt[nomms	].exclude == FALSE && !database_is_full && !aborted)
 				mms_search();
+
+			if (ldrswt[nogremlingbh	].exclude == FALSE && !database_is_full && !aborted)
+				gremlin_gbh_search();
 
 			if (ldrswt[nomsx	].exclude == FALSE && !database_is_full && !aborted)
 				msx_search(0);	/* Standard/Fast */
@@ -1703,6 +1713,10 @@ static void describe_file(int row)
 		case LEXPEED:		lexpeed_describe(row);
 					break;
 		case MMS:		mms_describe(row);
+					break;
+		case GREMLIN_GBH_HEAD:	gremlin_gbh_describe(row);
+					break;
+		case GREMLIN_GBH_DATA:	gremlin_gbh_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

@@ -233,6 +233,8 @@ enum {
 	MICROLOADVAR_T2,
 	LEXPEED,
 	MMS,
+	GREMLIN_GBH_HEAD,
+	GREMLIN_GBH_DATA,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -307,7 +309,8 @@ enum {
 	LID_GLASS,
 	LID_MICVAR,
 	LID_LEXPEED,
-	LID_MMS
+	LID_MMS,
+	LID_GREMLINGBH,
 };
 
 /*
@@ -489,6 +492,7 @@ enum {
 	nogradvcreator,
 	nogremlinf1,
 	nogremlinf2,
+	nogremlingbh,
 	nohit,
 	nohitec,
 	noik,

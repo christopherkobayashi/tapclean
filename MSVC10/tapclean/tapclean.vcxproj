@@ -162,6 +162,7 @@
     <ClCompile Include="..\..\src\scanners\graphicadventurecreator.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f1.c" />
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c" />
+    <ClCompile Include="..\..\src\scanners\gremlin_gbh.c" />
     <ClCompile Include="..\..\src\scanners\jiffyload.c" />
     <ClCompile Include="..\..\src\scanners\lexpeed.c" />
     <ClCompile Include="..\..\src\scanners\microload_var.c" />

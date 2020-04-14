@@ -568,6 +568,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\scanners\gremlin_gbh.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\scanners\jiffyload.c"
 					>
 				</File>

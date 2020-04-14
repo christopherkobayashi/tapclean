@@ -281,5 +281,8 @@ int lexpeed_describe(int);
 void mms_search(void);
 int mms_describe(int);
 
+void gremlin_gbh_search(void);
+int gremlin_gbh_describe(int);
+
 void msx_search(int);	/* specify the Tx variant if discovered; 0 to try them all */
 int msx_describe(int);

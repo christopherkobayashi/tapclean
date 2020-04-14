@@ -255,6 +255,9 @@
     <ClCompile Include="..\..\src\scanners\gremlin_f2.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\gremlin_gbh.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\jiffyload.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
