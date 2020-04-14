@@ -6,6 +6,7 @@ Foreword
 Completed tasks are still included here as there's often a dependency on them within tasks not yet completed.
 Some older tasks (at the bottom) might not be applicable any longer, but are kept here for reference.
 
+- TODO: In "Gremlin GBH" checkbytes miss one pulse so are not yet handled. Add support for partial bytes and reconstruction.
 - TODO: "Ocean New F3" and "Graphic Adv. Creator" use a different approach to cope with pilot pulses. Would it be possible to follow the same approach?
 - TODO: "Ocean New F3" doesn't define a `tp` and uses `sp`, `mp`, `lp` in a quite unorthodox way. Perhaps "Graphic Adv. Creator" is slightly better as it defines a custom pilot finding function that could be made generic and used by "Ocean New F3".
 - TODO: Add support for "Gyrospeed" - https://csdb.dk/release/?id=153648
