@@ -53,7 +53,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync pulses */
-#define MAXTRAILER	2040	/* max amount of trailer pulses read in (after Data only) */
+#define MAXTRAILER	8	/* max amount of trailer pulses read in */
 
 #define HDRPAYLOADSIZE	0x30	/* size of the Header file payload */
 
@@ -157,6 +157,13 @@ void gremlin_gbh_search(void)
 					/* Point to the last pulse of the last payload byte */
 					eof = eod + BITSINABYTE - 1;
 
+					/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+					h = 0;
+					while (eof < tap.len - 1 &&
+							h++ < MAXTRAILER &&
+							readttbit(eof + 1, mp, sp, tp) >= 0)
+						eof++;
+
 					if (addblockdef(GREMLIN_GBH_HEAD, sof, sod, eod, eof, xinfo) >= 0) {
 						state = STATE_SEARCH_DATA;
 						i = eof;	/* Search for further files starting from the end of this one */
@@ -219,7 +226,7 @@ int gremlin_gbh_describe(int row)
 
 	/* Compute pilot & trailer lengths */
 
-	/* pilot is in bytes... */
+	/* pilot is in pulses... */
 	blk[row]->pilot_len = (blk[row]->p2 - blk[row]->p1);
 
 	/* ... trailer in pulses */
@@ -266,6 +273,8 @@ int gremlin_gbh_describe(int row)
 
 		for (i = 0; i < blk[row]->cx; i++)
 			blk[row]->dd[i] = (unsigned char)hdrpayload[i];
+
+		blk[row]->rd_err = rd_err;
 #endif
 	} else {
 		/* Retrieve C64 memory location for data load/end address from extra-info */
