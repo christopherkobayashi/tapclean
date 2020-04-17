@@ -183,6 +183,13 @@ void gremlin_gbh_search(void)
 						continue;
 					}
 
+					/* Impossamole: 2nd turbo file - load address override */
+					if (s == 0x2000 && e == 0xF7FF) { 
+						s = 0x7EC0;
+						x = 0x7940;
+						xinfo = s + (e << 16);
+					}
+
 					/* Point to the first pulse of the last data byte (that's final) */
 					eod = sod + (x - 1) * BITSINABYTE;
 
@@ -280,9 +287,9 @@ int gremlin_gbh_describe(int row)
 
 		for (i = 0; i < blk[row]->cx; i++)
 			blk[row]->dd[i] = (unsigned char)hdrpayload[i];
+#endif
 
 		blk[row]->rd_err = rd_err;
-#endif
 	} else {
 		/* Retrieve C64 memory location for data load/end address from extra-info */
 		blk[row]->cs = blk[row]->xi & 0xFFFF;
