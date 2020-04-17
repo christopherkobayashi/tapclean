@@ -189,6 +189,13 @@ void gremlin_gbh_search(void)
 					/* Initially point to the last pulse of the last data byte */
 					eof = eod + BITSINABYTE - 1;
 
+					/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
+					h = 0;
+					while (eof < tap.len - 1 &&
+							h++ < MAXTRAILER &&
+							readttbit(eof + 1, mp, sp, tp) >= 0)
+						eof++;
+
 					if (addblockdef(GREMLIN_GBH_DATA, sof, sod, eod, eof, xinfo) >= 0)
 						i = eof;	/* Search for further files starting from the end of this one */
 
