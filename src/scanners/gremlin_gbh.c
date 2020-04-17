@@ -53,7 +53,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	1	/* amount of sync pulses */
-#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	40	/* max amount of trailer pulses read in */
 
 #define HDRPAYLOADSIZE	0x30	/* size of the Header file payload */
 
