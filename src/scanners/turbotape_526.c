@@ -310,7 +310,7 @@ int turbotape526_describe(int row)
 
 		rd_err = 0;
 
-#ifdef TT526_EXTRACT_HEADER
+#ifdef _TT526_EXTRACT_HEADER
 		/* Copy Header payload contents */
 
 		if (blk[row]->dd != NULL)
@@ -321,6 +321,8 @@ int turbotape526_describe(int row)
 		for (i = 0; i < blk[row]->cx; i++)
 			blk[row]->dd[i] = (unsigned char)hdrpayload[i];
 #endif
+
+		blk[row]->rd_err = rd_err;
 	} else {
 		int cb;
 

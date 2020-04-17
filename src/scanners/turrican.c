@@ -76,7 +76,7 @@ enum {
  * If defined Header file payload contents are extracted 
  * and consequently the CRC32 is calculated
  */
-#define TURRICAN_EXTRACT_HEADER
+#define _TURRICAN_EXTRACT_HEADER
 
 void turrican_search(void)
 {
@@ -309,7 +309,7 @@ int turrican_describe(int row)
 
 		rd_err = 0;
 
-#ifdef TURRICAN_EXTRACT_HEADER
+#ifdef _TURRICAN_EXTRACT_HEADER
 		/* Copy Header payload contents */
 
 		if (blk[row]->dd != NULL)
@@ -320,6 +320,8 @@ int turrican_describe(int row)
 		for (i = 0; i < blk[row]->cx; i++)
 			blk[row]->dd[i] = (unsigned char)hdrpayload[i];
 #endif
+
+		blk[row]->rd_err = rd_err;
 	} else {
 		int cb;
 
