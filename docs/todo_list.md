@@ -10,7 +10,12 @@ Some older tasks (at the bottom) might not be applicable any longer, but are kep
 - TODO: "Ocean New F3" and "Graphic Adv. Creator" use a different approach to cope with pilot pulses. Would it be possible to follow the same approach?
 - TODO: "Ocean New F3" doesn't define a `tp` and uses `sp`, `mp`, `lp` in a quite unorthodox way. Perhaps "Graphic Adv. Creator" is slightly better as it defines a custom pilot finding function that could be made generic and used by "Ocean New F3".
 - TODO: Add support for "Gyrospeed" - https://csdb.dk/release/?id=153648
-- TODO: When cleaning the "Pavloda" title "Jet-Boot Jack" (English Software) two bit 1 pulses are wrongly removed at the end of the last file (Aki)
+- TODO: When cleaning the "Pavloda" title "Jet-Boot Jack" (English Software) the checkbyte is missing a few pulses so it fails to read properly, hence the count of `xtr` pulses fails to be set properly, and two bit 0 ($3F) pulses are not recognized hence clipped (TNT, Aki)
+
+	- The pulse sequence in the last turbo file's checkbyte is wrong, and incomplete, so it fails to read properly in `pav_readbyte()`, hence the number of `xtr` pulses fails to be set properly. This means that two bit 0 ($3F) pulses are not recognized as part of the checksum/turbo file, hence clipped during the "Cutting post-data garbage" step in `cut_postdata_gaps()` (Luigi).
+	- The checkbyte is unreadable for multiple reasons, so I'd say this title has to be repaired manually ahead of being cleaned (Luigi).
+	- If I get to rewriting the scanner I will re-assess the best course of action, hoping to be able to do better regression testing by then (Luigi).
+
 - TODO: Find a way to automatically handle split pulses in "Mega-Save" pre-pilots, as found in "Lethal" and "Soccer Manager", supplied by (Ziggy72)
 - TODO: For all scanners, document pilot value and size within the source file. Same with sync and trailer. Started in microload.c and microload_var.c (Luigi)
 - TODO: Work out which games use any given signature, i.e. first CBM Data CRC value (Luigi)
