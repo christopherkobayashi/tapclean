@@ -1,6 +1,11 @@
+prg
 Makefile.win
 TAPClean.layout
 *.o
 *.exe
-tcreport.txt
-tcbatch.txt
+tcreport*.txt
+tcbatch*.txt
+*.tap
+*.gz
+*.tgz
+*.zip
