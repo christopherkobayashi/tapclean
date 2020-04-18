@@ -1392,6 +1392,11 @@ void fix_pavloda_check_bytes(void)
 					tap.changed = 1;
 
 					fixed_cnt++;
+				} else {
+					/* Roll back completely */
+					free(tmp);
+					tap.tmem = tap_backup;
+					tap.len--;
 				}
 			}
 		}
