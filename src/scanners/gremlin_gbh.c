@@ -183,6 +183,8 @@ void gremlin_gbh_search(void)
 						continue;
 					}
 
+					/* TODO: create overrides based on the Header's CRC32 instead of s/e values */
+
 					/* Impossamole: 2nd turbo file - load address override */
 					if (s == 0x2000 && e == 0xF7FF) { 
 						s = 0x7EC0;
