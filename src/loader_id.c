@@ -371,7 +371,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0xD13ACEED, LID_CSPARKS},	/* Kayak */
 		{0xE14AA64D, LID_CSPARKS},	/* Java Jim in Square Shaped Trouble */
 
-		{0x848FD0AF, LID_TRILOGIC},	/* Additional releases: Double Dare,
+		/* Disabled: Unfortunately the data section is just a pointer to $0351, which is common to other loaders too */
+		/*{0x848FD0AF, LID_TRILOGIC},*/	/* Additional releases: Double Dare,
 						   Fireman Sam, Hellfire Attack,
 						   Kentucky Racing, Merlin, Metranaut,
 						   Strike Force, Superted */

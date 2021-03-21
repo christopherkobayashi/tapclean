@@ -165,6 +165,7 @@
     <ClCompile Include="..\..\src\scanners\gremlin_gbh.c" />
     <ClCompile Include="..\..\src\scanners\jiffyload.c" />
     <ClCompile Include="..\..\src\scanners\lexpeed.c" />
+    <ClCompile Include="..\..\src\scanners\lk_avalon.c" />
     <ClCompile Include="..\..\src\scanners\microload_var.c" />
     <ClCompile Include="..\..\src\scanners\mms.c" />
     <ClCompile Include="..\..\src\scanners\msx.c" />

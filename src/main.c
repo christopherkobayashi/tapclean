@@ -115,6 +115,7 @@ struct ldrswt_t ldrswt[] = {
 	{"Jetload"			,"jet"		,FALSE},
 	{"Jiffy Load"			,"jiffy"	,FALSE},
 	{"Lexpeed"			,"lexpeed"	,FALSE},
+	{"LK Avalon"			,"lkavalon"	,FALSE},
 	{"Mega-Save"			,"megasave"	,FALSE},
 	{"Microload"			,"micro"	,FALSE},
 	{"Microload Variant"		,"microvar"	,FALSE},
@@ -355,6 +356,7 @@ struct fmt_t ft[] = {
 	{"MMS"			,MSbF, 0x21, 0x1B, NA,   0x28, 0x02, 0x07, 375,  NA,    CSYES},
 	{"GREMLIN GBH HEADER"	,MSbF, NA,   0x2F, 0x49, 0x80, 1,    0,    512,  NA,    CSNO},
 	{"GREMLIN GBH DATA"	,MSbF, NA,   0x2F, 0x49, 0x80, 1,    0,    512,  NA,    CSNO},
+	{"LK AVALON"		,MSbF, 0x21, 0x1A, NA,   0x28, 0x02, 0x09, 50,   NA,    CSYES},
 
 	/* name,                 en,   tp,   sp,   mp,   lp,   pv,   sv,   pmin, pmax,  has_cs. */
 
@@ -445,6 +447,7 @@ const char knam[][48] = {
 	{"Lexpeed Fastsave System"},
 	{"MMS Tape"},
 	{"Gremlin GBH"},
+	{"LK Avalon"},
 	/*
 	 * Only loaders with a LID_ entry in mydefs.h enums. Do not list
 	 * them all here!
@@ -1370,6 +1373,9 @@ static void search_tap(void)
 			if (ldrswt[noturbo220	].exclude == FALSE && !database_is_full && !aborted)
 				turbo220_search();
 
+			if (ldrswt[nolkavalon	].exclude == FALSE && !database_is_full && !aborted)
+				lk_avalon_search();
+
 			/*
 			 * Do not add the following ones because they should only be looked for when
 			 * their signature is found in CBM Data block.
@@ -1717,6 +1723,8 @@ static void describe_file(int row)
 		case GREMLIN_GBH_HEAD:	gremlin_gbh_describe(row);
 					break;
 		case GREMLIN_GBH_DATA:	gremlin_gbh_describe(row);
+					break;
+		case LK_AVALON:		lk_avalon_describe(row);
 					break;
 		case MSX_HEAD:		msx_describe(row);
 					break;

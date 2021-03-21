@@ -39,8 +39,8 @@
 #define SLASH	'/'
 #endif
 
-#define VERSION_STR	"0.39-pre-1"
-#define COPYRIGHT_STR	"(C)2006-2020 TC Team"
+#define VERSION_STR	"0.39-pre-2"
+#define COPYRIGHT_STR	"(C)2006-2021 TC Team"
 #define BUILDER_STR	"ldf"
 
 #define TRUE	1
@@ -235,6 +235,7 @@ enum {
 	MMS,
 	GREMLIN_GBH_HEAD,
 	GREMLIN_GBH_DATA,
+	LK_AVALON,
 	MSX_HEAD,
 	MSX_DATA,
 	MSX_HEAD_FAST,
@@ -499,6 +500,7 @@ enum {
 	nojet,
 	nojiffyload,
 	nolexpeed,
+	nolkavalon,
 	nomegasave,
 	nomicro,
 	nomicrovar,

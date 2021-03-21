@@ -264,6 +264,9 @@
     <ClCompile Include="..\..\src\scanners\lexpeed.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scanners\lk_avalon.c">
+      <Filter>Source Files\newscanners</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\scanners\microload_var.c">
       <Filter>Source Files\newscanners</Filter>
     </ClCompile>
