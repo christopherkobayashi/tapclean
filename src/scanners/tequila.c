@@ -35,7 +35,7 @@
  * Sync: Sequence (bytes)
  * Header: Yes
  * Data: Continuous
- * Checksum: Yes
+ * Checksum: No
  * Post-data: Yes
  * Trailer: No
  * Trailer homogeneous: N/A
