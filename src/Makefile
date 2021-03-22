@@ -40,7 +40,7 @@ OBJ  =	main.o clean.o crc32.o batchscan.o database.o dc2nconv.o \
 	scanners/rainbowislands.o scanners/easytape.o scanners/turbo220.o \
 	scanners/creativesparks.o scanners/ddesign.o scanners/glass.o \
 	scanners/turbotape_526.o scanners/microload_var.o scanners/lexpeed.o \
-	scanners/mms.o scanners/gremlin_gbh.c scanners/msx.o tap2audio.o
+	scanners/mms.o scanners/gremlin_gbh.o lk_avalon.o scanners/msx.o tap2audio.o
 
 all: $(BIN)
 
