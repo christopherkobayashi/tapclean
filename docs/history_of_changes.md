@@ -8,15 +8,12 @@ Entries are of the following types, since release 0.21:
 - Improvement: where end-user experience has been improved (or frustration minimized)
 - New: new features, such as support for additional loaders
 
-v0.40
------
-
-- New: Added initial support for "Gremlin GBH" (as used in "Impossamole"). Checkbytes miss one pulse so are not yet handled.
-
 v0.39
 -----
 
 - Improvement: Added signature for the "Creative Sparks" instance used by "Java Jim in Square Shaped Trouble" (Luigi)
+- New: Added initial support for "Gremlin GBH" (as used in "Impossamole"). Checkbytes miss one pulse so are not yet handled (Luigi)
+- New: Added support for "LK AVAlon" (Polish publisher) loader (Luigi)
 
 v0.38
 -----
