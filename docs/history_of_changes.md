@@ -13,7 +13,7 @@ v0.39
 
 - Improvement: Added signature for the "Creative Sparks" instance used by "Java Jim in Square Shaped Trouble" (Luigi)
 - New: Added initial support for "Gremlin GBH" (as used in "Impossamole"). Checkbytes miss one pulse so are not yet handled (Luigi)
-- New: Added support for "LK AVAlon" (Polish publisher) loader (Luigi)
+- New: Added support for "LK Avalon" (Polish publisher) loader (Luigi)
 
 v0.38
 -----
