@@ -27,12 +27,15 @@
 /*
  * Status: Beta
  *
+ * Note: Do not copy code from this scanner because the checksum calculation
+ *       includes header bytes, which is rather uncommon.
+ *
  * CBM inspection needed: No
  * Single on tape: No
  * Sync: Sequence (bytes)
  * Header: Yes
  * Data: Continuous
- * Checksum: Yes
+ * Checksum: Yes (includes header bytes in the calculation)
  * Post-data: No
  * Trailer: No
  * Trailer homogeneous: N/A
