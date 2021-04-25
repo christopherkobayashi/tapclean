@@ -399,7 +399,7 @@ const char knam[][48] = {
 	{"Rasterload"},
 	{"Super Pavloda"},
 	{"Hit-Load"},
-	{"Anirog loader"},
+	{"Anirog loader (or clone)"},
 	{"Visiload T1"},
 	{"Visiload T2"},
 	{"Visiload T3"},
@@ -1003,7 +1003,8 @@ static void search_tap(void)
 
 			if (tap.cbmid == LID_ANI 	&& ldrswt[noanirog	].exclude == FALSE && !database_is_full && !aborted) {
 				anirog_search();
-				freeload_search();
+				if (ldrswt[nofree	].exclude == FALSE && !database_is_full && !aborted)
+					freeload_search();
 			}
 
 			if (tap.cbmid == LID_SUPER 	&& ldrswt[nosuper	].exclude == FALSE && !database_is_full && !aborted)

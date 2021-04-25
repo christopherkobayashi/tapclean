@@ -32,8 +32,8 @@
  * Data: Continuous
  * Checksum: No
  * Post-data: No
- * Trailer: No
- * Trailer homogeneous: N/A
+ * Trailer: None in the original format; Up to about 3000 pulses in a clone found in Polish tapes
+ * Trailer homogeneous: N/A; No
  */
 
 #include "../mydefs.h"
@@ -48,7 +48,7 @@
 #define BITSINABYTE	8	/* a byte is made up of 8 bits here */
 
 #define SYNCSEQSIZE	9	/* amount of sync bytes */
-#define MAXTRAILER	8	/* max amount of trailer pulses read in */
+#define MAXTRAILER	3000	/* max amount of trailer pulses read in */
 
 #define HEADERSIZE	5	/* size of block header */
 
@@ -80,7 +80,7 @@ void anirog_search (void)
 	lp = ft[THISLOADER].lp;
 
 	if (!quiet)
-		msgout("  Anirog tape");
+		msgout("  Anirog tape (+clones)");
 
 	for (i = 20; i > 0 && i < tap.len - BITSINABYTE; i++) {
 		eop = find_pilot(i, THISLOADER);
@@ -139,8 +139,6 @@ void anirog_search (void)
 			eof = eod + BITSINABYTE - 1;
 
 			/* Trace 'eof' to end of trailer (any value, both bit 1 and bit 0 pulses) */
-			/* Note: No trailer has been documented, but we are not strictly
-			         requiring one here, just checking for it is future-proof */
 			h = 0;
 			while (eof < tap.len - 1 &&
 					h++ < MAXTRAILER &&

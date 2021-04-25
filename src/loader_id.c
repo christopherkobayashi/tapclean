@@ -246,6 +246,8 @@ int idloader(unsigned /*long*/ int crc, int len)
 		{0x24BE37F6, LID_ANI},
 		{0xA09E55E9, LID_ANI},
 
+		{0x22734CE6, LID_ANI},		/* Anirog clone found in Polish tapes */
+
 		{0xDD3DE175, LID_VIS_T1},
 		{0x6B2A1236, LID_VIS_T1},	/* Atom Ant */
 		{0xFC0DAD06, LID_VIS_T1},	/* Manor */
